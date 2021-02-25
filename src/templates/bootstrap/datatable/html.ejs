@@ -1,0 +1,18 @@
+<table class="table{{ ctx.classes }}">
+    <thead>
+        <tr>
+            {% ctx.component.components.forEach(function(comp) { %}
+                <th>{{ comp.label || comp.key }}</th>
+            {% }); %}
+        </tr>
+    </thead>
+    <tbody>
+        {% ctx.instance.rows.forEach(function(row) { %}
+            <tr>
+                {% row.forEach(function(rowComp) { %}
+                    <td>{{ rowComp.dataValue }}</td>
+                {% }); %}
+            </tr>
+        {% }); %}
+    </tbody>
+</table>
