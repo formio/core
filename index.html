@@ -3,7 +3,7 @@
 <head>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://pagecdn.io/lib/ace/1.4.12/ace.js"></script>
-  <script src="dist/formio.core.min.js"></script>
+  <script src="dist/formio.core.js"></script>
   <style>
       .editor {height: 150px;}
   </style>
@@ -122,6 +122,27 @@ FormioCore.render(document.getElementById('data-table'), {
 });
 </script>
                     <script type="text/javascript">editor('data-table')</script>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Custom Component</h4>
+                    <p>Provides an easy way to create your own components.</p>
+                    <div id="custom-edit" class='editor'></div>
+                </td>
+                <td>
+                    <div id="custom"></div>
+                    <script type="text/javascript" id="custom-script">
+FormioCore.Components.addComponent({
+    type: 'h3',
+    template: function(ctx) { return '<h3>' + ctx.component.header + '</h3>'; }
+});
+FormioCore.render(document.getElementById('custom'), {
+    type: 'h3',
+    header: 'This is a test!'
+});
+                    </script>
+                    <script type="text/javascript">editor('custom')</script>
                 </td>
             </tr>
         </tbody>

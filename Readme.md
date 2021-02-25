@@ -12,7 +12,7 @@ Next, you can create a new component as follows.
 import { Components } from '@formio/core';
 Components.addComponent({
     type: 'h3',
-    template: `<h3>{{ component.header }}</h3>`
+    template: (ctx) => `<h3>${ctx.component.header}</h3>`
 });
 ```
 
@@ -25,3 +25,5 @@ const header = Components.createComponent({
 });
 console.log(header.render());  // Outputs <h3>This is a test</h3>
 ```
+
+See https://formio.github.io/core for more examples of how to use this library.
