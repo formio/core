@@ -26,4 +26,37 @@ const header = Components.createComponent({
 console.log(header.render());  // Outputs <h3>This is a test</h3>
 ```
 
+You can also use this library by including it in your webpage scripts by including the following.
+
+```
+<script src="https://cdn.jsdelivr.net/npm/@formio/core@latest/dist/formio.core.min.js"></script>
+```
+
+After you do this, you can then do the following to create a Data Table in your website.
+
+```js
+FormioCore.render(document.getElementById('data-table'), {
+    type: 'datatable',
+    key: 'customers',
+    components: [
+        {
+            type: 'datavalue',
+            key: 'firstName',
+            label: 'First Name'
+        },
+        {
+            type: 'datavalue',
+            key: 'lastName',
+            label: 'First Name'
+        }
+    ]
+}, {}, {
+    customers: [
+        {firstName: 'Joe', lastName: 'Smith'},
+        {firstName: 'Sally', lastName: 'Thompson'},
+        {firstName: 'Mary', lastName: 'Bono'}
+    ]
+});
+```
+
 See https://formio.github.io/core for more examples of how to use this library.
