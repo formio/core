@@ -4,8 +4,11 @@
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
   "scripts": {
-    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register '**/*.spec.ts'",
-    "build": "gulp templates && tsc && webpack && webpack --config webpack.prod.js",
+    "test": "mocha -r ts-node/register --r mock-local-storage '**/*.spec.ts'",
+    "docs": "./node_modules/typedoc/bin/typedoc  --plugin typedoc-plugin-markdown src/index.ts src/Formio.ts",
+    "build:core": "webpack --config config/webpack.core.js && webpack --config config/webpack.core.prod.js",
+    "build:formio": "webpack --config config/webpack.formio.js && webpack --config config/webpack.formio.prod.js",
+    "build": "gulp templates && tsc && npm run docs && npm run build:core && npm run build:formio",
     "prepublish": "npm run build && npm run test"
   },
   "repository": {
@@ -31,16 +34,30 @@
   "homepage": "https://github.com/formio/core#readme",
   "devDependencies": {
     "@types/chai": "^4.2.15",
+    "@types/chance": "^1.1.1",
     "@types/dompurify": "^2.2.1",
+    "@types/fetch-mock": "^7.3.3",
+    "@types/lodash": "^4.14.168",
     "@types/mocha": "^8.2.1",
+    "@types/power-assert": "^1.5.3",
+    "@types/sinon": "^9.0.10",
+    "@types/uuid": "^8.3.0",
     "chai": "^4.3.0",
+    "chance": "^1.1.7",
+    "fetch-mock": "^9.11.0",
     "gulp": "^4.0.2",
     "gulp-insert": "^0.5.0",
     "gulp-rename": "^2.0.0",
     "gulp-template": "^5.0.0",
+    "lodash": "^4.17.21",
     "mocha": "^8.3.0",
     "mocha-jsdom": "^2.0.0",
+    "mock-local-storage": "^1.1.17",
+    "power-assert": "^1.6.1",
+    "sinon": "^9.2.4",
     "ts-node": "^9.1.1",
+    "typedoc": "^0.20.28",
+    "typedoc-plugin-markdown": "^3.5.0",
     "typescript": "^4.2.2",
     "webpack": "^5.24.2",
     "webpack-cli": "^4.5.0"
@@ -48,6 +65,8 @@
   "dependencies": {
     "deepmerge": "^4.2.2",
     "dompurify": "^2.2.6",
-    "eventemitter3": "^4.0.7"
+    "eventemitter3": "^4.0.7",
+    "fetch-ponyfill": "^7.1.0",
+    "uuid": "^8.3.2"
   }
 }
