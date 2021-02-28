@@ -1,10 +1,8 @@
-import auth from './auth';
 import storage from './storage';
 import { merge } from '../util/util';
 
 export default class Providers {
   static providers: any = {
-    auth,
     storage,
   };
 

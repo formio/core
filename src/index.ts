@@ -1,4 +1,10 @@
 import { Components } from './core';
+import * as comps from './components';
+for (let i in comps) {
+    if (comps.hasOwnProperty(i)) {
+        Components.importComponent((comps as any)[i]);
+    }
+}
 export function render(
     element: HTMLElement,
     component: any,

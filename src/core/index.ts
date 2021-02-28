@@ -2,7 +2,14 @@ import { Component } from './component/Component';
 import { NestedComponent } from './nested/NestedComponent';
 import { DataComponent } from './data/DataComponent';
 import { ArrayComponent } from './array/ArrayComponent';
+
+/**
+ * Manages all of the components within the Form.io renderer.
+ */
 export class Components {
+    /**
+     * An array of Components available to be rendered.
+     */
     public static components: any = {
         component: Component,
         nested: NestedComponent,
@@ -10,6 +17,21 @@ export class Components {
         array: ArrayComponent
     };
 
+    /**
+     * Create a new component.
+     *
+     * ```ts
+     * const htmlComp = Components.createComponent({
+     *    type: 'html',
+     *    tag: 'p',
+     *    content: 'This is a test.'
+     * })
+     * ```
+     *
+     * @param comp The component JSON you wish to create.
+     * @param options The options to pass to this component.
+     * @param data The data you wish to provide to this component.
+     */
     public static createComponent(comp: any, options?: any, data?: any) {
         if (Components.components[comp.type]) {
             return new Components.components[comp.type](comp, options, data);
@@ -19,6 +41,12 @@ export class Components {
         }
     }
 
+    /**
+     * Adds a new component to the renderer. Can either be a component class or a component JSON
+     * to be imported.
+     *
+     * @param component
+     */
     public static addComponent(component: any) {
         if (!component) {
             return;
@@ -27,6 +55,29 @@ export class Components {
         Components.components[comp.schema.type] = comp;
     }
 
+    /**
+     * Takes a component JSON definition, and then converts it into a Component class that can
+     * be instantiated as well as created with ```createComponent```.
+     *
+     * For example, you can import an H3 component using the following code.
+     *
+     * ```ts
+     * Components.importComponent({
+     *    type: 'h3',
+     *    extends: 'html',
+     *    schema: {
+     *      tag: 'h3'
+     *    }
+     * });
+     * const h3 = Components.createComponent({
+     *    type: 'h3',
+     *    content: 'This is an H3 header!'
+     * });
+     * console.log(h3.render()); // Outputs "<h3>This is an H3 header!</h3>"
+     * ```
+     *
+     * @param definition
+     */
     public static importComponent(definition: any): any {
         const ext = definition.extends || 'component';
         const base = Components.components[ext];

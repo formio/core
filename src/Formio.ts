@@ -3,22 +3,47 @@ import { get, fastCloneDeep, defaults, isBoolean, isNil, isObject, intersection,
 import EventEmitter from 'eventemitter3';
 const { fetch, Headers } = fetchPonyfill();
 import Providers from './providers';
+import Plugins from './Plugins';
 declare const OktaAuth: any;
 
-function cloneResponse(response: any) {
-  const copy = fastCloneDeep(response);
-  if (Array.isArray(response)) {
-    copy.skip = (response as any).skip;
-    copy.limit = (response as any).limit;
-    copy.serverCount = (response as any).serverCount;
-  }
-  return copy;
+/**
+ * The Formio class options interface.
+ */
+export interface FormioOptions {
+  /**
+   * The base API url of the Form.io Platform. Example: https://api.form.io
+   */
+  base?: string;
+
+  /**
+   * The project API url of the Form.io Project. Example: https://examples.form.io
+   */
+  project?: string;
+}
+
+/**
+ * The different path types for a project.
+ */
+export enum FormioPathType {
+  Subdirectories = 'Subdirectories',
+  Subdomains = 'Subdomains'
 }
 
 /**
  * The Formio interface class. This is a minimalistic API library that allows you to work with the Form.io API's within JavaScript.
  *
- * For more information about uses for this class, see the {@tutorial api} documentation.
+ * ## Usage
+ * Creating an instance of Formio is simple, and takes only a path (URL String). The path can be different, depending on the desired output.
+ * The Formio instance can also access higher level operations, depending on how granular of a path you start with.
+ *
+ * ```ts
+ * var formio = new Formio(<endpoint>, [options]);
+ * ```
+ *
+ * Where **endpoint** is any valid API endpoint within Form.io. These URL's can provide a number of different methods depending on the granularity of the endpoint. This allows you to use the same interface but have access to different methods depending on how granular the endpoint url is.
+ * **options** is defined within the {link Formio.constructor} documentation.
+ *
+ * Here is an example of how this library can be used to load a form JSON from the Form.io API's
  *
  * ```ts
  * const formio = new Formio('https://examples.form.io/example');
@@ -28,59 +53,200 @@ function cloneResponse(response: any) {
  * ```
  */
 export class Formio {
+  /**
+   * The base API url of the Form.io Platform. Example: https://api.form.io
+   */
   public static baseUrl = 'https://api.form.io';
+
+  /**
+   * The project API url of the Form.io Project. Example: https://examples.form.io
+   */
   public static projectUrl = '';
+
+  /**
+   * The project url to use for Authentication.
+   */
   public static authUrl = '';
-  public static pathType = '';
+
+  /**
+   * The path type for the project.
+   */
+  public static pathType?: FormioPathType;
+
+  /**
+   * Set to true if the project url has been established with ```Formio.setProjectUrl()```
+   */
   public static projectUrlSet = false;
+
+  /**
+   * The Form.io API Cache. This ensures that requests to the same API endpoint are cached.
+   */
   public static cache: any = {};
+
+  /**
+   * The namespace used to save the Form.io Token's and variables within an application.
+   */
   public static namespace: string = '';
+
+  /**
+   * Handles events fired within this SDK library.
+   */
   public static events: EventEmitter = new EventEmitter();
+
+  /**
+   * Stores all of the libraries lazy loaded with ```Formio.requireLibrary``` method.
+   */
   public static libraries: any = {};
-  public static plugins: Array<any> = [];
+
+  /**
+   * A direct interface to the Form.io fetch polyfill.
+   */
   public static fetch: any = fetch;
+
+  /**
+   * A direct interface to the Form.io fetch Headers polyfill.
+   */
   public static Headers: any = Headers;
+
+  /**
+   * All of the auth tokens for this session.
+   */
   public static tokens: any = {};
+
+  /**
+   * The version of this library.
+   */
   public static version: string = '---VERSION---';
 
+  /**
+   * The base API url of the Form.io Platform. Example: https://api.form.io
+   */
   public base = '';
+
+  /**
+   * The Projects Endpoint derived from the provided source.
+   *
+   * @example https://api.form.io/project
+   */
   public projectsUrl = '';
+
+  /**
+   * A specific project endpoint derived from the provided source.
+   *
+   * @example https://examples.form.io
+   */
   public projectUrl = '';
+
+  /**
+   * The Project ID found within the provided source.
+   */
   public projectId = '';
+
+  /**
+   * A specific Role URL provided the source.
+   *
+   * @example https://examples.form.io/role/2342343234234234
+   */
   public roleUrl = '';
+
+  /**
+   * The roles endpoint derived from the provided source.
+   *
+   * @example https://examples.form.io/role
+   */
   public rolesUrl = '';
+
+  /**
+   * The roleID derieved from the provided source.
+   */
   public roleId = '';
+
+  /**
+   * A specific form url derived from the provided source.
+   *
+   * @example https://examples.form.io/example
+   */
   public formUrl = '';
+
+  /**
+   * The forms url derived from the provided source.
+   *
+   * @example https://example.form.io/form
+   */
   public formsUrl = '';
+
+  /**
+   * The Form ID derived from the provided source.
+   */
   public formId = '';
+
+  /**
+   * The submissions URL derived from the provided source.
+   *
+   * @example https://examples.form.io/example/submission
+   */
   public submissionsUrl = '';
+
+  /**
+   * A specific submissions URL derived from a provided source.
+   *
+   * @example https://examples.form.io/example/submission/223423423423
+   */
   public submissionUrl = '';
+
+  /**
+   * The submission ID provided a submission url.
+   */
   public submissionId = '';
+
+  /**
+   * The actions url provided a form url as the source.
+   *
+   * @example https://examples.form.io/example/action
+   */
   public actionsUrl = '';
+
+  /**
+   * The Action ID derived from a provided Action url.
+   */
   public actionId = '';
+
+  /**
+   * A specific action api endoint.
+   */
   public actionUrl = '';
   public vsUrl = '';
   public vId = '';
   public vUrl = '';
+
+  /**
+   * The query string derived from the provided src url.
+   */
   public query = '';
-  public pathType = '';
+
+  /**
+   * The project type.
+   */
+  public pathType?: FormioPathType;
+
+  /**
+   * If this is a non-project url, such is the case for Open Source API.
+   */
   public noProject = false;
 
   /* eslint-disable max-statements */
   /**
    * @constructor
    * @param {string} path - A project, form, and submission API Url.
-   * @param {object} options - Available options to configure the Javascript API.
-   * @param {string} options.base - The base API url of the Form.io Platform. Example: https://api.form.io
-   * @param {string} options.project - The project API url of the Form.io Project. Example: https://examples.form.io
+   * @param {FormioOptions} options - Available options to configure the Javascript API.
    */
-  constructor(public path?: string, public options: any = {}) {
+  constructor(public path?: string, public options: FormioOptions = {}) {
     // Ensure we have an instance of Formio.
     if (!(this instanceof Formio)) {
       return new Formio(path);
     }
 
-    if (options.hasOwnProperty('base')) {
+    if (options.hasOwnProperty('base') && options.base) {
       this.base = options.base;
     }
     else if (Formio.baseUrl) {
@@ -100,7 +266,7 @@ export class Formio {
       return;
     }
 
-    if (options.hasOwnProperty('project')) {
+    if (options.hasOwnProperty('project') && options.project) {
       this.projectUrl = options.project;
     }
 
@@ -220,7 +386,9 @@ export class Formio {
     else {
       const subRegEx = new RegExp('/(submission|action|v)($|/.*)');
       const subs = path.match(subRegEx);
-      this.pathType = (subs && (subs.length > 1)) ? subs[1] : '';
+      if ((subs && (subs.length > 1))) {
+        this.pathType = (subs[1] as FormioPathType);
+      }
       path = path.replace(subRegEx, '');
       path = path.replace(/\/$/, '');
       this.formsUrl = `${this.projectUrl}/form`;
@@ -1065,9 +1233,9 @@ export class Formio {
       dir: dir
     };
     fileKey = fileKey || 'file';
-    const request = Formio.pluginWait('preRequest', requestArgs)
+    const request = Plugins.pluginWait('preRequest', requestArgs)
       .then(() => {
-        return Formio.pluginGet('fileRequest', requestArgs)
+        return Plugins.pluginGet('fileRequest', requestArgs)
           .then((result: any) => {
             if (storage && isNil(result)) {
               const Provider = Providers.getProvider('storage', storage);
@@ -1086,7 +1254,7 @@ export class Formio {
           });
       });
 
-    return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
+    return Plugins.pluginAlter('wrapFileRequestPromise', request, requestArgs);
   }
 
   /**
@@ -1102,9 +1270,9 @@ export class Formio {
       file: file
     };
 
-    const request = Formio.pluginWait('preRequest', requestArgs)
+    const request = Plugins.pluginWait('preRequest', requestArgs)
       .then(() => {
-        return Formio.pluginGet('fileRequest', requestArgs)
+        return Plugins.pluginGet('fileRequest', requestArgs)
           .then((result: any) => {
             if (file.storage && isNil(result)) {
               const Provider = Providers.getProvider('storage', file.storage);
@@ -1120,7 +1288,7 @@ export class Formio {
           });
       });
 
-    return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
+    return Plugins.pluginAlter('wrapFileRequestPromise', request, requestArgs);
   }
 
   /**
@@ -1135,9 +1303,9 @@ export class Formio {
       file: file
     };
 
-    const request = Formio.pluginWait('preRequest', requestArgs)
+    const request = Plugins.pluginWait('preRequest', requestArgs)
       .then(() => {
-        return Formio.pluginGet('fileRequest', requestArgs)
+        return Plugins.pluginGet('fileRequest', requestArgs)
           .then((result: any) => {
             if (file.storage && isNil(result)) {
               const Provider = Providers.getProvider('storage', file.storage);
@@ -1153,7 +1321,7 @@ export class Formio {
           });
       });
 
-    return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
+    return Plugins.pluginAlter('wrapFileRequestPromise', request, requestArgs);
   }
 
   /**
@@ -1335,8 +1503,8 @@ export class Formio {
 
   static makeStaticRequest(url: string, method?: any, data?: any, opts?: any) {
     const requestArgs = Formio.getRequestArgs(null, '', url, method, data, opts);
-    const request = Formio.pluginWait('preRequest', requestArgs)
-      .then(() => Formio.pluginGet('staticRequest', requestArgs)
+    const request = Plugins.pluginWait('preRequest', requestArgs)
+      .then(() => Plugins.pluginGet('staticRequest', requestArgs)
         .then((result: any) => {
           if (isNil(result)) {
             return Formio.request(requestArgs.url, requestArgs.method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
@@ -1344,7 +1512,7 @@ export class Formio {
           return result;
         }));
 
-    return Formio.pluginAlter('wrapStaticRequestPromise', request, requestArgs);
+    return Plugins.pluginAlter('wrapStaticRequestPromise', request, requestArgs);
   }
 
   /**
@@ -1381,8 +1549,8 @@ export class Formio {
       'Accept': 'application/json',
       'Content-type': 'application/json'
     });
-    const request = Formio.pluginWait('preRequest', requestArgs)
-      .then(() => Formio.pluginGet('request', requestArgs)
+    const request = Plugins.pluginWait('preRequest', requestArgs)
+      .then(() => Plugins.pluginGet('request', requestArgs)
         .then((result: any) => {
           if (isNil(result)) {
             return Formio.request(requestArgs.url, requestArgs.method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
@@ -1390,7 +1558,7 @@ export class Formio {
           return result;
         }));
 
-    return Formio.pluginAlter('wrapRequestPromise', request, requestArgs);
+    return Plugins.pluginAlter('wrapRequestPromise', request, requestArgs);
   }
 
   /**
@@ -1434,7 +1602,7 @@ export class Formio {
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
-      return Promise.resolve(cloneResponse(Formio.cache[cacheKey]));
+      return Promise.resolve(Formio.cloneResponse(Formio.cache[cacheKey]));
     }
 
     // Set up and fetch request
@@ -1463,16 +1631,16 @@ export class Formio {
     }
 
     // Allow plugins to alter the options.
-    options = Formio.pluginAlter('requestOptions', options, url);
+    options = Plugins.pluginAlter('requestOptions', options, url);
     if (options.namespace || Formio.namespace) {
       opts.namespace = options.namespace ||  Formio.namespace;
     }
 
     const requestToken = options.headers['x-jwt-token'];
-    const result = Formio.pluginAlter('wrapFetchRequestPromise', Formio.fetch(url, options),
+    const result = Plugins.pluginAlter('wrapFetchRequestPromise', Formio.fetch(url, options),
       { url, method, data, opts }).then((response: any) => {
       // Allow plugins to respond.
-      response = Formio.pluginAlter('requestResponse', response, Formio, data);
+      response = Plugins.pluginAlter('requestResponse', response, Formio, data);
 
       if (!response.ok) {
         if (response.status === 440) {
@@ -1570,7 +1738,7 @@ export class Formio {
         Formio.cache[cacheKey] = result;
       }
 
-      return cloneResponse(result);
+      return Formio.cloneResponse(result);
     })
     .catch((err: any) => {
       if (err === 'Bad Token') {
@@ -1856,71 +2024,6 @@ export class Formio {
     Formio.cache = {};
   }
 
-  static noop() {}
-  static identity(value: string) {
-    return value;
-  }
-
-  static deregisterPlugin(plugin: any) {
-    const beforeLength = Formio.plugins.length;
-    Formio.plugins = Formio.plugins.filter((p) => {
-      if (p !== plugin && p.__name !== plugin) {
-        return true;
-      }
-
-      (p.deregister || Formio.noop).call(plugin, Formio);
-      return false;
-    });
-    return beforeLength !== Formio.plugins.length;
-  }
-
-  static registerPlugin(plugin: any, name: string) {
-    Formio.plugins.push(plugin);
-    Formio.plugins.sort((a, b) => (b.priority || 0) - (a.priority || 0));
-    plugin.__name = name;
-    (plugin.init || Formio.noop).call(plugin, Formio);
-  }
-
-  static getPlugin(name: string) {
-    for (const plugin of Formio.plugins) {
-      if (plugin.__name === name) {
-        return plugin;
-      }
-    }
-
-    return null;
-  }
-
-  static pluginWait(pluginFn: any, ...args: any[]) {
-    return Promise.all(Formio.plugins.map((plugin) =>
-      (plugin[pluginFn] || Formio.noop).call(plugin, ...args)));
-  }
-
-  static pluginGet(pluginFn: any, ...args: any[]) {
-    const callPlugin = (index: any): any => {
-      const plugin = Formio.plugins[index];
-
-      if (!plugin) {
-        return Promise.resolve(null);
-      }
-
-      return Promise.resolve((plugin[pluginFn] || Formio.noop).call(plugin, ...args))
-        .then((result) => {
-          if (!isNil(result)) {
-            return result;
-          }
-
-          return callPlugin(index + 1);
-        });
-    };
-    return callPlugin(0);
-  }
-
-  static pluginAlter(pluginFn: any, value: any, ...args: any[]) {
-    return Formio.plugins.reduce((value, plugin) =>
-      (plugin[pluginFn] || Formio.identity)(value, ...args), value);
-  }
-
   /**
    * Return the access information about a Project, such as the Role ID's for that project, and if the server is
    * configured to do so, the Form and Resource access configurations that the authenticated user has access to.
@@ -1963,7 +2066,7 @@ export class Formio {
     authUrl += '/current';
     const user = Formio.getUser(options);
     if (user) {
-      return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
+      return Plugins.pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
         url: authUrl,
         method: 'GET',
         options
@@ -1972,7 +2075,7 @@ export class Formio {
 
     const token = Formio.getToken(options);
     if ((!options || !options.external) && !token) {
-      return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
+      return Plugins.pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
         url: authUrl,
         method: 'GET',
         options
@@ -2229,11 +2332,13 @@ export class Formio {
    * by adding that library to the <scripts> section of the HTML webpage, and then provide a promise that will resolve
    * when the library becomes available for use.
    *
-   * @example <caption>Load Google Maps API.</caption>
+   * @example Load Google Maps API.
+   * ```ts
    * Formio.requireLibrary('googleMaps', 'google.maps.Map', 'https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap', true).then(() => {
    *   // Once the promise resolves, the following can now be used within your application.
    *   const map = new google.maps.Map(document.getElementById("map"), {...});
    * });
+   * ```
    *
    * @param {string} name - The internal name to give to the library you are loading. This is useful for caching the library for later use.
    * @param {string} property - The name of the global property that will be added to the global namespace once the library has been loaded. This is used to check to see if the property exists before resolving the promise that the library is ready for use.
@@ -2347,13 +2452,48 @@ export class Formio {
     return Promise.reject(`${name} library was not required.`);
   }
 
-  static setPathType(type: string) {
+  /**
+   * Clones the response from the API so that it cannot be mutated.
+   *
+   * @param response
+   */
+  static cloneResponse(response: any) {
+    const copy = fastCloneDeep(response);
+    if (Array.isArray(response)) {
+      copy.skip = (response as any).skip;
+      copy.limit = (response as any).limit;
+      copy.serverCount = (response as any).serverCount;
+    }
+    return copy;
+  }
+
+  /**
+   * Sets the project path type.
+   *
+   * @param type
+   */
+  static setPathType(type: FormioPathType) {
     if (typeof type === 'string') {
       Formio.pathType = type;
     }
   }
 
+  /**
+   * Gets the project path type.
+   */
   static getPathType() {
     return Formio.pathType;
   }
+
+  // Add Plugin methods.
+  public static plugins = Plugins.plugins;
+  public static deregisterPlugin = Plugins.deregisterPlugin;
+  public static registerPlugin = Plugins.registerPlugin;
+  public static getPlugin = Plugins.getPlugin;
+  public static pluginWait = Plugins.pluginWait;
+  public static pluginGet = Plugins.pluginGet;
+  public static pluginAlter = Plugins.pluginAlter
 }
+
+// Adds Formio to the Plugins Interface.
+Plugins.Formio = Formio;
