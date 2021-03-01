@@ -8,7 +8,7 @@ export default {
         className: ''
     },
     template: (ctx: any) => {
-        return `<${ctx.tag} ref="html"${ctx.attrs}>${ctx.t(ctx.content)}</${ctx.tag}>`;
+        return `<${ctx.tag} ref="${ctx.ref}"${ctx.attrs}>${ctx.t(ctx.content)}</${ctx.tag}>`;
     },
     methods: {
         getAttributes() {
@@ -35,6 +35,7 @@ export default {
         renderContext(_super: any): any {
             return _super({
                 tag: this.component.tag,
+                ref: this.component.type,
                 content: this.component.content ? this.interpolate(this.component.content, this.evalContext()) : '',
                 attrs: this.getAttributes(this)
             });

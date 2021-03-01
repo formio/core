@@ -1,10 +1,12 @@
 import { assert } from 'chai';
+import '../import';
 import { Components } from '../../core';
 const HTMLComponent = Components.components.html;
 
 describe('HTML Component', () => {
     it ('Should create an HTML Component', () => {
         const comp = new HTMLComponent({
+            type: 'html',
             tag: 'span',
             className: 'testing',
             content: 'Testing',
@@ -18,6 +20,7 @@ describe('HTML Component', () => {
 
     it ('Should also allow for key-value pair attributes', () => {
         const comp = new HTMLComponent({
+            type: 'html',
             tag: 'span',
             className: 'testing',
             content: 'Testing',

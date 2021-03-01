@@ -25,7 +25,7 @@ export function sanitize(string: string, options: any): (TrustedHTML | string) {
     }
     // Dompurify configuration
     const sanitizeOptions: any = {
-      ADD_ATTR: ['ref', 'target'],
+      ADD_ATTR: ['ref', 'target', 'within'],
       USE_PROFILES: { html: true }
     };
     // Add attrs

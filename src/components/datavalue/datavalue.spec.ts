@@ -1,4 +1,5 @@
 import { assert } from 'chai';
+import '../import';
 import { Components } from '../../core';
 const DataValueComponent = Components.components.datavalue;
 

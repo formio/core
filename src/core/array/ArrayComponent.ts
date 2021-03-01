@@ -1,5 +1,6 @@
 import { Component } from '../component/Component';
 import { DataComponent } from '../data/DataComponent';
+import * as _ from '../../util/util';
 const compDataValue: any = Object.getOwnPropertyDescriptor(Component.prototype, 'dataValue');
 
 /**
@@ -88,6 +89,24 @@ export class ArrayComponent extends DataComponent {
     }
 
     /**
+     * Determines if the data within a row has changed.
+     *
+     * @param rowData
+     * @param index
+     */
+    rowChanged(rowData: any, index: number): boolean {
+        let changed = false;
+        this.row(index).forEach((comp: Component) => {
+            const hasChanged: boolean = comp.hasChanged(_.get(rowData, comp.component.key));
+            changed = hasChanged || changed;
+            if (hasChanged) {
+                comp.bubble('change', comp);
+            }
+        });
+        return changed;
+    }
+
+    /**
      * Creates a new row of components.
      *
      * @param data The data context to pass along to this row of components.
@@ -142,5 +161,37 @@ export class ArrayComponent extends DataComponent {
             // Set the new data value.
             value.forEach((rowData: any, index: number) => this.setRowData(rowData, index));
         }
+    }
+
+    /**
+     * Determine if this array component has changed.
+     *
+     * @param value
+     */
+    public hasChanged(value: any): boolean {
+        const dataValue = this.dataValue;
+        // If the length changes, then this compnent has changed.
+        if (value.length !== dataValue.length) {
+            this.emit('changed', this);
+            return true;
+        }
+        let changed = false;
+        value.forEach((rowData: any, index: number) => {
+            changed = this.rowChanged(rowData, index) || changed;
+        });
+        return changed;
+    }
+
+    /**
+     * Sets the value of an array component.
+     *
+     * @param value
+     */
+    public setValue(value: any): boolean {
+        var changed = false;
+        this.eachComponentValue(value, (comp: any, val: any) => {
+            changed = comp.setValue(val) || changed;
+        });
+        return changed;
     }
 }

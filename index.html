@@ -3,7 +3,8 @@
 <head>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://pagecdn.io/lib/ace/1.4.12/ace.js"></script>
-  <script src="dist/formio.core.min.js"></script>
+  <script src="dist/formio.min.js"></script>
+  <script src="dist/formio.core.js"></script>
   <style>
       .editor {height: 150px;}
   </style>
@@ -152,6 +153,84 @@ formio.loadForm().then(function(form) {
     });
     </script>
                         <script type="text/javascript">editor('data-table')</script>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Input Component</h4>
+                        <p>Provides an easy way to add input components.</p>
+                        <div id="input-edit" class='editor'></div>
+                    </td>
+                    <td>
+                        <div id="input"></div>
+                        <script type="text/javascript" id="input-script">
+    FormioCore.render(document.getElementById('input'), {
+        type: 'input',
+        key: 'firstName',
+        attrs: {
+            class: 'form-control',
+            placeholder: 'Enter your first name'
+        }
+    });
+                        </script>
+                        <script type="text/javascript">editor('input')</script>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Input with Label</h4>
+                        <p>You can create an input with label by providing an htmlcontainer + html + input component.</p>
+                        <div id="inputlabel-edit" class='editor'></div>
+                    </td>
+                    <td>
+                        <div id="inputlabel"></div>
+                        <script type="text/javascript" id="inputlabel-script">
+    FormioCore.render(document.getElementById('inputlabel'), {
+        type: 'htmlcontainer',
+        components: [
+            {
+                type: 'html',
+                tag: 'label',
+                content: 'First Name',
+                attrs: {
+                    class: 'form-label',
+                    for: 'input-firstname'
+                }
+            },
+            {
+                type: 'input',
+                key: 'firstName',
+                attrs: {
+                    class: 'form-control',
+                    placeholder: 'Enter your first name'
+                }
+            },
+            {
+                type: 'html',
+                tag: 'label',
+                content: 'Last Name',
+                attrs: {
+                    class: 'form-label',
+                    for: 'input-firstname'
+                }
+            },
+            {
+                type: 'input',
+                key: 'lastName',
+                attrs: {
+                    class: 'form-control',
+                    placeholder: 'Enter your last name'
+                }
+            }
+        ]
+    }).then(function(comp) {
+        comp.setValue({
+            firstName: 'Joe',
+            lastName: 'Smith'
+        });
+    });
+                        </script>
+                        <script type="text/javascript">editor('inputlabel')</script>
                     </td>
                 </tr>
                 <tr>

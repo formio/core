@@ -1,4 +1,5 @@
 export default {
+    type: 'htmlcontainer',
     tag: 'div',
     className: 'testing',
     attrs: [

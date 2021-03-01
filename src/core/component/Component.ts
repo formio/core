@@ -21,7 +21,8 @@ export interface ComponentOptions {
     namespace?: string,
     hooks?: any,
     template?: string,
-    tpl?: Template
+    tpl?: Template,
+    noInit?: boolean
 }
 
 /**
@@ -35,9 +36,11 @@ export class Component extends EventEmitter {
     static schema(extend: any = {}): any {
         return util.merge({
             type: 'component',
-            key: 'component'
+            key: ''
         }, extend);
     }
+
+    public id: string;
 
     /**
      * The DOM Element associated with this component.
@@ -52,7 +55,7 @@ export class Component extends EventEmitter {
     /**
      * The DOM element references used for component logic.
      */
-    public refs?: any;
+    public refs: any = {};
 
     /**
      * The parent component.
@@ -67,7 +70,7 @@ export class Component extends EventEmitter {
     /**
      * The template to render for this component.
      */
-    public template: string = 'component';
+    public template: any = (ctx: any) => `<span>${ctx.t('Unknown Component')}</span>`;
 
     /**
      * @constructor
@@ -81,12 +84,15 @@ export class Component extends EventEmitter {
         public data: any = {}
     ) {
         super();
+        this.id = `e${Math.random().toString(36).substring(7)}`;
         this.component = util.merge(this.defaultSchema, this.component) as any;
         this.options = Object.assign({
             language: 'en',
             namespace: 'formio'
         }, this.options);
-        this.init();
+        if (!this.options.noInit) {
+            this.init();
+        }
     }
 
     /**
@@ -137,16 +143,23 @@ export class Component extends EventEmitter {
     /**
      * Renders this component as an HTML string.
      */
-    public render(): string {
-        return this.renderTemplate((this.template || this.component.type), this.renderContext());
+    public render(context: any = {}): string {
+        return this.renderTemplate((this.template || this.component.type), this.renderContext(context));
+    }
+
+    /**
+     * Returns the template references.
+     */
+    public getRefs() {
+        return {};
     }
 
     /**
      * Loads the elemement references.
      * @param element
-     * @param refs
      */
-    loadRefs(element: HTMLElement, refs: any) {
+    loadRefs(element: HTMLElement) {
+        const refs: any = this.getRefs();
         for (const ref in refs) {
             if (refs[ref] === 'single') {
                 this.refs[ref] = element.querySelector(`[ref="${ref}"]`);
@@ -162,16 +175,17 @@ export class Component extends EventEmitter {
      * @param element
      */
     public async attach(element: HTMLElement) {
-        this.element = element;
         if (element) {
             const parent = element.parentNode;
             if (parent) {
                 const index = Array.prototype.indexOf.call(parent.children, element);
                 element.outerHTML = String(this.sanitize(this.render()));
                 element = parent.children[index] as HTMLElement;
+                this.loadRefs(element);
                 this.attached = true;
             }
         }
+        this.element = element;
         return this;
     }
 
@@ -272,7 +286,54 @@ export class Component extends EventEmitter {
      * Sets the datavalue for this component.
      */
     public set dataValue(value: any) {
-        util.set(this.data, this.component.key, value);
+        if (this.component.key) {
+            util.set(this.data, this.component.key, value);
+        }
+    }
+
+    /**
+     * Bubbles an event to the top.
+     * @param event
+     * @param args
+     */
+    public bubble(event: string, ...args: any[]) {
+        if (this.parent) {
+            this.parent.bubble(event, ...args);
+        }
+        else {
+            this.emit(event, ...args);
+        }
+    }
+
+    /**
+     * Determine if this component has changed values.
+     *
+     * @param value - The value to compare against the current value.
+     */
+    public hasChanged(value: any) {
+        return String(value) !== String(this.dataValue);
+    }
+
+    /**
+     * Updates the data model value without setting the view.
+     * @param value The value to update within this component.
+     * @return boolean true if the value has changed.
+     */
+    public updateValue(value: any): boolean {
+        const changed = this.hasChanged(value);
+        this.dataValue = value;
+        if (changed) {
+            this.bubble('change', this);
+        }
+        return changed;
+    }
+
+    /**
+     * Sets the data value and updates the view representation.
+     * @param value
+     */
+    public setValue(value: any): boolean {
+        return this.updateValue(value);
     }
 
     /**
@@ -320,5 +381,43 @@ export class Component extends EventEmitter {
      */
     removeChild(element: (HTMLElement | undefined)) {
         dom.removeChildFrom(element, this.element);
+    }
+
+    /**
+     * Wrapper method to add an event listener to an HTML element.
+     *
+     * @param obj
+     *   The DOM element to add the event to.
+     * @param type
+     *   The event name to add.
+     * @param func
+     *   The callback function to be executed when the listener is triggered.
+     * @param persistent
+     *   If this listener should persist beyond "destroy" commands.
+     */
+    addEventListener(obj: any, type: string, func: any) {
+        if (!obj) {
+            return;
+        }
+        if ('addEventListener' in obj) {
+            obj.addEventListener(type, func, false);
+        }
+        else if ('attachEvent' in obj) {
+            obj.attachEvent(`on${type}`, func);
+        }
+        return this;
+    }
+
+    /**
+     * Remove an event listener from the object.
+     *
+     * @param obj
+     * @param type
+     */
+    removeEventListener(obj: any, type: string, func: any) {
+        if (obj) {
+            obj.removeEventListener(type, func);
+        }
+        return this;
     }
 }

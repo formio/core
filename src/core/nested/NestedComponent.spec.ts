@@ -6,9 +6,10 @@ import { comp1, comp2 } from './fixtures';
 describe('Nested', () => {
     it('Should render a nested component', () => {
         const nested = new NestedComponent(comp1);
-        const renderedComp1 = (new Components.components.html(comp1.components[0])).render();
-        const renderedComp2 = (new Components.components.html(comp1.components[1])).render();
-        assert.equal(nested.render(), `<div>${renderedComp1}${renderedComp2}</div>`);
+        assert.equal(nested.render(), `<div ref="nested">` +
+            `<strong ref="html" data-within="${nested.id}">Hello</strong>` +
+            `<h2 ref="html" data-within="${nested.id}">There</h2>` +
+        `</div>`);
     });
 
     it ('Should not set or get data', () => {

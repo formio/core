@@ -1,5 +1,6 @@
 var jsdom = require('mocha-jsdom');
 import { assert } from 'chai';
+import '../import';
 import { Components } from '../../core';
 import { comp1, comp2 } from './fixtures';
 const HTMLContainerComponent = Components.components.htmlcontainer;
@@ -10,17 +11,17 @@ describe('HTMLContainerComponent', () => {
     });
     it ('Should create an HTMLContainerComponent', () => {
         const comp = new HTMLContainerComponent(comp1);
-        assert.equal(comp.render(), '<div ref="html" one="two" three="four" class="testing">' +
-            '<span ref="html">Testing</span>' +
-        '</div>')
+        assert.equal(comp.render(), '<div ref="htmlcontainer" one="two" three="four" class="testing">' +
+            `<span ref="html" data-within="${comp.id}">Testing</span>` +
+        '</div>');
     });
 
     it ('Should create nested HTML hiararchies', () => {
         const comp = new HTMLContainerComponent(comp2);
-        assert.equal(comp.render(), '<div ref="html" one="two" three="four" class="testing">' +
-            '<span ref="html">Testing</span>' +
-            '<div ref="html">' +
-                '<h3 ref="html"><script>alert("No XSS allowed!!!!");</script>This is a title</h3>' +
+        assert.equal(comp.render(), '<div ref="htmlcontainer" one="two" three="four" class="testing">' +
+            `<span ref="html" data-within="${comp.id}">Testing</span>` +
+            `<div ref="htmlcontainer" data-within="${comp.id}">` +
+                `<h3 ref="html" data-within="${comp.components[1].id}"><script>alert("No XSS allowed!!!!");</script>This is a title</h3>` +
             '</div>' +
         '</div>');
     });
@@ -31,10 +32,10 @@ describe('HTMLContainerComponent', () => {
         const element = document.createElement('div');
         parentElement.appendChild(element);
         comp.attach(element);
-        assert.equal(parentElement.innerHTML, '<div class="testing" ref="html">' +
-            '<span ref="html">Testing</span>' +
-            '<div ref="html">' +
-                '<h3 ref="html">This is a title</h3>' +
+        assert.equal(parentElement.innerHTML, '<div class="testing" ref="htmlcontainer">' +
+            `<span data-within="${comp.id}" ref="html">Testing</span>` +
+            `<div data-within="${comp.id}" ref="htmlcontainer">` +
+                `<h3 data-within="${comp.components[1].id}" ref="html">This is a title</h3>` +
             '</div>' +
         '</div>');
     });

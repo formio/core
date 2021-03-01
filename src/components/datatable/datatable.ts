@@ -7,6 +7,7 @@ export default {
         hover: true,
         condensed: true
     },
+    template: 'datatable',
     methods: {
         renderClasses() {
             let classes = '';

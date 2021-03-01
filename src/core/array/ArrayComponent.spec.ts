@@ -246,5 +246,11 @@ describe('ArrayComponent', () => {
         assert.equal((arrComp.components[7] as any).components[3].dataValue, employees[1].children[1].dob);
         assert.equal((arrComp.components[7] as any).components[4].dataValue, employees[1].children[2].firstName);
         assert.equal((arrComp.components[7] as any).components[5].dataValue, employees[1].children[2].dob);
+
+        // Ensure parent and root elements are all set correctly.
+        assert.strictEqual((arrComp.components[7] as any).components[0].parent, (arrComp.components[7] as any));
+        assert.strictEqual((arrComp.components[7] as any).components[1].parent, (arrComp.components[7] as any));
+        assert.strictEqual((arrComp.components[7] as any).components[0].root, arrComp);
+        assert.strictEqual((arrComp.components[7] as any).parent, arrComp);
     });
 });

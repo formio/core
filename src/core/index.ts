@@ -85,12 +85,15 @@ export class Components {
         // Define the class, and extend the base.
         const newClass = function(component: any, options: any = {}, data: any = {}) {
             base.call(this, component, options, data);
-            this.template = definition.template;
+            if (definition.template) {
+                this.template = definition.template;
+            }
         };
         newClass.prototype = Object.create(base.prototype);
         newClass.prototype.constructor = newClass;
         newClass.schema = function(extend: any = {}) {
-            return base.schema ? base.schema(definition.schema) : Object.assign({}, definition.schema, extend);
+            const schema = Object.assign({}, definition.schema, extend);
+            return base.schema ? base.schema(schema) : schema;
         };
 
         // Add the class methods to the prototype.
