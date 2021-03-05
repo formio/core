@@ -1,4 +1,4 @@
-import * as _ from './util';
+import * as _ from './lodash';
 import { assert } from 'chai';
 
 describe('Utilities', () => {

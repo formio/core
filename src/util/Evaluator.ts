@@ -1,4 +1,4 @@
-import * as _ from './util';
+import * as _ from './lodash';
 export class Evaluator {
     public static noeval: boolean = false;
     public static evaluator(func: any, ...params: any) {

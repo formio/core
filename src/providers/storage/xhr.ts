@@ -1,4 +1,4 @@
-import { trim } from '../../util/util';
+import { trim } from '../../util/lodash';
 export const setXhrHeaders = (formio: any, xhr: any) => {
   const { headers } = formio.options;
   if (headers) {

@@ -1,6 +1,6 @@
 import { Component } from '../component/Component';
 import { NestedComponent } from '../nested/NestedComponent';
-import * as _ from '../../util/util';
+import * as _ from '../../util/lodash';
 const compDataValue: any = Object.getOwnPropertyDescriptor(Component.prototype, 'dataValue');
 const nestedDataValue: any = Object.getOwnPropertyDescriptor(NestedComponent.prototype, 'dataValue');
 

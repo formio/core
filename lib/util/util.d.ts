@@ -119,4 +119,3 @@ export declare function trim(str: string, c?: string): string;
  * @param arr
  */
 export declare function last(arr: Array<any>): any;
-export * from './formUtil';

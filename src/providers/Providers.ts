@@ -1,5 +1,5 @@
 import storage from './storage';
-import { merge } from '../util/util';
+import { merge } from '../util/lodash';
 
 export default class Providers {
   static providers: any = {

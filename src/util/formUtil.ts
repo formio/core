@@ -1,5 +1,5 @@
 import { Evaluator } from './Evaluator';
-import { last } from '../util/util';
+import { last } from './lodash';
 
 /**
  * Iterate through each component within a form.

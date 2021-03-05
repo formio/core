@@ -1,6 +1,6 @@
 import { Template } from '../../templates/Template';
 import templates from '../../templates';
-import { Evaluator, sanitize, dom, util } from '../../util';
+import { Evaluator, sanitize, dom, lodash } from '../../util';
 import EventEmitter from 'eventemitter3';
 
 /**
@@ -34,7 +34,7 @@ export class Component extends EventEmitter {
      * @param extend
      */
     static schema(extend: any = {}): any {
-        return util.merge({
+        return lodash.merge({
             type: 'component',
             key: ''
         }, extend);
@@ -85,7 +85,7 @@ export class Component extends EventEmitter {
     ) {
         super();
         this.id = `e${Math.random().toString(36).substring(7)}`;
-        this.component = util.merge(this.defaultSchema, this.component) as any;
+        this.component = lodash.merge(this.defaultSchema, this.component) as any;
         this.options = Object.assign({
             language: 'en',
             namespace: 'formio'
@@ -279,7 +279,7 @@ export class Component extends EventEmitter {
      * Returns the data value for this component.
      */
     public get dataValue(): any {
-        return util.get(this.data, this.component.key);
+        return lodash.get(this.data, this.component.key);
     }
 
     /**
@@ -287,7 +287,7 @@ export class Component extends EventEmitter {
      */
     public set dataValue(value: any) {
         if (this.component.key) {
-            util.set(this.data, this.component.key, value);
+            lodash.set(this.data, this.component.key, value);
         }
     }
 

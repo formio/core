@@ -1,6 +1,6 @@
 import { Component } from '../component/Component';
 import { DataComponent } from '../data/DataComponent';
-import * as _ from '../../util/util';
+import { lodash as _ } from '../../util';
 const compDataValue: any = Object.getOwnPropertyDescriptor(Component.prototype, 'dataValue');
 
 /**

@@ -1,6 +1,6 @@
 import { Component, ComponentSchema, ComponentOptions } from '../component/Component';
 import { Components } from '..';
-import * as _ from '../../util/util';
+import * as _ from '../../util/lodash';
 
 export interface NestedComponentSchema extends ComponentSchema {
     components: Array<ComponentSchema | any>;

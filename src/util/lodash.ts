@@ -288,5 +288,3 @@ export function trim(str: string, c: string = '\\s') {
 export function last(arr: Array<any>) {
     return arr[arr.length - 1];
 }
-
-export * from './formUtil';

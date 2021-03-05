@@ -1,4 +1,4 @@
-import { fastCloneDeep, get, set, has, each, find, filter } from './util';
+import { fastCloneDeep, get, set, has, each, find, filter } from './lodash';
 import { eachComponent } from './formUtil';
 export function mergeObject(src: any, dst: any) {
     each(src, function (value: any, key: any) {

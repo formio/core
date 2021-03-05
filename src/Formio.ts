@@ -1,5 +1,6 @@
 import fetchPonyfill from 'fetch-ponyfill';
-import { get, fastCloneDeep, defaults, isBoolean, isNil, isObject, intersection, eachComponent } from './util/util';
+import { get, fastCloneDeep, defaults, isBoolean, isNil, isObject, intersection } from './util/lodash';
+import { eachComponent } from './util/formUtil';
 import EventEmitter from 'eventemitter3';
 const { fetch, Headers } = fetchPonyfill();
 import Providers from './providers';
