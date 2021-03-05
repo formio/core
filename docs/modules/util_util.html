@@ -76,16 +76,23 @@
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#each" class="tsd-kind-icon">each</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#eachcomponent" class="tsd-kind-icon">each<wbr>Component</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#fastclonedeep" class="tsd-kind-icon">fast<wbr>Clone<wbr>Deep</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#filter" class="tsd-kind-icon">filter</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#find" class="tsd-kind-icon">find</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#findeach" class="tsd-kind-icon">find<wbr>Each</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#get" class="tsd-kind-icon">get</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#guid" class="tsd-kind-icon">guid</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#has" class="tsd-kind-icon">has</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#intersection" class="tsd-kind-icon">intersection</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#isboolean" class="tsd-kind-icon">is<wbr>Boolean</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#isequal" class="tsd-kind-icon">is<wbr>Equal</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#isnil" class="tsd-kind-icon">is<wbr>Nil</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#isobject" class="tsd-kind-icon">is<wbr>Object</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#keys" class="tsd-kind-icon">keys</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#last" class="tsd-kind-icon">last</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#merge" class="tsd-kind-icon">merge</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#noop" class="tsd-kind-icon">noop</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#pathparts" class="tsd-kind-icon">path<wbr>Parts</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#pick" class="tsd-kind-icon">pick</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#set" class="tsd-kind-icon">set</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#trim" class="tsd-kind-icon">trim</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="util_util.html#uniquename" class="tsd-kind-icon">unique<wbr>Name</a></li>
@@ -106,9 +113,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/util.ts#L64">src/util/util.ts:64</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L134">src/util/util.ts:134</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the defaults of an object.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -116,6 +128,8 @@
 								</li>
 								<li>
 									<h5>defs: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -132,9 +146,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/util.ts#L10">src/util/util.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L23">src/util/util.ts:23</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Iterate through a collection or array.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -142,6 +161,8 @@
 								</li>
 								<li>
 									<h5>_each: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -158,7 +179,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/formUtil.ts#L18">src/util/formUtil.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/formUtil.ts#L18">src/util/formUtil.ts:18</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -213,16 +234,125 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/util.ts#L54">src/util/util.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L118">src/util/util.ts:118</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Performs a fast clone deep operation.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>obj: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="filter" class="tsd-anchor"></a>
+					<h3>filter</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">filter<span class="tsd-signature-symbol">(</span>arr<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, fn<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L188">src/util/util.ts:188</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Perform a filter operation.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>arr: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> fn: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="find" class="tsd-anchor"></a>
+					<h3>find</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">find<span class="tsd-signature-symbol">(</span>arr<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, query<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L216">src/util/util.ts:216</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Perform a find operation.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>arr: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> query: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="findeach" class="tsd-anchor"></a>
+					<h3>find<wbr>Each</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">find<wbr>Each<span class="tsd-signature-symbol">(</span>arr<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, query<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L173">src/util/util.ts:173</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Perform a find operation on each item in an array.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>arr: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>query: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>fn: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -236,9 +366,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/util.ts#L21">src/util/util.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L58">src/util/util.ts:58</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the value from an object or an array provided a path.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -249,6 +384,8 @@
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> def: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -265,10 +402,43 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/formUtil.ts#L90">src/util/formUtil.ts:90</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/formUtil.ts#L90">src/util/formUtil.ts:90</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="has" class="tsd-anchor"></a>
+					<h3>has</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">has<span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L72">src/util/util.ts:72</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Determine if a value is set.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>obj: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>path: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -282,9 +452,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/util.ts#L85">src/util/util.ts:85</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L275">src/util/util.ts:275</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the intersection of two objects.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -292,6 +467,8 @@
 								</li>
 								<li>
 									<h5>b: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -308,13 +485,53 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/util.ts#L73">src/util/util.ts:73</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L147">src/util/util.ts:147</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Checks if a value is a boolean.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>value: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="isequal" class="tsd-anchor"></a>
+					<h3>is<wbr>Equal</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Equal<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, b<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L236">src/util/util.ts:236</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Determines equality of a value or complex object.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>a: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>b: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -331,13 +548,20 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/util.ts#L77">src/util/util.ts:77</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L155">src/util/util.ts:155</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Checks if a value is Nil.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>value: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -354,13 +578,20 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/util.ts#L81">src/util/util.ts:81</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L163">src/util/util.ts:163</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Checks if an property is an object.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>value: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -377,13 +608,20 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/util.ts#L2">src/util/util.ts:2</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L7">src/util/util.ts:7</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the keys of an Object.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>obj: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -400,13 +638,20 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/util.ts#L94">src/util/util.ts:94</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L288">src/util/util.ts:288</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the last item in an array.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>arr: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -423,9 +668,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/util.ts#L50">src/util/util.ts:50</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L109">src/util/util.ts:109</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Merges a complex data object.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -436,6 +686,8 @@
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">unknown</span></h4>
@@ -452,10 +704,78 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/util.ts#L6">src/util/util.ts:6</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L14">src/util/util.ts:14</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>A no-operation function.</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="pathparts" class="tsd-anchor"></a>
+					<h3>path<wbr>Parts</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">path<wbr>Parts<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L38">src/util/util.ts:38</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Retrieve the path parts provided a path string.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>path: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="pick" class="tsd-anchor"></a>
+					<h3>pick</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">pick<span class="tsd-signature-symbol">(</span>object<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, keys<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L261">src/util/util.ts:261</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Pick an item in an object.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>object: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> keys: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -469,9 +789,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/util.ts#L33">src/util/util.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L82">src/util/util.ts:82</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the value of an item within an array or object.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -482,6 +807,8 @@
 								</li>
 								<li>
 									<h5>value: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -498,7 +825,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/util.ts#L90">src/util/util.ts:90</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/util.ts#L280">src/util/util.ts:280</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -524,7 +851,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/0fd2658/src/util/formUtil.ts#L107">src/util/formUtil.ts:107</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/6aff6bd/src/util/formUtil.ts#L107">src/util/formUtil.ts:107</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -576,16 +903,31 @@
 						<a href="util_util.html#fastclonedeep" class="tsd-kind-icon">fast<wbr>Clone<wbr>Deep</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="util_util.html#filter" class="tsd-kind-icon">filter</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="util_util.html#find" class="tsd-kind-icon">find</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="util_util.html#findeach" class="tsd-kind-icon">find<wbr>Each</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="util_util.html#get" class="tsd-kind-icon">get</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="util_util.html#guid" class="tsd-kind-icon">guid</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="util_util.html#has" class="tsd-kind-icon">has</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="util_util.html#intersection" class="tsd-kind-icon">intersection</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="util_util.html#isboolean" class="tsd-kind-icon">is<wbr>Boolean</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="util_util.html#isequal" class="tsd-kind-icon">is<wbr>Equal</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="util_util.html#isnil" class="tsd-kind-icon">is<wbr>Nil</a>
@@ -604,6 +946,12 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="util_util.html#noop" class="tsd-kind-icon">noop</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="util_util.html#pathparts" class="tsd-kind-icon">path<wbr>Parts</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="util_util.html#pick" class="tsd-kind-icon">pick</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="util_util.html#set" class="tsd-kind-icon">set</a>

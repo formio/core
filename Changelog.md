@@ -1,3 +1,6 @@
+## 0.0.4
+### Chaanged
+ - Added unwind functionality and more functions to the utils.
 
 ## 0.0.3
 ### Changed
