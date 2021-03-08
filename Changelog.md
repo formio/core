@@ -1,3 +1,7 @@
+## 0.0.6
+### Changed
+ - Added a Components.render method.
+
 ## 0.0.5
 ### Changed
  - How certain packages are imported.

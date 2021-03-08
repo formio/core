@@ -53,5 +53,14 @@ export declare class Components {
      * @param definition
      */
     static importComponent(definition: any): any;
+    /**
+     * Render a component attached to an html component.
+     *
+     * @param element
+     * @param component
+     * @param options
+     * @param data
+     */
+    static render(element: HTMLElement, component: any, options?: any, data?: any): any;
 }
 import '../components';

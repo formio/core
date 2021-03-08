@@ -1,6 +1,6 @@
 import { Components } from './core';
 import './components/import';
-export declare function render(element: HTMLElement, component: any, options?: any, data?: any): any;
+export declare const render: typeof Components.render;
 export { Components };
 export * as Util from './util';
 export * as Templates from './templates';

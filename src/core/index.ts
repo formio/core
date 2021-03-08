@@ -119,6 +119,23 @@ export class Components {
         Components.components[definition.type] = newClass;
         return newClass;
     }
+
+    /**
+     * Render a component attached to an html component.
+     *
+     * @param element
+     * @param component
+     * @param options
+     * @param data
+     */
+    public static render(
+        element: HTMLElement,
+        component: any,
+        options: any = {},
+        data: any = {}
+    ) {
+        return Components.createComponent(component, options, data).attach(element);
+    }
 }
 
 import '../components';
