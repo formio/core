@@ -11,7 +11,7 @@ export interface NestedComponentSchema extends ComponentSchema {
  */
 export class NestedComponent extends Component {
     public components: Array<Component>;
-    public template: any = (ctx: any) => `<div ref="nested">${ctx.content}</div>`;
+    public template: any = (ctx: any) => `<div ref="nested">${ctx.instance.renderComponents()}</div>`;
     /**
      * The JSON schema for a base component.
      * @param extend
@@ -24,7 +24,7 @@ export class NestedComponent extends Component {
     }
 
     constructor(
-        component: (NestedComponentSchema | any),
+        component: (NestedComponentSchema | any) = {},
         options: ComponentOptions = {},
         data: any = {}
     ) {
@@ -69,7 +69,7 @@ export class NestedComponent extends Component {
 
     /**
      * Attach a html element to this nestd component.
-     * @param element 
+     * @param element
      */
     public async attach(element: HTMLElement) {
         await super.attach(element);
@@ -106,7 +106,7 @@ export class NestedComponent extends Component {
     }
 
     createComponent(component: ComponentSchema, data: any): Component {
-        const comp = Components.createComponent(component, {
+        const comp = Components.create(component, {
             noInit: true,
             ...this.options
         }, data);
@@ -130,11 +130,10 @@ export class NestedComponent extends Component {
         this.createComponents(this.componentData());
     }
 
-    renderContext(context: any = {}) {
-        context.content = this.components?.reduce((tpl: string, comp: Component) => {
+    renderComponents() {
+        return this.components?.reduce((tpl: string, comp: Component) => {
             return tpl + comp.render().replace(/(<[^\>]+)/, `$1 data-within="${this.id}"`);
         }, '');
-        return super.renderContext(context);
     }
 
     /**
@@ -146,7 +145,7 @@ export class NestedComponent extends Component {
 
     /**
      * Iterate through each component value.
-     * 
+     *
      * @param value The context data value.
      * @param fn Callback to be called with the component and the value for that component.
      */
@@ -169,8 +168,8 @@ export class NestedComponent extends Component {
 
     /**
      * Sets the value for a data component.
-     * 
-     * @param value 
+     *
+     * @param value
      */
     public setValue(value: any): boolean {
         var changed = false;

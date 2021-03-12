@@ -21,7 +21,7 @@ export declare class Components {
      * @param options The options to pass to this component.
      * @param data The data you wish to provide to this component.
      */
-    static createComponent(comp: any, options?: any, data?: any): any;
+    static create(comp: any, options?: any, data?: any): any;
     /**
      * Adds a new component to the renderer. Can either be a component class or a component JSON
      * to be imported.

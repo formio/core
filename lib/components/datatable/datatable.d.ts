@@ -10,7 +10,7 @@ declare const _default: {
     template: string;
     methods: {
         renderClasses(): string;
-        renderContext(_super: any): any;
+        renderContext(_super: any, extend?: any): any;
     };
 };
 export default _default;

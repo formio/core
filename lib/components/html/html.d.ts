@@ -10,7 +10,7 @@ declare const _default: {
     template: (ctx: any) => string;
     methods: {
         getAttributes(): string;
-        renderContext(_super: any): any;
+        renderContext(_super: any, extend?: any): any;
     };
 };
 export default _default;

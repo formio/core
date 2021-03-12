@@ -47,7 +47,7 @@ export declare function set(obj: any, path: string, value: any): any;
  * @param b
  * @param options
  */
-export declare function merge(a: any, b: any, options?: any): unknown;
+export declare function merge(...args: any): object;
 /**
  * Performs a fast clone deep operation.
  *
@@ -119,3 +119,11 @@ export declare function trim(str: string, c?: string): string;
  * @param arr
  */
 export declare function last(arr: Array<any>): any;
+/**
+ * Debounc the call of a function for a given amount of time.
+ *
+ * @param func
+ * @param wait
+ * @returns
+ */
+export declare function debounce(func: any, wait?: number): (...args: any) => void;

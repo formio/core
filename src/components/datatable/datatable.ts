@@ -25,10 +25,10 @@ export default {
             }
             return classes;
         },
-        renderContext(_super: any): any {
-            return _super({
+        renderContext(_super: any, extend: any = {}): any {
+            return _super(Object.assign({
                 classes: this.renderClasses()
-            });
+            }, extend));
         }
     }
 };

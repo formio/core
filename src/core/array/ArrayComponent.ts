@@ -1,4 +1,5 @@
-import { Component } from '../component/Component';
+import { Component, ComponentOptions } from '../component/Component';
+import { NestedComponentSchema } from '../nested/NestedComponent';
 import { DataComponent } from '../data/DataComponent';
 import { lodash as _ } from '../../util';
 const compDataValue: any = Object.getOwnPropertyDescriptor(Component.prototype, 'dataValue');
@@ -72,10 +73,10 @@ export class ArrayComponent extends DataComponent {
      *
      * @param data The data context to pass to this row of components.
      */
-    addRow(data: any = {}) {
+    addRow(data: any = {}, index: number = 0) {
         const rowData = data;
-        this.dataValue.push(rowData);
-        this.createComponents(rowData);
+        this.dataValue[index] = rowData;
+        this.createComponents(rowData, index);
     }
 
     /**
@@ -111,9 +112,9 @@ export class ArrayComponent extends DataComponent {
      *
      * @param data The data context to pass along to this row of components.
      */
-    createComponents(data: any): Array<Component> {
+    createComponents(data: any, index: number = 0): Array<Component> {
         const comps = super.createComponents(data);
-        this.rows.push(comps);
+        this.rows[index] = comps;
         return comps;
     }
 
@@ -122,9 +123,23 @@ export class ArrayComponent extends DataComponent {
      */
     initComponents() {
         this.rows = [];
-        const data = this.componentData();
-        if (data.length) {
-            data.forEach((row: any) => this.createComponents(row));
+        this.eachRowValue(this.componentData(), (row: any, index: number) => this.createComponents(row, index));
+    }
+
+    getIndexes(value: Array<any>) {
+        return {
+            min: 0,
+            max: (value.length - 1)
+        };
+    }
+
+    eachRowValue(value: any, fn: any) {
+        if (!value || !value.length) {
+            return;
+        }
+        const indexes = this.getIndexes(value);
+        for (let i = indexes.min; i <= indexes.max; i++) {
+            fn(value[i], i);
         }
     }
 
@@ -145,21 +160,19 @@ export class ArrayComponent extends DataComponent {
         if (Array.isArray(value)) {
             // Get the current data value.
             const dataValue = this.dataValue;
-
-            // Add additional rows.
-            if (value.length > dataValue.length) {
-                for (let i = dataValue.length; i < value.length; i++) {
-                    this.addRow(value[i]);
+            this.eachRowValue(value, (row: any, index: number) => {
+                if (index >= dataValue.length) {
+                    this.addRow(row, index);
                 }
-            }
+                this.setRowData(row, index)
+            });
+
             // Remove superfluous rows.
             if (dataValue.length > value.length) {
                 for (let i = value.length; i < dataValue.length; i++) {
                     this.removeRow(i);
                 }
             }
-            // Set the new data value.
-            value.forEach((rowData: any, index: number) => this.setRowData(rowData, index));
         }
     }
 
@@ -176,7 +189,7 @@ export class ArrayComponent extends DataComponent {
             return true;
         }
         let changed = false;
-        value.forEach((rowData: any, index: number) => {
+        this.eachRowValue(value, (rowData: any, index: number) => {
             changed = this.rowChanged(rowData, index) || changed;
         });
         return changed;

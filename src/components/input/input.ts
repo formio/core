@@ -16,10 +16,9 @@ export default {
             this.updateValue(this.element.value);
         },
         async attach(_super: any, element: HTMLElement) {
-            return _super.call(this, element).then(() => {
-                this.addEventListener(this.element, this.component.changeEvent, this.onInput.bind(this));
-                return this;
-            });
+            await _super(element);
+            this.addEventListener(this.element, this.component.changeEvent, this.onInput.bind(this));
+            return this;
         },
         detach(_super: any) {
             this.removeEventListener(this.element, this.component.changeEvent, this.onInput.bind(this));

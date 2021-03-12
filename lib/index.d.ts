@@ -1,7 +1,8 @@
 import { Components } from './core';
+import { Template } from './templates/Template';
 import './components/import';
 export declare const render: typeof Components.render;
 export { Components };
 export * as Util from './util';
-export * as Templates from './templates';
-export { Template } from './templates/Template';
+export { Template as Templates };
+export { Template };

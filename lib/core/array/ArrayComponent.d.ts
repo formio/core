@@ -58,7 +58,7 @@ export declare class ArrayComponent extends DataComponent {
      *
      * @param data The data context to pass to this row of components.
      */
-    addRow(data?: any): void;
+    addRow(data?: any, index?: number): void;
     /**
      * Sets the data for a specific row of components.
      * @param rowData The data to set
@@ -77,11 +77,16 @@ export declare class ArrayComponent extends DataComponent {
      *
      * @param data The data context to pass along to this row of components.
      */
-    createComponents(data: any): Array<Component>;
+    createComponents(data: any, index?: number): Array<Component>;
     /**
      * Initializes the nested components provided the data context.
      */
     initComponents(): void;
+    getIndexes(value: Array<any>): {
+        min: number;
+        max: number;
+    };
+    eachRowValue(value: any, fn: any): void;
     /**
      * Returns the dataValue for this component.
      */

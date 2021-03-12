@@ -32,7 +32,7 @@ export class Components {
      * @param options The options to pass to this component.
      * @param data The data you wish to provide to this component.
      */
-    public static createComponent(comp: any, options?: any, data?: any) {
+    public static create(comp: any, options?: any, data?: any) {
         if (Components.components[comp.type]) {
             return new Components.components[comp.type](comp, options, data);
         }
@@ -111,7 +111,9 @@ export class Components {
         // Set the default schema.
         Object.defineProperty(newClass.prototype, 'defaultSchema', {
             get: () => {
-                return newClass.schema();
+                const schema = newClass.schema();
+                schema.type = definition.type;
+                return schema;
             }
         });
 
@@ -134,7 +136,7 @@ export class Components {
         options: any = {},
         data: any = {}
     ) {
-        return Components.createComponent(component, options, data).attach(element);
+        return Components.create(component, options, data).attach(element);
     }
 }
 

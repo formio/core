@@ -13,7 +13,7 @@ export declare class NestedComponent extends Component {
      * @param extend
      */
     static schema(extend?: any): NestedComponent;
-    constructor(component: (NestedComponentSchema | any), options?: ComponentOptions, data?: any);
+    constructor(component?: (NestedComponentSchema | any), options?: ComponentOptions, data?: any);
     /**
      * Initialize the nested component as well as create all nested components.
      */
@@ -43,7 +43,7 @@ export declare class NestedComponent extends Component {
     createComponent(component: ComponentSchema, data: any): Component;
     createComponents(data: any): Array<Component>;
     initComponents(): void;
-    renderContext(context?: any): any;
+    renderComponents(): string;
     /**
      * Get the datavalue of this component.
      */

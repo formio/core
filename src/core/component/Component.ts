@@ -1,5 +1,4 @@
 import { Template } from '../../templates/Template';
-import templates from '../../templates';
 import { Evaluator, sanitize, dom, lodash } from '../../util';
 import EventEmitter from 'eventemitter3';
 
@@ -21,7 +20,6 @@ export interface ComponentOptions {
     namespace?: string,
     hooks?: any,
     template?: string,
-    tpl?: Template,
     noInit?: boolean
 }
 
@@ -73,13 +71,18 @@ export class Component extends EventEmitter {
     public template: any = (ctx: any) => `<span>${ctx.t('Unknown Component')}</span>`;
 
     /**
+     * An array of attached listeners.
+     */
+    public attachedListeners: Array<any> = [];
+
+    /**
      * @constructor
      * @param component
      * @param options
      * @param data
      */
     constructor(
-        public component: (ComponentSchema | any),
+        public component: (ComponentSchema | any) = {},
         public options: ComponentOptions = {},
         public data: any = {}
     ) {
@@ -100,27 +103,10 @@ export class Component extends EventEmitter {
      */
     public init() {
         this.hook('init');
-        this.initTemplate();
     }
 
     public get defaultSchema(): any {
         return Component.schema();
-    }
-
-    /**
-     * Initializes the template used for rendering this component.
-     */
-    public initTemplate() {
-        // The template is already established.
-        if (this.options.tpl) {
-            return;
-        }
-        if (this.options.template && (templates as any)[this.options.template]) {
-            this.options.tpl = new Template((templates as any)[this.options.template])
-        }
-        if (!this.options.tpl) {
-            this.options.tpl = new Template(templates.bootstrap);
-        }
     }
 
     /**
@@ -174,19 +160,35 @@ export class Component extends EventEmitter {
      * Renders the component and then attaches this component to the HTMLElement.
      * @param element
      */
-    public async attach(element: HTMLElement) {
-        if (element) {
-            const parent = element.parentNode;
-            if (parent) {
-                const index = Array.prototype.indexOf.call(parent.children, element);
-                element.outerHTML = String(this.sanitize(this.render()));
-                element = parent.children[index] as HTMLElement;
-                this.loadRefs(element);
-                this.attached = true;
-            }
+    public async attach(element?: HTMLElement | undefined) {
+        if (this.element && !element) {
+            element = this.element;
         }
+        if (!element) {
+            return this;
+        }
+        const parent = element.parentNode;
+        if (!parent) {
+            return this;
+        }
+        const index = Array.prototype.indexOf.call(parent.children, element);
+        element.outerHTML = String(this.sanitize(this.render()));
+        element = parent.children[index] as HTMLElement;
         this.element = element;
+        this.loadRefs(this.element);
+        this.attached = true;
         return this;
+    }
+
+    /**
+     * Redraw this component.
+     * @returns
+     */
+    public async redraw() {
+        if (this.element) {
+            this.clear();
+            return this.attach();
+        }
     }
 
     /**
@@ -245,10 +247,7 @@ export class Component extends EventEmitter {
      * @param ctx
      */
     protected renderTemplate(name: any, ctx: any = {}): string {
-        if (!this.options.tpl) {
-            return 'No template defined.';
-        }
-        return this.options.tpl.render(name, this.evalContext(ctx));
+        return Template.render(name, this.evalContext(ctx));
     }
 
     /**
@@ -348,7 +347,8 @@ export class Component extends EventEmitter {
      */
     detach() {
         this.refs = {};
-        this.removeAllListeners();
+        this.attached = false;
+        this.removeAttachedListeners();
     }
 
     /**
@@ -405,7 +405,15 @@ export class Component extends EventEmitter {
         else if ('attachEvent' in obj) {
             obj.attachEvent(`on${type}`, func);
         }
+        this.attachedListeners.push({ obj, type, func });
         return this;
+    }
+
+    /**
+     * Remove all the attached listeners.
+     */
+    removeAttachedListeners() {
+        this.attachedListeners.forEach((item) => this.removeEventListener(item.obj, item.type, item.func));
     }
 
     /**

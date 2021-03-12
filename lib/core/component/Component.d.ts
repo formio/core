@@ -1,5 +1,4 @@
 /// <reference types="trusted-types" />
-import { Template } from '../../templates/Template';
 import EventEmitter from 'eventemitter3';
 /**
  * The component JSON schema.
@@ -18,7 +17,6 @@ export interface ComponentOptions {
     namespace?: string;
     hooks?: any;
     template?: string;
-    tpl?: Template;
     noInit?: boolean;
 }
 /**
@@ -59,21 +57,21 @@ export declare class Component extends EventEmitter {
      */
     template: any;
     /**
+     * An array of attached listeners.
+     */
+    attachedListeners: Array<any>;
+    /**
      * @constructor
      * @param component
      * @param options
      * @param data
      */
-    constructor(component: (ComponentSchema | any), options?: ComponentOptions, data?: any);
+    constructor(component?: (ComponentSchema | any), options?: ComponentOptions, data?: any);
     /**
      * Initializes the component.
      */
     init(): void;
     get defaultSchema(): any;
-    /**
-     * Initializes the template used for rendering this component.
-     */
-    initTemplate(): void;
     /**
      * Interpolate a template string.
      * @param template - The template string to interpolate.
@@ -102,7 +100,12 @@ export declare class Component extends EventEmitter {
      * Renders the component and then attaches this component to the HTMLElement.
      * @param element
      */
-    attach(element: HTMLElement): Promise<this>;
+    attach(element?: HTMLElement | undefined): Promise<this>;
+    /**
+     * Redraw this component.
+     * @returns
+     */
+    redraw(): Promise<this | undefined>;
     /**
      * Sanitize an html string.
      *
@@ -206,6 +209,10 @@ export declare class Component extends EventEmitter {
      *   If this listener should persist beyond "destroy" commands.
      */
     addEventListener(obj: any, type: string, func: any): this | undefined;
+    /**
+     * Remove all the attached listeners.
+     */
+    removeAttachedListeners(): void;
     /**
      * Remove an event listener from the object.
      *

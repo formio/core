@@ -32,13 +32,13 @@ export default {
             }
             return attrs;
         },
-        renderContext(_super: any): any {
-            return _super({
+        renderContext(_super: any, extend: any = {}): any {
+            return _super(Object.assign({
                 tag: this.component.tag,
                 ref: this.component.type,
                 content: this.component.content ? this.interpolate(this.component.content, this.evalContext()) : '',
                 attrs: this.getAttributes(this)
-            });
+            }, extend));
         }
     }
 }
