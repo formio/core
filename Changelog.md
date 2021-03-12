@@ -1,3 +1,11 @@
+## 0.0.8
+### Changed
+ - Added override method.
+
+## 0.0.7
+### Changed
+ - Refactored array types.
+
 ## 0.0.6
 ### Changed
  - Added a Components.render method.

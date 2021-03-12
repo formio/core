@@ -1,6 +1,6 @@
 {
   "name": "@formio/core",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
   "scripts": {
