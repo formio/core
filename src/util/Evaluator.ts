@@ -1,5 +1,21 @@
 import * as _ from './lodash';
+import template from 'lodash.template';
 export class Evaluator {
+    private static templateSettings = {
+        interpolate: /{{([\s\S]+?)}}/g,
+    };
+
+    private static tryParseFunction(rawTemplate: string, data: any): string {
+        try {
+            const compiled = template(rawTemplate, this.templateSettings);
+            return compiled(data);
+        }
+        catch (err) {
+            console.warn('Error iterpolating template', err, data);
+            return '';
+        }
+    }
+
     public static noeval: boolean = false;
     public static evaluator(func: any, ...params: any) {
         if (Evaluator.noeval) {
@@ -14,7 +30,13 @@ export class Evaluator {
     };
 
     public static interpolateString(rawTemplate: string, data: any) {
-        return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => _.get(data, $2));
+        return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => {
+            const result = _.get(data, $2);
+            if (!result) {
+                return this.tryParseFunction(match, data);
+            }
+            return result;
+        });
     }
 
     public static interpolate(rawTemplate: any, data: any) {
