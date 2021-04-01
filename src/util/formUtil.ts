@@ -1,5 +1,5 @@
 import { Evaluator } from './Evaluator';
-import { last } from './lodash';
+import { last } from '@formio/lodash';
 
 /**
  * Iterate through each component within a form.

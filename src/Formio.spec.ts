@@ -1,6 +1,6 @@
 var jsdom = require('mocha-jsdom');
 import { Formio } from './Formio';
-import { fastCloneDeep } from './util/lodash';
+import { fastCloneDeep } from '@formio/lodash';
 import _each from 'lodash/each';
 import assert from 'power-assert';
 import sinon from 'sinon';

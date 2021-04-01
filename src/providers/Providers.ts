@@ -1,5 +1,5 @@
 import storage from './storage';
-import { merge } from '../util/lodash';
+import { merge } from '@formio/lodash';
 
 export default class Providers {
   static providers: any = {

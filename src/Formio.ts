@@ -1,5 +1,5 @@
 import fetchPonyfill from 'fetch-ponyfill';
-import { get, fastCloneDeep, defaults, isBoolean, isNil, isObject, intersection } from './util/lodash';
+import { get, fastCloneDeep, defaults, isBoolean, isNil, isObject, intersection } from '@formio/lodash';
 import { eachComponent } from './util/formUtil';
 import EventEmitter from 'eventemitter3';
 const { fetch, Headers } = fetchPonyfill();
@@ -445,7 +445,7 @@ export class Formio {
     const _url = `${type}Url`;
     query = query || '';
     if (query && isObject(query)) {
-      query = `?${Formio.serialize(query.params)}`;
+      query = `?${Formio.serialize((query as any).params)}`;
     }
     return this.makeRequest(type, (this as any)[_url] + query, 'get', null, opts);
   }
@@ -484,7 +484,7 @@ export class Formio {
     const _id = `${type}Id`;
     const _url = `${type}Url`;
     if (query && isObject(query)) {
-      query = Formio.serialize(query.params);
+      query = Formio.serialize((query as any).params);
     }
     if (query) {
       query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
@@ -598,7 +598,7 @@ export class Formio {
   static loadProjects(query?: any, opts?: any) {
     query = query || '';
     if (isObject(query)) {
-      query = `?${Formio.serialize(query.params)}`;
+      query = `?${Formio.serialize((query as any).params)}`;
     }
     return Formio.makeStaticRequest(`${Formio.baseUrl}/project${query}`, 'GET', null, opts);
   }
@@ -707,7 +707,7 @@ export class Formio {
         }
         // If they specified a revision form, load the revised form components.
         if (query && isObject(query)) {
-          query = Formio.serialize(query.params);
+          query = Formio.serialize((query as any).params);
         }
         if (query) {
           query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
@@ -1707,10 +1707,10 @@ export class Formio {
           range = range.split('/');
           if (range[0] !== '*') {
             const skipLimit = range[0].split('-');
-            result.skip = Number(skipLimit[0]);
-            result.limit = skipLimit[1] - skipLimit[0] + 1;
+            (result as any).skip = Number(skipLimit[0]);
+            (result as any).limit = skipLimit[1] - skipLimit[0] + 1;
           }
-          result.serverCount = range[1] === '*' ? range[1] : Number(range[1]);
+          (result as any).serverCount = range[1] === '*' ? range[1] : Number(range[1]);
         }
 
         if (!opts.getHeaders) {

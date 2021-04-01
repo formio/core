@@ -1,6 +1,7 @@
 import { Template } from '../../templates/Template';
-import { Evaluator, sanitize, dom, lodash } from '../../util';
-import EventEmitter from 'eventemitter3';
+import { Evaluator, sanitize, dom } from '../../util';
+import * as lodash from '@formio/lodash';
+import { Model } from '../../model/Model';
 
 /**
  * The component JSON schema.
@@ -23,22 +24,23 @@ export interface ComponentOptions {
     noInit?: boolean
 }
 
+const BaseModel = Model(class Base {});
+
 /**
  * The base component for all rendered components within Form.io platform.
  */
-export class Component extends EventEmitter {
+export class Component extends BaseModel {
     /**
      * The JSON schema for a base component.
      * @param extend
      */
     static schema(extend: any = {}): any {
-        return lodash.merge({
+        return BaseModel.schema(lodash.merge({
             type: 'component',
-            key: ''
-        }, extend);
+            persistent: true,
+            protected: false
+        }, extend));
     }
-
-    public id: string;
 
     /**
      * The DOM Element associated with this component.
@@ -56,16 +58,6 @@ export class Component extends EventEmitter {
     public refs: any = {};
 
     /**
-     * The parent component.
-     */
-    public parent?: Component;
-
-    /**
-     * The root component.
-     */
-    public root?: Component;
-
-    /**
      * The template to render for this component.
      */
     public template: any = (ctx: any) => `<span>${ctx.t('Unknown Component')}</span>`;
@@ -75,34 +67,11 @@ export class Component extends EventEmitter {
      */
     public attachedListeners: Array<any> = [];
 
-    /**
-     * @constructor
-     * @param component
-     * @param options
-     * @param data
-     */
-    constructor(
-        public component: (ComponentSchema | any) = {},
-        public options: ComponentOptions = {},
-        public data: any = {}
-    ) {
-        super();
-        this.id = `e${Math.random().toString(36).substring(7)}`;
-        this.component = lodash.merge(this.defaultSchema, this.component) as any;
-        this.options = Object.assign({
+    public get defaultOptions(): any {
+        return {
             language: 'en',
             namespace: 'formio'
-        }, this.options);
-        if (!this.options.noInit) {
-            this.init();
-        }
-    }
-
-    /**
-     * Initializes the component.
-     */
-    public init() {
-        this.hook('init');
+        };
     }
 
     public get defaultSchema(): any {
@@ -124,6 +93,19 @@ export class Component extends EventEmitter {
      */
     public renderContext(context: any = {}) {
         return this.evalContext(context);
+    }
+
+    /**
+     * Performs an evaluation using the evaluation context of this component.
+     *
+     * @param func
+     * @param args
+     * @param ret
+     * @param tokenize
+     * @return {*}
+     */
+    public evaluate(func: any, args: any = {}, ret: any = '', tokenize: boolean = false) {
+        return Evaluator.evaluate(func, this.evalContext(args), ret, tokenize);
     }
 
     /**
@@ -251,80 +233,16 @@ export class Component extends EventEmitter {
     }
 
     /**
-     * Allow for options to hook into the functionality of this renderer.
-     * @return {*}
-     */
-    hook(name: string, ...args: any) {
-        if (
-            this.options &&
-            this.options.hooks &&
-            this.options.hooks[name]
-        ) {
-            return this.options.hooks[name].apply(this, args);
-        }
-        else {
-            // If this is an async hook instead of a sync.
-            const fn = (typeof args[args.length - 1] === 'function') ? args[args.length - 1] : null;
-            if (fn) {
-                return fn(null, args[1]);
-            }
-            else {
-                return args[1];
-            }
-        }
-    }
-
-    /**
-     * Returns the data value for this component.
-     */
-    public get dataValue(): any {
-        return lodash.get(this.data, this.component.key);
-    }
-
-    /**
-     * Sets the datavalue for this component.
-     */
-    public set dataValue(value: any) {
-        if (this.component.key) {
-            lodash.set(this.data, this.component.key, value);
-        }
-    }
-
-    /**
-     * Bubbles an event to the top.
-     * @param event
-     * @param args
-     */
-    public bubble(event: string, ...args: any[]) {
-        if (this.parent) {
-            this.parent.bubble(event, ...args);
-        }
-        else {
-            this.emit(event, ...args);
-        }
-    }
-
-    /**
-     * Determine if this component has changed values.
+     * Determines if the value of this component is redacted from the user as if it is coming from the server, but is protected.
      *
-     * @param value - The value to compare against the current value.
+     * @return {boolean|*}
      */
-    public hasChanged(value: any) {
-        return String(value) !== String(this.dataValue);
-    }
-
-    /**
-     * Updates the data model value without setting the view.
-     * @param value The value to update within this component.
-     * @return boolean true if the value has changed.
-     */
-    public updateValue(value: any): boolean {
-        const changed = this.hasChanged(value);
-        this.dataValue = value;
-        if (changed) {
-            this.bubble('change', this);
-        }
-        return changed;
+    isValueRedacted() {
+        return (
+            this.component.protected ||
+            !this.component.persistent ||
+            (this.component.persistent === 'client-only')
+        );
     }
 
     /**

@@ -88,6 +88,12 @@ export declare class ArrayComponent extends DataComponent {
     };
     eachRowValue(value: any, fn: any): void;
     /**
+     * The empty value for this component.
+     *
+     * @return {array}
+     */
+    get emptyValue(): any;
+    /**
      * Returns the dataValue for this component.
      */
     get dataValue(): any;

@@ -107,13 +107,13 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#attached" class="tsd-kind-icon">attached</a></li>
@@ -137,6 +137,7 @@
 								<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#datavalue" class="tsd-kind-icon">data<wbr>Value</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#defaultschema" class="tsd-kind-icon">default<wbr>Schema</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="core_data_datacomponent.datacomponent.html#defaultvalue" class="tsd-kind-icon">default<wbr>Value</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#emptyvalue" class="tsd-kind-icon">empty<wbr>Value</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#translations" class="tsd-kind-icon">translations</a></li>
 							</ul>
 						</section>
@@ -157,6 +158,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#eachcomponentvalue" class="tsd-kind-icon">each<wbr>Component<wbr>Value</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited tsd-is-external"><a href="core_data_datacomponent.datacomponent.html#emit" class="tsd-kind-icon">emit</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#evalcontext" class="tsd-kind-icon">eval<wbr>Context</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#evaluate" class="tsd-kind-icon">evaluate</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><a href="core_data_datacomponent.datacomponent.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#getcomponents" class="tsd-kind-icon">get<wbr>Components</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#getelement" class="tsd-kind-icon">get<wbr>Element</a></li>
@@ -166,6 +168,8 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#init" class="tsd-kind-icon">init</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#initcomponents" class="tsd-kind-icon">init<wbr>Components</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#interpolate" class="tsd-kind-icon">interpolate</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#isempty" class="tsd-kind-icon">is<wbr>Empty</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#isvalueredacted" class="tsd-kind-icon">is<wbr>Value<wbr>Redacted</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><a href="core_data_datacomponent.datacomponent.html#listenercount" class="tsd-kind-icon">listener<wbr>Count</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited tsd-is-external"><a href="core_data_datacomponent.datacomponent.html#listeners" class="tsd-kind-icon">listeners</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="core_data_datacomponent.datacomponent.html#loadrefs" class="tsd-kind-icon">load<wbr>Refs</a></li>
@@ -194,7 +198,7 @@
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Constructors</h2>
 				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
 					<a name="constructor" class="tsd-anchor"></a>
@@ -207,7 +211,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L24">src/core/nested/NestedComponent.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L24">src/core/nested/NestedComponent.ts:24</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -227,7 +231,7 @@
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="attached" class="tsd-anchor"></a>
@@ -236,7 +240,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#attached">attached</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L51">src/core/component/Component.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L54">src/core/component/Component.ts:54</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -252,7 +256,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#attachedlisteners">attachedListeners</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L76">src/core/component/Component.ts:76</a></li>
+							<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L79">src/core/component/Component.ts:79</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -276,7 +280,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#components">components</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L13">src/core/nested/NestedComponent.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L13">src/core/nested/NestedComponent.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -295,7 +299,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#element">element</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L46">src/core/component/Component.ts:46</a></li>
+							<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L49">src/core/component/Component.ts:49</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -311,7 +315,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#id">id</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L41">src/core/component/Component.ts:41</a></li>
+							<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L44">src/core/component/Component.ts:44</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -330,7 +334,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#parent">parent</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L61">src/core/component/Component.ts:61</a></li>
+							<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L64">src/core/component/Component.ts:64</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -346,7 +350,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#refs">refs</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L56">src/core/component/Component.ts:56</a></li>
+							<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L59">src/core/component/Component.ts:59</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -362,7 +366,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#root">root</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L66">src/core/component/Component.ts:66</a></li>
+							<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L69">src/core/component/Component.ts:69</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -378,7 +382,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#template">template</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L14">src/core/nested/NestedComponent.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L14">src/core/nested/NestedComponent.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -407,7 +411,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/data/DataComponent.ts#L40">src/core/data/DataComponent.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/data/DataComponent.ts#L49">src/core/data/DataComponent.ts:49</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -420,7 +424,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/data/DataComponent.ts#L44">src/core/data/DataComponent.ts:44</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/data/DataComponent.ts#L53">src/core/data/DataComponent.ts:53</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -448,7 +452,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L49">src/core/nested/NestedComponent.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L49">src/core/nested/NestedComponent.ts:49</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -470,12 +474,34 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/data/DataComponent.ts#L22">src/core/data/DataComponent.ts:22</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/data/DataComponent.ts#L22">src/core/data/DataComponent.ts:22</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{}</span></h4>
 							<ul class="tsd-parameters">
 							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+					<a name="emptyvalue" class="tsd-anchor"></a>
+					<h3>empty<wbr>Value</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> emptyValue<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/data/DataComponent.ts#L42">src/core/data/DataComponent.ts:42</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The empty value for this component.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -489,7 +515,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L207">src/core/component/Component.ts:207</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L223">src/core/component/Component.ts:223</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -515,7 +541,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#addeventlistener">addEventListener</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L398">src/core/component/Component.ts:398</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L447">src/core/component/Component.ts:447</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -613,7 +639,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#append">append</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L366">src/core/component/Component.ts:366</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L415">src/core/component/Component.ts:415</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -644,7 +670,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#attach">attach</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L74">src/core/nested/NestedComponent.ts:74</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L74">src/core/nested/NestedComponent.ts:74</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -675,7 +701,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#bubble">bubble</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L298">src/core/component/Component.ts:298</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L347">src/core/component/Component.ts:347</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -709,7 +735,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#clear">clear</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L357">src/core/component/Component.ts:357</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L406">src/core/component/Component.ts:406</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -732,7 +758,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#componentdata">componentData</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/data/DataComponent.ts#L29">src/core/data/DataComponent.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/data/DataComponent.ts#L29">src/core/data/DataComponent.ts:29</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -755,7 +781,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#createcomponent">createComponent</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L108">src/core/nested/NestedComponent.ts:108</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L108">src/core/nested/NestedComponent.ts:108</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -782,7 +808,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#createcomponents">createComponents</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L119">src/core/nested/NestedComponent.ts:119</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L119">src/core/nested/NestedComponent.ts:119</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -806,7 +832,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#detach">detach</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L90">src/core/nested/NestedComponent.ts:90</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L90">src/core/nested/NestedComponent.ts:90</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -829,7 +855,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#eachcomponent">eachComponent</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L62">src/core/nested/NestedComponent.ts:62</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L62">src/core/nested/NestedComponent.ts:62</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -861,7 +887,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#eachcomponentvalue">eachComponentValue</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L152">src/core/nested/NestedComponent.ts:152</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L152">src/core/nested/NestedComponent.ts:152</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -937,7 +963,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#evalcontext">evalContext</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L233">src/core/component/Component.ts:233</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L249">src/core/component/Component.ts:249</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -951,6 +977,44 @@
 									<h5>extend: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = ...</span></h5>
 									<div class="tsd-comment tsd-typography">
 									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="evaluate" class="tsd-anchor"></a>
+					<h3>evaluate</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">evaluate<span class="tsd-signature-symbol">(</span>func<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, args<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, ret<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, tokenize<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#evaluate">evaluate</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L141">src/core/component/Component.ts:141</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Performs an evaluation using the evaluation context of this component.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>func: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = ...</span></h5>
+								</li>
+								<li>
+									<h5>ret: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = &#x27;&#x27;</span></h5>
+								</li>
+								<li>
+									<h5>tokenize: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -992,7 +1056,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#getcomponents">getComponents</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L53">src/core/nested/NestedComponent.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L53">src/core/nested/NestedComponent.ts:53</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="core_component_component.component.html" class="tsd-signature-type" data-tsd-kind="Class">Component</a><span class="tsd-signature-symbol">[]</span></h4>
@@ -1010,7 +1074,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#getelement">getElement</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L341">src/core/component/Component.ts:341</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L390">src/core/component/Component.ts:390</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1033,7 +1097,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#getrefs">getRefs</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L139">src/core/component/Component.ts:139</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L155">src/core/component/Component.ts:155</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1058,7 +1122,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#haschanged">hasChanged</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L312">src/core/component/Component.ts:312</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L361">src/core/component/Component.ts:361</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1090,7 +1154,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#hook">hook</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L257">src/core/component/Component.ts:257</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L273">src/core/component/Component.ts:273</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1122,7 +1186,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#init">init</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L41">src/core/nested/NestedComponent.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L41">src/core/nested/NestedComponent.ts:41</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1145,7 +1209,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#initcomponents">initComponents</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L129">src/core/nested/NestedComponent.ts:129</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L129">src/core/nested/NestedComponent.ts:129</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1163,7 +1227,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#interpolate">interpolate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L117">src/core/component/Component.ts:117</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L120">src/core/component/Component.ts:120</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1186,6 +1250,58 @@
 									</div>
 								</li>
 							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="isempty" class="tsd-anchor"></a>
+					<h3>is<wbr>Empty</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Empty<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#isempty">isEmpty</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L321">src/core/component/Component.ts:321</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Checks to see if this components value is empty.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = ...</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="isvalueredacted" class="tsd-anchor"></a>
+					<h3>is<wbr>Value<wbr>Redacted</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Value<wbr>Redacted<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#isvalueredacted">isValueRedacted</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L307">src/core/component/Component.ts:307</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Determines if the value of this component is redacted from the user as if it is coming from the server, but is protected.</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
@@ -1265,7 +1381,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#loadrefs">loadRefs</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L147">src/core/component/Component.ts:147</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L163">src/core/component/Component.ts:163</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1471,7 +1587,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#prepend">prepend</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L374">src/core/component/Component.ts:374</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L423">src/core/component/Component.ts:423</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1502,7 +1618,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#redraw">redraw</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L187">src/core/component/Component.ts:187</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L203">src/core/component/Component.ts:203</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1554,7 +1670,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#removeattachedlisteners">removeAttachedListeners</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L415">src/core/component/Component.ts:415</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L464">src/core/component/Component.ts:464</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1577,7 +1693,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#removechild">removeChild</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L382">src/core/component/Component.ts:382</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L431">src/core/component/Component.ts:431</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1608,7 +1724,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#removecomponent">removeComponent</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L99">src/core/nested/NestedComponent.ts:99</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L99">src/core/nested/NestedComponent.ts:99</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1632,7 +1748,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#removeeventlistener">removeEventListener</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L425">src/core/component/Component.ts:425</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L474">src/core/component/Component.ts:474</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1731,7 +1847,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#render">render</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L132">src/core/component/Component.ts:132</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L148">src/core/component/Component.ts:148</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1760,7 +1876,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#rendercomponents">renderComponents</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L133">src/core/nested/NestedComponent.ts:133</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L133">src/core/nested/NestedComponent.ts:133</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -1778,7 +1894,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#rendercontext">renderContext</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L125">src/core/component/Component.ts:125</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L128">src/core/component/Component.ts:128</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1810,7 +1926,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#rendertemplate">renderTemplate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L249">src/core/component/Component.ts:249</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L265">src/core/component/Component.ts:265</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1844,7 +1960,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#sanitize">sanitize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L200">src/core/component/Component.ts:200</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L216">src/core/component/Component.ts:216</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1873,7 +1989,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#setvalue">setValue</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L174">src/core/nested/NestedComponent.ts:174</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L174">src/core/nested/NestedComponent.ts:174</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1904,7 +2020,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#t">t</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L222">src/core/component/Component.ts:222</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L238">src/core/component/Component.ts:238</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1935,7 +2051,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#updatevalue">updateValue</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/component/Component.ts#L321">src/core/component/Component.ts:321</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/component/Component.ts#L370">src/core/component/Component.ts:370</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1968,7 +2084,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="core_nested_nestedcomponent.nestedcomponent.html">NestedComponent</a>.<a href="core_nested_nestedcomponent.nestedcomponent.html#schema">schema</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/7470f99/src/core/nested/NestedComponent.ts#L19">src/core/nested/NestedComponent.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/nested/NestedComponent.ts#L19">src/core/nested/NestedComponent.ts:19</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2060,6 +2176,9 @@
 								<a href="core_data_datacomponent.datacomponent.html#defaultvalue" class="tsd-kind-icon">default<wbr>Value</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+								<a href="core_data_datacomponent.datacomponent.html#emptyvalue" class="tsd-kind-icon">empty<wbr>Value</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
 								<a href="core_data_datacomponent.datacomponent.html#translations" class="tsd-kind-icon">translations</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -2104,6 +2223,9 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="core_data_datacomponent.datacomponent.html#evalcontext" class="tsd-kind-icon">eval<wbr>Context</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="core_data_datacomponent.datacomponent.html#evaluate" class="tsd-kind-icon">evaluate</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external">
 								<a href="core_data_datacomponent.datacomponent.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a>
 							</li>
@@ -2130,6 +2252,12 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="core_data_datacomponent.datacomponent.html#interpolate" class="tsd-kind-icon">interpolate</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="core_data_datacomponent.datacomponent.html#isempty" class="tsd-kind-icon">is<wbr>Empty</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="core_data_datacomponent.datacomponent.html#isvalueredacted" class="tsd-kind-icon">is<wbr>Value<wbr>Redacted</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external">
 								<a href="core_data_datacomponent.datacomponent.html#listenercount" class="tsd-kind-icon">listener<wbr>Count</a>

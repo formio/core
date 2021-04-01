@@ -20,6 +20,12 @@ export declare class DataComponent extends NestedComponent {
      */
     componentData(): any;
     /**
+     * The empty value for this component.
+     *
+     * @return {null}
+     */
+    get emptyValue(): any;
+    /**
      * Get the datavalue of this component.
      */
     get dataValue(): any;

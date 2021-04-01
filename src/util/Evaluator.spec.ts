@@ -29,4 +29,14 @@ describe('Evaluator', () => {
             }
         }), '<span>Travis</span>');
     });
+
+    it('Should be able to evaluate an expression.', () => {
+        assert.equal(Evaluator.evaluate('value = data.a + data.b', {
+            value: 0,
+            data: {
+                a: 5,
+                b: 5
+            }
+        }, 'value', true), 10);
+    });
 });

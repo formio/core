@@ -1,5 +1,5 @@
 import templates from './index';
-import * as _ from '../util/lodash';
+import * as _ from '@formio/lodash';
 
 /**
  * Manages all the available templates which can be rendered.

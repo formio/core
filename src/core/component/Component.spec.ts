@@ -16,7 +16,9 @@ describe('Component', () => {
         assert.equal(comp.options.namespace, 'formio');
         assert.deepEqual(comp.component, {
             type: 'textfield',
-            key: 'firstName'
+            key: 'firstName',
+            protected: false,
+            persistent: true
         });
     });
 

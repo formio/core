@@ -1,8 +1,27 @@
+export declare function isString(val: any): boolean;
+export declare function isEmpty(obj: any): boolean;
+export declare function isInteger(val: any): boolean;
+export declare function isNaN(val: any): boolean;
+export declare function isNil(val: any): boolean;
+export declare function isNull(val: any): boolean;
+export declare function isArray(val: any): boolean;
+export declare function isObjectLike(val: any): boolean;
+export declare function isObject(val: any): boolean;
+export declare function isPlainObject(value: any): boolean;
+export declare function isNumber(value: any): boolean;
+export declare function isBoolean(value: any): boolean;
+export declare function isRegExp(value: any): boolean;
 /**
  * Get the keys of an Object.
  * @param obj
  */
 export declare function keys(obj: any): string[];
+/**
+ * Return the values of an object or an array.
+ * @param obj
+ * @returns
+ */
+export declare function values(obj: any): any;
 /**
  * A no-operation function.
  */
@@ -26,6 +45,8 @@ export declare function pathParts(path: string): string[];
  * @param def
  */
 export declare function get(obj: any, path: string, def?: any): any;
+export declare function property(path: string): (obj: any) => any;
+export declare function propertyOf(obj: any): (path: string) => any;
 /**
  * Determine if a value is set.
  *
@@ -55,6 +76,12 @@ export declare function merge(...args: any): object;
  */
 export declare function fastCloneDeep(obj: any): any;
 /**
+ * Performs a recursive cloneDeep operation.
+ * @param src
+ * @returns
+ */
+export declare function cloneDeep(src: any): any;
+/**
  * Sets the defaults of an object.
  *
  * @param obj
@@ -62,20 +89,11 @@ export declare function fastCloneDeep(obj: any): any;
  */
 export declare function defaults(obj: any, defs: any): any;
 /**
- * Checks if a value is a boolean.
- * @param value
+ * Returns a function to perform matches.
+ * @param query
+ * @returns
  */
-export declare function isBoolean(value: any): boolean;
-/**
- * Checks if a value is Nil.
- * @param value
- */
-export declare function isNil(value: any): boolean;
-/**
- * Checks if an property is an object.
- * @param value
- */
-export declare function isObject(value: any): any;
+export declare function matches(query: any): (comp: any) => boolean;
 /**
  * Perform a find operation on each item in an array.
  * @param arr
@@ -94,7 +112,15 @@ export declare function filter(arr: any, fn?: any): any;
  * @param arr
  * @param query
  */
-export declare function find(arr: any, query?: any): any;
+export declare function find(arr: any, query?: any, findIndex?: boolean): any;
+/**
+ * Find an index.
+ *
+ * @param arr
+ * @param query
+ * @returns
+ */
+export declare function findIndex(arr: any, query?: any): any;
 /**
  * Determines equality of a value or complex object.
  * @param a
@@ -127,3 +153,25 @@ export declare function last(arr: Array<any>): any;
  * @returns
  */
 export declare function debounce(func: any, wait?: number): (...args: any) => void;
+export declare function chunk(input: any, size: any): any;
+export declare function compact(input: any): any;
+export declare function concat(input: any, ...args: any): any;
+export declare function difference(...arrays: any): any;
+export declare function drop(arr: any, index: any): any;
+export declare function dropRight(arr: any, index: any): any;
+export declare function add(a: number, b: number): number;
+export declare function subtract(a: number, b: number): number;
+export declare function multiply(a: number, b: number): number;
+export declare function divide(a: number, b: number): number;
+export declare function mod(a: number, b: number): number;
+export declare function sum(arr: any): any;
+export declare function ceil(a: number, precision?: number): any;
+export declare function floor(a: number, precision?: number): any;
+export declare function round(a: number, precision?: number): any;
+export declare function max(arr: any): number;
+export declare function maxBy(arr: any, fn: any): any;
+export declare function min(arr: any): number;
+export declare function minBy(arr: any, fn: any): any;
+export declare function sumBy(arr: any, fn: any): any;
+export declare function mean(arr: any): number;
+export declare function meanBy(arr: any, fn: any): number;

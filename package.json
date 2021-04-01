@@ -8,7 +8,9 @@
     "docs": "./node_modules/typedoc/bin/typedoc --exclude '*.spec.ts' src/*.ts src/**/*.ts src/**/**/*.ts",
     "build:core": "webpack --config config/webpack.core.js && webpack --config config/webpack.core.prod.js",
     "build:formio": "webpack --config config/webpack.formio.js && webpack --config config/webpack.formio.prod.js",
-    "build": "gulp templates && tsc && npm run docs && npm run build:core && npm run build:formio",
+    "build:form": "webpack --config config/webpack.form.js && webpack --config config/webpack.form.prod.js",
+    "build:validator": "webpack --config config/webpack.validator.js && webpack --config config/webpack.validator.prod.js",
+    "build": "gulp templates && tsc && npm run docs && npm run build:core && npm run build:formio && npm run build:form && npm run build:validator",
     "prepublish": "npm run build && npm run test"
   },
   "repository": {
@@ -54,19 +56,21 @@
     "mocha-jsdom": "^2.0.0",
     "mock-local-storage": "^1.1.17",
     "power-assert": "^1.6.1",
-    "sinon": "^9.2.4",
+    "sinon": "^10.0.0",
     "ts-node": "^9.1.1",
     "typedoc": "^0.20.30",
     "typescript": "^4.2.3",
-    "webpack": "^5.25.0",
+    "webpack": "^5.27.2",
     "webpack-cli": "^4.5.0"
   },
   "dependencies": {
+    "@formio/lodash": "0.0.4",
     "dayjs": "^1.10.4",
     "deepmerge": "^4.2.2",
     "dompurify": "^2.2.7",
     "eventemitter3": "^4.0.7",
     "fetch-ponyfill": "^7.1.0",
+    "json-logic-js": "^2.0.0",
     "uuid": "^8.3.2"
   }
 }

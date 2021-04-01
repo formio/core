@@ -1,5 +1,4 @@
 import { NestedComponent } from './NestedComponent';
-import { Components } from '../index';
 import { assert } from 'chai';
 import { comp1, comp2 } from './fixtures';
 

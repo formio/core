@@ -84,6 +84,16 @@ export declare class Component extends EventEmitter {
      */
     renderContext(context?: any): any;
     /**
+     * Performs an evaluation using the evaluation context of this component.
+     *
+     * @param func
+     * @param args
+     * @param ret
+     * @param tokenize
+     * @return {*}
+     */
+    evaluate(func: any, args?: any, ret?: any, tokenize?: boolean): any;
+    /**
      * Renders this component as an HTML string.
      */
     render(context?: any): string;
@@ -138,6 +148,25 @@ export declare class Component extends EventEmitter {
      * @return {*}
      */
     hook(name: string, ...args: any): any;
+    /**
+     * The empty value for this component.
+     *
+     * @return {null}
+     */
+    get emptyValue(): any;
+    /**
+     * Determines if the value of this component is redacted from the user as if it is coming from the server, but is protected.
+     *
+     * @return {boolean|*}
+     */
+    isValueRedacted(): any;
+    /**
+     * Checks to see if this components value is empty.
+     *
+     * @param value
+     * @returns
+     */
+    isEmpty(value?: any): boolean;
     /**
      * Returns the data value for this component.
      */

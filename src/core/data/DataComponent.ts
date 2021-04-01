@@ -1,6 +1,6 @@
 import { Component, ComponentOptions } from '../component/Component';
 import { NestedComponent, NestedComponentSchema } from '../nested/NestedComponent';
-import * as _ from '../../util/lodash';
+import * as _ from '@formio/lodash';
 const compDataValue: any = Object.getOwnPropertyDescriptor(Component.prototype, 'dataValue');
 const nestedDataValue: any = Object.getOwnPropertyDescriptor(NestedComponent.prototype, 'dataValue');
 
@@ -32,6 +32,15 @@ export class DataComponent extends NestedComponent {
             _.set(this.data, this.component.key, compData);
         }
         return compData;
+    }
+
+    /**
+     * The empty value for this component.
+     *
+     * @return {null}
+     */
+    get emptyValue(): any {
+        return {};
     }
 
     /**

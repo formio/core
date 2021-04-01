@@ -1,7 +1,7 @@
 import { Component, ComponentOptions } from '../component/Component';
 import { NestedComponentSchema } from '../nested/NestedComponent';
 import { DataComponent } from '../data/DataComponent';
-import { lodash as _ } from '../../util';
+import * as _ from '@formio/lodash';
 const compDataValue: any = Object.getOwnPropertyDescriptor(Component.prototype, 'dataValue');
 
 /**
@@ -143,6 +143,14 @@ export class ArrayComponent extends DataComponent {
         }
     }
 
+    /**
+     * The empty value for this component.
+     *
+     * @return {array}
+     */
+     get emptyValue(): any {
+        return [];
+    }
     /**
      * Returns the dataValue for this component.
      */
