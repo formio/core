@@ -29,4 +29,71 @@ describe('Evaluator', () => {
             }
         }), '<span>Travis</span>');
     });
+
+    it('Should work with functions', () => {
+        assert.equal(Evaluator.interpolate(`<span>{{ printValue("firstName") }}</span>`, {
+            printValue(name: string) {
+                return this.data[name];
+            },
+            data: {
+                firstName: 'Travis'
+            }
+        }), '<span>Travis</span>');
+        assert.equal(Evaluator.interpolate(`<span>{{printValue("firstName")}}</span>`, {
+            printValue(name: string) {
+                return this.data[name];
+            },
+            data: {
+                firstName: 'Travis'
+            }
+        }), '<span>Travis</span>');
+        assert.equal(Evaluator.interpolate(`<span>{{ printValue( "firstName" ) }}</span>`, {
+            printValue(name: string) {
+                return this.data[name];
+            },
+            data: {
+                firstName: 'Travis'
+            }
+        }), '<span>Travis</span>');
+        assert.equal(Evaluator.interpolate(`<span>{{ printValue( "firstName"); }}</span>`, {
+            printValue(name: string) {
+                return this.data[name];
+            },
+            data: {
+                firstName: 'Travis'
+            }
+        }), '<span>Travis</span>');
+        assert.equal(Evaluator.interpolate(`<span>{{ printValue( data.prop); }}</span>`, {
+            printValue(name: string) {
+                return this.data[name];
+            },
+            data: {
+                prop: 'firstName',
+                firstName: 'Travis'
+            }
+        }), '<span>Travis</span>');
+        assert.equal(Evaluator.interpolate(`<span>{{ concat( data.prop, "lastName"); }}</span>`, {
+            concat(a: string, b: string) {
+                return this.data[a] + ' ' + this.data[b];
+            },
+            data: {
+                prop: 'firstName',
+                firstName: 'Travis',
+                lastName: 'Tidwell'
+            }
+        }), '<span>Travis Tidwell</span>');
+        assert.equal(Evaluator.interpolate(`<span>{{funcs.concat( data.a, data.b)}}</span>`, {
+            funcs: {
+                concat(a: string, b: string) {
+                    return this.data[a] + ' ' + this.data[b];
+                }
+            },
+            data: {
+                a: 'firstName',
+                b: 'lastName',
+                firstName: 'Travis',
+                lastName: 'Tidwell'
+            }
+        }), '<span>Travis Tidwell</span>');
+    });
 });
