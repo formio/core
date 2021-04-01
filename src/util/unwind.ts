@@ -118,10 +118,15 @@ export function unwind(form: any, submission: any) {
             }
         }
     };
+
+    let isNestedForm = false;
     // Iterate through all components.
     eachComponent(form.components, function (component: any, path: any) {
         if (!component.overlay || (!component.overlay.width && !component.overlay.height)) {
             return;
+        }
+        if (component.type === 'form') {
+            isNestedForm = true;
         }
         var hasDataPath = component.properties && component.properties.dataPath;
         var key = component.key;
@@ -132,7 +137,7 @@ export function unwind(form: any, submission: any) {
         /* eslint-disable no-useless-escape */
         var paths = filter(path.replace(new RegExp(".?" + component.key + "$"), '').split('.'));
         /* eslint-enable no-useless-escape */
-        if (!hasDataPath && paths.length) {
+        if (!hasDataPath && paths.length && !isNestedForm) {
             key = paths.map(function (subpath: any) { return subpath + "[0]"; }).join('.') + "." + component.key;
         }
         if (component.multiple) {
@@ -142,7 +147,7 @@ export function unwind(form: any, submission: any) {
         if (paths && paths.length) {
             addDataPaths(dataPaths, paths);
         }
-    });
+    }, true);
     addData(dataPaths, submission.data);
     return submissions;
-};
+}
