@@ -50,4 +50,5 @@ export function NestedComponentWithModel(ModelClass: any) {
     };
 }
 export const NestedComponent = NestedComponentWithModel(NestedComponentBase);
-Components.addComponent(NestedComponent, 'nested');
+Components.addBaseComponent(NestedComponent, 'nested');
+Components.addComponent(NestedComponent());

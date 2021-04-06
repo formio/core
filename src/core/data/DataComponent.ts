@@ -24,4 +24,5 @@ export function DataComponent(...props: any) : ComponentInterface {
     return class ExtendedDataComponent extends NestedDataComponent(...props) {};
 }
 
-Components.addComponent(DataComponent, 'data');
+Components.addBaseComponent(DataComponent, 'data');
+Components.addComponent(DataComponent());

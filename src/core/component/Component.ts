@@ -356,4 +356,5 @@ export function ComponentWithModel(ModelClass: any) {
 export const Component = ComponentWithModel(Model);
 
 // Add the default component.
-Components.addComponent(Component, 'component');
+Components.addBaseComponent(Component, 'component');
+Components.addComponent(Component());

@@ -45,4 +45,5 @@ export function ArrayComponent(...props: any): ComponentInterface {
     return class ExtendedArrayComponent extends NestedArrayComponent(...props) {}
 }
 
-Components.addComponent(ArrayComponent, 'array');
+Components.addBaseComponent(ArrayComponent, 'array');
+Components.addComponent(ArrayComponent());

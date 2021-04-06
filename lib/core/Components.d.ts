@@ -6,7 +6,15 @@ export declare class Components {
      * An array of Components available to be rendered.
      */
     static components: any;
-    static component(type: string): any;
+    static baseComponents: any;
+    /**
+     * Gets a specific component type.
+     *
+     * @param type
+     * @param from
+     * @returns
+     */
+    static component(type: string, from?: any): any;
     /**
      * Create a new component.
      *
@@ -24,12 +32,23 @@ export declare class Components {
      */
     static create(comp: any, options?: any, data?: any): any;
     /**
+     * Adds a base decorator type component.
+     *
+     * @param baseComponent
+     * @param type
+     */
+    static addBaseComponent(baseComponent: any, type: string): void;
+    /**
      * Adds a new component to the renderer. Can either be a component class or a component JSON
      * to be imported.
      *
      * @param component
      */
-    static addComponent(component: any, type?: string): any;
+    static addComponent(component: any): any;
+    /**
+     * Imports a new component based on the JSON decorator of that component.
+     * @param component
+     */
     static importComponent(component: any): void;
     /**
      * Render a component attached to an html component.
