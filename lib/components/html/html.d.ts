@@ -1,16 +1,6 @@
-declare const _default: {
-    type: string;
-    extends: string;
-    schema: {
-        tag: string;
-        content: string;
-        attrs: never[];
-        className: string;
-    };
-    template: (ctx: any) => string;
-    methods: {
-        getAttributes(): string;
-        renderContext(_super: any, extend?: any): any;
-    };
-};
-export default _default;
+import { ComponentInterface } from '../../core/component/Component';
+export declare function HTMLComponentBase(props?: any, BaseComponent?: any): ComponentInterface;
+declare const HTMLComponent_base: ComponentInterface;
+export declare class HTMLComponent extends HTMLComponent_base {
+}
+export {};

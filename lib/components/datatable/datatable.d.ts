@@ -1,16 +1,6 @@
-declare const _default: {
-    type: string;
-    extends: string;
-    schema: {
-        bordered: boolean;
-        striped: boolean;
-        hover: boolean;
-        condensed: boolean;
-    };
-    template: string;
-    methods: {
-        renderClasses(): string;
-        renderContext(_super: any, extend?: any): any;
-    };
-};
-export default _default;
+declare const DataTableComponent_base: import("../../core/component/Component").ComponentInterface;
+export declare class DataTableComponent extends DataTableComponent_base {
+    renderClasses(): string;
+    renderContext(extend?: any): any;
+}
+export {};

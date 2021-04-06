@@ -2,7 +2,7 @@ import { BaseEvaluator } from '../../util/Evaluator';
 import rules from './rules';
 import { jsonLogic } from './jsonLogic';
 export class JSONLogicEvaluator extends BaseEvaluator {
-    public static evaluate(func: any, args: any = {}, ret: any = '', tokenize: boolean = false) {
+    public static evaluate(func: any, args: any = {}, ret: any = '', tokenize: boolean = false, context: any = {}) {
         let returnVal = null;
         if (typeof func === 'object') {
             try {
@@ -14,7 +14,7 @@ export class JSONLogicEvaluator extends BaseEvaluator {
             }
         }
         else {
-            returnVal = BaseEvaluator.evaluate(func, args, ret, tokenize);
+            returnVal = BaseEvaluator.evaluate(func, args, ret, tokenize, context);
         }
         return returnVal;
     }

@@ -1,6 +1,7 @@
 import { assert } from 'chai';
-import { ArrayComponent } from './ArrayComponent';
+import { ArrayComponent as ArrayComponentBase } from './ArrayComponent';
 import { comp1, comp2 } from './fixtures';
+class ArrayComponent extends ArrayComponentBase() {}
 
 describe('ArrayComponent', () => {
     it ('Should create a new Array Component', () => {

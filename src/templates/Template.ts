@@ -86,12 +86,15 @@ export class Template {
      * @param mode
      * @returns
      */
-    public static render(name: any, ctx: any, mode: string = 'html') {
+    public static render(name: any, ctx: any, mode: string = 'html', defaultTemplate: any = null) {
         if (typeof name === 'function') {
             return name(ctx);
         }
         if (this.current[name] && this.current[name][mode]) {
             return this.current[name][mode](ctx);
+        }
+        if (defaultTemplate) {
+            return defaultTemplate(ctx);
         }
         return 'Unknown template';
     }

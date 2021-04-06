@@ -1,6 +1,7 @@
 export declare class BaseEvaluator {
+    private static templateSettings;
     static noeval: boolean;
-    static evaluator(func: any, ...params: any): Function;
+    static evaluator(func: any, ...params: any): any;
     static interpolateString(rawTemplate: string, data: any): string;
     static interpolate(rawTemplate: any, data: any): any;
     /**
@@ -10,7 +11,7 @@ export declare class BaseEvaluator {
      * @param args
      * @return {*}
      */
-    static evaluate(func: any, args?: any, ret?: any, tokenize?: boolean): any;
+    static evaluate(func: any, args?: any, ret?: any, interpolate?: boolean, context?: any): any;
     /**
      * Execute a function.
      *
@@ -18,7 +19,7 @@ export declare class BaseEvaluator {
      * @param args
      * @returns
      */
-    static execute(func: any, args: any): any;
+    static execute(func: string | any, args: any, context?: any): any;
 }
 export declare class Evaluator extends BaseEvaluator {
     /**

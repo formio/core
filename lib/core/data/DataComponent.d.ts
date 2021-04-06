@@ -1,4 +1,5 @@
-import { NestedComponent } from '../nested/NestedComponent';
+import { ComponentInterface } from '../component/Component';
+export declare const NestedDataComponent: (...props: any) => ComponentInterface;
 /**
  * A DataComponent is one that establishes a new data context for all of its
  * children at the specified "key" of this comopnent. For example, if this data
@@ -13,21 +14,4 @@ import { NestedComponent } from '../nested/NestedComponent';
  *   }
  * }
  */
-export declare class DataComponent extends NestedComponent {
-    get defaultValue(): {};
-    /**
-     * Get the component data.
-     */
-    componentData(): any;
-    /**
-     * The empty value for this component.
-     *
-     * @return {null}
-     */
-    get emptyValue(): any;
-    /**
-     * Get the datavalue of this component.
-     */
-    get dataValue(): any;
-    set dataValue(value: any);
-}
+export declare function DataComponent(...props: any): ComponentInterface;

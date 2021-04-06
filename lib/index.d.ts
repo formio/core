@@ -1,6 +1,5 @@
-import { Components } from './core';
+import { Components } from './core/Components';
 import { Template } from './templates/Template';
-import './components/import';
 export declare const render: typeof Components.render;
 export { Components };
 export * as Util from './util';

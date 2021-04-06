@@ -3,6 +3,7 @@ import { Validator } from './validator';
 import * as _ from '@formio/lodash';
 (Formio as any).Rules = (Formio as any).Validator = Validator;
 import * as Core from './index';
+import './components/index';
 import modules from './modules';
 for (let prop in Core) {
     if (Core.hasOwnProperty(prop)) {

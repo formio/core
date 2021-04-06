@@ -1,6 +1,7 @@
-import { NestedComponent } from './NestedComponent';
+import { NestedComponent as NestedBase } from './NestedComponent';
 import { assert } from 'chai';
 import { comp1, comp2 } from './fixtures';
+class NestedComponent extends NestedBase() {}
 
 describe('Nested', () => {
     it('Should render a nested component', () => {

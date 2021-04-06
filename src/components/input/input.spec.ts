@@ -1,9 +1,8 @@
 var jsdom = require('mocha-jsdom');
 import { assert } from 'chai';
-import '../import';
-import { Components } from '../../core';
+import { InputComponent } from './input';
+import { HTMLContainerComponent } from '../htmlcontainer/htmlcontainer';
 import { comp1, comp2 } from './fixtures';
-const InputComponent = Components.components.input;
 
 describe('Input Component', () => {
     jsdom({
@@ -20,7 +19,7 @@ describe('Input Component', () => {
     });
 
     it('Should render a Form input with label and input', () => {
-        const comp = new Components.components.htmlcontainer(comp2);
+        const comp = new HTMLContainerComponent(comp2);
         const parentElement = document.createElement('div');
         const element = document.createElement('div');
         parentElement.appendChild(element);

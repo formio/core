@@ -1,5 +1,6 @@
 import { EmailRule } from './Email';
-import { Component } from '../../core/component/Component';
+import { Component as ComponentBase } from '../../core/component/Component';
+class Component extends ComponentBase() {}
 import { assert } from 'chai';
 describe('EmailRule', () => {
     const component = new Component({

@@ -1,8 +1,9 @@
-import { Component, ComponentOptions } from '../component/Component';
-import { NestedComponent, NestedComponentSchema } from '../nested/NestedComponent';
+import { Components } from '../Components';
+import { ComponentWithModel, ComponentInterface } from '../component/Component';
+import { NestedComponentWithModel } from '../nested/NestedComponent';
+import { NestedDataModel } from '../../model/NestedDataModel';
 import * as _ from '@formio/lodash';
-const compDataValue: any = Object.getOwnPropertyDescriptor(Component.prototype, 'dataValue');
-const nestedDataValue: any = Object.getOwnPropertyDescriptor(NestedComponent.prototype, 'dataValue');
+export const NestedDataComponent = NestedComponentWithModel(ComponentWithModel(NestedDataModel(Components)));
 
 /**
  * A DataComponent is one that establishes a new data context for all of its
@@ -18,39 +19,9 @@ const nestedDataValue: any = Object.getOwnPropertyDescriptor(NestedComponent.pro
  *   }
  * }
  */
-export class DataComponent extends NestedComponent {
-    get defaultValue() {
-        return {};
-    }
-
-    /**
-     * Get the component data.
-     */
-    componentData() {
-        const compData: any = _.get(this.data, this.component.key, this.defaultValue);
-        if (!Object.keys(compData).length) {
-            _.set(this.data, this.component.key, compData);
-        }
-        return compData;
-    }
-
-    /**
-     * The empty value for this component.
-     *
-     * @return {null}
-     */
-    get emptyValue(): any {
-        return {};
-    }
-
-    /**
-     * Get the datavalue of this component.
-     */
-    public get dataValue() {
-        return compDataValue.get.call(this);
-    }
-
-    public set dataValue(value: any) {
-        nestedDataValue.set.call(this, value);
-    }
+export function DataComponent(...props: any) : ComponentInterface {
+    props.unshift({type: 'data'});
+    return class ExtendedDataComponent extends NestedDataComponent(...props) {};
 }
+
+Components.addComponent(DataComponent, 'data');

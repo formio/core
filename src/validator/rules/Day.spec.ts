@@ -1,5 +1,6 @@
 import { DayRule } from './Day';
-import { Component } from '../../core/component/Component';
+import { Component as ComponentBase } from '../../core/component/Component';
+class Component extends ComponentBase() {}
 import { assert } from 'chai';
 describe('DayRule', () => {
     const day = new DayRule(new Component());

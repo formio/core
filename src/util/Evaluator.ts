@@ -2,13 +2,18 @@ import * as _ from '@formio/lodash';
 
 // BaseEvaluator is for extending.
 export class BaseEvaluator {
+    private static templateSettings = {
+        interpolate: /{{([\s\S]+?)}}/g,
+    };
     public static noeval: boolean = false;
     public static evaluator(func: any, ...params: any) {
         if (Evaluator.noeval) {
             console.warn('No evaluations allowed for this renderer.');
             return _.noop;
         }
-
+        if (typeof func === 'function') {
+            return func;
+        }
         if (typeof params[0] === 'object') {
             params = _.keys(params[0]);
         }
@@ -16,7 +21,31 @@ export class BaseEvaluator {
     };
 
     public static interpolateString(rawTemplate: string, data: any) {
-        return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => _.get(data, $2));
+        return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => {
+            // If this is a function call and we allow evals.
+            if ($2.indexOf('(') !== -1) {
+                return $2.replace(/([^\(]+)\(([^\)]+)\s*\);?/, (evalMatch: any, funcName: string, args: any) => {
+                    funcName = _.trim(funcName);
+                    const func = _.get(data, funcName);
+                    if (func) {
+                        if (args) {
+                            args = args.split(',').map((arg: string) => {
+                                arg = _.trim(arg);
+                                if ((arg.indexOf('"') === 0) || (arg.indexOf("'") === 0)) {
+                                    return arg.substring(1, arg.length - 1);
+                                }
+                                return _.get(data, arg);
+                            });
+                        }
+                        return Evaluator.evaluate(func, args, '', false, data);
+                    }
+                    return '';
+                });
+            }
+            else {
+                return _.get(data, $2);
+            }
+        });
     }
 
     public static interpolate(rawTemplate: any, data: any) {
@@ -40,7 +69,7 @@ export class BaseEvaluator {
      * @param args
      * @return {*}
      */
-    public static evaluate(func: any, args: any = {}, ret: any = '', tokenize: boolean = false): any {
+    public static evaluate(func: any, args: any = {}, ret: any = '', interpolate: boolean = false, context: any = {}): any {
         let returnVal = null;
         const component = args.component ? args.component : { key: 'unknown' };
         if (!args.form && args.instance) {
@@ -53,23 +82,12 @@ export class BaseEvaluator {
                 func += `;return ${ret}`;
             }
 
-            if (tokenize) {
-                // Replace all {{ }} references with actual data.
-                func = func.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
-                    if ($2.indexOf('data.') === 0) {
-                        return _.get(args.data, $2.replace('data.', ''));
-                    }
-                    else if ($2.indexOf('row.') === 0) {
-                        return _.get(args.row, $2.replace('row.', ''));
-                    }
-
-                    // Support legacy...
-                    return _.get(args.data, $2);
-                });
+            if (interpolate) {
+                func = BaseEvaluator.interpolate(func, args);
             }
 
             try {
-                func = Evaluator.evaluator(func, args);
+                func = Evaluator.evaluator(func, args, context);
                 args = _.values(args);
             }
             catch (err) {
@@ -81,7 +99,7 @@ export class BaseEvaluator {
 
         if (typeof func === 'function') {
             try {
-                returnVal = Evaluator.execute(func, args);
+                returnVal = Evaluator.execute(func, args, context);
             }
             catch (err) {
                 returnVal = null;
@@ -101,8 +119,12 @@ export class BaseEvaluator {
      * @param args
      * @returns
      */
-    public static execute(func: any, args: any) {
-        return Array.isArray(args) ? func(...args) : func(args);
+    public static execute(func: string | any, args: any, context: any = {}) {
+        if (Evaluator.noeval) {
+            console.warn('No evaluations allowed for this renderer.');
+            return _.noop;
+        }
+        return Array.isArray(args) ? func.apply(context, args) : func.call(context, args);
     };
 }
 

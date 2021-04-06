@@ -1,15 +1,13 @@
-import html from '../html/html';
-export default {...html, ...{
-    type: 'htmlcontainer',
-    extends: 'nested',
-    methods: {
-        ...html.methods,
-        ...{
-            renderContext(_super:any, extend: any = {}) {
-                return html.methods.renderContext.call(this, _super, Object.assign({
-                    content: this.renderComponents()
-                }, extend));
-            }
-        }
+import { Components } from '../../core/Components';
+import { HTMLComponentBase } from '../html/html';
+import { NestedComponent } from '../../core/nested/NestedComponent';
+export class HTMLContainerComponent extends HTMLComponentBase({
+    type: 'htmlcontainer'
+}, NestedComponent) {
+    renderContext(extend: any = {}) {
+        return super.renderContext(Object.assign({
+            content: this.renderComponents()
+        }, extend));
     }
-}};
+}
+Components.addComponent(HTMLContainerComponent);

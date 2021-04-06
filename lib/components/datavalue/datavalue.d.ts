@@ -1,6 +1,4 @@
-declare const _default: {
-    type: string;
-    extends: string;
-    template: (ctx: any) => string;
-};
-export default _default;
+declare const DataValueComponent_base: import("../../core/component/Component").ComponentInterface;
+export declare class DataValueComponent extends DataValueComponent_base {
+}
+export {};

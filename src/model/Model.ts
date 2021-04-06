@@ -1,12 +1,17 @@
 import * as _ from '@formio/lodash';
-import { Constructor } from '../core/Constructor';
-import { EventEmitter } from '../core/EventEmitter';
-export function Model<TBase extends Constructor>(Base: TBase) {
-    return class Model extends EventEmitter(Base) {
+import EventEmitterBase from 'eventemitter3';
+export function Model(props: any = {}) {
+    if (!props.schema) {
+        props.schema = {};
+    }
+    if (!props.schema.key) {
+        props.schema.key = '';
+    }
+    return class Model {
         /**
          * A random generated ID for this entity.
          */
-        public id: string;
+        public id!: string;
 
         /**
          * The parent entity.
@@ -19,13 +24,16 @@ export function Model<TBase extends Constructor>(Base: TBase) {
         public root: any = null;
 
         /**
-         * The JSON schema for a base entity.
+         * The events to fire for this model.
+         */
+        public events: EventEmitterBase = new EventEmitterBase();
+
+        /**
+         * The default JSON schema
          * @param extend
          */
-        public static schema(extend: any = {}): any {
-            return _.merge({
-                key: ''
-            }, extend);
+        public static schema(): any {
+            return props.schema;
         }
 
         /**
@@ -34,11 +42,10 @@ export function Model<TBase extends Constructor>(Base: TBase) {
          * @param options
          * @param data
          */
-        constructor(public component: any, public options: any = {}, public data: any = {}) {
-            super();
+        constructor(public component: any = {}, public options: any = {}, public data: any = {}) {
             this.id = `e${Math.random().toString(36).substring(7)}`;
-            this.component = _.merge(this.defaultSchema, this.component) as any;
-            this.options = Object.assign(this.defaultOptions, this.options);
+            this.component = _.merge({}, this.defaultSchema, this.component) as any;
+            this.options = {...this.defaultOptions, ...this.options};
             if (!this.options.noInit) {
                 this.init();
             }
@@ -114,7 +121,8 @@ export function Model<TBase extends Constructor>(Base: TBase) {
             const changed = this.hasChanged(value);
             this.dataValue = value;
             if (changed) {
-                this.emit('change', value);
+                // Bubble a change event.
+                this.bubble('change', value);
             }
             return changed;
         }
@@ -149,6 +157,30 @@ export function Model<TBase extends Constructor>(Base: TBase) {
                     return args[1];
                 }
             }
+        }
+
+        public bubble(event: any, ...args: any) {
+            if (this.parent) {
+                return this.parent.bubble(event, ...args);
+            }
+            return this.emit(event, ...args);
+        }
+
+        public emit(event: any, ...args: any) {
+            if (this.parent) {
+                // Bubble emit events up to the parent.
+                return this.parent.emit(event, ...args);
+            }
+            return this.events.emit(event, ...args);
+        }
+        public on(event: any, fn: any, ...args: any) {
+            return this.events.on(event, fn, ...args);
+        }
+        public once(event: any, fn: any, ...args: any) {
+            return this.events.once(event, fn, ...args);
+        }
+        public off(event: any, ...args: any) {
+            return this.events.off(event, ...args);
         }
     };
 }

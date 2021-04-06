@@ -51,5 +51,5 @@ export declare class Template {
      * @param mode
      * @returns
      */
-    static render(name: any, ctx: any, mode?: string): any;
+    static render(name: any, ctx: any, mode?: string, defaultTemplate?: any): any;
 }

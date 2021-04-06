@@ -1,6 +1,7 @@
 import '../index';
 import { Formio } from '../../../form';
-const Component = (Formio as any).Components.components.component;
+import { Component as ComponentBase } from '../../../core/component/Component';
+class Component extends ComponentBase() {}
 const JSONRule = (Formio as any).Validator.rules.json;
 import { assert } from 'chai';
 describe('JSONRule', () => {

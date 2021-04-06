@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import { Model } from './Model';
-const BaseModel = Model(class Base {});
+const BaseModel = Model();
 describe('Model', () => {
     it('new Model()', () => {
         const model = new BaseModel({

@@ -1,18 +1,10 @@
-declare const _default: {
-    type: string;
-    extends: string;
-    schema: {
-        tag: string;
-        ref: string;
-        changeEvent: string;
-        inputType: string;
-    };
-    methods: {
-        getAttributes(_super: any): string;
-        onInput(): void;
-        attach(_super: any, element: HTMLElement): Promise<any>;
-        detach(_super: any): void;
-        setValue(_super: any, value: any): any;
-    };
-};
-export default _default;
+declare const InputComponent_base: import("../../core/component/Component").ComponentInterface;
+export declare class InputComponent extends InputComponent_base {
+    element: any;
+    getAttributes(): string;
+    onInput(): void;
+    attach(element: HTMLElement): Promise<this>;
+    detach(): void;
+    setValue(value: any): any;
+}
+export {};

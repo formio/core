@@ -55,10 +55,10 @@
 					<a href="../modules.html">@formio/core</a>
 				</li>
 				<li>
-					<a href="../modules/core.html">core</a>
+					<a href="../modules/core_components.html">core/Components</a>
 				</li>
 				<li>
-					<a href="core.components.html">Components</a>
+					<a href="core_components.components.html">Components</a>
 				</li>
 			</ul>
 			<h1>Class Components</h1>
@@ -90,22 +90,23 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="core.components.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="core_components.components.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="core.components.html#components" class="tsd-kind-icon">components</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="core_components.components.html#components" class="tsd-kind-icon">components</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="core.components.html#addcomponent" class="tsd-kind-icon">add<wbr>Component</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="core.components.html#create" class="tsd-kind-icon">create</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="core.components.html#importcomponent" class="tsd-kind-icon">import<wbr>Component</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="core.components.html#render" class="tsd-kind-icon">render</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="core_components.components.html#addcomponent" class="tsd-kind-icon">add<wbr>Component</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="core_components.components.html#component" class="tsd-kind-icon">component</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="core_components.components.html#create" class="tsd-kind-icon">create</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="core_components.components.html#importcomponent" class="tsd-kind-icon">import<wbr>Component</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="core_components.components.html#render" class="tsd-kind-icon">render</a></li>
 							</ul>
 						</section>
 					</div>
@@ -117,13 +118,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Components<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="core.components.html" class="tsd-signature-type" data-tsd-kind="Class">Components</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Components<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="core_components.components.html" class="tsd-signature-type" data-tsd-kind="Class">Components</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="core.components.html" class="tsd-signature-type" data-tsd-kind="Class">Components</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="core_components.components.html" class="tsd-signature-type" data-tsd-kind="Class">Components</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -136,7 +137,7 @@
 					<div class="tsd-signature tsd-kind-icon">components<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/index.ts#L13">src/core/index.ts:13</a></li>
+							<li>Defined in src/core/Components.ts:8</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -152,13 +153,13 @@
 					<a name="addcomponent" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> add<wbr>Component</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Component<span class="tsd-signature-symbol">(</span>component<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Component<span class="tsd-signature-symbol">(</span>component<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, type<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/index.ts#L50">src/core/index.ts:50</a></li>
+									<li>Defined in src/core/Components.ts:44</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -174,8 +175,34 @@
 									<div class="tsd-comment tsd-typography">
 									</div>
 								</li>
+								<li>
+									<h5>type: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &#x27;&#x27;</span></h5>
+								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="component" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> component</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">component<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in src/core/Components.ts:10</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>type: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -189,7 +216,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/index.ts#L35">src/core/index.ts:35</a></li>
+									<li>Defined in src/core/Components.ts:34</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -232,44 +259,22 @@
 					<a name="importcomponent" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> import<wbr>Component</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">import<wbr>Component<span class="tsd-signature-symbol">(</span>definition<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						<li class="tsd-signature tsd-kind-icon">import<wbr>Component<span class="tsd-signature-symbol">(</span>component<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/index.ts#L81">src/core/index.ts:81</a></li>
+									<li>Defined in src/core/Components.ts:55</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Takes a component JSON definition, and then converts it into a Component class that can
-									be instantiated as well as created with <code>createComponent</code>.</p>
-								</div>
-								<p>For example, you can import an H3 component using the following code.</p>
-								<pre><code class="language-ts"><span style="color: #001080">Components</span><span style="color: #000000">.</span><span style="color: #795E26">importComponent</span><span style="color: #000000">({</span>
-<span style="color: #000000">   </span><span style="color: #001080">type:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;h3&#039;</span><span style="color: #000000">,</span>
-<span style="color: #000000">   </span><span style="color: #001080">extends:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;html&#039;</span><span style="color: #000000">,</span>
-<span style="color: #000000">   </span><span style="color: #001080">schema:</span><span style="color: #000000"> {</span>
-<span style="color: #000000">     </span><span style="color: #001080">tag:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;h3&#039;</span>
-<span style="color: #000000">   }</span>
-<span style="color: #000000">});</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">h3</span><span style="color: #000000"> = </span><span style="color: #001080">Components</span><span style="color: #000000">.</span><span style="color: #795E26">createComponent</span><span style="color: #000000">({</span>
-<span style="color: #000000">   </span><span style="color: #001080">type:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;h3&#039;</span><span style="color: #000000">,</span>
-<span style="color: #000000">   </span><span style="color: #001080">content:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;This is an H3 header!&#039;</span>
-<span style="color: #000000">});</span>
-<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">h3</span><span style="color: #000000">.</span><span style="color: #795E26">render</span><span style="color: #000000">()); </span><span style="color: #008000">// Outputs &quot;&lt;h3&gt;This is an H3 header!&lt;/h3&gt;&quot;</span>
-</code></pre>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>definition: <span class="tsd-signature-type">any</span></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
+									<h5>component: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -283,7 +288,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/5790c3d/src/core/index.ts#L133">src/core/index.ts:133</a></li>
+									<li>Defined in src/core/Components.ts:69</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -321,7 +326,7 @@
 						<a href="../modules.html">Modules</a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/core.html">core</a>
+						<a href="../modules/core_components.html">core/<wbr>Components</a>
 					</li>
 				</ul>
 			</nav>
@@ -330,25 +335,28 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
-						<a href="core.components.html" class="tsd-kind-icon">Components</a>
+						<a href="core_components.components.html" class="tsd-kind-icon">Components</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="core.components.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="core_components.components.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="core.components.html#components" class="tsd-kind-icon">components</a>
+								<a href="core_components.components.html#components" class="tsd-kind-icon">components</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="core.components.html#addcomponent" class="tsd-kind-icon">add<wbr>Component</a>
+								<a href="core_components.components.html#addcomponent" class="tsd-kind-icon">add<wbr>Component</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="core.components.html#create" class="tsd-kind-icon">create</a>
+								<a href="core_components.components.html#component" class="tsd-kind-icon">component</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="core.components.html#importcomponent" class="tsd-kind-icon">import<wbr>Component</a>
+								<a href="core_components.components.html#create" class="tsd-kind-icon">create</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="core.components.html#render" class="tsd-kind-icon">render</a>
+								<a href="core_components.components.html#importcomponent" class="tsd-kind-icon">import<wbr>Component</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="core_components.components.html#render" class="tsd-kind-icon">render</a>
 							</li>
 						</ul>
 					</li>

@@ -1,5 +1,6 @@
 import { CustomRule } from './Custom';
-import { Component } from '../../core/component/Component';
+import { Component as ComponentBase } from '../../core/component/Component';
+class Component extends ComponentBase() {}
 import { assert } from 'chai';
 describe('CustomRule', () => {
     const component = new Component({key: 'data'});

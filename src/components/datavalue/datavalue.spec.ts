@@ -1,7 +1,5 @@
 import { assert } from 'chai';
-import '../import';
-import { Components } from '../../core';
-const DataValueComponent = Components.components.datavalue;
+import { DataValueComponent } from './datavalue';
 
 describe('DataValue', () => {
     it ('Should create a DataValue component', () => {

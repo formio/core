@@ -1,6 +1,7 @@
-import { Component } from './Component';
+import { Component as ComponentBase } from './Component';
 var jsdom = require('mocha-jsdom');
 import { assert } from 'chai';
+class Component extends ComponentBase() {}
 
 describe('Component', () => {
     jsdom({

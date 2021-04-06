@@ -1,17 +1,20 @@
-export default {
-    type: 'html',
-    extends: 'component',
-    schema: {
-        tag: 'span',
-        content: '',
-        attrs: [],
-        className: ''
-    },
-    template: (ctx: any) => {
-        return `<${ctx.tag} ref="${ctx.ref}"${ctx.attrs}>${ctx.t(ctx.content)}</${ctx.tag}>`;
-    },
-    methods: {
-        getAttributes() {
+import * as _ from '@formio/lodash';
+import { Components } from '../../core/Components';
+import { Component, ComponentInterface} from '../../core/component/Component';
+export function HTMLComponentBase(props: any = {}, BaseComponent: any = Component) : ComponentInterface {
+    return class HTMLComponent extends BaseComponent({
+        type: 'html',
+        schema: {
+            tag: 'span',
+            content: '',
+            attrs: [],
+            className: ''
+        },
+        template: (ctx: any) => {
+            return `<${ctx.tag} ref="${ctx.ref}"${ctx.attrs}>${ctx.t(ctx.content)}</${ctx.tag}>`;
+        }
+    }, props) {
+        public getAttributes() {
             let hasClass = false;
             let attrs = '';
             for (let i in this.component.attrs) {
@@ -31,14 +34,18 @@ export default {
                 attrs += ` class="${this.interpolate(this.component.className, this.evalContext())}"`;
             }
             return attrs;
-        },
-        renderContext(_super: any, extend: any = {}): any {
-            return _super(Object.assign({
+        }
+
+        public renderContext(extend: any = {}): any {
+            return super.renderContext(Object.assign({
                 tag: this.component.tag,
                 ref: this.component.type,
                 content: this.component.content ? this.interpolate(this.component.content, this.evalContext()) : '',
-                attrs: this.getAttributes(this)
+                attrs: this.getAttributes()
             }, extend));
         }
     }
 }
+
+export class HTMLComponent extends HTMLComponentBase() {}
+Components.addComponent(HTMLComponent);
