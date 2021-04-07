@@ -36,11 +36,11 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
              * @returns
              */
             createComponent(component: any, options: any, data: any) {
-                if (!props.Factory) {
+                if (!props.factory) {
                     console.log('Cannot create components. No "factory" provided.');
                     return null;
                 }
-                const comp = props.Factory.create(component, {
+                const comp = props.factory.create(component, {
                     noInit: true,
                     ...options
                 }, data);

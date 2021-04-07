@@ -15,8 +15,8 @@ export function NestedComponent(props: any = {}) : ModelDecoratorInterface {
     if (!props.model) {
         props.model = NestedModel;
     }
-    if (!props.Factory) {
-        props.Factory = Components;
+    if (!props.factory) {
+        props.factory = Components;
     }
     return function(BaseClass?: ModelInterface) : ModelInterface {
         return class ExtendedNestedComponent extends Component(props)(BaseClass) {
