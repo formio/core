@@ -1,14 +1,21 @@
 import { Components } from '../../core/Components';
-import { HTMLComponentBase } from '../html/html';
-export class InputComponent extends HTMLComponentBase({
+import { Component } from '../../core/component/Component';
+import { HTMLComponent, HTMLProperties } from '../html/html';
+
+@Component({
     type: 'input',
+    template: HTMLProperties.template,
     schema: {
-        tag: 'input',
-        ref: 'input',
-        changeEvent: 'input',
-        inputType: 'text'
+        ...HTMLProperties.schema,
+        ...{
+            tag: 'input',
+            ref: 'input',
+            changeEvent: 'input',
+            inputType: 'text'
+        }
     }
-}) {
+})
+export class InputComponent extends HTMLComponent {
     public element: any;
     getAttributes() {
         const attributes = super.getAttributes();
@@ -19,19 +26,16 @@ export class InputComponent extends HTMLComponentBase({
         this.updateValue(this.element.value);
     }
     async attach(element: HTMLElement) {
-        await super.attach(element);
         this.addEventListener(this.element, this.component.changeEvent, this.onInput.bind(this));
         return this;
     }
     detach() {
         this.removeEventListener(this.element, this.component.changeEvent, this.onInput.bind(this));
-        super.detach();
     }
     setValue(value: any) {
         if (this.element) {
             this.element.value = value;
         }
-        return super.setValue(value);
     }
 }
-Components.addComponent(InputComponent);
+Components.addComponent(InputComponent, 'input');

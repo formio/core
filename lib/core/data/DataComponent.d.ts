@@ -1,5 +1,4 @@
-import { ComponentInterface } from '../component/Component';
-export declare const NestedDataComponent: (...props: any) => ComponentInterface;
+import { ModelDecoratorInterface } from '../../model/Model';
 /**
  * A DataComponent is one that establishes a new data context for all of its
  * children at the specified "key" of this comopnent. For example, if this data
@@ -14,4 +13,4 @@ export declare const NestedDataComponent: (...props: any) => ComponentInterface;
  *   }
  * }
  */
-export declare function DataComponent(...props: any): ComponentInterface;
+export declare function DataComponent(props?: any): ModelDecoratorInterface;

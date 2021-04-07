@@ -6,7 +6,7 @@ export declare class Components {
      * An array of Components available to be rendered.
      */
     static components: any;
-    static baseComponents: any;
+    static decorators: any;
     /**
      * Gets a specific component type.
      *
@@ -37,19 +37,19 @@ export declare class Components {
      * @param baseComponent
      * @param type
      */
-    static addBaseComponent(baseComponent: any, type: string): void;
+    static addDecorator(decorator: any, type: string): void;
     /**
      * Adds a new component to the renderer. Can either be a component class or a component JSON
      * to be imported.
      *
      * @param component
      */
-    static addComponent(component: any): any;
+    static addComponent(component: any, type: string): any;
     /**
      * Imports a new component based on the JSON decorator of that component.
      * @param component
      */
-    static importComponent(component: any): void;
+    static importComponent(props?: any): void;
     /**
      * Render a component attached to an html component.
      *

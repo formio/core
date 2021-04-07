@@ -1,6 +1,7 @@
 import { Components } from '../../core/Components';
 import { ArrayComponent } from '../../core/array/ArrayComponent';
-export class DataTableComponent extends ArrayComponent({
+
+@ArrayComponent({
     type: 'datatable',
     schema: {
         bordered: true,
@@ -9,7 +10,10 @@ export class DataTableComponent extends ArrayComponent({
         condensed: true
     },
     template: 'datatable',
-}) {
+})
+export class DataTableComponent {
+    [x: string]: any;
+    constructor(public component?: any, public options?: any, public data?: any) {}
     renderClasses() {
         let classes = '';
         if (this.component.bordered) {
@@ -34,4 +38,4 @@ export class DataTableComponent extends ArrayComponent({
     }
 }
 
-Components.addComponent(DataTableComponent);
+Components.addComponent(DataTableComponent, 'datatable');

@@ -1,6 +1,6 @@
 import { MaxRule } from './Max';
 import { Component as ComponentBase } from '../../core/component/Component';
-class Component extends ComponentBase() {}
+const Component = ComponentBase()();
 import { assert } from 'chai';
 describe('MaxRule', () => {
     const component = new Component({

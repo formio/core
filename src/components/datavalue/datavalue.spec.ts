@@ -10,6 +10,6 @@ describe('DataValue', () => {
         }, {}, {
             firstName: 'Joe'
         });
-        assert.equal(dataValue.render(), '<span ref="val">Joe</span>');
+        assert.equal((dataValue as any).render(), '<span ref="val">Joe</span>');
     });
 });

@@ -1,13 +1,17 @@
 import { Components } from '../../core/Components';
-import { HTMLComponentBase } from '../html/html';
+import { HTMLComponent, HTMLProperties } from '../html/html';
 import { NestedComponent } from '../../core/nested/NestedComponent';
-export class HTMLContainerComponent extends HTMLComponentBase({
-    type: 'htmlcontainer'
-}, NestedComponent) {
+
+@NestedComponent({
+    type: 'htmlcontainer',
+    schema: HTMLProperties.schema,
+    template: HTMLProperties.template
+})
+export class HTMLContainerComponent extends HTMLComponent {
     renderContext(extend: any = {}) {
         return super.renderContext(Object.assign({
             content: this.renderComponents()
         }, extend));
     }
 }
-Components.addComponent(HTMLContainerComponent);
+Components.addComponent(HTMLContainerComponent, 'htmlcontainer');

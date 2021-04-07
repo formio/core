@@ -1,6 +1,6 @@
 import { RequiredRule } from './Required';
 import { Component as ComponentBase } from '../../core/component/Component';
-class Component extends ComponentBase() {}
+const Component = ComponentBase()();
 import { assert } from 'chai';
 describe('RequiredRule', () => {
     const component = new Component({key: 'data'});

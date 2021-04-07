@@ -1,5 +1,4 @@
-declare const HTMLContainerComponent_base: import("../../core/component/Component").ComponentInterface;
-export declare class HTMLContainerComponent extends HTMLContainerComponent_base {
+import { HTMLComponent } from '../html/html';
+export declare class HTMLContainerComponent extends HTMLComponent {
     renderContext(extend?: any): any;
 }
-export {};

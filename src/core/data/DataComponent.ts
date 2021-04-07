@@ -1,9 +1,7 @@
 import { Components } from '../Components';
-import { ComponentWithModel, ComponentInterface } from '../component/Component';
-import { NestedComponentWithModel } from '../nested/NestedComponent';
+import { ModelDecoratorInterface,  ModelInterface } from '../../model/Model';
+import { NestedComponent } from '../nested/NestedComponent';
 import { NestedDataModel } from '../../model/NestedDataModel';
-import * as _ from '@formio/lodash';
-export const NestedDataComponent = NestedComponentWithModel(ComponentWithModel(NestedDataModel(Components)));
 
 /**
  * A DataComponent is one that establishes a new data context for all of its
@@ -19,10 +17,17 @@ export const NestedDataComponent = NestedComponentWithModel(ComponentWithModel(N
  *   }
  * }
  */
-export function DataComponent(...props: any) : ComponentInterface {
-    props.unshift({type: 'data'});
-    return class ExtendedDataComponent extends NestedDataComponent(...props) {};
+export function DataComponent(props: any = {}) : ModelDecoratorInterface {
+    if (!props.type) {
+        props.type = 'data';
+    }
+    if (!props.model) {
+        props.model = NestedDataModel;
+    }
+    return function(BaseClass?: ModelInterface) : ModelInterface {
+        return class ExtendedDataComponent extends NestedComponent(props)(BaseClass) {}
+    }
 }
 
-Components.addBaseComponent(DataComponent, 'data');
-Components.addComponent(DataComponent());
+Components.addDecorator(DataComponent, 'data');
+Components.addComponent(DataComponent()(), 'data');

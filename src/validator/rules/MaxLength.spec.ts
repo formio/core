@@ -1,7 +1,7 @@
 import { MaxLengthRule } from './MaxLength';
 import { ArrayComponent as ArrayComponentBase } from '../../core/array/ArrayComponent';
 import { assert } from 'chai';
-class ArrayComponent extends ArrayComponentBase({}) {}
+const ArrayComponent = ArrayComponentBase()();
 
 describe('MaxLengthRule', () => {
     const component = new ArrayComponent({

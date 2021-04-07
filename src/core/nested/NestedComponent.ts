@@ -1,5 +1,6 @@
 import { Components } from '../Components';
-import { ComponentWithModel, ComponentSchema, ComponentInterface } from '../component/Component';
+import { ComponentSchema, Component } from '../component/Component';
+import { ModelDecoratorInterface,  ModelInterface } from '../../model/Model';
 import { NestedModel } from '../../model/NestedModel';
 import * as _ from '@formio/lodash';
 
@@ -7,11 +8,18 @@ export interface NestedComponentSchema extends ComponentSchema {
     components: Array<ComponentSchema | any>;
 }
 
-export const NestedComponentBase = ComponentWithModel(NestedModel(Components));
-export function NestedComponentWithModel(ModelClass: any) {
-    return function NestedComponent(...props: any) : ComponentInterface {
-        props.unshift({type: 'nested'});
-        return class ExtendedNestedComponent extends ModelClass(...props) {
+export function NestedComponent(props: any = {}) : ModelDecoratorInterface {
+    if (!props.type) {
+        props.type = 'nested';
+    }
+    if (!props.model) {
+        props.model = NestedModel;
+    }
+    if (!props.Factory) {
+        props.Factory = Components;
+    }
+    return function(BaseClass?: ModelInterface) : ModelInterface {
+        return class ExtendedNestedComponent extends Component(props)(BaseClass) {
             public get defaultTemplate(): any {
                 return (ctx: any) => `<div ref="nested">${ctx.instance.renderComponents()}</div>`;
             }
@@ -42,13 +50,13 @@ export function NestedComponentWithModel(ModelClass: any) {
             }
 
             renderComponents() {
-                return this.components?.reduce((tpl: string, comp: any) => {
-                    return tpl + comp.      render().replace(/(<[^\>]+)/, `$1 data-within="${this.id}"`);
+                return this.components.reduce((tpl: string, comp: any) => {
+                    return tpl + comp.render().replace(/(<[^\>]+)/, `$1 data-within="${this.id}"`);
                 }, '');
             }
         }
     };
 }
-export const NestedComponent = NestedComponentWithModel(NestedComponentBase);
-Components.addBaseComponent(NestedComponent, 'nested');
-Components.addComponent(NestedComponent());
+
+Components.addDecorator(NestedComponent, 'nested');
+Components.addComponent(NestedComponent()(), 'nested');

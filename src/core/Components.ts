@@ -6,7 +6,7 @@ export class Components {
      * An array of Components available to be rendered.
      */
     public static components: any = {};
-    public static baseComponents: any = {};
+    public static decorators: any = {};
 
     /**
      * Gets a specific component type.
@@ -49,8 +49,8 @@ export class Components {
      * @param baseComponent
      * @param type
      */
-    public static addBaseComponent(baseComponent: any, type: string) {
-        Components.baseComponents[type] = baseComponent;
+    public static addDecorator(decorator: any, type: string) {
+        Components.decorators[type] = decorator;
     }
 
     /**
@@ -59,14 +59,14 @@ export class Components {
      *
      * @param component
      */
-    public static addComponent(component: any) {
+    public static addComponent(component: any, type: string) {
         if (!component) {
             return;
         }
         if (typeof component !== 'function') {
             return Components.importComponent(component);
         }
-        Components.components[component.schema().type] = component;
+        Components.components[type] = component;
         return component;
     }
 
@@ -74,10 +74,11 @@ export class Components {
      * Imports a new component based on the JSON decorator of that component.
      * @param component
      */
-    public static importComponent(component: any) {
-        const BaseComp = Components.component(component.extends, 'baseComponents');
-        class ExtendedComponent extends BaseComp(component) {}
-        Components.addComponent(ExtendedComponent);
+    public static importComponent(props: any = {}) {
+        const Decorator = Components.component(props.extends, 'decorators');
+        @Decorator(props)
+        class ExtendedComponent {}
+        Components.addComponent(ExtendedComponent, props.type);
     }
 
     /**

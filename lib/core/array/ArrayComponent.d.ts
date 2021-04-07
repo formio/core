@@ -1,5 +1,4 @@
-import { ComponentInterface } from '../component/Component';
-export declare const NestedArrayComponent: (...props: any) => ComponentInterface;
+import { ModelDecoratorInterface } from '../../model/Model';
 /**
  * An array data type component. This provides a nested component that creates "rows" of data
  * where each row creates new instances of the JSON components and sets the data context for
@@ -36,4 +35,4 @@ export declare const NestedArrayComponent: (...props: any) => ComponentInterface
  * }
  * ```
  */
-export declare function ArrayComponent(...props: any): ComponentInterface;
+export declare function ArrayComponent(props?: any): ModelDecoratorInterface;

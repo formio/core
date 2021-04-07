@@ -1,7 +1,7 @@
 import { Components } from '../Components';
 import { Template } from '../../templates/Template';
 import { Evaluator, sanitize, dom } from '../../util';
-import { Model } from '../../model/Model';
+import { Model, ModelDecoratorInterface,  ModelInterface } from '../../model/Model';
 import * as _ from '@formio/lodash';
 
 /**
@@ -29,21 +29,19 @@ export interface ComponentInterface {
     new (component?: any, options?: any, data?: any): any;
 }
 
-export function ComponentWithModel(ModelClass: any) {
-    return function (...props: any) : ComponentInterface {
-        props.unshift({
-            type: 'component',
-            schema: {
-                persistent: true,
-                protected: false,
-            }
-        });
-        const compProps = props.length ? props.reduce((result: any, prop: any) => _.merge(result, prop), {}) : {};
-        if (!compProps.type) {
-            compProps.type = 'component';
+export function Component(props: any = {}) : ModelDecoratorInterface {
+    props = _.merge({
+        type: 'component',
+        template: false,
+        schema: {
+            persistent: true,
+            protected: false,
         }
-        compProps.schema.type = compProps.type;
-        return class ExtendedComponent extends ModelClass(compProps) {
+    }, props);
+    props.schema.type = props.type;
+    const ModelClass = props.model || Model;
+    return function(BaseClass?: ModelInterface) : ModelInterface {
+        return class ExtendedComponent extends ModelClass(props)(BaseClass) {
             /**
              * The DOM Element associated with this component.
              */
@@ -62,7 +60,7 @@ export function ComponentWithModel(ModelClass: any) {
             /**
              * The template to render for this component.
              */
-            public template: any = compProps.template;
+            public template: any = props.template;
 
             /**
              * An array of attached listeners.
@@ -95,6 +93,9 @@ export function ComponentWithModel(ModelClass: any) {
              * @param context - The existing contexts from parent classes.
              */
             public renderContext(context: any = {}) {
+                if (super.renderContext) {
+                    return super.renderContext(context);
+                }
                 return context;
             }
 
@@ -115,6 +116,9 @@ export function ComponentWithModel(ModelClass: any) {
              * Renders this component as an HTML string.
              */
             public render(context: any = {}): string {
+                if (super.render) {
+                    return super.render(context);
+                }
                 return this.renderTemplate((this.template || this.component.type), this.renderContext(context));
             }
 
@@ -122,6 +126,9 @@ export function ComponentWithModel(ModelClass: any) {
              * Returns the template references.
              */
             public getRefs() {
+                if (super.getRefs) {
+                    return super.getRefs();
+                }
                 return {};
             }
 
@@ -161,6 +168,9 @@ export function ComponentWithModel(ModelClass: any) {
                 element = parent.children[index] as HTMLElement;
                 this.element = element;
                 this.loadRefs(this.element);
+                if (super.attach) {
+                    await super.attach(element);
+                }
                 this.attached = true;
                 return this;
             }
@@ -253,7 +263,11 @@ export function ComponentWithModel(ModelClass: any) {
              * @param value
              */
             public setValue(value: any): boolean {
-                return this.updateValue(value);
+                let changed = false;
+                if (super.setValue) {
+                    changed = super.setValue(value);
+                }
+                return this.updateValue(value) || changed;
             }
 
             /**
@@ -270,6 +284,9 @@ export function ComponentWithModel(ModelClass: any) {
                 this.refs = {};
                 this.attached = false;
                 this.removeAttachedListeners();
+                if (super.detach) {
+                    super.detach();
+                }
             }
 
             /**
@@ -278,6 +295,9 @@ export function ComponentWithModel(ModelClass: any) {
             clear() {
                 this.detach();
                 dom.empty(this.getElement());
+                if (super.clear) {
+                    super.clear();
+                }
             }
 
             /**
@@ -353,8 +373,6 @@ export function ComponentWithModel(ModelClass: any) {
     }
 }
 
-export const Component = ComponentWithModel(Model);
-
 // Add the default component.
-Components.addBaseComponent(Component, 'component');
-Components.addComponent(Component());
+Components.addDecorator(Component, 'component');
+Components.addComponent(Component()(), 'component');

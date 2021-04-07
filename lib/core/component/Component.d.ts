@@ -1,3 +1,4 @@
+import { ModelDecoratorInterface } from '../../model/Model';
 /**
  * The component JSON schema.
  */
@@ -20,5 +21,4 @@ export interface ComponentOptions {
 export interface ComponentInterface {
     new (component?: any, options?: any, data?: any): any;
 }
-export declare function ComponentWithModel(ModelClass: any): (...props: any) => ComponentInterface;
-export declare const Component: (...props: any) => ComponentInterface;
+export declare function Component(props?: any): ModelDecoratorInterface;

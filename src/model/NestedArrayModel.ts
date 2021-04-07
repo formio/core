@@ -1,8 +1,9 @@
 import * as _ from '@formio/lodash';
+import { ModelInterface, ModelDecoratorInterface } from './Model';
 import { NestedDataModel } from './NestedDataModel';
-export function NestedArrayModel(Factory: any) {
-    return function (props: any = {}) {
-        return class NestedArrayModel extends NestedDataModel(Factory)(props) {
+export function NestedArrayModel(props: any = {}) : ModelDecoratorInterface {
+    return function(BaseClass?: ModelInterface) : ModelInterface {
+        return class BaseNestedArrayModel extends NestedDataModel(props)(BaseClass) {
             /**
              * The rows for this component. Each row contains new instances of components.
              */
@@ -185,5 +186,5 @@ export function NestedArrayModel(Factory: any) {
                 return changed;
             }
         }
-    };
-}
+    }
+};

@@ -1,9 +1,7 @@
 import { Components } from '../Components';
-import { ComponentWithModel, ComponentInterface } from '../component/Component';
-import { NestedComponentWithModel } from '../nested/NestedComponent';
+import { ModelDecoratorInterface,  ModelInterface } from '../../model/Model';
 import { NestedArrayModel } from '../../model/NestedArrayModel';
-import * as _ from '@formio/lodash';
-export const NestedArrayComponent = NestedComponentWithModel(ComponentWithModel(NestedArrayModel(Components)));
+import { NestedComponent } from '../nested/NestedComponent';
 /**
  * An array data type component. This provides a nested component that creates "rows" of data
  * where each row creates new instances of the JSON components and sets the data context for
@@ -40,10 +38,17 @@ export const NestedArrayComponent = NestedComponentWithModel(ComponentWithModel(
  * }
  * ```
  */
-export function ArrayComponent(...props: any): ComponentInterface {
-    props.unshift({type: 'array'});
-    return class ExtendedArrayComponent extends NestedArrayComponent(...props) {}
+export function ArrayComponent(props: any = {}): ModelDecoratorInterface {
+    if (!props.type) {
+        props.type = 'array';
+    }
+    if (!props.model) {
+        props.model = NestedArrayModel;
+    }
+    return function(BaseClass?: ModelInterface) : ModelInterface {
+        return class ExtendedArrayComponent extends NestedComponent(props)(BaseClass) {}
+    };
 }
 
-Components.addBaseComponent(ArrayComponent, 'array');
-Components.addComponent(ArrayComponent());
+Components.addDecorator(ArrayComponent, 'array');
+Components.addComponent(ArrayComponent()(), 'array');

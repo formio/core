@@ -1,6 +1,6 @@
 import { MinRule } from './Min';
 import { Component as ComponentBase } from '../../core/component/Component';
-class Component extends ComponentBase() {}
+const Component = ComponentBase()();
 import { assert } from 'chai';
 describe('MinRule', () => {
     const component = new Component({

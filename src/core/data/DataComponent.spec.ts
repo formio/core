@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import { DataComponent as DataComponentBase } from './DataComponent';
 import { comp1 } from './fixtures';
-class DataComponent extends DataComponentBase() {}
+const DataComponent = DataComponentBase()()
 
 describe('DataComponent', () => {
     it ('Should create a new Data Component', () => {

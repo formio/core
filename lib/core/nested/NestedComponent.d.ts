@@ -1,7 +1,6 @@
-import { ComponentSchema, ComponentInterface } from '../component/Component';
+import { ComponentSchema } from '../component/Component';
+import { ModelDecoratorInterface } from '../../model/Model';
 export interface NestedComponentSchema extends ComponentSchema {
     components: Array<ComponentSchema | any>;
 }
-export declare const NestedComponentBase: (...props: any) => ComponentInterface;
-export declare function NestedComponentWithModel(ModelClass: any): (...props: any) => ComponentInterface;
-export declare const NestedComponent: (...props: any) => ComponentInterface;
+export declare function NestedComponent(props?: any): ModelDecoratorInterface;

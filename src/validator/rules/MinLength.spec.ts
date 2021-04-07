@@ -1,7 +1,7 @@
 import { MinLengthRule } from './MinLength';
 import { ArrayComponent as ArrayComponentBase } from '../../core/array/ArrayComponent';
 import { assert } from 'chai';
-class ArrayComponent extends ArrayComponentBase({}) {}
+const ArrayComponent = ArrayComponentBase()();
 
 describe('MinLengthRule', () => {
     const component = new ArrayComponent({

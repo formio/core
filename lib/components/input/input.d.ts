@@ -1,10 +1,9 @@
-declare const InputComponent_base: import("../../core/component/Component").ComponentInterface;
-export declare class InputComponent extends InputComponent_base {
+import { HTMLComponent } from '../html/html';
+export declare class InputComponent extends HTMLComponent {
     element: any;
     getAttributes(): string;
     onInput(): void;
     attach(element: HTMLElement): Promise<this>;
     detach(): void;
-    setValue(value: any): any;
+    setValue(value: any): void;
 }
-export {};

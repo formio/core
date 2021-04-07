@@ -1,8 +1,9 @@
 import * as _ from '@formio/lodash';
+import { ModelInterface, ModelDecoratorInterface } from './Model';
 import { NestedModel } from './NestedModel';
-export function NestedDataModel(Factory: any) {
-    return function (props: any = {}) {
-        return class NestedDataModel extends NestedModel(Factory)(props) {
+export function NestedDataModel(props: any = {}) : ModelDecoratorInterface {
+    return function(BaseClass?: ModelInterface) : ModelInterface {
+        return class BaseNestedDataModel extends NestedModel(props)(BaseClass) {
             get emptyValue(): any {
                 return {};
             }
@@ -30,4 +31,4 @@ export function NestedDataModel(Factory: any) {
             }
         }
     };
-}
+};

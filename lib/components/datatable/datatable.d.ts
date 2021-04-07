@@ -1,6 +1,9 @@
-declare const DataTableComponent_base: import("../../core/component/Component").ComponentInterface;
-export declare class DataTableComponent extends DataTableComponent_base {
+export declare class DataTableComponent {
+    component?: any;
+    options?: any;
+    data?: any;
+    [x: string]: any;
+    constructor(component?: any, options?: any, data?: any);
     renderClasses(): string;
     renderContext(extend?: any): any;
 }
-export {};

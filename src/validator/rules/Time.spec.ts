@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import { TimeRule } from './Time';
 import { Component as ComponentBase } from '../../core/component/Component';
-class Component extends ComponentBase() {}
+const Component = ComponentBase()();
 describe('TimeRule', () => {
     const component = new Component({key: 'data'});
     const rule = new TimeRule(component);

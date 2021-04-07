@@ -1,22 +1,22 @@
 import * as _ from '@formio/lodash';
-import { Model } from './Model';
-export function NestedModel(Factory: any) {
-    return function(props: any = {}) {
-        if (!props.schema) {
-            props.schema = {};
-        }
-        if (!props.schema.components) {
-            props.schema.components = [];
-        }
-        return class NestedModel extends Model(props) {
+import { Model, ModelInterface, ModelDecoratorInterface } from './Model';
+export function NestedModel(props: any = {}) : ModelDecoratorInterface {
+    if (!props.schema) {
+        props.schema = {};
+    }
+    if (!props.schema.components) {
+        props.schema.components = [];
+    }
+    return function(BaseClass?: ModelInterface) : ModelInterface {
+        return class BaseNestedModel extends Model(props)(BaseClass) {
             public components!: Array<any>;
 
             /**
              * Initialize the nested entity by creating the children.
              */
             init() {
-                this.components = [];
                 super.init();
+                this.components = [];
                 this.createComponents(this.componentData());
             }
 
@@ -36,7 +36,11 @@ export function NestedModel(Factory: any) {
              * @returns
              */
             createComponent(component: any, options: any, data: any) {
-                const comp = Factory.create(component, {
+                if (!props.Factory) {
+                    console.log('Cannot create components. No "factory" provided.');
+                    return null;
+                }
+                const comp = props.Factory.create(component, {
                     noInit: true,
                     ...options
                 }, data);
@@ -55,8 +59,10 @@ export function NestedModel(Factory: any) {
                 const added: Array<any> = [];
                 (this.component.components || []).forEach((comp: any) => {
                     const newComp = this.createComponent(comp, this.options, data);
-                    this.components?.push(newComp);
-                    added.push(newComp);
+                    if (newComp) {
+                        this.components.push(newComp);
+                        added.push(newComp);
+                    }
                 });
                 return added;
             }
@@ -71,7 +77,7 @@ export function NestedModel(Factory: any) {
                         if (comp.detach) {
                             comp.detach();
                         }
-                        this.components?.splice(index, 1);
+                        this.components.splice(index, 1);
                     }
                 });
             }
@@ -147,4 +153,4 @@ export function NestedModel(Factory: any) {
             }
         }
     };
-}
+};

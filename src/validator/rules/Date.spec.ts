@@ -1,6 +1,6 @@
 import { DateRule } from './Date';
 import { Component as ComponentBase } from '../../core/component/Component';
-class Component extends ComponentBase() {}
+const Component = ComponentBase()();
 import { assert } from 'chai';
 describe('DateRule', () => {
     const date = new DateRule(new Component());
