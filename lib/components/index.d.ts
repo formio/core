@@ -1,5 +1,5 @@
-export { HTMLComponent } from './html/html';
-export { HTMLContainerComponent } from './htmlcontainer/htmlcontainer';
-export { DataTableComponent } from './datatable/datatable';
+export { HTML, HTMLComponent } from './html/html';
+export { HTMLContainer, HTMLContainerComponent } from './htmlcontainer/htmlcontainer';
+export { DataTable, DataTableComponent } from './datatable/datatable';
 export { DataValueComponent } from './datavalue/datavalue';
-export { InputComponent } from './input/input';
+export { Input, InputComponent } from './input/input';

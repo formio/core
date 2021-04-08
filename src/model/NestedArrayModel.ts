@@ -96,6 +96,9 @@ export function NestedArrayModel(props: any = {}) : ModelDecoratorInterface {
             }
 
             getIndexes(value: Array<any>) {
+                if (super.getIndexes) {
+                    return super.getIndexes(value);
+                }
                 return {
                     min: 0,
                     max: (value.length - 1)

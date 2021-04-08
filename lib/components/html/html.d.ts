@@ -8,7 +8,10 @@ export declare const HTMLProperties: {
     };
     template: (ctx: any) => string;
 };
-export declare class HTMLComponent {
+/**
+ * Base class for HTML based components.
+ */
+export declare class HTML {
     component?: any;
     options?: any;
     data?: any;
@@ -16,4 +19,6 @@ export declare class HTMLComponent {
     constructor(component?: any, options?: any, data?: any);
     getAttributes(): string;
     renderContext(extend?: any): any;
+}
+export declare class HTMLComponent extends HTML {
 }

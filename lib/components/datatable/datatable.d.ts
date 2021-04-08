@@ -1,4 +1,7 @@
-export declare class DataTableComponent {
+/**
+ * A base class for a data table.
+ */
+export declare class DataTable {
     component?: any;
     options?: any;
     data?: any;
@@ -6,4 +9,6 @@ export declare class DataTableComponent {
     constructor(component?: any, options?: any, data?: any);
     renderClasses(): string;
     renderContext(extend?: any): any;
+}
+export declare class DataTableComponent extends DataTable {
 }

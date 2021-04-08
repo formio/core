@@ -1,4 +1,9 @@
-import { HTMLComponent } from '../html/html';
-export declare class HTMLContainerComponent extends HTMLComponent {
+import { HTML } from '../html/html';
+/**
+ * Base HTMLContainer component.
+ */
+export declare class HTMLContainer extends HTML {
     renderContext(extend?: any): any;
+}
+export declare class HTMLContainerComponent extends HTMLContainer {
 }

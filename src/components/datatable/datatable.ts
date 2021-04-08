@@ -1,17 +1,10 @@
 import { Components } from '../../core/Components';
 import { ArrayComponent } from '../../core/array/ArrayComponent';
 
-@ArrayComponent({
-    type: 'datatable',
-    schema: {
-        bordered: true,
-        striped: false,
-        hover: true,
-        condensed: true
-    },
-    template: 'datatable',
-})
-export class DataTableComponent {
+/**
+ * A base class for a data table.
+ */
+export class DataTable {
     [x: string]: any;
     constructor(public component?: any, public options?: any, public data?: any) {}
     renderClasses() {
@@ -38,4 +31,15 @@ export class DataTableComponent {
     }
 }
 
+@ArrayComponent({
+    type: 'datatable',
+    schema: {
+        bordered: true,
+        striped: false,
+        hover: true,
+        condensed: true
+    },
+    template: 'datatable',
+})
+export class DataTableComponent extends DataTable {}
 Components.addComponent(DataTableComponent, 'datatable');

@@ -1,21 +1,11 @@
 import { Components } from '../../core/Components';
 import { Component } from '../../core/component/Component';
-import { HTMLComponent, HTMLProperties } from '../html/html';
+import { HTML, HTMLProperties } from '../html/html';
 
-@Component({
-    type: 'input',
-    template: HTMLProperties.template,
-    schema: {
-        ...HTMLProperties.schema,
-        ...{
-            tag: 'input',
-            ref: 'input',
-            changeEvent: 'input',
-            inputType: 'text'
-        }
-    }
-})
-export class InputComponent extends HTMLComponent {
+/**
+ * Base Input component for extending purposes.
+ */
+export class Input extends HTML {
     public element: any;
     getAttributes() {
         const attributes = super.getAttributes();
@@ -38,4 +28,19 @@ export class InputComponent extends HTMLComponent {
         }
     }
 }
+
+@Component({
+    type: 'input',
+    template: HTMLProperties.template,
+    schema: {
+        ...HTMLProperties.schema,
+        ...{
+            tag: 'input',
+            ref: 'input',
+            changeEvent: 'input',
+            inputType: 'text'
+        }
+    }
+})
+export class InputComponent extends Input {}
 Components.addComponent(InputComponent, 'input');

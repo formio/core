@@ -14,8 +14,10 @@ export const HTMLProperties = {
     }
 };
 
-@Component(HTMLProperties)
-export class HTMLComponent {
+/**
+ * Base class for HTML based components.
+ */
+export class HTML {
     [x: string]: any;
     constructor(public component?: any, public options?: any, public data?: any) {}
     public getAttributes() {
@@ -50,4 +52,6 @@ export class HTMLComponent {
     }
 }
 
+@Component(HTMLProperties)
+export class HTMLComponent extends HTML {}
 Components.addComponent(HTMLComponent, 'html');

@@ -1,6 +1,6 @@
 import { Component } from '../../core';
 import { Components } from '../../core/Components';
-import { HTMLComponent } from '../html/html';
+import { HTML } from '../html/html';
 
 @Component({
     type: 'datavalue',
@@ -13,5 +13,5 @@ import { HTMLComponent } from '../html/html';
         return `<${ctx.tag} ref="val"${ctx.attrs}>${ctx.value()}</${ctx.tag}>`;
     }
 })
-export class DataValueComponent extends HTMLComponent {}
+export class DataValueComponent extends HTML {}
 Components.addComponent(DataValueComponent, 'datavalue');
