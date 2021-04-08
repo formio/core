@@ -1,9 +1,5 @@
-export interface ModelInterface {
-    component?: any;
-    options?: any;
-    data?: any;
-    new (component?: any, options?: any, data?: any): any;
-}
+import { ModelInterface } from './EventEmitter';
+export { ModelInterface };
 export interface ModelDecoratorInterface {
     (BaseClass?: ModelInterface): ModelInterface;
 }

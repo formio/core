@@ -80,21 +80,21 @@ export class Components {
         class ExtendedComponent {}
         Components.addComponent(ExtendedComponent, props.type);
     }
+}
 
-    /**
-     * Render a component attached to an html component.
-     *
-     * @param element
-     * @param component
-     * @param options
-     * @param data
-     */
-    public static render(
-        element: HTMLElement,
-        component: any,
-        options: any = {},
-        data: any = {}
-    ) {
-        return Components.create(component, options, data).attach(element);
-    }
+/**
+ * Render a component attached to an html component.
+ *
+ * @param element
+ * @param component
+ * @param options
+ * @param data
+ */
+export function render(
+    element: HTMLElement,
+    component: any,
+    options: any = {},
+    data: any = {}
+) {
+    return Components.create(component, options, data).attach(element);
 }

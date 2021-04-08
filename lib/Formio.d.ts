@@ -744,35 +744,6 @@ export declare class Formio {
      */
     getDownloadUrl(form: any): any;
     /**
-     * Upload a file to the Form.io platform.
-     *
-     * @param {string} storage - The storage type for this file. i.e. "url", "s3", "dropbox", etc.
-     * @param {File} file - The file object to upload.
-     * @param {string} fileName - The filename to give to the file once it is uploaded.
-     * @param {string} dir - The directory name to place the file.
-     * @param {function} progressCallback - Called when the progress of the file updates.
-     * @param {string} url - Used for IndexDB uploads (offline file uploads) to provide the url of the upload destination.
-     * @param {object} options - Options used to pass to each upload provider for upload configurations.
-     * @param {string} fileKey - Custom file key to pass to custom upload providers.
-     * @return {*}
-     */
-    uploadFile(storage: any, file: any, fileName: any, dir: any, progressCallback: any, url: any, options: any, fileKey: any, groupPermissions: any, groupId: any, uploadStartCallback: any, abortCallback: any): any;
-    /**
-     * Download a file.
-     *
-     * @param file
-     * @param options
-     * @return {*}
-     */
-    downloadFile(file: any, options: any): any;
-    /**
-     * Deletes a file from the provider.
-     *
-     * @param file
-     * @param options
-     */
-    deleteFile(file: any, options: any): any;
-    /**
      * Returns the user permissions to a form and submission.
      *
      * @param user - The user or current user if undefined. For anonymous, use "null"

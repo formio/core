@@ -1,5 +1,5 @@
-export declare class Models {
-    static models: any;
-    static getModelType(component: any): "form" | "map" | "array" | "number" | "none" | "value";
-    static create(component: any, data: any): any;
-}
+export { EventEmitter } from './EventEmitter';
+export { Model, ModelDecoratorInterface, ModelInterface } from './Model';
+export { NestedModel } from './NestedModel';
+export { NestedDataModel } from './NestedDataModel';
+export { NestedArrayModel } from './NestedArrayModel';

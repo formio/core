@@ -1,5 +1,3 @@
-import * as bootstrap from './bootstrap';
-declare const _default: {
-    bootstrap: typeof bootstrap;
-};
-export default _default;
+import { Template } from './Template';
+export { Template };
+export { Template as Templates };

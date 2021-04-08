@@ -1,12 +1,6 @@
 import * as _ from '@formio/lodash';
-import EventEmitterBase from 'eventemitter3';
-
-export interface ModelInterface {
-    component?: any;
-    options?: any;
-    data?: any;
-    new (component?: any, options?: any, data?: any): any;
-}
+import { EventEmitter, ModelInterface } from './EventEmitter';
+export { ModelInterface };
 
 export interface ModelDecoratorInterface {
     (BaseClass?: ModelInterface) : ModelInterface;
@@ -20,29 +14,16 @@ export function Model(props: any = {}) : ModelDecoratorInterface {
         props.schema.key = '';
     }
     return function(BaseClass?: ModelInterface) : ModelInterface {
-        if (!BaseClass) {
-            BaseClass = class _BaseClass {};
-        }
-        return class BaseModel extends BaseClass {
+        return class BaseModel extends EventEmitter(BaseClass) {
             /**
              * A random generated ID for this entity.
              */
             public id!: string;
 
             /**
-             * The parent entity.
-             */
-            public parent: any = null;
-
-            /**
              * The root entity.
              */
             public root: any = null;
-
-            /**
-             * The events to fire for this model.
-             */
-            public events: EventEmitterBase = new EventEmitterBase();
 
             /**
              * The default JSON schema
@@ -174,30 +155,6 @@ export function Model(props: any = {}) : ModelDecoratorInterface {
                         return args[1];
                     }
                 }
-            }
-
-            public bubble(event: any, ...args: any) {
-                if (this.parent) {
-                    return this.parent.bubble(event, ...args);
-                }
-                return this.emit(event, ...args);
-            }
-
-            public emit(event: any, ...args: any) {
-                if (this.parent) {
-                    // Bubble emit events up to the parent.
-                    return this.parent.emit(event, ...args);
-                }
-                return this.events.emit(event, ...args);
-            }
-            public on(event: any, fn: any, ...args: any) {
-                return this.events.on(event, fn, ...args);
-            }
-            public once(event: any, fn: any, ...args: any) {
-                return this.events.once(event, fn, ...args);
-            }
-            public off(event: any, ...args: any) {
-                return this.events.off(event, ...args);
             }
         };
     };

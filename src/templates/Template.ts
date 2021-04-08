@@ -1,4 +1,4 @@
-import templates from './index';
+import * as templates from './templates';
 import * as _ from '@formio/lodash';
 
 /**

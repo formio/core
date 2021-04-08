@@ -50,13 +50,13 @@ export declare class Components {
      * @param component
      */
     static importComponent(props?: any): void;
-    /**
-     * Render a component attached to an html component.
-     *
-     * @param element
-     * @param component
-     * @param options
-     * @param data
-     */
-    static render(element: HTMLElement, component: any, options?: any, data?: any): any;
 }
+/**
+ * Render a component attached to an html component.
+ *
+ * @param element
+ * @param component
+ * @param options
+ * @param data
+ */
+export declare function render(element: HTMLElement, component: any, options?: any, data?: any): any;

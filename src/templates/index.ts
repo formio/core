@@ -1,4 +1,3 @@
-import * as bootstrap from './bootstrap';
-export default {
-    bootstrap
-};
+import { Template } from './Template';
+export { Template };
+export { Template as Templates };
