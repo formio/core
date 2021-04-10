@@ -139,6 +139,17 @@ eval("\nvar __spreadArray = (this && this.__spreadArray) || function (to, from) 
 
 /***/ }),
 
+/***/ "./src/sdk/index.ts":
+/*!**************************!*\
+  !*** ./src/sdk/index.ts ***!
+  \**************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.Formio = void 0;\nvar Formio_1 = __webpack_require__(/*! ./Formio */ \"./src/sdk/Formio.ts\");\nObject.defineProperty(exports, \"Formio\", ({ enumerable: true, get: function () { return Formio_1.Formio; } }));\n\n\n//# sourceURL=webpack://Formio/./src/sdk/index.ts?");
+
+/***/ }),
+
 /***/ "./src/utils/Evaluator.ts":
 /*!********************************!*\
   !*** ./src/utils/Evaluator.ts ***!
@@ -204,9 +215,8 @@ eval("\nvar __assign = (this && this.__assign) || function () {\n    __assign = 
 /******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__("./src/sdk/Formio.ts");
-/******/ 	__webpack_exports__ = __webpack_exports__.Formio;
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = __webpack_require__("./src/sdk/index.ts");
 /******/ 	
 /******/ 	return __webpack_exports__;
 /******/ })()
