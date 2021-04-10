@@ -1,8 +1,10 @@
 import { Components } from '../Components';
 import { Template } from '../Template';
-import { Evaluator, sanitize, dom } from '@formio/utils';
+import { Evaluator } from '@formio/utils/Evaluator';
+import * as dom from '@formio/utils/dom';
+import { sanitize } from '@formio/utils/sanitize';
 import { Model, ModelDecoratorInterface,  ModelInterface } from '@formio/model';
-import * as _ from '@formio/lodash';
+import { merge } from '@formio/lodash/lib/object';
 
 /**
  * The component JSON schema.
@@ -30,7 +32,7 @@ export interface ComponentInterface {
 }
 
 export function Component(props: any = {}) : ModelDecoratorInterface {
-    props = _.merge({
+    props = merge({
         type: 'component',
         template: false,
         schema: {
