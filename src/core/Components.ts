@@ -80,6 +80,14 @@ export class Components {
         class ExtendedComponent {}
         Components.addComponent(ExtendedComponent, props.type);
     }
+
+    /**
+     * Sets the components used within this renderer.
+     * @param components
+     */
+    public static setComponents(components: any) {
+        Object.assign(Components.components, components);
+    }
 }
 
 /**

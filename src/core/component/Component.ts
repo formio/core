@@ -1,7 +1,7 @@
 import { Components } from '../Components';
-import { Template } from '../../templates/Template';
-import { Evaluator, sanitize, dom } from '../../util';
-import { Model, ModelDecoratorInterface,  ModelInterface } from '../../model/Model';
+import { Template } from '../Template';
+import { Evaluator, sanitize, dom } from '@formio/utils';
+import { Model, ModelDecoratorInterface,  ModelInterface } from '@formio/model';
 import * as _ from '@formio/lodash';
 
 /**

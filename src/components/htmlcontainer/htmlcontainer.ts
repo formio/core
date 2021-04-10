@@ -1,6 +1,5 @@
-import { Components } from '../../core/Components';
+import { NestedComponent } from '@formio/core';
 import { HTML, HTMLProperties } from '../html/html';
-import { NestedComponent } from '../../core/nested/NestedComponent';
 
 /**
  * Base HTMLContainer component.
@@ -19,4 +18,3 @@ export class HTMLContainer extends HTML {
     template: HTMLProperties.template
 })
 export class HTMLContainerComponent extends HTMLContainer {}
-Components.addComponent(HTMLContainerComponent, 'htmlcontainer');

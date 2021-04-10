@@ -1,4 +1,4 @@
-import { getInputMask, matchInputMask } from '../../util/mask';
+import { getInputMask, matchInputMask } from '@formio/utils';
 
 import { Rule } from './Rule';
 export class MaskRule extends Rule {

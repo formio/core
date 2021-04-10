@@ -1,4 +1,4 @@
-import { Formio } from './Formio';
+import { Formio } from '@formio/sdk';
 /**
  * Register a specific plugin.
  *
@@ -21,9 +21,8 @@ export declare function useModule(module: any): void;
 * Formio.plugins([plugin1, plugin2, etc]);
 */
 export declare function use(...mods: any): void;
-import modules from './modules';
 export { Formio };
-export { modules };
-export * from './model';
-export * from './core';
-export * from './components';
+export * from '@formio/modules';
+export * from '@formio/model';
+export * from '@formio/core';
+export * from '@formio/components';

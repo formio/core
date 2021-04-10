@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { DataValueComponent } from './datavalue';
+import { DataValueComponent } from '../test';
 
 describe('DataValue', () => {
     it ('Should create a DataValue component', () => {

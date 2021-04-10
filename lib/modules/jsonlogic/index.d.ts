@@ -1,4 +1,4 @@
-import { BaseEvaluator } from '../../util/Evaluator';
+import { BaseEvaluator } from '@formio/utils';
 export declare class JSONLogicEvaluator extends BaseEvaluator {
     static evaluate(func: any, args?: any, ret?: any, tokenize?: boolean, context?: any): any;
 }

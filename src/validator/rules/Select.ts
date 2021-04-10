@@ -1,4 +1,4 @@
-import { Evaluator } from '../../util/Evaluator';
+import { Evaluator } from '@formio/utils';
 import { isEmpty, isBoolean, each } from '@formio/lodash';
 import fetchPonyfill from 'fetch-ponyfill';
 const { fetch, Headers, Request } = fetchPonyfill();

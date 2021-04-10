@@ -1,5 +1,5 @@
 import { EmailRule } from './Email';
-import { Component as ComponentBase } from '../../core/component/Component';
+import { Component as ComponentBase } from '@formio/core';
 const Component = ComponentBase()();
 import { assert } from 'chai';
 describe('EmailRule', () => {

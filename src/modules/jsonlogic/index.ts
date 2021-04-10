@@ -1,4 +1,4 @@
-import { BaseEvaluator } from '../../util/Evaluator';
+import { BaseEvaluator } from '@formio/utils';
 import rules from './rules';
 import { jsonLogic } from './jsonLogic';
 export class JSONLogicEvaluator extends BaseEvaluator {

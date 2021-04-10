@@ -1,5 +1,4 @@
-import { Components } from '../../core/Components';
-import { ArrayComponent } from '../../core/array/ArrayComponent';
+import { ArrayComponent } from '@formio/core';
 
 /**
  * A base class for a data table.
@@ -42,4 +41,3 @@ export class DataTable {
     template: 'datatable',
 })
 export class DataTableComponent extends DataTable {}
-Components.addComponent(DataTableComponent, 'datatable');

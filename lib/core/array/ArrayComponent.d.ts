@@ -1,4 +1,4 @@
-import { ModelDecoratorInterface } from '../../model/Model';
+import { ModelDecoratorInterface } from '@formio/model';
 /**
  * An array data type component. This provides a nested component that creates "rows" of data
  * where each row creates new instances of the JSON components and sets the data context for

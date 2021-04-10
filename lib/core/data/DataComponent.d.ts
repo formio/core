@@ -1,4 +1,4 @@
-import { ModelDecoratorInterface } from '../../model/Model';
+import { ModelDecoratorInterface } from '@formio/model';
 /**
  * A DataComponent is one that establishes a new data context for all of its
  * children at the specified "key" of this comopnent. For example, if this data

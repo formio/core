@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { DataTableComponent } from './datatable';
+import { DataTableComponent } from '../test';
 
 describe('DataTable', () => {
     it ('Should create a DataTable component', () => {

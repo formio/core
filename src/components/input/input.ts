@@ -1,5 +1,4 @@
-import { Components } from '../../core/Components';
-import { Component } from '../../core/component/Component';
+import { Component } from '@formio/core';
 import { HTML, HTMLProperties } from '../html/html';
 
 /**
@@ -43,4 +42,3 @@ export class Input extends HTML {
     }
 })
 export class InputComponent extends Input {}
-Components.addComponent(InputComponent, 'input');

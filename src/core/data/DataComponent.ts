@@ -1,7 +1,6 @@
 import { Components } from '../Components';
-import { ModelDecoratorInterface,  ModelInterface } from '../../model/Model';
+import { NestedDataModel, ModelDecoratorInterface,  ModelInterface } from '@formio/model';
 import { NestedComponent } from '../nested/NestedComponent';
-import { NestedDataModel } from '../../model/NestedDataModel';
 
 /**
  * A DataComponent is one that establishes a new data context for all of its

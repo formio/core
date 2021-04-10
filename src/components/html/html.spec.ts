@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { HTMLComponent } from './html';
+import { HTMLComponent } from '../test';
 
 describe('HTML Component', () => {
     it ('Should create an HTML Component', () => {

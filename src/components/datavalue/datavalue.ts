@@ -1,5 +1,4 @@
-import { Component } from '../../core';
-import { Components } from '../../core/Components';
+import { Component } from '@formio/core';
 import { HTML } from '../html/html';
 
 @Component({
@@ -14,4 +13,3 @@ import { HTML } from '../html/html';
     }
 })
 export class DataValueComponent extends HTML {}
-Components.addComponent(DataValueComponent, 'datavalue');

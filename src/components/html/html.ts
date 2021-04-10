@@ -1,6 +1,4 @@
-import { Components } from '../../core/Components';
-import { Component } from '../../core/component/Component';
-
+import { Component } from '@formio/core';
 export const HTMLProperties = {
     type: 'html',
     schema: {
@@ -54,4 +52,3 @@ export class HTML {
 
 @Component(HTMLProperties)
 export class HTMLComponent extends HTML {}
-Components.addComponent(HTMLComponent, 'html');

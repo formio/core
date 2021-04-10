@@ -4,3 +4,4 @@ export declare class Validator {
     static addRules(rules: any): void;
 }
 export { Rules };
+export { Rule } from './rules/Rule';

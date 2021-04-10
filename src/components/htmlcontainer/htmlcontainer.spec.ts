@@ -1,6 +1,6 @@
 var jsdom = require('mocha-jsdom');
 import { assert } from 'chai';
-import { HTMLContainerComponent } from './htmlcontainer';
+import { HTMLContainerComponent } from '../test';
 import { comp1, comp2 } from './fixtures';
 
 describe('HTMLContainerComponent', () => {

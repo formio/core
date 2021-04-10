@@ -1,4 +1,4 @@
-import { escapeRegExCharacters } from '../../util/utils';
+import { escapeRegExCharacters } from '@formio/utils';
 import {
   isObject,
   isObjectLike,

@@ -1,4 +1,4 @@
-import { getDateSetting } from '../../util/date';
+import { getDateSetting } from '@formio/utils';
 import { isNull } from '@formio/lodash';
 import dayjs from 'dayjs';
 

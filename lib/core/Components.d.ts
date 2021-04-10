@@ -50,6 +50,11 @@ export declare class Components {
      * @param component
      */
     static importComponent(props?: any): void;
+    /**
+     * Sets the components used within this renderer.
+     * @param components
+     */
+    static setComponents(components: any): void;
 }
 /**
  * Render a component attached to an html component.

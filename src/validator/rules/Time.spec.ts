@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import { TimeRule } from './Time';
-import { Component as ComponentBase } from '../../core/component/Component';
+import { Component as ComponentBase } from '@formio/core';
 const Component = ComponentBase()();
 describe('TimeRule', () => {
     const component = new Component({key: 'data'});

@@ -7,3 +7,4 @@ export class Validator {
 };
 
 export { Rules };
+export { Rule } from './rules/Rule';

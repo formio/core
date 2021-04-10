@@ -1,5 +1,5 @@
 import { MaxLengthRule } from './MaxLength';
-import { ArrayComponent as ArrayComponentBase } from '../../core/array/ArrayComponent';
+import { ArrayComponent as ArrayComponentBase } from '@formio/core';
 import { assert } from 'chai';
 const ArrayComponent = ArrayComponentBase()();
 

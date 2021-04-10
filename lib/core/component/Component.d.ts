@@ -1,4 +1,4 @@
-import { ModelDecoratorInterface } from '../../model/Model';
+import { ModelDecoratorInterface } from '@formio/model';
 /**
  * The component JSON schema.
  */

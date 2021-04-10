@@ -1,7 +1,7 @@
 const path = require('path');
 module.exports = {
   mode: 'development',
-  entry: `./lib/form.js`,
+  entry: `./src/form.ts`,
   output: {
     library: 'Formio',
     libraryTarget: 'umd',
@@ -11,5 +11,17 @@ module.exports = {
     environment: {
       arrowFunction: false
     },
+  },
+  resolve: {
+    extensions: ['.ts', '.js'],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        exclude: /\.spec\.ts$/,
+        loader: "ts-loader"
+      }
+    ]
   }
 };

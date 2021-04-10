@@ -1,7 +1,7 @@
 const path = require('path');
 module.exports = {
   mode: 'development',
-  entry: `./lib/index.js`,
+  entry: `./src/index.ts`,
   output: {
     library: 'FormioCore',
     libraryTarget: 'umd',
@@ -10,5 +10,17 @@ module.exports = {
     environment: {
       arrowFunction: false
     },
+  },
+  resolve: {
+    extensions: ['.ts', '.js'],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        exclude: /\.spec\.ts$/,
+        loader: "ts-loader"
+      }
+    ]
   }
 };
