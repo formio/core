@@ -1,8 +1,8 @@
 {
   "name": "@formio/core",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "The core Form.io renderering framework.",
-  "main": "dist/formio.core.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "mocha -r ts-node/register --r mock-local-storage '**/*.spec.ts'",
     "docs": "./node_modules/typedoc/bin/typedoc --exclude '*.spec.ts' src/*.ts src/**/*.ts src/**/**/*.ts",
