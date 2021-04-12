@@ -4,8 +4,6 @@ const insert = require('gulp-insert');
 const rename = require('gulp-rename');
 const template = require('gulp-template');
 
-gulp.task('packages', () => gulp.src('./src/**/package.json').pipe(gulp.dest('lib')));
-
 // Compile all *.ejs files to pre-compiled templates and append *.js to the filename.
 gulp.task('templates', () =>
   gulp.src('./src/**/*.ejs')
