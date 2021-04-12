@@ -1,7 +1,7 @@
 import { Formio } from '@formio/sdk';
 import { Validator } from '@formio/validator';
 import { Evaluator, Utils } from '@formio/utils';
-import { Components, render, Template } from '@formio/core';
+import { Components, render, Template } from '@formio/base';
 (Formio as any).render = render;
 (Formio as any).Components = Components;
 (Formio as any).Validator = (Formio as any).Rules =  Validator;
@@ -115,5 +115,5 @@ import modules from '@formio/modules';
 export { Formio };
 export * from '@formio/modules';
 export * from '@formio/model';
-export * from '@formio/core';
+export * from '@formio/base';
 export * from '@formio/components';

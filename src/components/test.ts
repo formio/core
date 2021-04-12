@@ -1,4 +1,4 @@
-import { Components, Template } from '@formio/core';
+import { Components, Template } from '@formio/base';
 import module from './index';
 for (let name in module.components) {
     if (module.components.hasOwnProperty(name)) {

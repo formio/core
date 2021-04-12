@@ -1,7 +1,7 @@
 module.exports = require('./webpack.config.js')({
-  entry: `./src/core/index.ts`,
+  entry: `./src/index.ts`,
   output: {
-    library: 'FormioCore',
+    library: 'Formio',
     filename: 'formio.core.js'
   }
 });

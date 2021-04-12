@@ -24,5 +24,5 @@ export declare function use(...mods: any): void;
 export { Formio };
 export * from '@formio/modules';
 export * from '@formio/model';
-export * from '@formio/core';
+export * from '@formio/base';
 export * from '@formio/components';

@@ -1,4 +1,4 @@
-import { Component } from '@formio/core';
+import { Component } from '@formio/base';
 export const HTMLProperties = {
     type: 'html',
     schema: {

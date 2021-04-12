@@ -1,16 +1,16 @@
 {
-  "name": "@formio/form",
+  "name": "@formio/core",
   "version": "0.1.0",
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha -r ts-node/register --r mock-local-storage '**/*.spec.ts'",
     "docs": "./node_modules/typedoc/bin/typedoc --exclude '*.spec.ts' src/*.ts src/**/*.ts src/**/**/*.ts",
-    "build:core": "webpack --config config/webpack.core.js && webpack --config config/webpack.core.prod.js",
+    "build:base": "webpack --config config/webpack.base.js && webpack --config config/webpack.base.prod.js",
     "build:formio": "webpack --config config/webpack.formio.js && webpack --config config/webpack.formio.prod.js",
-    "build:form": "webpack --config config/webpack.form.js && webpack --config config/webpack.form.prod.js",
+    "build:core": "webpack --config config/webpack.core.js && webpack --config config/webpack.core.prod.js",
     "build:validator": "webpack --config config/webpack.validator.js && webpack --config config/webpack.validator.prod.js",
-    "build": "gulp templates && tsc && gulp packages && npm run docs && npm run build:core && npm run build:formio && npm run build:form && npm run build:validator",
+    "build": "gulp templates && tsc && gulp packages && npm run docs && npm run build:base && npm run build:formio && npm run build:core && npm run build:validator",
     "prepublish": "npm run build && npm run test"
   },
   "repository": {
@@ -67,7 +67,7 @@
   },
   "dependencies": {
     "@formio/components": "file:src/components",
-    "@formio/core": "file:src/core",
+    "@formio/base": "file:src/base",
     "@formio/lodash": "0.0.4",
     "@formio/model": "file:src/model",
     "@formio/modules": "file:src/modules",

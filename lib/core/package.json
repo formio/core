@@ -1,5 +1,5 @@
 {
-    "name": "@formio/core",
+    "name": "@formio/base",
     "version": "0.1.0",
     "description": "The core Form.io renderering framework.",
     "main": "index.ts",

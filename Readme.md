@@ -4,12 +4,12 @@ This library is the core rendering engine behind the Form.io platform. It is a t
 ### Usage
 To use this library, you will first need to install it into your own application.
 
-    npm install --save @formio/core
+    npm install --save @formio/base
 
 Next, you can create a new component as follows.
 
 ```js
-import { Components } from '@formio/core';
+import { Components } from '@formio/base';
 Components.addComponent({
     type: 'h3',
     template: (ctx) => `<h3>${ctx.component.header}</h3>`
@@ -29,7 +29,7 @@ console.log(header.render());  // Outputs <h3>This is a test</h3>
 You can also use this library by including it in your webpage scripts by including the following.
 
 ```
-<script src="https://cdn.jsdelivr.net/npm/@formio/core@latest/dist/formio.core.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@formio/base@latest/dist/formio.core.min.js"></script>
 ```
 
 After you do this, you can then do the following to create a Data Table in your website.
