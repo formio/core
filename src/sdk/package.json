@@ -1,0 +1,12 @@
+{
+    "name": "@formio/sdk",
+    "version": "0.1.0",
+    "description": "An SDK to work with the Form.io APIs",
+    "main": "index.ts",
+    "dependencies": {
+        "@formio/lodash": "0.0.4",
+        "@formio/utils": "0.1.0",
+        "fetch-ponyfill": "^7.1.0",
+        "eventemitter3": "^4.0.7"
+    }
+}

@@ -1,15 +1,20 @@
-import html from '../html/html';
-export default {...html, ...{
-    type: 'htmlcontainer',
-    extends: 'nested',
-    methods: {
-        ...html.methods,
-        ...{
-            renderContext(_super:any, extend: any = {}) {
-                return html.methods.renderContext.call(this, _super, Object.assign({
-                    content: this.renderComponents()
-                }, extend));
-            }
-        }
+import { NestedComponent } from '@formio/core';
+import { HTML, HTMLProperties } from '../html/html';
+
+/**
+ * Base HTMLContainer component.
+ */
+export class HTMLContainer extends HTML {
+    renderContext(extend: any = {}) {
+        return super.renderContext(Object.assign({
+            content: this.renderComponents()
+        }, extend));
     }
-}};
+}
+
+@NestedComponent({
+    type: 'htmlcontainer',
+    schema: HTMLProperties.schema,
+    template: HTMLProperties.template
+})
+export class HTMLContainerComponent extends HTMLContainer {}

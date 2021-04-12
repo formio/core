@@ -1,15 +1,7 @@
-const path = require('path');
-module.exports = {
-  mode: 'development',
-  entry: `./lib/Formio.js`,
+module.exports = require('./webpack.config.js')({
+  entry: `./src/sdk/index.ts`,
   output: {
     library: 'Formio',
-    libraryTarget: 'umd',
-    libraryExport: 'Formio',
-    path: path.resolve(__dirname, '../dist'),
-    filename: 'formio.js',
-    environment: {
-      arrowFunction: false
-    },
+    filename: 'formio.js'
   }
-};
+});

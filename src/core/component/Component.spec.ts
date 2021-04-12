@@ -1,6 +1,7 @@
-import { Component } from './Component';
+import { Component as ComponentBase } from './Component';
 var jsdom = require('mocha-jsdom');
 import { assert } from 'chai';
+const Component = ComponentBase()();
 
 describe('Component', () => {
     jsdom({
@@ -16,7 +17,9 @@ describe('Component', () => {
         assert.equal(comp.options.namespace, 'formio');
         assert.deepEqual(comp.component, {
             type: 'textfield',
-            key: 'firstName'
+            key: 'firstName',
+            protected: false,
+            persistent: true
         });
     });
 

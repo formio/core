@@ -1,7 +1,5 @@
 import { assert } from 'chai';
-import '../import';
-import { Components } from '../../core';
-const DataValueComponent = Components.components.datavalue;
+import { DataValueComponent } from '../test';
 
 describe('DataValue', () => {
     it ('Should create a DataValue component', () => {
@@ -12,6 +10,6 @@ describe('DataValue', () => {
         }, {}, {
             firstName: 'Joe'
         });
-        assert.equal(dataValue.render(), '<span ref="val">Joe</span>');
+        assert.equal((dataValue as any).render(), '<span ref="val">Joe</span>');
     });
 });

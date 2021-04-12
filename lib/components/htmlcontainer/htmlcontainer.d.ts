@@ -1,16 +1,9 @@
-declare const _default: {
-    type: string;
-    extends: string;
-    methods: {
-        renderContext(_super: any, extend?: any): any;
-        getAttributes(): string;
-    };
-    schema: {
-        tag: string;
-        content: string;
-        attrs: never[];
-        className: string;
-    };
-    template: (ctx: any) => string;
-};
-export default _default;
+import { HTML } from '../html/html';
+/**
+ * Base HTMLContainer component.
+ */
+export declare class HTMLContainer extends HTML {
+    renderContext(extend?: any): any;
+}
+export declare class HTMLContainerComponent extends HTMLContainer {
+}

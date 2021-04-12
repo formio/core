@@ -1,0 +1,13 @@
+{
+    "name": "@formio/validator",
+    "version": "0.1.0",
+    "description": "A data validation library used by Form.io",
+    "main": "index.ts",
+    "dependencies": {
+        "@formio/lodash": "0.0.4",
+        "@formio/utils": "0.1.0",
+        "dayjs": "^1.10.4",
+        "dompurify": "^2.2.7",
+        "fetch-ponyfill": "^7.1.0"
+    }
+}

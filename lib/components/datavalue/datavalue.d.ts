@@ -1,6 +1,3 @@
-declare const _default: {
-    type: string;
-    extends: string;
-    template: (ctx: any) => string;
-};
-export default _default;
+import { HTML } from '../html/html';
+export declare class DataValueComponent extends HTML {
+}

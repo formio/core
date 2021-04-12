@@ -1,6 +1,10 @@
-import { Template } from '../../templates/Template';
-import { Evaluator, sanitize, dom, lodash } from '../../util';
-import EventEmitter from 'eventemitter3';
+import { Components } from '../Components';
+import { Template } from '../Template';
+import { Evaluator } from '@formio/utils/Evaluator';
+import * as dom from '@formio/utils/dom';
+import { sanitize } from '@formio/utils/sanitize';
+import { Model, ModelDecoratorInterface,  ModelInterface } from '@formio/model';
+import { merge } from '@formio/lodash/lib/object';
 
 /**
  * The component JSON schema.
@@ -23,409 +27,354 @@ export interface ComponentOptions {
     noInit?: boolean
 }
 
-/**
- * The base component for all rendered components within Form.io platform.
- */
-export class Component extends EventEmitter {
-    /**
-     * The JSON schema for a base component.
-     * @param extend
-     */
-    static schema(extend: any = {}): any {
-        return lodash.merge({
-            type: 'component',
-            key: ''
-        }, extend);
-    }
+export interface ComponentInterface {
+    new (component?: any, options?: any, data?: any): any;
+}
 
-    public id: string;
-
-    /**
-     * The DOM Element associated with this component.
-     */
-    public element?: HTMLElement;
-
-    /**
-     * Boolean to let us know if this component is attached to the DOM or not.
-     */
-    public attached: boolean = false;
-
-    /**
-     * The DOM element references used for component logic.
-     */
-    public refs: any = {};
-
-    /**
-     * The parent component.
-     */
-    public parent?: Component;
-
-    /**
-     * The root component.
-     */
-    public root?: Component;
-
-    /**
-     * The template to render for this component.
-     */
-    public template: any = (ctx: any) => `<span>${ctx.t('Unknown Component')}</span>`;
-
-    /**
-     * An array of attached listeners.
-     */
-    public attachedListeners: Array<any> = [];
-
-    /**
-     * @constructor
-     * @param component
-     * @param options
-     * @param data
-     */
-    constructor(
-        public component: (ComponentSchema | any) = {},
-        public options: ComponentOptions = {},
-        public data: any = {}
-    ) {
-        super();
-        this.id = `e${Math.random().toString(36).substring(7)}`;
-        this.component = lodash.merge(this.defaultSchema, this.component) as any;
-        this.options = Object.assign({
-            language: 'en',
-            namespace: 'formio'
-        }, this.options);
-        if (!this.options.noInit) {
-            this.init();
+export function Component(props: any = {}) : ModelDecoratorInterface {
+    props = merge({
+        type: 'component',
+        template: false,
+        schema: {
+            persistent: true,
+            protected: false,
         }
-    }
+    }, props);
+    props.schema.type = props.type;
+    const ModelClass = props.model || Model;
+    return function(BaseClass?: ModelInterface) : ModelInterface {
+        return class ExtendedComponent extends ModelClass(props)(BaseClass) {
+            /**
+             * The DOM Element associated with this component.
+             */
+            public element?: HTMLElement;
 
-    /**
-     * Initializes the component.
-     */
-    public init() {
-        this.hook('init');
-    }
+            /**
+             * Boolean to let us know if this component is attached to the DOM or not.
+             */
+            public attached: boolean = false;
 
-    public get defaultSchema(): any {
-        return Component.schema();
-    }
+            /**
+             * The DOM element references used for component logic.
+             */
+            public refs: any = {};
 
-    /**
-     * Interpolate a template string.
-     * @param template - The template string to interpolate.
-     * @param context - The context variables to pass to the interpolation.
-     */
-    public interpolate(template: string, context: any) {
-        return Evaluator.interpolate(template, context);
-    }
+            /**
+             * The template to render for this component.
+             */
+            public template: any = props.template;
 
-    /**
-     * The rendering context.
-     * @param context - The existing contexts from parent classes.
-     */
-    public renderContext(context: any = {}) {
-        return this.evalContext(context);
-    }
+            /**
+             * An array of attached listeners.
+             */
+            public attachedListeners: Array<any> = [];
 
-    /**
-     * Renders this component as an HTML string.
-     */
-    public render(context: any = {}): string {
-        return this.renderTemplate((this.template || this.component.type), this.renderContext(context));
-    }
 
-    /**
-     * Returns the template references.
-     */
-    public getRefs() {
-        return {};
-    }
-
-    /**
-     * Loads the elemement references.
-     * @param element
-     */
-    loadRefs(element: HTMLElement) {
-        const refs: any = this.getRefs();
-        for (const ref in refs) {
-            if (refs[ref] === 'single') {
-                this.refs[ref] = element.querySelector(`[ref="${ref}"]`);
+            public get defaultOptions(): any {
+                return {
+                    language: 'en',
+                    namespace: 'formio'
+                };
             }
-            else {
-                this.refs[ref] = element.querySelectorAll(`[ref="${ref}"]`);
+
+            public get defaultTemplate(): any {
+                return (ctx: any) => `<span>${ctx.t('Unknown Component')}</span>`;
             }
-        }
-    }
 
-    /**
-     * Renders the component and then attaches this component to the HTMLElement.
-     * @param element
-     */
-    public async attach(element?: HTMLElement | undefined) {
-        if (this.element && !element) {
-            element = this.element;
-        }
-        if (!element) {
-            return this;
-        }
-        const parent = element.parentNode;
-        if (!parent) {
-            return this;
-        }
-        const index = Array.prototype.indexOf.call(parent.children, element);
-        element.outerHTML = String(this.sanitize(this.render()));
-        element = parent.children[index] as HTMLElement;
-        this.element = element;
-        this.loadRefs(this.element);
-        this.attached = true;
-        return this;
-    }
-
-    /**
-     * Redraw this component.
-     * @returns
-     */
-    public async redraw() {
-        if (this.element) {
-            this.clear();
-            return this.attach();
-        }
-    }
-
-    /**
-     * Sanitize an html string.
-     *
-     * @param string
-     * @returns {*}
-     */
-    sanitize(dirty: string): (TrustedHTML | string) {
-        return sanitize(dirty, this.options);
-    }
-
-    /**
-     * Get all available translations.
-     */
-    public get translations(): any {
-        if (
-            this.options.language &&
-            this.options.i18n &&
-            this.options.i18n[this.options.language]
-        ) {
-            return this.options.i18n[this.options.language];
-        }
-        return {};
-    }
-
-    /**
-     * Tranlation method to translate a string being rendered.
-     * @param str
-     */
-    public t(str: string): string {
-        if (this.translations[str]) {
-            return this.translations[str];
-        }
-        return str;
-    }
-
-    /**
-     * The evaluation context for interpolations.
-     * @param extend
-     */
-    public evalContext(extend: any = {}) {
-        return Object.assign({
-            instance: this,
-            component: this.component,
-            options: this.options,
-            data: this.data,
-            value: () => this.dataValue,
-            t: (str: string) => this.t(str)
-        }, extend);
-    }
-
-    /**
-     * Render a template with provided context.
-     * @param name
-     * @param ctx
-     */
-    protected renderTemplate(name: any, ctx: any = {}): string {
-        return Template.render(name, this.evalContext(ctx));
-    }
-
-    /**
-     * Allow for options to hook into the functionality of this renderer.
-     * @return {*}
-     */
-    hook(name: string, ...args: any) {
-        if (
-            this.options &&
-            this.options.hooks &&
-            this.options.hooks[name]
-        ) {
-            return this.options.hooks[name].apply(this, args);
-        }
-        else {
-            // If this is an async hook instead of a sync.
-            const fn = (typeof args[args.length - 1] === 'function') ? args[args.length - 1] : null;
-            if (fn) {
-                return fn(null, args[1]);
+            /**
+             * Interpolate a template string.
+             * @param template - The template string to interpolate.
+             * @param context - The context variables to pass to the interpolation.
+             */
+            public interpolate(template: string, context: any) {
+                return Evaluator.interpolate(template, context);
             }
-            else {
-                return args[1];
+
+            /**
+             * The rendering context.
+             * @param context - The existing contexts from parent classes.
+             */
+            public renderContext(context: any = {}) {
+                if (super.renderContext) {
+                    return super.renderContext(context);
+                }
+                return context;
             }
-        }
-    }
 
-    /**
-     * Returns the data value for this component.
-     */
-    public get dataValue(): any {
-        return lodash.get(this.data, this.component.key);
-    }
+            /**
+             * Performs an evaluation using the evaluation context of this component.
+             *
+             * @param func
+             * @param args
+             * @param ret
+             * @param tokenize
+             * @return {*}
+             */
+            public evaluate(func: any, args: any = {}, ret: any = '', tokenize: boolean = false) {
+                return Evaluator.evaluate(func, this.evalContext(args), ret, tokenize);
+            }
 
-    /**
-     * Sets the datavalue for this component.
-     */
-    public set dataValue(value: any) {
-        if (this.component.key) {
-            lodash.set(this.data, this.component.key, value);
-        }
-    }
+            /**
+             * Renders this component as an HTML string.
+             */
+            public render(context: any = {}): string {
+                if (super.render) {
+                    return super.render(context);
+                }
+                return this.renderTemplate((this.template || this.component.type), this.renderContext(context));
+            }
 
-    /**
-     * Bubbles an event to the top.
-     * @param event
-     * @param args
-     */
-    public bubble(event: string, ...args: any[]) {
-        if (this.parent) {
-            this.parent.bubble(event, ...args);
-        }
-        else {
-            this.emit(event, ...args);
-        }
-    }
+            /**
+             * Returns the template references.
+             */
+            public getRefs() {
+                if (super.getRefs) {
+                    return super.getRefs();
+                }
+                return {};
+            }
 
-    /**
-     * Determine if this component has changed values.
-     *
-     * @param value - The value to compare against the current value.
-     */
-    public hasChanged(value: any) {
-        return String(value) !== String(this.dataValue);
-    }
+            /**
+             * Loads the elemement references.
+             * @param element
+             */
+            loadRefs(element: HTMLElement) {
+                const refs: any = this.getRefs();
+                for (const ref in refs) {
+                    if (refs[ref] === 'single') {
+                        this.refs[ref] = element.querySelector(`[ref="${ref}"]`);
+                    }
+                    else {
+                        this.refs[ref] = element.querySelectorAll(`[ref="${ref}"]`);
+                    }
+                }
+            }
 
-    /**
-     * Updates the data model value without setting the view.
-     * @param value The value to update within this component.
-     * @return boolean true if the value has changed.
-     */
-    public updateValue(value: any): boolean {
-        const changed = this.hasChanged(value);
-        this.dataValue = value;
-        if (changed) {
-            this.bubble('change', this);
-        }
-        return changed;
-    }
+            /**
+             * Renders the component and then attaches this component to the HTMLElement.
+             * @param element
+             */
+            public async attach(element?: HTMLElement | undefined) {
+                if (this.element && !element) {
+                    element = this.element;
+                }
+                if (!element) {
+                    return this;
+                }
+                const parent = element.parentNode;
+                if (!parent) {
+                    return this;
+                }
+                const index = Array.prototype.indexOf.call(parent.children, element);
+                element.outerHTML = String(this.sanitize(this.render()));
+                element = parent.children[index] as HTMLElement;
+                this.element = element;
+                this.loadRefs(this.element);
+                if (super.attach) {
+                    await super.attach(element);
+                }
+                this.attached = true;
+                return this;
+            }
 
-    /**
-     * Sets the data value and updates the view representation.
-     * @param value
-     */
-    public setValue(value: any): boolean {
-        return this.updateValue(value);
-    }
+            /**
+             * Redraw this component.
+             * @returns
+             */
+            public async redraw() {
+                if (this.element) {
+                    this.clear();
+                    return this.attach();
+                }
+            }
 
-    /**
-     * Returns the main HTML Element for this component.
-     */
-    getElement(): (HTMLElement | undefined) {
-        return this.element;
-    }
+            /**
+             * Sanitize an html string.
+             *
+             * @param string
+             * @returns {*}
+             */
+            sanitize(dirty: string): (TrustedHTML | string) {
+                return sanitize(dirty, this.options);
+            }
 
-    /**
-     * Remove all event handlers.
-     */
-    detach() {
-        this.refs = {};
-        this.attached = false;
-        this.removeAttachedListeners();
-    }
+            /**
+             * Get all available translations.
+             */
+            public get translations(): any {
+                if (
+                    this.options.language &&
+                    this.options.i18n &&
+                    this.options.i18n[this.options.language]
+                ) {
+                    return this.options.i18n[this.options.language];
+                }
+                return {};
+            }
 
-    /**
-     * Clear an element.
-     */
-    clear() {
-        this.detach();
-        dom.empty(this.getElement());
-    }
+            /**
+             * Tranlation method to translate a string being rendered.
+             * @param str
+             */
+            public t(str: string): string {
+                if (this.translations[str]) {
+                    return this.translations[str];
+                }
+                return str;
+            }
 
-    /**
-     * Appends an element to this component.
-     * @param element
-     */
-    append(element: (HTMLElement | undefined)) {
-        dom.appendTo(element, this.element);
-    }
+            /**
+             * The evaluation context for interpolations.
+             * @param extend
+             */
+            public evalContext(extend: any = {}) {
+                return Object.assign({
+                    instance: this,
+                    component: this.component,
+                    options: this.options,
+                    data: this.data,
+                    value: () => this.dataValue,
+                    t: (str: string) => this.t(str)
+                }, extend);
+            }
 
-    /**
-     * Prepends an element to this component.
-     * @param element
-     */
-    prepend(element: (HTMLElement | undefined)) {
-        dom.prependTo(element, this.element);
-    }
+            /**
+             * Render a template with provided context.
+             * @param name
+             * @param ctx
+             */
+            public renderTemplate(name: any, ctx: any = {}): string {
+                return Template.render(name, this.evalContext(ctx), 'html', this.defaultTemplate);
+            }
 
-    /**
-     * Removes an element from this component.
-     * @param element
-     */
-    removeChild(element: (HTMLElement | undefined)) {
-        dom.removeChildFrom(element, this.element);
-    }
+            /**
+             * Determines if the value of this component is redacted from the user as if it is coming from the server, but is protected.
+             *
+             * @return {boolean|*}
+             */
+            isValueRedacted() {
+                return (
+                    this.component.protected ||
+                    !this.component.persistent ||
+                    (this.component.persistent === 'client-only')
+                );
+            }
 
-    /**
-     * Wrapper method to add an event listener to an HTML element.
-     *
-     * @param obj
-     *   The DOM element to add the event to.
-     * @param type
-     *   The event name to add.
-     * @param func
-     *   The callback function to be executed when the listener is triggered.
-     * @param persistent
-     *   If this listener should persist beyond "destroy" commands.
-     */
-    addEventListener(obj: any, type: string, func: any) {
-        if (!obj) {
-            return;
-        }
-        if ('addEventListener' in obj) {
-            obj.addEventListener(type, func, false);
-        }
-        else if ('attachEvent' in obj) {
-            obj.attachEvent(`on${type}`, func);
-        }
-        this.attachedListeners.push({ obj, type, func });
-        return this;
-    }
+            /**
+             * Sets the data value and updates the view representation.
+             * @param value
+             */
+            public setValue(value: any): boolean {
+                let changed = false;
+                if (super.setValue) {
+                    changed = super.setValue(value);
+                }
+                return this.updateValue(value) || changed;
+            }
 
-    /**
-     * Remove all the attached listeners.
-     */
-    removeAttachedListeners() {
-        this.attachedListeners.forEach((item) => this.removeEventListener(item.obj, item.type, item.func));
-    }
+            /**
+             * Returns the main HTML Element for this component.
+             */
+            getElement(): (HTMLElement | undefined) {
+                return this.element;
+            }
 
-    /**
-     * Remove an event listener from the object.
-     *
-     * @param obj
-     * @param type
-     */
-    removeEventListener(obj: any, type: string, func: any) {
-        if (obj) {
-            obj.removeEventListener(type, func);
-        }
-        return this;
+            /**
+             * Remove all event handlers.
+             */
+            detach() {
+                this.refs = {};
+                this.attached = false;
+                this.removeAttachedListeners();
+                if (super.detach) {
+                    super.detach();
+                }
+            }
+
+            /**
+             * Clear an element.
+             */
+            clear() {
+                this.detach();
+                dom.empty(this.getElement());
+                if (super.clear) {
+                    super.clear();
+                }
+            }
+
+            /**
+             * Appends an element to this component.
+             * @param element
+             */
+            append(element: (HTMLElement | undefined)) {
+                dom.appendTo(element, this.element);
+            }
+
+            /**
+             * Prepends an element to this component.
+             * @param element
+             */
+            prepend(element: (HTMLElement | undefined)) {
+                dom.prependTo(element, this.element);
+            }
+
+            /**
+             * Removes an element from this component.
+             * @param element
+             */
+            removeChild(element: (HTMLElement | undefined)) {
+                dom.removeChildFrom(element, this.element);
+            }
+
+            /**
+             * Wrapper method to add an event listener to an HTML element.
+             *
+             * @param obj
+             *   The DOM element to add the event to.
+             * @param type
+             *   The event name to add.
+             * @param func
+             *   The callback function to be executed when the listener is triggered.
+             * @param persistent
+             *   If this listener should persist beyond "destroy" commands.
+             */
+            addEventListener(obj: any, type: string, func: any) {
+                if (!obj) {
+                    return;
+                }
+                if ('addEventListener' in obj) {
+                    obj.addEventListener(type, func, false);
+                }
+                else if ('attachEvent' in obj) {
+                    obj.attachEvent(`on${type}`, func);
+                }
+                this.attachedListeners.push({ obj, type, func });
+                return this;
+            }
+
+            /**
+             * Remove all the attached listeners.
+             */
+            removeAttachedListeners() {
+                this.attachedListeners.forEach((item) => this.removeEventListener(item.obj, item.type, item.func));
+            }
+
+            /**
+             * Remove an event listener from the object.
+             *
+             * @param obj
+             * @param type
+             */
+            removeEventListener(obj: any, type: string, func: any) {
+                if (obj) {
+                    obj.removeEventListener(type, func);
+                }
+                return this;
+            }
+        };
     }
 }
+
+// Add the default component.
+Components.addDecorator(Component, 'component');
+Components.addComponent(Component()(), 'component');

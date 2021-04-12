@@ -1,6 +1,5 @@
-declare const _default: {
+export declare const HTMLProperties: {
     type: string;
-    extends: string;
     schema: {
         tag: string;
         content: string;
@@ -8,9 +7,18 @@ declare const _default: {
         className: string;
     };
     template: (ctx: any) => string;
-    methods: {
-        getAttributes(): string;
-        renderContext(_super: any, extend?: any): any;
-    };
 };
-export default _default;
+/**
+ * Base class for HTML based components.
+ */
+export declare class HTML {
+    component?: any;
+    options?: any;
+    data?: any;
+    [x: string]: any;
+    constructor(component?: any, options?: any, data?: any);
+    getAttributes(): string;
+    renderContext(extend?: any): any;
+}
+export declare class HTMLComponent extends HTML {
+}

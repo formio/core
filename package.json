@@ -1,6 +1,6 @@
 {
-  "name": "@formio/core",
-  "version": "0.0.9",
+  "name": "@formio/form",
+  "version": "0.1.0",
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
   "scripts": {
@@ -8,7 +8,9 @@
     "docs": "./node_modules/typedoc/bin/typedoc --exclude '*.spec.ts' src/*.ts src/**/*.ts src/**/**/*.ts",
     "build:core": "webpack --config config/webpack.core.js && webpack --config config/webpack.core.prod.js",
     "build:formio": "webpack --config config/webpack.formio.js && webpack --config config/webpack.formio.prod.js",
-    "build": "gulp templates && tsc && npm run docs && npm run build:core && npm run build:formio",
+    "build:form": "webpack --config config/webpack.form.js && webpack --config config/webpack.form.prod.js",
+    "build:validator": "webpack --config config/webpack.validator.js && webpack --config config/webpack.validator.prod.js",
+    "build": "gulp templates && tsc && gulp packages && npm run docs && npm run build:core && npm run build:formio && npm run build:form && npm run build:validator",
     "prepublish": "npm run build && npm run test"
   },
   "repository": {
@@ -33,7 +35,7 @@
   ],
   "homepage": "https://github.com/formio/core#readme",
   "devDependencies": {
-    "@types/chai": "^4.2.15",
+    "@types/chai": "^4.2.16",
     "@types/chance": "^1.1.1",
     "@types/dompurify": "^2.2.1",
     "@types/fetch-mock": "^7.3.3",
@@ -56,18 +58,26 @@
     "mock-local-storage": "^1.1.17",
     "power-assert": "^1.6.1",
     "sinon": "^10.0.0",
+    "ts-loader": "^8.1.0",
     "ts-node": "^9.1.1",
-    "typedoc": "^0.20.34",
+    "typedoc": "^0.20.35",
     "typescript": "^4.2.3",
-    "webpack": "^5.29.0",
+    "webpack": "^5.30.0",
     "webpack-cli": "^4.6.0"
   },
   "dependencies": {
+    "@formio/components": "file:src/components",
+    "@formio/core": "file:src/core",
+    "@formio/lodash": "0.0.4",
+    "@formio/model": "file:src/model",
+    "@formio/modules": "file:src/modules",
+    "@formio/sdk": "file:src/sdk",
+    "@formio/utils": "file:src/utils",
+    "@formio/validator": "file:src/validator",
     "dayjs": "^1.10.4",
-    "deepmerge": "^4.2.2",
     "dompurify": "^2.2.7",
     "eventemitter3": "^4.0.7",
     "fetch-ponyfill": "^7.1.0",
-    "uuid": "^8.3.2"
+    "json-logic-js": "^2.0.0"
   }
 }

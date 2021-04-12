@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>core/data/DataComponent | @formio/core</title>
-	<meta name="description" content="Documentation for @formio/core">
+	<title>core/data/DataComponent | @formio/form</title>
+	<meta name="description" content="Documentation for @formio/form">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
 	<script async src="../assets/js/search.js" id="search-script"></script>
@@ -23,7 +23,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">@formio/core</a>
+					<a href="../index.html" class="title">@formio/form</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -52,7 +52,7 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../modules.html">@formio/core</a>
+					<a href="../modules.html">@formio/form</a>
 				</li>
 				<li>
 					<a href="core_data_datacomponent.html">core/data/DataComponent</a>
@@ -70,12 +70,53 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Classes</h3>
+							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/core_data_datacomponent.datacomponent.html" class="tsd-kind-icon">Data<wbr>Component</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="core_data_datacomponent.html#datacomponent" class="tsd-kind-icon">Data<wbr>Component</a></li>
 							</ul>
 						</section>
 					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="datacomponent" class="tsd-anchor"></a>
+					<h3>Data<wbr>Component</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">Data<wbr>Component<span class="tsd-signature-symbol">(</span>props<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/model_model.modeldecoratorinterface.html" class="tsd-signature-type" data-tsd-kind="Interface">ModelDecoratorInterface</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/formio/core/blob/4bad2f5/src/core/data/DataComponent.ts#L19">src/core/data/DataComponent.ts:19</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>A DataComponent is one that establishes a new data context for all of its
+										children at the specified &quot;key&quot; of this comopnent. For example, if this data
+										component has a key of &quot;employee&quot;, and then some components within the data
+										component of &quot;firstName&quot; and &quot;lastName&quot;, the data structure provided by this
+									component would resemble the following.</p>
+								</div>
+								<p>{
+									&quot;employee&quot;: {
+									&quot;firstName&quot;: &quot;Bob&quot;,
+									&quot;lastName&quot;: &quot;Smith&quot;
+									}
+								}</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>props: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = {}</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/model_model.modeldecoratorinterface.html" class="tsd-signature-type" data-tsd-kind="Interface">ModelDecoratorInterface</a></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -92,8 +133,8 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/core_data_datacomponent.datacomponent.html" class="tsd-kind-icon">Data<wbr>Component</a>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="core_data_datacomponent.html#datacomponent" class="tsd-kind-icon">Data<wbr>Component</a>
 					</li>
 				</ul>
 			</nav>
@@ -105,7 +146,6 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 			</ul>

@@ -1,7 +1,5 @@
 import { assert } from 'chai';
-import '../import';
-import { Components } from '../../core';
-const DataTableComponent = Components.components.datatable;
+import { DataTableComponent } from '../test';
 
 describe('DataTable', () => {
     it ('Should create a DataTable component', () => {
@@ -23,7 +21,7 @@ describe('DataTable', () => {
                 {
                     type: 'datavalue',
                     key: 'lastName',
-                    label: 'First Name'
+                    label: 'Last Name'
                 }
             ]
         }, {}, {
@@ -38,7 +36,7 @@ describe('DataTable', () => {
             <thead>
                 <tr>
                     <th>First Name</th>
-                    <th>First Name</th>
+                    <th>Last Name</th>
                 </tr>
             </thead>
             <tbody>
