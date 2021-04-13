@@ -1,2 +1,2 @@
-import html from './html.ejs.js';
+declare const html: any;
 export { html };

@@ -1,2 +1,2 @@
-import html from './html.ejs.js';
+const html = require('./html.ejs.js').default;
 export { html };
