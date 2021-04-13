@@ -3,9 +3,5 @@
     "version": "0.1.0",
     "description": "Some basic components for the Form.io renderer.",
     "main": "index.ts",
-    "dependencies": {
-        "@formio/lodash": "0.0.4",
-        "@formio/base": "0.1.0",
-        "@formio/model": "0.1.0"
-    }
+    "dependencies": {}
 }

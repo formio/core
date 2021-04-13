@@ -3,10 +3,5 @@
     "version": "0.1.0",
     "description": "A collection of standard Form.io modules.",
     "main": "index.ts",
-    "dependencies": {
-        "@formio/lodash": "0.0.4",
-        "@formio/sdk": "0.1.0",
-        "@formio/base": "0.1.0",
-        "json-logic-js": "^2.0.0"
-    }
+    "dependencies": {}
 }

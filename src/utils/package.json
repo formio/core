@@ -3,9 +3,5 @@
     "version": "0.1.0",
     "description": "Standard utilities for the Form.io platform.",
     "main": "index.ts",
-    "dependencies": {
-        "@formio/lodash": "0.0.4",
-        "dayjs": "^1.10.4",
-        "dompurify": "^2.2.7"
-    }
+    "dependencies": {}
 }

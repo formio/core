@@ -6,11 +6,9 @@
   "scripts": {
     "test": "mocha -r ts-node/register --r mock-local-storage '**/*.spec.ts'",
     "docs": "./node_modules/typedoc/bin/typedoc --exclude '*.spec.ts' src/*.ts src/**/*.ts src/**/**/*.ts",
-    "build:base": "webpack --config config/webpack.base.js && webpack --config config/webpack.base.prod.js",
-    "build:formio": "webpack --config config/webpack.formio.js && webpack --config config/webpack.formio.prod.js",
-    "build:core": "webpack --config config/webpack.core.js && webpack --config config/webpack.core.prod.js",
-    "build:validator": "webpack --config config/webpack.validator.js && webpack --config config/webpack.validator.prod.js",
-    "build": "gulp templates && npm run docs && npm run build:base && npm run build:formio && npm run build:core && npm run build:validator",
+    "build:dev": "webpack --config config/webpack.config.js",
+    "build:prod": "webpack --config config/webpack.prod.js",
+    "build": "gulp templates && npm run docs && npm run build:dev && npm run build:prod",
     "prepublish": "npm run build && npm run test"
   },
   "repository": {
@@ -30,13 +28,13 @@
     "url": "https://github.com/formio/core/issues"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "homepage": "https://github.com/formio/core#readme",
   "devDependencies": {
-    "@formio/components": "file:src/components",
     "@formio/base": "file:src/base",
-    "@formio/lodash": "0.0.4",
+    "@formio/components": "file:src/components",
     "@formio/model": "file:src/model",
     "@formio/modules": "file:src/modules",
     "@formio/sdk": "file:src/sdk",
@@ -69,10 +67,11 @@
     "ts-node": "^9.1.1",
     "typedoc": "^0.20.35",
     "typescript": "^4.2.4",
-    "webpack": "^5.31.2",
+    "webpack": "^5.32.0",
     "webpack-cli": "^4.6.0"
   },
   "dependencies": {
+    "@formio/lodash": "0.0.7",
     "dayjs": "^1.10.4",
     "dompurify": "^2.2.7",
     "eventemitter3": "^4.0.7",
