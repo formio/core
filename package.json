@@ -1,6 +1,6 @@
 {
   "name": "@formio/core",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "docs": "./node_modules/typedoc/bin/typedoc --exclude '*.spec.ts' src/*.ts src/**/*.ts src/**/**/*.ts",
     "build:dev": "webpack --config config/webpack.config.js",
     "build:prod": "webpack --config config/webpack.prod.js",
-    "build": "gulp templates && npm run docs && npm run build:dev && npm run build:prod",
+    "clean": "rm -rf lib && rm -rf dist && rm -rf docs",
+    "build": "npm run clean && gulp templates && npm run docs && npm run build:dev && npm run build:prod",
     "prepublish": "npm run build && npm run test"
   },
   "repository": {
@@ -29,6 +30,7 @@
   },
   "files": [
     "dist",
+    "lib",
     "src"
   ],
   "homepage": "https://github.com/formio/core#readme",
