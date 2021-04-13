@@ -30,8 +30,7 @@
   },
   "files": [
     "dist",
-    "lib",
-    "src"
+    "lib"
   ],
   "homepage": "https://github.com/formio/core#readme",
   "devDependencies": {
