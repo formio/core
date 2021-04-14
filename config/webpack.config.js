@@ -13,7 +13,6 @@ module.exports = {
   },
   output: {
     library: {
-      name: 'Formio',
       type: 'umd'
     },
     path: path.resolve(__dirname, '../lib'),
