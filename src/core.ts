@@ -1,7 +1,7 @@
-import { Formio } from '@formio/sdk';
-import { Validator } from '@formio/validator';
-import { Evaluator, Utils } from '@formio/utils';
-import { Components, render, Template } from '@formio/base';
+import { Formio } from './sdk';
+import { Validator } from './validator';
+import { Evaluator, Utils } from './utils';
+import { Components, render, Template } from './base';
 (Formio as any).render = render;
 (Formio as any).Components = Components;
 (Formio as any).Validator = (Formio as any).Rules =  Validator;
@@ -107,8 +107,8 @@ export function use(...mods: any) {
 (Formio as any).useModule = useModule;
 (Formio as any).usePlugin = usePlugin;
 (Formio as any).use = use;
-import components from '@formio/components';
+import components from './components';
 (Formio as any).use(components);
-import modules from '@formio/modules';
+import modules from './modules';
 (Formio as any).use(modules);
 export { Formio };

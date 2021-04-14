@@ -12,8 +12,10 @@ module.exports = {
     'validator/index.js': './src/validator/index.ts'
   },
   output: {
-    library: 'Formio',
-    libraryTarget: 'umd',
+    library: {
+      name: 'Formio',
+      type: 'umd'
+    },
     path: path.resolve(__dirname, '../lib'),
     filename: '[name]',
     environment: {

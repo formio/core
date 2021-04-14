@@ -1,4 +1,4 @@
-import { Formio } from '@formio/sdk';
+import { Formio } from './sdk';
 /**
  * Register a specific plugin.
  *

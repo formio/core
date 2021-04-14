@@ -1,15 +1,16 @@
 {
   "name": "@formio/core",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha -r ts-node/register --r mock-local-storage '**/*.spec.ts'",
     "docs": "./node_modules/typedoc/bin/typedoc --exclude '*.spec.ts' src/*.ts src/**/*.ts src/**/**/*.ts",
     "build:dev": "webpack --config config/webpack.config.js",
+    "build:core": "webpack --config config/webpack.core.js",
     "build:prod": "webpack --config config/webpack.prod.js",
     "clean": "rm -rf lib && rm -rf dist && rm -rf docs",
-    "build": "npm run clean && gulp templates && npm run docs && npm run build:dev && npm run build:prod",
+    "build": "npm run clean && gulp templates && npm run docs && npm run build:dev && npm run build:prod && npm run build:core",
     "prepublish": "npm run build && npm run test"
   },
   "repository": {
