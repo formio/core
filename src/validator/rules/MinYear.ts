@@ -1,6 +1,6 @@
 import { Rule } from './Rule';
 export class MinYearRule extends Rule {
-  defaultMessage = '{{field}} should not contain year less than {{minYear}}';
+  defaultMessage = '{{ field }} should not contain year less than {{ settings }}';
   public async check(value: any = this.component.dataValue) {
     const minYear = this.settings;
     let year: any = /\d{4}$/.exec(value);

@@ -1,6 +1,6 @@
 import { Rule } from './Rule';
 export class MaxYearRule extends Rule {
-  defaultMessage = '{{field}} should not contain year greater than {{maxYear}}';
+  defaultMessage = '{{ field }} should not contain year greater than {{ settings }}';
   public async check(value: any = this.component.dataValue) {
     const maxYear = this.settings;
     let year: any = /\d{4}$/.exec(value);

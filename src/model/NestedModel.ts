@@ -55,13 +55,16 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
              * @param data
              * @returns
              */
-            createComponents(data: any): Array<any> {
+            createComponents(data: any, eachComp?: any): Array<any> {
                 const added: Array<any> = [];
                 (this.component.components || []).forEach((comp: any) => {
                     const newComp = this.createComponent(comp, this.options, data);
                     if (newComp) {
                         this.components.push(newComp);
                         added.push(newComp);
+                        if (eachComp) {
+                            eachComp(newComp);
+                        }
                     }
                 });
                 return added;
@@ -80,6 +83,16 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
                         this.components.splice(index, 1);
                     }
                 });
+            }
+
+            /**
+             * Checks for the validity of this component and all components within this component.
+             * @returns
+             */
+            public async checkValidity() {
+                return this.components.reduce((valid: boolean, comp: any) => {
+                    return valid && comp.checkValidity();
+                }, this.checkComponentValidity());
             }
 
             /**

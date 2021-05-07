@@ -2,7 +2,7 @@ import { getInputMask, matchInputMask } from '@formio/utils';
 
 import { Rule } from './Rule';
 export class MaskRule extends Rule {
-  defaultMessage = '{{field}} does not match the mask.';
+  defaultMessage = '{{ field }} does not match the mask.';
   public async check(value: any = this.component.dataValue) {
     let inputMask;
     if (this.component.isMultipleMasksField) {
@@ -14,7 +14,7 @@ export class MaskRule extends Rule {
       value = value ? value.value : value;
     }
     else {
-      inputMask = getInputMask(this.settings.mask);
+      inputMask = getInputMask(this.settings);
     }
     if (value && inputMask) {
       return matchInputMask(value, inputMask);

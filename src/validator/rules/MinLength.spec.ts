@@ -13,7 +13,7 @@ describe('MinLengthRule', () => {
             }
         ]
     });
-    const minLength = new MinLengthRule(component, {length: 5});
+    const minLength = new MinLengthRule(component, 5);
     it ('Should validate a default value Array Component', async () => {
         assert.equal(component.dataValue.length, 0);
         assert.equal(await minLength.check(), true);

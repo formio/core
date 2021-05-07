@@ -1,6 +1,6 @@
 import { Rule } from './Rule';
 export class EmailRule extends Rule {
-  defaultMessage = '{{field}} must be a valid email.';
+  defaultMessage = '{{ field }} must be a valid email.';
   public async check(value: any = this.component.dataValue) {
     if (!value) {
       return true;

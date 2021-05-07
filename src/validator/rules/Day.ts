@@ -1,6 +1,6 @@
 import { Rule } from './Rule';
 export class DayRule extends Rule {
-  defaultMessage = '{{field}} is not a valid day.';
+  defaultMessage = '{{ field }} is not a valid day.';
   public async check(value: any = this.component.dataValue) {
     if (!value) {
       return true;

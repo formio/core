@@ -4,12 +4,8 @@ const Component = ComponentBase()();
 import { assert } from 'chai';
 describe('PatternRule', () => {
     const component = new Component({key: 'data'});
-    const numeric = new PatternRule(component, {
-        pattern: '[0-9]+'
-    });
-    const alphanumeric = new PatternRule(component, {
-        pattern: '[0-9a-zA-Z]+'
-    });
+    const numeric = new PatternRule(component, '[0-9]+');
+    const alphanumeric = new PatternRule(component, '[0-9a-zA-Z]+');
     it ('Should only allow numeric values.', async () => {
         assert.equal(await numeric.check(1234), true);
         assert.equal(await numeric.check('1234'), true);

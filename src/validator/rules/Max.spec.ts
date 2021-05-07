@@ -6,7 +6,7 @@ describe('MaxRule', () => {
     const component = new Component({
         key: 'data'
     });
-    const max = new MaxRule(component, {limit: 5});
+    const max = new MaxRule(component, 5);
     it ('Should validate a default component', async () => {
         assert.equal(await max.check(), true);
     });

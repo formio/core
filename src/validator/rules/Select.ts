@@ -5,15 +5,15 @@ const { fetch, Headers, Request } = fetchPonyfill();
 
 import { Rule } from './Rule';
 export class SelectRule extends Rule {
-  defaultMessage = '{{field}} contains an invalid selection';
-  public async check(value: any = this.component.dataValue, data: any, row: any, async?: any): Promise<boolean> {
+  defaultMessage = '{{ field }} contains an invalid selection';
+  public async check(value: any = this.component.dataValue, options: any = {}): Promise<boolean> {
     // Skip if value is empty
     if (!value || isEmpty(value)) {
       return true;
     }
 
-    // Skip if we're not async-capable
-    if (!async) {
+    // Skip if no url provided.
+    if (!this.settings) {
       return true;
     }
 
@@ -21,7 +21,7 @@ export class SelectRule extends Rule {
 
     // Initialize the request options
     const requestOptions: any = {
-      url: this.settings.url,
+      url: this.settings,
       method: 'GET',
       qs: {},
       json: true,
@@ -82,8 +82,8 @@ export class SelectRule extends Rule {
     }
 
     // Set form.io authentication.
-    if (schema.authenticate && this.config.token) {
-      requestOptions.headers['x-jwt-token'] = this.config.token;
+    if (schema.authenticate && options.token) {
+      requestOptions.headers['x-jwt-token'] = options.token;
     }
 
     const resp = await fetch(new Request(requestOptions.url, {

@@ -1,10 +1,6 @@
 import Rules from './rules';
-export class Validator {
-    public static rules: any = Rules;
-    public static addRules(rules: any) {
-        Validator.rules = { ...Validator.rules, ...rules };
-    }
-};
-
+import { Validator } from './Validator';
+Validator.addRules(Rules);
+export { Validator };
 export { Rules };
 export { Rule } from './rules/Rule';

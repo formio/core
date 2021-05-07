@@ -4,14 +4,14 @@ import dayjs from 'dayjs';
 
 import { Rule } from './Rule';
 export class MinDateRule extends Rule {
-  defaultMessage = '{{field}} should not contain date before {{settings.dateLimit}}';
+  defaultMessage = '{{ field }} should not contain date before {{ settings }}';
   public async check(value: any = this.component.dataValue) {
     if (!value) {
       return true;
     }
 
     const date = dayjs(value);
-    const minDate = getDateSetting(this.settings.dateLimit);
+    const minDate = getDateSetting(this.settings);
 
     if (isNull(minDate)) {
       return true;

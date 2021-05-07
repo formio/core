@@ -1,6 +1,6 @@
 import { Rule } from './Rule';
 export class UrlRule extends Rule {
-  defaultMessage = '{{field}} must be a valid url.';
+  defaultMessage = '{{ field }} must be a valid url.';
   public async check(value: any = this.component.dataValue) {
     /* eslint-disable max-len */
     // From https://stackoverflow.com/questions/8667070/javascript-regular-expression-to-validate-url

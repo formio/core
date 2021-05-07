@@ -48,4 +48,17 @@ describe('Component', () => {
         });
         comp.attach(element);
     });
+
+    it ('Should validate a component', async () => {
+        const comp = new Component({
+            type: 'textfield',
+            key: 'firstName',
+            validate: {
+                required: true
+            }
+        });
+        assert.equal(await comp.checkValidity(), false);
+        comp.dataValue = 'testing';
+        assert.equal(await comp.checkValidity(), true);
+    });
 });

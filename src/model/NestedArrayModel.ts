@@ -90,7 +90,9 @@ export function NestedArrayModel(props: any = {}) : ModelDecoratorInterface {
              * @param data The data context to pass along to this row of components.
              */
             createRowComponents(data: any, index: number = 0): Array<any> {
-                const comps = super.createComponents(data);
+                const comps = super.createComponents(data, (comp: any) => {
+                    comp.rowIndex = index;
+                });
                 this.rows[index] = comps;
                 return comps;
             }

@@ -6,7 +6,7 @@ describe('MinRule', () => {
     const component = new Component({
         key: 'data'
     });
-    const min = new MinRule(component, {limit: 5});
+    const min = new MinRule(component, 5);
     it ('Should validate a default component', async () => {
         assert.equal(await min.check(), true);
     });

@@ -11,20 +11,21 @@ import {
 
 import { Rule } from './Rule';
 export class UniqueRule extends Rule {
-  defaultMessage = '{{field}} must be unique';
-  public async check(value: any = this.component.dataValue) {
+  defaultMessage = '{{ field }} must be unique';
+  public async check(value: any = this.component.dataValue, options: any = {}) {
     // Skip if value is empty object or falsy
     if (!value || isObjectLike(value) && isEmpty(value)) {
       return true;
     }
 
+    // Get the options for this check.
+    const { form, submission, db } = options;
+
     // Skip if we don't have a database connection
-    if (!this.config.db) {
+    if (!db) {
       return true;
     }
 
-    const form = this.config.form;
-    const submission = this.config.submission;
     const path = `data.${this.component.path}`;
 
     // Build the query
@@ -57,7 +58,7 @@ export class UniqueRule extends Rule {
 
     // Only search for non-deleted items
     query.deleted = { $eq: null };
-    const result = await this.config.db.findOne(query);
+    const result = await db.findOne(query);
     return submission._id && (result._id.toString() === submission._id);
   }
 };

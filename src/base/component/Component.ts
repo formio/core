@@ -232,7 +232,9 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
                     instance: this,
                     component: this.component,
                     options: this.options,
-                    data: this.data,
+                    row: this.data,
+                    data: this.root ? this.root.data : this.data,
+                    rowIndex: this.rowIndex,
                     value: () => this.dataValue,
                     t: (str: string) => this.t(str)
                 }, extend);

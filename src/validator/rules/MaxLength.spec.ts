@@ -13,7 +13,7 @@ describe('MaxLengthRule', () => {
             }
         ]
     });
-    const maxLength = new MaxLengthRule(component, {length: 5});
+    const maxLength = new MaxLengthRule(component, 5);
     it ('Should validate a default value Array Component', async () => {
         assert.equal(component.dataValue.length, 0);
         assert.equal(await maxLength.check(), true);
