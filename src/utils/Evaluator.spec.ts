@@ -28,6 +28,23 @@ describe('Evaluator', () => {
                 firstName: 'Travis'
             }
         }), '<span>Travis</span>');
+        assert.equal(Evaluator.interpolate(`<span>{{ data.person?.firstName }}</span>`, {
+            data: {
+                person: {
+                    firstName: 'Travis'
+                }
+            }
+        }), '<span>Travis</span>');
+        assert.equal(Evaluator.interpolate(`<span>{{ data.person?.details?.bio }}</span>`, {
+            data: {
+                person: {
+                    firstName: 'Travis',
+                    details: {
+                        bio: 'Form.io King',
+                    }
+                }
+            }
+        }), '<span>Form.io King</span>');
     });
 
     it('Should be able to evaluate an expression.', () => {
@@ -105,5 +122,9 @@ describe('Evaluator', () => {
                 lastName: 'Tidwell'
             }
         }), '<span>Travis Tidwell</span>');
+        assert.equal(Evaluator.interpolate(`<span>{{ getUTCDate(date) }}</span>`, {
+            date: '2021-05-03T00:00',
+            getUTCDate: (date: string) => (new Date(date)).toUTCString(),
+        }), '<span>Sun, 02 May 2021 21:00:00 GMT</span>');
     });
 });

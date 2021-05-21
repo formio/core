@@ -4,6 +4,8 @@ import * as _ from '@formio/lodash';
 export class BaseEvaluator {
     private static templateSettings = {
         interpolate: /{{([\s\S]+?)}}/g,
+        evaluate: /\{%([\s\S]+?)%\}/g,
+        escape: /\{\{\{([\s\S]+?)\}\}\}/g
     };
     public static noeval: boolean = false;
     public static evaluator(func: any, ...params: any) {
@@ -43,7 +45,11 @@ export class BaseEvaluator {
                 });
             }
             else {
-                return _.get(data, $2);
+                let dataPath = $2;
+                if ($2.indexOf('?') !== -1) {
+                    dataPath = $2.replace(/\?\./g, '.');
+                }
+                return _.get(data, dataPath);
             }
         });
     }
