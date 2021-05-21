@@ -120,6 +120,9 @@
 								<a href="validator_rules_minyear.minyearrule.html" class="tsd-signature-type" data-tsd-kind="Class">MinYearRule</a>
 							</li>
 							<li>
+								<a href="validator_rules_onlyavailable.onlyavailablerule.html" class="tsd-signature-type" data-tsd-kind="Class">OnlyAvailableRule</a>
+							</li>
+							<li>
 								<a href="validator_rules_pattern.patternrule.html" class="tsd-signature-type" data-tsd-kind="Class">PatternRule</a>
 							</li>
 							<li>
@@ -155,7 +158,6 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="validator_rules_rule.rule.html#component" class="tsd-kind-icon">component</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="validator_rules_rule.rule.html#config" class="tsd-kind-icon">config</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="validator_rules_rule.rule.html#settings" class="tsd-kind-icon">settings</a></li>
 							</ul>
 						</section>
@@ -174,13 +176,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Rule<span class="tsd-signature-symbol">(</span>component<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, settings<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, config<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="validator_rules_rule.rule.html" class="tsd-signature-type" data-tsd-kind="Class">Rule</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Rule<span class="tsd-signature-symbol">(</span>component<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, settings<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="validator_rules_rule.rule.html" class="tsd-signature-type" data-tsd-kind="Class">Rule</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/fc1a510/src/validator/rules/Rule.ts#L1">src/validator/rules/Rule.ts:1</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/b44260a/src/validator/rules/Rule.ts#L1">src/validator/rules/Rule.ts:1</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -190,9 +192,6 @@
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> settings: <span class="tsd-signature-type">any</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> config: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="validator_rules_rule.rule.html" class="tsd-signature-type" data-tsd-kind="Class">Rule</a></h4>
@@ -210,13 +209,6 @@
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="config" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> config</h3>
-					<div class="tsd-signature tsd-kind-icon">config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="settings" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> settings</h3>
 					<div class="tsd-signature tsd-kind-icon">settings<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
@@ -230,13 +222,13 @@
 					<a name="check" class="tsd-anchor"></a>
 					<h3>check</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">check<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, data<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, row<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">check<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/fc1a510/src/validator/rules/Rule.ts#L3">src/validator/rules/Rule.ts:3</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/b44260a/src/validator/rules/Rule.ts#L3">src/validator/rules/Rule.ts:3</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -245,10 +237,7 @@
 									<h5>value: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = ...</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> data: <span class="tsd-signature-type">any</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> row: <span class="tsd-signature-type">any</span></h5>
+									<h5>options: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = {}</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -280,9 +269,6 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="validator_rules_rule.rule.html#component" class="tsd-kind-icon">component</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="validator_rules_rule.rule.html#config" class="tsd-kind-icon">config</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="validator_rules_rule.rule.html#settings" class="tsd-kind-icon">settings</a>

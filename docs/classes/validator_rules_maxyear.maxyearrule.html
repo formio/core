@@ -95,7 +95,6 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="validator_rules_maxyear.maxyearrule.html#component" class="tsd-kind-icon">component</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="validator_rules_maxyear.maxyearrule.html#config" class="tsd-kind-icon">config</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="validator_rules_maxyear.maxyearrule.html#defaultmessage" class="tsd-kind-icon">default<wbr>Message</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="validator_rules_maxyear.maxyearrule.html#settings" class="tsd-kind-icon">settings</a></li>
 							</ul>
@@ -115,14 +114,14 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Max<wbr>Year<wbr>Rule<span class="tsd-signature-symbol">(</span>component<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, settings<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, config<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="validator_rules_maxyear.maxyearrule.html" class="tsd-signature-type" data-tsd-kind="Class">MaxYearRule</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Max<wbr>Year<wbr>Rule<span class="tsd-signature-symbol">(</span>component<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, settings<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="validator_rules_maxyear.maxyearrule.html" class="tsd-signature-type" data-tsd-kind="Class">MaxYearRule</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="validator_rules_rule.rule.html">Rule</a>.<a href="validator_rules_rule.rule.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/fc1a510/src/validator/rules/Rule.ts#L1">src/validator/rules/Rule.ts:1</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/b44260a/src/validator/rules/Rule.ts#L1">src/validator/rules/Rule.ts:1</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -132,9 +131,6 @@
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> settings: <span class="tsd-signature-type">any</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> config: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="validator_rules_maxyear.maxyearrule.html" class="tsd-signature-type" data-tsd-kind="Class">MaxYearRule</a></h4>
@@ -152,21 +148,13 @@
 						<p>Inherited from <a href="validator_rules_rule.rule.html">Rule</a>.<a href="validator_rules_rule.rule.html#component">component</a></p>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="config" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> config</h3>
-					<div class="tsd-signature tsd-kind-icon">config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="validator_rules_rule.rule.html">Rule</a>.<a href="validator_rules_rule.rule.html#config">config</a></p>
-					</aside>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="defaultmessage" class="tsd-anchor"></a>
 					<h3>default<wbr>Message</h3>
-					<div class="tsd-signature tsd-kind-icon">default<wbr>Message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &#x27;{{field}} should not contain year greater than {{maxYear}}&#x27;</span></div>
+					<div class="tsd-signature tsd-kind-icon">default<wbr>Message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &#x27;{{ field }} should not contain year greater than {{ settings }}&#x27;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/formio/core/blob/fc1a510/src/validator/rules/MaxYear.ts#L3">src/validator/rules/MaxYear.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/formio/core/blob/b44260a/src/validator/rules/MaxYear.ts#L3">src/validator/rules/MaxYear.ts:3</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -192,7 +180,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="validator_rules_rule.rule.html">Rule</a>.<a href="validator_rules_rule.rule.html#check">check</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/fc1a510/src/validator/rules/MaxYear.ts#L4">src/validator/rules/MaxYear.ts:4</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/b44260a/src/validator/rules/MaxYear.ts#L4">src/validator/rules/MaxYear.ts:4</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -230,9 +218,6 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="validator_rules_maxyear.maxyearrule.html#component" class="tsd-kind-icon">component</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="validator_rules_maxyear.maxyearrule.html#config" class="tsd-kind-icon">config</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="validator_rules_maxyear.maxyearrule.html#defaultmessage" class="tsd-kind-icon">default<wbr>Message</a>

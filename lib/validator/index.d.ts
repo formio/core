@@ -1,7 +1,5 @@
 import Rules from './rules';
-export declare class Validator {
-    static rules: any;
-    static addRules(rules: any): void;
-}
+import { Validator } from './Validator';
+export { Validator };
 export { Rules };
 export { Rule } from './rules/Rule';

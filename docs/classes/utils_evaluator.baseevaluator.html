@@ -104,7 +104,7 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="utils_evaluator.baseevaluator.html#evaluate" class="tsd-kind-icon">evaluate</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="utils_evaluator.baseevaluator.html#evaluate-1" class="tsd-kind-icon">evaluate</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="utils_evaluator.baseevaluator.html#evaluator" class="tsd-kind-icon">evaluator</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="utils_evaluator.baseevaluator.html#execute" class="tsd-kind-icon">execute</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="utils_evaluator.baseevaluator.html#interpolate-1" class="tsd-kind-icon">interpolate</a></li>
@@ -139,22 +139,28 @@
 					<div class="tsd-signature tsd-kind-icon">noeval<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/formio/core/blob/fc1a510/src/utils/Evaluator.ts#L8">src/utils/Evaluator.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/formio/core/blob/b44260a/src/utils/Evaluator.ts#L10">src/utils/Evaluator.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static">
 					<a name="templatesettings" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagPrivate">Private</span> template<wbr>Settings</h3>
-					<div class="tsd-signature tsd-kind-icon">template<wbr>Settings<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>interpolate<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<div class="tsd-signature tsd-kind-icon">template<wbr>Settings<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>escape<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol">; </span>evaluate<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol">; </span>interpolate<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/formio/core/blob/fc1a510/src/utils/Evaluator.ts#L5">src/utils/Evaluator.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/formio/core/blob/b44260a/src/utils/Evaluator.ts#L5">src/utils/Evaluator.ts:5</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>escape<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RegExp</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>evaluate<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RegExp</span></h5>
+							</li>
 							<li class="tsd-parameter">
 								<h5>interpolate<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RegExp</span></h5>
 							</li>
@@ -165,7 +171,7 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="evaluate" class="tsd-anchor"></a>
+					<a name="evaluate-1" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> evaluate</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
 						<li class="tsd-signature tsd-kind-icon">evaluate<span class="tsd-signature-symbol">(</span>func<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, args<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, ret<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, interpolate<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span>, context<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
@@ -174,7 +180,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/fc1a510/src/utils/Evaluator.ts#L72">src/utils/Evaluator.ts:72</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/b44260a/src/utils/Evaluator.ts#L78">src/utils/Evaluator.ts:78</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -214,7 +220,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/fc1a510/src/utils/Evaluator.ts#L9">src/utils/Evaluator.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/b44260a/src/utils/Evaluator.ts#L11">src/utils/Evaluator.ts:11</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -240,7 +246,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/fc1a510/src/utils/Evaluator.ts#L122">src/utils/Evaluator.ts:122</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/b44260a/src/utils/Evaluator.ts#L128">src/utils/Evaluator.ts:128</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -274,7 +280,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/fc1a510/src/utils/Evaluator.ts#L51">src/utils/Evaluator.ts:51</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/b44260a/src/utils/Evaluator.ts#L57">src/utils/Evaluator.ts:57</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -300,7 +306,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/formio/core/blob/fc1a510/src/utils/Evaluator.ts#L23">src/utils/Evaluator.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/formio/core/blob/b44260a/src/utils/Evaluator.ts#L25">src/utils/Evaluator.ts:25</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -346,7 +352,7 @@
 								<a href="utils_evaluator.baseevaluator.html#templatesettings" class="tsd-kind-icon">template<wbr>Settings</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="utils_evaluator.baseevaluator.html#evaluate" class="tsd-kind-icon">evaluate</a>
+								<a href="utils_evaluator.baseevaluator.html#evaluate-1" class="tsd-kind-icon">evaluate</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="utils_evaluator.baseevaluator.html#evaluator" class="tsd-kind-icon">evaluator</a>
