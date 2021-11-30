@@ -13,6 +13,18 @@
  *   The parent object.
  */
 export declare function eachComponent(components: any, fn: any, includeAll?: boolean, path?: string, parent?: any): void;
+/**
+ * Flatten the form components for data manipulation.
+ *
+ * @param {Object} components
+ *   The components to iterate.
+ * @param {Boolean} includeAll
+ *   Whether or not to include layout components.
+ *
+ * @returns {Object}
+ *   The flattened components map.
+ */
+export declare function flattenComponents(components: any, includeAll: boolean): any;
 export declare function guid(): string;
 /**
  * Make a filename guaranteed to be unique.

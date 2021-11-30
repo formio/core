@@ -1,4 +1,5 @@
 import { Component as ComponentBase } from './Component';
+import { Validator } from '../../validator';
 var jsdom = require('mocha-jsdom');
 import { assert } from 'chai';
 const Component = ComponentBase()();
@@ -56,6 +57,8 @@ describe('Component', () => {
             validate: {
                 required: true
             }
+        }, {
+            validator: Validator
         });
         assert.equal(await comp.checkValidity(), false);
         comp.dataValue = 'testing';

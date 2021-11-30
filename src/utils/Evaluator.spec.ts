@@ -123,7 +123,7 @@ describe('Evaluator', () => {
             }
         }), '<span>Travis Tidwell</span>');
         assert.equal(Evaluator.interpolate(`<span>{{ getUTCDate(date) }}</span>`, {
-            date: '2021-05-03T00:00',
+            date: '2021-05-02T21:00Z',
             getUTCDate: (date: string) => (new Date(date)).toUTCString(),
         }), '<span>Sun, 02 May 2021 21:00:00 GMT</span>');
     });

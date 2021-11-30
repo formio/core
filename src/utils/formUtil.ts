@@ -87,6 +87,25 @@ export function eachComponent(components: any, fn: any, includeAll?: boolean, pa
   });
 }
 
+/**
+ * Flatten the form components for data manipulation.
+ *
+ * @param {Object} components
+ *   The components to iterate.
+ * @param {Boolean} includeAll
+ *   Whether or not to include layout components.
+ *
+ * @returns {Object}
+ *   The flattened components map.
+ */
+ export function flattenComponents(components: any, includeAll: boolean) {
+  const flattened: any = {};
+  eachComponent(components, (component: any, path: string) => {
+    flattened[path] = component;
+  }, includeAll);
+  return flattened;
+}
+
 export function guid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = Math.random()*16|0;

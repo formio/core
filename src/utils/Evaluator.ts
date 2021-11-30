@@ -59,7 +59,7 @@ export class BaseEvaluator {
             try {
                 return rawTemplate(data);
             }
-            catch (err) {
+            catch (err: any) {
                 console.warn('Error interpolating template', err, data);
                 return err.message;
             }

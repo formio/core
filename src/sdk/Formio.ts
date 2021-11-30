@@ -1671,7 +1671,7 @@ export class Formio {
       try {
         localStorage.removeItem(tokenName);
       }
-      catch (err) {
+      catch (err: any) {
         console.log(`Error removing token: ${err.message}`);
       }
       Formio.tokens[tokenName] = token;
@@ -1684,7 +1684,7 @@ export class Formio {
       try {
         localStorage.setItem(tokenName, token);
       }
-      catch (err) {
+      catch (err: any) {
         console.log(`Error setting token: ${err.message}`);
       }
     }
@@ -1715,7 +1715,7 @@ export class Formio {
       Formio.tokens[tokenName] = localStorage.getItem(tokenName) || '';
       return Formio.tokens[tokenName];
     }
-    catch (e) {
+    catch (e: any) {
       console.log(`Error retrieving token: ${e.message}`);
       return '';
     }
@@ -1743,7 +1743,7 @@ export class Formio {
       try {
         return localStorage.removeItem(userName);
       }
-      catch (err) {
+      catch (err: any) {
         console.log(`Error removing token: ${err.message}`);
         return;
       }
@@ -1752,7 +1752,7 @@ export class Formio {
     try {
       localStorage.setItem(userName, JSON.stringify(user));
     }
-    catch (err) {
+    catch (err: any) {
       console.log(`Error setting token: ${err.message}`);
     }
 
@@ -1773,7 +1773,7 @@ export class Formio {
     try {
       return JSON.parse((localStorage.getItem(userName) || null)!);
     }
-    catch (e) {
+    catch (e: any) {
       console.log(`Error getting user: ${e.message}`);
       return {};
     }
