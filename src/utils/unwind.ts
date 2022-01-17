@@ -119,15 +119,17 @@ export function unwind(form: any, submission: any) {
         }
     };
 
-    let isNestedForm = false;
     // Iterate through all components.
     eachComponent(form.components, function (component: any, path: any) {
+        if (component.type === 'form' && component.components?.length) {
+            eachComponent(component.components, (comp: any) => {
+                comp.isInsideNestedForm = true;
+            });
+        }
         if (!component.overlay || (!component.overlay.width && !component.overlay.height)) {
             return;
         }
-        if (component.type === 'form') {
-            isNestedForm = true;
-        }
+
         var hasDataPath = component.properties && component.properties.dataPath;
         var key = component.key;
         if (hasDataPath) {
@@ -137,7 +139,7 @@ export function unwind(form: any, submission: any) {
         /* eslint-disable no-useless-escape */
         var paths = filter(path.replace(new RegExp(".?" + component.key + "$"), '').split('.'));
         /* eslint-enable no-useless-escape */
-        if (!hasDataPath && paths.length && !isNestedForm) {
+        if (!hasDataPath && paths.length && !component.isInsideNestedForm) {
             key = paths.map(function (subpath: any) { return subpath + "[0]"; }).join('.') + "." + component.key;
         }
         if (component.multiple) {
