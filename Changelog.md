@@ -1,3 +1,8 @@
+## 1.0.0-rc.2
+### Fixed
+ - FIO-599: Fixes no values on pdf download for components inside nested form
+ - FIO-2849: Fix: Evaluator does not interpolate expressions with optional chaining properly
+
 ## 0.0.8
 ### Changed
  - Added override method.
