@@ -15,7 +15,7 @@ module.exports = {
     library: {
       type: 'umd'
     },
-    path: path.resolve(__dirname, '../lib'),
+    path: path.resolve(__dirname, '../dist'),
     filename: '[name]',
     environment: {
       arrowFunction: false

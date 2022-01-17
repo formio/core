@@ -1,6 +1,6 @@
 {
   "name": "@formio/core",
-  "version": "1.0.0-rc.3",
+  "version": "1.0.0-rc.4",
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "build:full": "webpack --config config/webpack.full.js",
     "build:prod": "webpack --config config/webpack.prod.js",
     "clean": "rm -rf lib && rm -rf dist && rm -rf docs",
-    "build": "npm run clean && gulp templates && npm run docs && npm run build:dev && npm run build:prod && npm run build:full",
+    "build": "npm run clean && tsc && gulp templates && npm run docs && npm run build:dev && npm run build:prod && npm run build:full",
     "prepublish": "npm run build && npm run test"
   },
   "repository": {

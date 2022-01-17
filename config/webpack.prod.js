@@ -11,6 +11,5 @@ config.entry = {
   'formio.utils.min.js': './src/utils/index.ts',
   'formio.validator.min.js': './src/validator/index.ts'
 };
-config.output.path = path.resolve(__dirname, '../dist');
 config.output.library.name = 'FormioCore';
 module.exports = config;
