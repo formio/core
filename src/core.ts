@@ -1,3 +1,4 @@
+import 'core-js/features/object/from-entries';
 import { Formio } from './sdk';
 import { Validator } from './validator';
 import { Evaluator, Utils } from './utils';

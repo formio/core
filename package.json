@@ -74,6 +74,7 @@
   },
   "dependencies": {
     "@formio/lodash": "0.0.7",
+    "core-js": "^3.20.3",
     "dayjs": "^1.10.7",
     "dompurify": "^2.3.4",
     "eventemitter3": "^4.0.7",
