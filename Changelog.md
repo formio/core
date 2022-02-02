@@ -1,3 +1,7 @@
+## 1.0.0-rc.5
+### Fixed
+ - FIO-3999: Fixed Data Table loading for IE11
+
 ## 1.0.0-rc.2
 ### Fixed
  - FIO-599: Fixes no values on pdf download for components inside nested form
