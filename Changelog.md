@@ -1,3 +1,7 @@
+## 1.0.0
+### Changed
+ - Official Release
+
 ## 1.0.0-rc.5
 ### Fixed
  - FIO-3999: Fixed Data Table loading for IE11
