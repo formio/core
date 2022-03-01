@@ -22,7 +22,7 @@ export class BaseEvaluator {
         return new Function(...params, func);
     };
 
-    public static interpolateString(rawTemplate: string, data: any) {
+    public static interpolateString(rawTemplate: string, data: any, options: any = {}) {
         return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => {
             // If this is a function call and we allow evals.
             if ($2.indexOf('(') !== -1) {
@@ -39,7 +39,7 @@ export class BaseEvaluator {
                                 return _.get(data, arg);
                             });
                         }
-                        return Evaluator.evaluate(func, args, '', false, data);
+                        return Evaluator.evaluate(func, args, '', false, data, options);
                     }
                     return '';
                 });
@@ -49,12 +49,26 @@ export class BaseEvaluator {
                 if ($2.indexOf('?') !== -1) {
                     dataPath = $2.replace(/\?\./g, '.');
                 }
-                return _.get(data, dataPath);
+                // Allow for conditional values.
+                const parts = dataPath.split('||').map((item: string) => item.trim());
+                let value = '';
+                let path = '';
+                for (let i = 0; i < parts.length; i++) {
+                    path = parts[i];
+                    value = _.get(data, path);
+                    if (value) {
+                        break;
+                    }
+                }
+                if (options.data) {
+                    _.set(options.data, path, value);
+                }
+                return value;
             }
         });
     }
 
-    public static interpolate(rawTemplate: any, data: any) {
+    public static interpolate(rawTemplate: any, data: any, options: any = {}) {
         if (typeof rawTemplate === 'function') {
             try {
                 return rawTemplate(data);
@@ -65,7 +79,7 @@ export class BaseEvaluator {
             }
         }
 
-        return Evaluator.interpolateString(String(rawTemplate), data);
+        return Evaluator.interpolateString(String(rawTemplate), data, options);
     };
 
     /**
@@ -75,8 +89,16 @@ export class BaseEvaluator {
      * @param args
      * @return {*}
      */
-    public static evaluate(func: any, args: any = {}, ret: any = '', interpolate: boolean = false, context: any = {}): any {
+    public static evaluate(
+        func: any, 
+        args: any = {}, 
+        ret: any = '', 
+        interpolate: boolean = false, 
+        context: any = {}, 
+        options: any = {}
+    ): any {
         let returnVal = null;
+        options = _.isObject(options) ? options : { noeval: options };
         const component = args.component ? args.component : { key: 'unknown' };
         if (!args.form && args.instance) {
             args.form = _.get(args.instance, 'root._form', {});
@@ -89,11 +111,16 @@ export class BaseEvaluator {
             }
 
             if (interpolate) {
-                func = BaseEvaluator.interpolate(func, args);
+                func = BaseEvaluator.interpolate(func, args, options);
             }
 
             try {
-                func = Evaluator.evaluator(func, args, context);
+                if (Evaluator.noeval || options.noeval) {
+                    func = _.noop;
+                }
+                else {
+                    func = Evaluator.evaluator(func, args, context);
+                }
                 args = _.values(args);
             }
             catch (err) {
@@ -105,7 +132,7 @@ export class BaseEvaluator {
 
         if (typeof func === 'function') {
             try {
-                returnVal = Evaluator.execute(func, args, context);
+                returnVal = Evaluator.execute(func, args, context, options);
             }
             catch (err) {
                 returnVal = null;
@@ -125,10 +152,11 @@ export class BaseEvaluator {
      * @param args
      * @returns
      */
-    public static execute(func: string | any, args: any, context: any = {}) {
-        if (Evaluator.noeval) {
+    public static execute(func: string | any, args: any, context: any = {}, options: any = {}) {
+        options = _.isObject(options) ? options : { noeval: options };
+        if (Evaluator.noeval || options.noeval) {
             console.warn('No evaluations allowed for this renderer.');
-            return _.noop;
+            return;
         }
         return Array.isArray(args) ? func.apply(context, args) : func.call(context, args);
     };

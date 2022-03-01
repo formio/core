@@ -57,6 +57,36 @@ describe('Evaluator', () => {
         }, 'value', true), 10);
     });
 
+    it('Should work with conditional operators within it.', () => {
+        assert.equal(Evaluator.interpolate(`<span>{{  data.firstName || data.lastName    }}</span>`, {
+            data: {
+                firstName: '',
+                lastName: 'Tidwell'
+            }
+        }), '<span>Tidwell</span>');
+        assert.equal(Evaluator.interpolate(`<span>{{  data.firstName || data.lastName || data.middleName    }}</span>`, {
+            data: {
+                firstName: '',
+                lastName: '',
+                middleName: 'Joe'
+            }
+        }), '<span>Joe</span>');
+        assert.equal(Evaluator.interpolate(`<span>{{  data.firstName || data.lastName || data.middleName    }}</span>`, {
+            data: {
+                firstName: 'Travis',
+                lastName: '',
+                middleName: ''
+            }
+        }), '<span>Travis</span>');
+        assert.equal(Evaluator.interpolate(`<span>{{data.firstName||data.lastName||data.middleName}}</span>`, {
+            data: {
+                firstName: '',
+                lastName: 'Tidwell',
+                middleName: ''
+            }
+        }), '<span>Tidwell</span>');
+    });
+
     it('Should work with functions', () => {
         assert.equal(Evaluator.interpolate(`<span>{{ printValue("firstName") }}</span>`, {
             printValue(name: string) {
