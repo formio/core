@@ -40,11 +40,11 @@ describe('Evaluator', () => {
                 person: {
                     firstName: 'Travis',
                     details: {
-                        bio: 'Form.io King',
+                        bio: 'Developer',
                     }
                 }
             }
-        }), '<span>Form.io King</span>');
+        }), '<span>Developer</span>');
     });
 
     it('Should be able to evaluate an expression.', () => {
