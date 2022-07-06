@@ -1,3 +1,7 @@
+## 1.1.0
+### Changed
+ - FIO-5147: Added a check for an empty value
+
 ## 1.0.0
 ### Changed
  - Official Release
