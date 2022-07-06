@@ -49,7 +49,7 @@ export function NestedArrayModel(props: any = {}) : ModelDecoratorInterface {
              */
             setRowData(rowData: any, index: number) {
                 this.dataValue[index] = rowData;
-                this.row(index).forEach((comp: any) => (comp.data = rowData));
+                this.row(index)?.forEach((comp: any) => (comp.data = rowData));
             }
 
             /**
@@ -60,7 +60,7 @@ export function NestedArrayModel(props: any = {}) : ModelDecoratorInterface {
              */
             rowChanged(rowData: any, index: number): boolean {
                 let changed = false;
-                this.row(index).forEach((comp: any) => {
+                this.row(index)?.forEach((comp: any) => {
                     const hasChanged: boolean = comp.hasChanged(_.get(rowData, comp.component.key));
                     changed = hasChanged || changed;
                     if (hasChanged) {
