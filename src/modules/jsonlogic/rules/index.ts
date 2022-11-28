@@ -1,4 +1,4 @@
 import { JSONRule } from './JSON';
 export default {
-    json: JSONRule
+  json: JSONRule
 };

@@ -5,9 +5,9 @@ import { lodashOperators } from './operators/operators';
 
 // Configure JsonLogic
 lodashOperators.forEach((name: string) => {
-    if ((_ as any)[name]) {
-        jsonLogic.add_operation(`_${name}`, (_ as any)[name]);
-    }
+  if ((_ as any)[name]) {
+    jsonLogic.add_operation(`_${name}`, (_ as any)[name]);
+  }
 });
 
 // Retrieve Any Date

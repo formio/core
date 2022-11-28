@@ -10,12 +10,12 @@ export { DataTable, DataTableComponent } from './datatable/datatable';
 export { DataValueComponent } from './datavalue/datavalue';
 export { Input, InputComponent } from './input/input';
 export default {
-    components: {
-        html: HTMLComponent,
-        htmlcontainer: HTMLContainerComponent,
-        datatable: DataTableComponent,
-        datavalue: DataValueComponent,
-        input: InputComponent
-    },
-    templates
+  components: {
+    html: HTMLComponent,
+    htmlcontainer: HTMLContainerComponent,
+    datatable: DataTableComponent,
+    datavalue: DataValueComponent,
+    input: InputComponent
+  },
+  templates
 };

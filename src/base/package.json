@@ -1,7 +1,7 @@
 {
-    "name": "@formio/base",
-    "version": "0.1.0",
-    "description": "The base Form.io components.",
-    "main": "index.ts",
-    "dependencies": {}
+  "name": "@formio/base",
+  "version": "0.1.0",
+  "description": "The base Form.io components.",
+  "main": "index.ts",
+  "dependencies": {}
 }

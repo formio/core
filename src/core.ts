@@ -12,80 +12,80 @@ import { Components, render, Template } from './base';
 import { merge } from '@formio/lodash';
 
 /**
- * Register a specific plugin.
- *
- * @param key
- * @param plugin
- * @returns
- */
+* Register a specific plugin.
+*
+* @param key
+* @param plugin
+* @returns
+*/
 export function usePlugin(key: string, plugin: any) {
-    switch (key) {
-        case 'options':
-            if (!(Formio as any).options) {
-                return;
-            }
-            (Formio as any).options = merge((Formio as any).options, plugin);
-            break;
-        case 'templates':
-            if (!(Formio as any).Templates) {
-                return;
-            }
-            const current = (Formio as any).Templates.framework || 'bootstrap';
-            for (const framework of Object.keys(plugin)) {
-                (Formio as any).Templates.extendTemplate(framework, plugin[framework]);
-            }
-            if (plugin[current]) {
-                (Formio as any).Templates.current = plugin[current];
-            }
-            break;
-        case 'components':
-            if (!(Formio as any).Components) {
-                return;
-            }
-            (Formio as any).Components.setComponents(plugin);
-            break;
-        case 'framework':
-            if (!(Formio as any).Templates) {
-                return;
-            }
-            (Formio as any).Templates.framework = plugin;
-            break;
-        case 'fetch':
-            for (const name of Object.keys(plugin)) {
-                Formio.registerPlugin(plugin[name], name);
-            }
-            break;
-        case 'rules':
-            if (!(Formio as any).Rules) {
-                return;
-            }
-            (Formio as any).Rules.addRules(plugin);
-            break;
-        case 'evaluator':
-            if (!(Formio as any).Evaluator) {
-                return;
-            }
-            (Formio as any).Evaluator.registerEvaluator(plugin);
-            break;
-        default:
-            console.log('Unknown plugin option', key);
+  switch (key) {
+    case 'options':
+    if (!(Formio as any).options) {
+      return;
     }
+    (Formio as any).options = merge((Formio as any).options, plugin);
+    break;
+    case 'templates':
+    if (!(Formio as any).Templates) {
+      return;
+    }
+    const current = (Formio as any).Templates.framework || 'bootstrap';
+    for (const framework of Object.keys(plugin)) {
+      (Formio as any).Templates.extendTemplate(framework, plugin[framework]);
+    }
+    if (plugin[current]) {
+      (Formio as any).Templates.current = plugin[current];
+    }
+    break;
+    case 'components':
+    if (!(Formio as any).Components) {
+      return;
+    }
+    (Formio as any).Components.setComponents(plugin);
+    break;
+    case 'framework':
+    if (!(Formio as any).Templates) {
+      return;
+    }
+    (Formio as any).Templates.framework = plugin;
+    break;
+    case 'fetch':
+    for (const name of Object.keys(plugin)) {
+      Formio.registerPlugin(plugin[name], name);
+    }
+    break;
+    case 'rules':
+    if (!(Formio as any).Rules) {
+      return;
+    }
+    (Formio as any).Rules.addRules(plugin);
+    break;
+    case 'evaluator':
+    if (!(Formio as any).Evaluator) {
+      return;
+    }
+    (Formio as any).Evaluator.registerEvaluator(plugin);
+    break;
+    default:
+    console.log('Unknown plugin option', key);
+  }
 };
 
 /**
- * Register a new module.
- *
- * @param module
- * @returns
- */
+* Register a new module.
+*
+* @param module
+* @returns
+*/
 export function useModule(module: any) {
-    // Sanity check.
-    if (typeof module !== 'object') {
-        return;
-    }
-    for (const key of Object.keys(module)) {
-        usePlugin(key, module[key]);
-    }
+  // Sanity check.
+  if (typeof module !== 'object') {
+    return;
+  }
+  for (const key of Object.keys(module)) {
+    usePlugin(key, module[key]);
+  }
 };
 
 /**
@@ -95,14 +95,14 @@ export function useModule(module: any) {
 * Formio.plugins([plugin1, plugin2, etc]);
 */
 export function use(...mods: any) {
-    mods.forEach((mod: any) => {
-        if (Array.isArray(mod)) {
-            mod.forEach(p => useModule(p));
-        }
-        else {
-            useModule(mod);
-        }
-    });
+  mods.forEach((mod: any) => {
+    if (Array.isArray(mod)) {
+      mod.forEach(p => useModule(p));
+    }
+    else {
+      useModule(mod);
+    }
+  });
 };
 
 (Formio as any).useModule = useModule;

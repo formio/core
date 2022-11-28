@@ -1,7 +1,7 @@
 {
-    "name": "@formio/components",
-    "version": "0.1.0",
-    "description": "Some basic components for the Form.io renderer.",
-    "main": "index.ts",
-    "dependencies": {}
+  "name": "@formio/components",
+  "version": "0.1.0",
+  "description": "Some basic components for the Form.io renderer.",
+  "main": "index.ts",
+  "dependencies": {}
 }

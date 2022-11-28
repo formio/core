@@ -1,8 +1,8 @@
 export default {
-    type: 'input',
-    key: 'firstName',
-    attrs: {
-        one: 'two',
-        three: 'four'
-    }
+  type: 'input',
+  key: 'firstName',
+  attrs: {
+    one: 'two',
+    three: 'four'
+  }
 };
