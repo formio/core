@@ -4,12 +4,12 @@ This library is the core rendering engine behind the Form.io platform. It is a t
 ### Usage
 To use this library, you will first need to install it into your own application.
 
-    npm install --save @formio/base
+    npm install --save @formio/core
 
 Next, you can create a new component as follows.
 
 ```js
-import { Components } from '@formio/base';
+import { Components } from '@formio/core';
 Components.addComponent({
     type: 'h3',
     template: (ctx) => `<h3>${ctx.component.header}</h3>`
