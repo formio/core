@@ -359,6 +359,7 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
           */
           removeAttachedListeners() {
             this.attachedListeners.forEach((item) => this.removeEventListener(item.obj, item.type, item.func));
+            this.attachedListeners = [];
           }
           
           /**
