@@ -64,4 +64,19 @@ describe('Component', () => {
         comp.dataValue = 'testing';
         assert.equal(await comp.checkValidity(), true);
     });
+
+    it ('Should clear attachedListeners array after detach', async () => {
+      const element = document.createElement('div');
+      const comp = new Component({
+        type: 'textfield',
+        key: 'firstName'
+      });
+      await comp.attach(element);
+      assert.deepEqual(comp.attachedListeners, []);
+      const listenerObj = {obj: element, type: 'click', func: () => console.log(1)}
+      comp.attachedListeners.push(listenerObj);
+      assert.deepEqual(comp.attachedListeners, [listenerObj]);
+      comp.detach();
+      assert.deepEqual(comp.attachedListeners, []);
+    })
 });
