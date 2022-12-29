@@ -1,4 +1,4 @@
-## [Unreleased: 1.2.0]
+## 1.2.0
 ### Fixed
  - FIO-6123: Added an array cleanup to the removeAttachedListeners method and wrote test for it
 
