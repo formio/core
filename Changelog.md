@@ -1,3 +1,7 @@
+## [Unreleased: 1.2.0]
+### Fixed
+ - FIO-6123: Added an array cleanup to the removeAttachedListeners method and wrote test for it
+
 ## 1.1.0
 ### Changed
  - FIO-5147: Added a check for an empty value
