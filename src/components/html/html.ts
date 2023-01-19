@@ -13,8 +13,8 @@ export const HTMLProperties = {
 };
 
 /**
-* Base class for HTML based components.
-*/
+ * Base class for HTML based components.
+ */
 export class HTML {
   [x: string]: any;
   constructor(public component?: any, public options?: any, public data?: any) {}

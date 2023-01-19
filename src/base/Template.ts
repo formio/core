@@ -1,17 +1,17 @@
 import * as _ from '@formio/lodash';
 
 /**
-* Manages all the available templates which can be rendered.
-*/
+ * Manages all the available templates which can be rendered.
+ */
 export class Template {
   public static templates: any = [];
   public static _current: any = {};
   public static _framework: string = 'bootstrap';
   
   /**
-  * Adds a collection of template frameworks to the renderer.
-  * @param templates
-  */
+   * Adds a collection of template frameworks to the renderer.
+   * @param templates
+   */
   public static addTemplates(templates: any) {
     var framework = Template.framework;
     Template.templates = _.merge(Template.templates, templates);
@@ -19,50 +19,50 @@ export class Template {
   }
   
   /**
-  * Adds some templates to the existing template.
-  * @param name
-  * @param template
-  */
+   * Adds some templates to the existing template.
+   * @param name
+   * @param template
+   */
   public static addTemplate(name: string, template: any) {
     Template.templates[name] = _.merge(Template.current, template);
   }
   
   /**
-  * Extend an existing template.
-  * @param name
-  * @param template
-  */
+   * Extend an existing template.
+   * @param name
+   * @param template
+   */
   public static extendTemplate(name: string, template: any) {
     Template.templates[name] = _.merge(Template.templates[name], template);
   }
   
   /**
-  * Sets a template.
-  * @param name
-  * @param template
-  */
+   * Sets a template.
+   * @param name
+   * @param template
+   */
   public static setTemplate(name: string, template: any) {
     Template.addTemplate(name, template);
   }
   
   /**
-  * Set the current template.
-  */
+   * Set the current template.
+   */
   public static set current(templates) {
     const defaultTemplates = Template.current;
     Template._current = _.merge(defaultTemplates, templates);
   }
   
   /**
-  * Get the current template.
-  */
+   * Get the current template.
+   */
   public static get current() {
     return Template._current;
   }
   
   /**
-  * Sets the current framework.
-  */
+   * Sets the current framework.
+   */
   public static set framework(framework) {
     if (Template.templates.hasOwnProperty(framework)) {
       Template._framework = framework;
@@ -71,19 +71,19 @@ export class Template {
   }
   
   /**
-  * Gets the current framework.
-  */
+   * Gets the current framework.
+   */
   public static get framework() {
     return Template._framework;
   }
   
   /**
-  * Render a partial within the current template.
-  * @param name
-  * @param ctx
-  * @param mode
-  * @returns
-  */
+   * Render a partial within the current template.
+   * @param name
+   * @param ctx
+   * @param mode
+   * @returns
+   */
   public static render(name: any, ctx: any, mode: string = 'html', defaultTemplate: any = null) {
     if (typeof name === 'function') {
       return name(ctx);

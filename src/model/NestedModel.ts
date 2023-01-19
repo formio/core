@@ -12,8 +12,8 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
       public components!: Array<any>;
       
       /**
-      * Initialize the nested entity by creating the children.
-      */
+       * Initialize the nested entity by creating the children.
+       */
       init() {
         super.init();
         this.components = [];
@@ -21,20 +21,20 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Get the component data.
-      * @returns
-      */
+       * Get the component data.
+       * @returns
+       */
       componentData() {
         return this.data;
       }
       
       /**
-      * Creates a new component entity.
-      * @param component
-      * @param options
-      * @param data
-      * @returns
-      */
+       * Creates a new component entity.
+       * @param component
+       * @param options
+       * @param data
+       * @returns
+       */
       createComponent(component: any, options: any, data: any) {
         if (!props.factory) {
           console.log('Cannot create components. No "factory" provided.');
@@ -51,10 +51,10 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Creates the components.
-      * @param data
-      * @returns
-      */
+       * Creates the components.
+       * @param data
+       * @returns
+       */
       createComponents(data: any, eachComp?: any): Array<any> {
         const added: Array<any> = [];
         (this.component.components || []).forEach((comp: any) => {
@@ -71,9 +71,9 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Removes a child comopnent.
-      * @param component
-      */
+       * Removes a child comopnent.
+       * @param component
+       */
       removeComponent(component: any) {
         (this.components || []).forEach((comp: any, index: number) => {
           if (comp === component) {
@@ -86,9 +86,9 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Checks for the validity of this component and all components within this component.
-      * @returns
-      */
+       * Checks for the validity of this component and all components within this component.
+       * @returns
+       */
       public async checkValidity() {
         return this.components.reduce((valid: boolean, comp: any) => {
           return valid && comp.checkValidity();
@@ -96,33 +96,33 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Get the default value for this nested entity.
-      */
+       * Get the default value for this nested entity.
+       */
       get defaultValue() {
         return {};
       }
       
       /**
-      * The empty value for this component.
-      *
-      * @return {null}
-      */
+       * The empty value for this component.
+       *
+       * @return {null}
+       */
       get emptyValue(): any {
         return {};
       }
       
       /**
-      * Get the datavalue of this component.
-      */
+       * Get the datavalue of this component.
+       */
       public get dataValue() {
         return this.data;
       }
       
       /**
-      * Perform an iteration over each component within this container component.
-      *
-      * @param {function} fn - Called for each component
-      */
+       * Perform an iteration over each component within this container component.
+       *
+       * @param {function} fn - Called for each component
+       */
       eachComponent(fn: Function) {
         _.each(this.components, (component: any, index: any) => {
           if (fn(component, index) === false) {
@@ -132,11 +132,11 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Iterate through each component value.
-      *
-      * @param value The context data value.
-      * @param fn Callback to be called with the component and the value for that component.
-      */
+       * Iterate through each component value.
+       *
+       * @param value The context data value.
+       * @param fn Callback to be called with the component and the value for that component.
+       */
       public eachComponentValue(value: any, fn: any) {
         if (Object.keys(value).length) {
           this.eachComponent((comp: any) => {
@@ -146,17 +146,17 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Set the data value for this nested entity.
-      */
+       * Set the data value for this nested entity.
+       */
       public set dataValue(value: any) {
         this.eachComponentValue(value, (comp: any, val: any) => (comp.dataValue = val));
       }
       
       /**
-      * Sets the value for a data component.
-      *
-      * @param value
-      */
+       * Sets the value for a data component.
+       *
+       * @param value
+       */
       public setValue(value: any): boolean {
         var changed = false;
         this.eachComponentValue(value, (comp: any, val: any) => {

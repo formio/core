@@ -1,77 +1,77 @@
 import { noop, isNil } from '@formio/lodash';
 
 /**
-* The plugin initialization function, which will receive the Formio interface as its first argument.
-*/
+ * The plugin initialization function, which will receive the Formio interface as its first argument.
+ */
 export interface PluginInitFunction {
   /**
-  * @param Formio - The Formio interface class.
-  */
+   * @param Formio - The Formio interface class.
+   */
   (Formio: any): void;
 }
 
 /**
-* Function that is called when the plugin is deregistered.
-*/
+ * Function that is called when the plugin is deregistered.
+ */
 export interface PluginDeregisterFunction {
   /**
-  * @param Formio The Formio interface class.
-  */
+   * @param Formio The Formio interface class.
+   */
   (Formio: any): void;
 }
 
 /**
-* A Formio Plugin interface.
-*/
+ * A Formio Plugin interface.
+ */
 export interface Plugin {
   /**
-  * The name of the plugin.
-  */
+   * The name of the plugin.
+   */
   __name: string,
   
   /**
-  * The priority of this plugin.
-  */
+   * The priority of this plugin.
+   */
   priority: number,
   
   /**
-  * An initialization function called when registered with Formio.
-  */
+   * An initialization function called when registered with Formio.
+   */
   init: PluginInitFunction,
   
   /**
-  * Called when the plugin is deregistered.
-  */
+   * Called when the plugin is deregistered.
+   */
   deregister: PluginDeregisterFunction,
 }
 
 /**
-* The Form.io Plugins allow external systems to "hook" into the default behaviors of the JavaScript SDK.
-*/
+ * The Form.io Plugins allow external systems to "hook" into the default behaviors of the JavaScript SDK.
+ */
 export default class Plugins {
   /**
-  * An array of Form.io Plugins.
-  */
+   * An array of Form.io Plugins.
+   */
   public static plugins: Array<Plugin> = [];
   
   /**
-  * The Formio class.
-  */
+   * The Formio class.
+   */
   public static Formio: any;
   
   /**
-  * Returns the plugin identity.
-  *
-  * @param value
-  */
+   * Returns the plugin identity.
+   *
+   * @param value
+   */
   static identity(value: string) {
     return value;
   }
   
   /**
-  * De-registers a plugin.
-  * @param plugin The plugin you wish to deregister.
-  */
+   * De-registers a plugin.
+   * @param plugin The plugin you wish to deregister.
+   */
   static deregisterPlugin(plugin: (Plugin | string)) {
     const beforeLength = Plugins.plugins.length;
     Plugins.plugins = Plugins.plugins.filter((p) => {
@@ -86,11 +86,11 @@ export default class Plugins {
   }
   
   /**
-  * Registers a new plugin.
-  *
-  * @param plugin The Plugin object.
-  * @param name The name of the plugin you wish to register.
-  */
+   * Registers a new plugin.
+   *
+   * @param plugin The Plugin object.
+   * @param name The name of the plugin you wish to register.
+   */
   static registerPlugin(plugin: Plugin, name: string) {
     Plugins.plugins.push(plugin);
     Plugins.plugins.sort((a, b) => (b.priority || 0) - (a.priority || 0));
@@ -99,9 +99,9 @@ export default class Plugins {
   }
   
   /**
-  * Returns a plugin provided the name of the plugin.
-  * @param name The name of the plugin you would like to get.
-  */
+   * Returns a plugin provided the name of the plugin.
+   * @param name The name of the plugin you would like to get.
+   */
   static getPlugin(name: string) {
     for (const plugin of Plugins.plugins) {
       if (plugin.__name === name) {
@@ -113,20 +113,20 @@ export default class Plugins {
   }
   
   /**
-  * Wait for a plugin function to complete.
-  * @param pluginFn - A function within the plugin.
-  * @param args
-  */
+   * Wait for a plugin function to complete.
+   * @param pluginFn - A function within the plugin.
+   * @param args
+   */
   static pluginWait(pluginFn: any, ...args: any[]) {
     return Promise.all(Plugins.plugins.map((plugin: Plugin) =>
     ((plugin as any)[pluginFn] || noop).call(plugin, ...args)));
   }
   
   /**
-  * Gets a value from a Plugin
-  * @param pluginFn
-  * @param args
-  */
+   * Gets a value from a Plugin
+   * @param pluginFn
+   * @param args
+   */
   static pluginGet(pluginFn: any, ...args: any[]) {
     const callPlugin = (index: any): any => {
       const plugin = Plugins.plugins[index];
@@ -148,12 +148,12 @@ export default class Plugins {
   }
   
   /**
-  * Allows a Plugin to alter the behavior of the JavaScript library.
-  *
-  * @param pluginFn
-  * @param value
-  * @param args
-  */
+   * Allows a Plugin to alter the behavior of the JavaScript library.
+   *
+   * @param pluginFn
+   * @param value
+   * @param args
+   */
   static pluginAlter(pluginFn: any, value: any, ...args: any[]) {
     return Plugins.plugins.reduce((value, plugin) =>
     ((plugin as any)[pluginFn] || Plugins.identity)(value, ...args), value);

@@ -7,8 +7,8 @@ import { Model, ModelDecoratorInterface,  ModelInterface } from '@formio/model';
 import { merge } from '@formio/lodash/lib/object';
 
 /**
-* The component JSON schema.
-*/
+ * The component JSON schema.
+ */
 export interface ComponentSchema {
   type: string,
   key: string,
@@ -16,8 +16,8 @@ export interface ComponentSchema {
 }
 
 /**
-* Component options.
-*/
+ * Component options.
+ */
 export interface ComponentOptions {
   language?: string,
   i18n?: any,
@@ -45,28 +45,28 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
   return function(BaseClass?: ModelInterface) : ModelInterface {
     return class ExtendedComponent extends ModelClass(props)(BaseClass) {
       /**
-      * The DOM Element associated with this component.
-      */
+       * The DOM Element associated with this component.
+       */
       public element?: HTMLElement;
       
       /**
-      * Boolean to let us know if this component is attached to the DOM or not.
-      */
+       * Boolean to let us know if this component is attached to the DOM or not.
+       */
       public attached: boolean = false;
       
       /**
-      * The DOM element references used for component logic.
-      */
+       * The DOM element references used for component logic.
+       */
       public refs: any = {};
       
       /**
-      * The template to render for this component.
-      */
+       * The template to render for this component.
+       */
       public template: any = props.template;
       
       /**
-      * An array of attached listeners.
-      */
+       * An array of attached listeners.
+       */
       public attachedListeners: Array<any> = [];
       
       
@@ -82,18 +82,18 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Interpolate a template string.
-      * @param template - The template string to interpolate.
-      * @param context - The context variables to pass to the interpolation.
-      */
+       * Interpolate a template string.
+       * @param template - The template string to interpolate.
+       * @param context - The context variables to pass to the interpolation.
+       */
       public interpolate(template: string, context: any) {
         return Evaluator.interpolate(template, context);
       }
       
       /**
-      * The rendering context.
-      * @param context - The existing contexts from parent classes.
-      */
+       * The rendering context.
+       * @param context - The existing contexts from parent classes.
+       */
       public renderContext(context: any = {}) {
         if (super.renderContext) {
           return super.renderContext(context);
@@ -102,21 +102,21 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Performs an evaluation using the evaluation context of this component.
-      *
-      * @param func
-      * @param args
-      * @param ret
-      * @param tokenize
-      * @return {*}
-      */
+       * Performs an evaluation using the evaluation context of this component.
+       *
+       * @param func
+       * @param args
+       * @param ret
+       * @param tokenize
+       * @return {*}
+       */
       public evaluate(func: any, args: any = {}, ret: any = '', tokenize: boolean = false) {
         return Evaluator.evaluate(func, this.evalContext(args), ret, tokenize);
       }
       
       /**
-      * Renders this component as an HTML string.
-      */
+       * Renders this component as an HTML string.
+       */
       public render(context: any = {}): string {
         if (super.render) {
           return super.render(context);
@@ -125,8 +125,8 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Returns the template references.
-      */
+       * Returns the template references.
+       */
       public getRefs() {
         if (super.getRefs) {
           return super.getRefs();
@@ -135,9 +135,9 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Loads the elemement references.
-      * @param element
-      */
+       * Loads the elemement references.
+       * @param element
+       */
       loadRefs(element: HTMLElement) {
         const refs: any = this.getRefs();
         for (const ref in refs) {
@@ -151,9 +151,9 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Renders the component and then attaches this component to the HTMLElement.
-      * @param element
-      */
+       * Renders the component and then attaches this component to the HTMLElement.
+       * @param element
+       */
       public async attach(element?: HTMLElement | undefined) {
         if (this.element && !element) {
           element = this.element;
@@ -178,9 +178,9 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Redraw this component.
-      * @returns
-      */
+       * Redraw this component.
+       * @returns
+       */
       public async redraw() {
         if (this.element) {
           this.clear();
@@ -189,18 +189,18 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Sanitize an html string.
-      *
-      * @param string
-      * @returns {*}
-      */
+       * Sanitize an html string.
+       *
+       * @param string
+       * @returns {*}
+       */
       sanitize(dirty: string): (TrustedHTML | string) {
         return sanitize(dirty, this.options);
       }
       
       /**
-      * Get all available translations.
-      */
+       * Get all available translations.
+       */
       public get translations(): any {
         if (
           this.options.language &&
@@ -213,9 +213,9 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
         }
         
         /**
-        * Tranlation method to translate a string being rendered.
-        * @param str
-        */
+         * Tranlation method to translate a string being rendered.
+         * @param str
+         */
         public t(str: string): string {
           if (this.translations[str]) {
             return this.translations[str];
@@ -224,9 +224,9 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
         }
         
         /**
-        * The evaluation context for interpolations.
-        * @param extend
-        */
+         * The evaluation context for interpolations.
+         * @param extend
+         */
         public evalContext(extend: any = {}) {
           return Object.assign({
             instance: this,
@@ -241,19 +241,19 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
         }
         
         /**
-        * Render a template with provided context.
-        * @param name
-        * @param ctx
-        */
+         * Render a template with provided context.
+         * @param name
+         * @param ctx
+         */
         public renderTemplate(name: any, ctx: any = {}): string {
           return Template.render(name, this.evalContext(ctx), 'html', this.defaultTemplate);
         }
         
         /**
-        * Determines if the value of this component is redacted from the user as if it is coming from the server, but is protected.
-        *
-        * @return {boolean|*}
-        */
+         * Determines if the value of this component is redacted from the user as if it is coming from the server, but is protected.
+         *
+         * @return {boolean|*}
+         */
         isValueRedacted() {
           return (
             this.component.protected ||
@@ -263,9 +263,9 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
           }
           
           /**
-          * Sets the data value and updates the view representation.
-          * @param value
-          */
+           * Sets the data value and updates the view representation.
+           * @param value
+           */
           public setValue(value: any): boolean {
             let changed = false;
             if (super.setValue) {
@@ -275,15 +275,15 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
           }
           
           /**
-          * Returns the main HTML Element for this component.
-          */
+           * Returns the main HTML Element for this component.
+           */
           getElement(): (HTMLElement | undefined) {
             return this.element;
           }
           
           /**
-          * Remove all event handlers.
-          */
+           * Remove all event handlers.
+           */
           detach() {
             this.refs = {};
             this.attached = false;
@@ -294,8 +294,8 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
           }
           
           /**
-          * Clear an element.
-          */
+           * Clear an element.
+           */
           clear() {
             this.detach();
             dom.empty(this.getElement());
@@ -305,41 +305,41 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
           }
           
           /**
-          * Appends an element to this component.
-          * @param element
-          */
+           * Appends an element to this component.
+           * @param element
+           */
           append(element: (HTMLElement | undefined)) {
             dom.appendTo(element, this.element);
           }
           
           /**
-          * Prepends an element to this component.
-          * @param element
-          */
+           * Prepends an element to this component.
+           * @param element
+           */
           prepend(element: (HTMLElement | undefined)) {
             dom.prependTo(element, this.element);
           }
           
           /**
-          * Removes an element from this component.
-          * @param element
-          */
+           * Removes an element from this component.
+           * @param element
+           */
           removeChild(element: (HTMLElement | undefined)) {
             dom.removeChildFrom(element, this.element);
           }
           
           /**
-          * Wrapper method to add an event listener to an HTML element.
-          *
-          * @param obj
-          *   The DOM element to add the event to.
-          * @param type
-          *   The event name to add.
-          * @param func
-          *   The callback function to be executed when the listener is triggered.
-          * @param persistent
-          *   If this listener should persist beyond "destroy" commands.
-          */
+           * Wrapper method to add an event listener to an HTML element.
+           *
+           * @param obj
+           *   The DOM element to add the event to.
+           * @param type
+           *   The event name to add.
+           * @param func
+           *   The callback function to be executed when the listener is triggered.
+           * @param persistent
+           *   If this listener should persist beyond "destroy" commands.
+           */
           addEventListener(obj: any, type: string, func: any) {
             if (!obj) {
               return;
@@ -355,19 +355,19 @@ export function Component(props: any = {}) : ModelDecoratorInterface {
           }
           
           /**
-          * Remove all the attached listeners.
-          */
+           * Remove all the attached listeners.
+           */
           removeAttachedListeners() {
             this.attachedListeners.forEach((item) => this.removeEventListener(item.obj, item.type, item.func));
             this.attachedListeners = [];
           }
           
           /**
-          * Remove an event listener from the object.
-          *
-          * @param obj
-          * @param type
-          */
+           * Remove an event listener from the object.
+           *
+           * @param obj
+           * @param type
+           */
           removeEventListener(obj: any, type: string, func: any) {
             if (obj) {
               obj.removeEventListener(type, func);

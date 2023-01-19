@@ -12,12 +12,12 @@ import { Components, render, Template } from './base';
 import { merge } from '@formio/lodash';
 
 /**
-* Register a specific plugin.
-*
-* @param key
-* @param plugin
-* @returns
-*/
+ * Register a specific plugin.
+ *
+ * @param key
+ * @param plugin
+ * @returns
+ */
 export function usePlugin(key: string, plugin: any) {
   switch (key) {
     case 'options':
@@ -73,11 +73,11 @@ export function usePlugin(key: string, plugin: any) {
 };
 
 /**
-* Register a new module.
-*
-* @param module
-* @returns
-*/
+ * Register a new module.
+ *
+ * @param module
+ * @returns
+ */
 export function useModule(module: any) {
   // Sanity check.
   if (typeof module !== 'object') {
@@ -89,11 +89,11 @@ export function useModule(module: any) {
 };
 
 /**
-* Allows passing in plugins as multiple arguments or an array of plugins.
-*
-* Formio.plugins(plugin1, plugin2, etc);
-* Formio.plugins([plugin1, plugin2, etc]);
-*/
+ * Allows passing in plugins as multiple arguments or an array of plugins.
+ *
+ * Formio.plugins(plugin1, plugin2, etc);
+ * Formio.plugins([plugin1, plugin2, etc]);
+ */
 export function use(...mods: any) {
   mods.forEach((mod: any) => {
     if (Array.isArray(mod)) {

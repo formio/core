@@ -1,8 +1,8 @@
 /**
-* Simple class to allow for overriding base classes.
-* @param classObj
-* @param extenders
-*/
+ * Simple class to allow for overriding base classes.
+ * @param classObj
+ * @param extenders
+ */
 export function override(classObj: any, extenders: any) {
   for (let key in extenders) {
     if (extenders.hasOwnProperty(key)) {

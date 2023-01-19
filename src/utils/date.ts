@@ -7,19 +7,19 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 /**
-* Get the current timezone string.
-*
-* @return {string}
-*/
+ * Get the current timezone string.
+ *
+ * @return {string}
+ */
 export function currentTimezone(): string {
   return dayjs.tz.guess();
 }
 
 /**
-* Convert the format from the angular-datepicker module to moment format.
-* @param format
-* @return {string}
-*/
+ * Convert the format from the angular-datepicker module to moment format.
+ * @param format
+ * @return {string}
+ */
 export function convertFormatToMoment(format: string) {
   return format
   // Year conversion.
@@ -35,13 +35,13 @@ export function convertFormatToMoment(format: string) {
 }
 
 /**
-* Get the moment date object for translating dates with timezones.
-*
-* @param value
-* @param format
-* @param timezone
-* @return {*}
-*/
+ * Get the moment date object for translating dates with timezones.
+ *
+ * @param value
+ * @param format
+ * @param timezone
+ * @return {*}
+ */
 export function momentDate(value: any, format: any, timezone: any): any {
   const momentDate = dayjs(value);
   if (timezone === 'UTC') {
@@ -54,13 +54,13 @@ export function momentDate(value: any, format: any, timezone: any): any {
 }
 
 /**
-* Format a date provided a value, format, and timezone object.
-*
-* @param value
-* @param format
-* @param timezone
-* @return {string}
-*/
+ * Format a date provided a value, format, and timezone object.
+ *
+ * @param value
+ * @param format
+ * @param timezone
+ * @return {string}
+ */
 export function formatDate(value: any, format: any, timezone: any): string {
   const momentDate = dayjs(value);
   if (timezone === 'UTC') {
@@ -73,11 +73,11 @@ export function formatDate(value: any, format: any, timezone: any): string {
 }
 
 /**
-* Return a translated date setting.
-*
-* @param date
-* @return {(null|Date)}
-*/
+ * Return a translated date setting.
+ *
+ * @param date
+ * @return {(null|Date)}
+ */
 export function getDateSetting(date: any) {
   if (isNil(date) || isNaN(date) || date === '') {
     return null;

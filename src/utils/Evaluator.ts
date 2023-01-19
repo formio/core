@@ -83,12 +83,12 @@ export class BaseEvaluator {
   };
   
   /**
-  * Evaluate a method.
-  *
-  * @param func
-  * @param args
-  * @return {*}
-  */
+   * Evaluate a method.
+   *
+   * @param func
+   * @param args
+   * @return {*}
+   */
   public static evaluate(
     func: any, 
     args: any = {}, 
@@ -146,12 +146,12 @@ export class BaseEvaluator {
     }
     
     /**
-    * Execute a function.
-    *
-    * @param func
-    * @param args
-    * @returns
-    */
+     * Execute a function.
+     *
+     * @param func
+     * @param args
+     * @returns
+     */
     public static execute(func: string | any, args: any, context: any = {}, options: any = {}) {
       options = _.isObject(options) ? options : { noeval: options };
       if (Evaluator.noeval || options.noeval) {
@@ -165,9 +165,9 @@ export class BaseEvaluator {
   // The extendable evaluator
   export class Evaluator extends BaseEvaluator {
     /**
-    * Allow external modules the ability to extend the Evaluator.
-    * @param evaluator
-    */
+     * Allow external modules the ability to extend the Evaluator.
+     * @param evaluator
+     */
     public static registerEvaluator(evaluator: any) {
       Object.keys(evaluator).forEach((key) => {
         (Evaluator as any)[key] = evaluator[key];

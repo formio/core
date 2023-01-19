@@ -23,9 +23,9 @@ export function NestedComponent(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Attach a html element to this nestd component.
-      * @param element
-      */
+       * Attach a html element to this nestd component.
+       * @param element
+       */
       public async attach(element: HTMLElement) {
         await super.attach(element);
         if (this.element) {
@@ -40,8 +40,8 @@ export function NestedComponent(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Detach components.
-      */
+       * Detach components.
+       */
       detach() {
         super.detach();
         this.eachComponent((comp: any) => comp.detach());

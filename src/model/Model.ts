@@ -16,40 +16,40 @@ export function Model(props: any = {}) : ModelDecoratorInterface {
   return function(BaseClass?: ModelInterface) : ModelInterface {
     return class BaseModel extends EventEmitter(BaseClass) {
       /**
-      * A random generated ID for this entity.
-      */
+       * A random generated ID for this entity.
+       */
       public id!: string;
       
       /**
-      * The root entity.
-      */
+       * The root entity.
+       */
       public root: any = null;
       
       /**
-      * The component validator instance.
-      * @returns
-      */
+       * The component validator instance.
+       * @returns
+       */
       public validator: any = null;
       
       /**
-      * The validator for this component.
-      * @returns
-      */
+       * The validator for this component.
+       * @returns
+       */
       
       /**
-      * The default JSON schema
-      * @param extend
-      */
+       * The default JSON schema
+       * @param extend
+       */
       public static schema(): any {
         return props.schema;
       }
       
       /**
-      * @constructor
-      * @param component
-      * @param options
-      * @param data
-      */
+       * @constructor
+       * @param component
+       * @param options
+       * @param data
+       */
       constructor(public component: any = {}, public options: any = {}, public data: any = {}) {
         super(component, options, data);
         this.id = `e${Math.random().toString(36).substring(7)}`;
@@ -69,8 +69,8 @@ export function Model(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Initializes the entity.
-      */
+       * Initializes the entity.
+       */
       public init() {
         this.hook('init');
         if (this.options.validator) {
@@ -79,60 +79,60 @@ export function Model(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Check the validity of this specific component.
-      *
-      * @returns
-      */
+       * Check the validity of this specific component.
+       *
+       * @returns
+       */
       public async checkComponentValidity() {
         return this.validator ? this.validator.check() : true;
       }
       
       /**
-      * Checks the validity of this component and all child components.
-      * @returns
-      */
+       * Checks the validity of this component and all child components.
+       * @returns
+       */
       public async checkValidity() {
         return this.checkComponentValidity();
       }
       
       /**
-      * Return the errors from validation for this component.
-      */
+       * Return the errors from validation for this component.
+       */
       public get errors() {
         return this.validator.errors;
       }
       
       /**
-      * The empty value for this component.
-      *
-      * @return {null}
-      */
+       * The empty value for this component.
+       *
+       * @return {null}
+       */
       get emptyValue(): any {
         return null;
       }
       
       
       /**
-      * Checks to see if this components value is empty.
-      *
-      * @param value
-      * @returns
-      */
+       * Checks to see if this components value is empty.
+       *
+       * @param value
+       * @returns
+       */
       isEmpty(value = this.dataValue) {
         const isEmptyArray = (_.isArray(value) && value.length === 1) ? _.isEqual(value[0], this.emptyValue) : false;
         return value == null || value.length === 0 || _.isEqual(value, this.emptyValue) || isEmptyArray;
       }
       
       /**
-      * Returns the data value for this component.
-      */
+       * Returns the data value for this component.
+       */
       public get dataValue(): any {
         return _.get(this.data, this.component.key);
       }
       
       /**
-      * Sets the datavalue for this component.
-      */
+       * Sets the datavalue for this component.
+       */
       public set dataValue(value: any) {
         if (this.component.key) {
           _.set(this.data, this.component.key, value);
@@ -140,19 +140,19 @@ export function Model(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Determine if this component has changed values.
-      *
-      * @param value - The value to compare against the current value.
-      */
+       * Determine if this component has changed values.
+       *
+       * @param value - The value to compare against the current value.
+       */
       public hasChanged(value: any) {
         return String(value) !== String(this.dataValue);
       }
       
       /**
-      * Updates the data model value
-      * @param value The value to update within this component.
-      * @return boolean true if the value has changed.
-      */
+       * Updates the data model value
+       * @param value The value to update within this component.
+       * @return boolean true if the value has changed.
+       */
       public updateValue(value: any): boolean {
         const changed = this.hasChanged(value);
         this.dataValue = value;
@@ -164,17 +164,17 @@ export function Model(props: any = {}) : ModelDecoratorInterface {
       }
       
       /**
-      * Get the model value.
-      * @returns
-      */
+       * Get the model value.
+       * @returns
+       */
       public getValue(): any {
         return this.dataValue;
       }
       
       /**
-      * Allow for options to hook into the functionality of this entity.
-      * @return {*}
-      */
+       * Allow for options to hook into the functionality of this entity.
+       * @return {*}
+       */
       hook(name: string, ...args: any) {
         if (
           this.options &&

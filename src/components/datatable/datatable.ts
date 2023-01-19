@@ -1,8 +1,8 @@
 import { ArrayComponent } from '@formio/base';
 
 /**
-* A base class for a data table.
-*/
+ * A base class for a data table.
+ */
 export class DataTable {
   [x: string]: any;
   constructor(public component?: any, public options?: any, public data?: any) {}

@@ -12,11 +12,11 @@ const getDOMPurify = () => {
 };
 
 /**
-* Sanitize an html string.
-*
-* @param string
-* @returns {*}
-*/
+ * Sanitize an html string.
+ *
+ * @param string
+ * @returns {*}
+ */
 export function sanitize(string: string, options: any): (TrustedHTML | string) {
   const dompurify = getDOMPurify();
   if (!dompurify) {

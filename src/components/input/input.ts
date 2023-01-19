@@ -2,8 +2,8 @@ import { Component } from '@formio/base';
 import { HTML, HTMLProperties } from '../html/html';
 
 /**
-* Base Input component for extending purposes.
-*/
+ * Base Input component for extending purposes.
+ */
 export class Input extends HTML {
   public element: any;
   getAttributes() {

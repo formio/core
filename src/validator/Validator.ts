@@ -1,14 +1,14 @@
 /**
-* Create a new component data validator.
-*
-* const validator = new Validator(component, {
-*   required: true,
-*   pattern: '[0-9]+',
-*   minLength: 10,
-*   maxLength: 20
-* });
-* const isValid = await validator.check();
-*/
+ * Create a new component data validator.
+ *
+ * const validator = new Validator(component, {
+ *   required: true,
+ *   pattern: '[0-9]+',
+ *   minLength: 10,
+ *   maxLength: 20
+ * });
+ * const isValid = await validator.check();
+ */
 export class Validator {
   public rules: any = {};
   public errors: any = [];
