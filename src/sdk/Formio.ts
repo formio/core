@@ -1527,6 +1527,9 @@ export class Formio {
         else if (response.status === 416) {
           Formio.events.emit('formio.rangeIsNotSatisfiable', response.body);
         }
+        else if (response.status === 504) {
+          return Promise.reject(new Error('Network request failed'));
+        }
         // Parse and return the error as a rejected promise to reject this promise
         return (response.headers.get('content-type').includes('application/json')
           ? response.json()
