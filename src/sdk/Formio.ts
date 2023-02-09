@@ -704,6 +704,10 @@ export class Formio {
         if (currentForm.revisions === 'current' && this.submissionId) {
           return currentForm;
         }
+        // eslint-disable-next-line eqeqeq
+        if (currentForm._vid == this.vId || currentForm.revisionId === this.vId) {
+          return currentForm;
+        }
         // If they specified a revision form, load the revised form components.
         if (query && isObject(query)) {
           query = Formio.serialize((query as any).params);
@@ -719,6 +723,7 @@ export class Formio {
             currentForm._vid = revisionForm._vid;
             currentForm.components = revisionForm.components;
             currentForm.settings = revisionForm.settings;
+            currentForm.revisionId = revisionForm.revisionId;
             // Using object.assign so we don't cross polinate multiple form loads.
             return Object.assign({}, currentForm);
           })
@@ -824,7 +829,7 @@ export class Formio {
   loadSubmission(query?: any, opts?: any) {
     return this.load('submission', query, opts)
       .then((submission: any) => {
-        this.vId = submission._fvid;
+        this.vId = submission._frid || submission._fvid;
         this.vUrl = `${this.formUrl}/v/${this.vId}`;
         return submission;
       });
@@ -1196,7 +1201,8 @@ export class Formio {
     let apiUrl = `/project/${form.project}`;
     apiUrl += `/form/${form._id}`;
     apiUrl += `/submission/${this.submissionId}`;
-    apiUrl += '/download';
+    const postfix = form.submissionRevisions && form.settings.changeLog? '/download/changelog' : '/download';
+    apiUrl += postfix;
 
     let download = this.base + apiUrl;
     return new Promise((resolve, reject) => {
