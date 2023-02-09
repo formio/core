@@ -1109,6 +1109,17 @@ export class Formio {
   }
 
   /**
+   * Sets OAuth Logout URL.
+   *
+   * @param {string} uri - Logout URL.
+   * @param {string} options.namespace - The localStorage namespace to use when retrieving tokens from storage.
+   * @return {string}
+   */
+     oauthLogoutURI(uri: string, options: string | { namespace: string }): string {
+      return Formio.oauthLogoutURI(uri, Object.assign({ formio: this }, this.options, options));
+    }
+
+  /**
    * Returns the JWT token for this instance.
    *
    * @param {object} options - The following options are provided.
@@ -2050,6 +2061,14 @@ export class Formio {
         Authorization: `Bearer ${token}`
       }
     });
+  }
+
+  static oauthLogoutURI(uri: string, options: string | { namespace: string }): string {
+    options = (typeof options === 'string') ? { namespace: options } : options || {};
+    const logoutURIName = `${options.namespace || Formio.namespace || 'formio'}LogoutAuthUrl`;
+    Formio.tokens[logoutURIName];
+    localStorage.setItem(logoutURIName, uri);
+    return Formio.tokens[logoutURIName];
   }
 
   /**
