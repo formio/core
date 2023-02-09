@@ -1729,7 +1729,7 @@ export class Formio {
    * @param {string} options.namespace - The namespace of the tokens
    */
   static setUser(user: any, opts: any = {}) {
-    var userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
+    const userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
     if (!user) {
       if (!opts.fromToken) {
         opts.fromUser = true;
@@ -1769,7 +1769,7 @@ export class Formio {
    */
   static getUser(options?: any) {
     options = options || {};
-    var userName = `${options.namespace || Formio.namespace || 'formio'}User`;
+    const userName = `${options.namespace || Formio.namespace || 'formio'}User`;
     try {
       return JSON.parse((localStorage.getItem(userName) || null)!);
     }
@@ -2149,7 +2149,7 @@ export class Formio {
     return new Promise((resolve, reject) => {
       const Okta = options.OktaAuth;
       delete options.OktaAuth;
-      var authClient = new Okta(options);
+      const authClient = new Okta(options);
       authClient.tokenManager.get('accessToken')
         .then((accessToken: any) => {
           if (accessToken) {
