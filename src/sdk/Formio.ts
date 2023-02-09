@@ -1623,7 +1623,7 @@ export class Formio {
         Formio.events.emit('formio.badToken', err);
       }
       if (err.message) {
-        err.message = `Could not connect to API server (${err.message})`;
+        err = new Error(`Could not connect to API server (${err.message}): ${url}`);
         err.networkError = true;
       }
 
