@@ -494,7 +494,12 @@ export class Formio {
     if (!(this as any)[_id]) {
       return Promise.reject(`Missing ${_id}`);
     }
-    return this.makeRequest(type, (this as any)[_url] + query, 'get', null, opts);
+
+    let url = (this as any)[_url] + query;
+    if (type === 'form' && !isNaN(parseInt(this.vId))) {
+      url += `&formRevision=${this.vId}`;
+    }
+    return this.makeRequest(type, url, 'get', null, opts);
   }
 
   /**
