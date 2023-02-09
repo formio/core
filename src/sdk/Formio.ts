@@ -2248,7 +2248,7 @@ export class Formio {
    * @param {boolean} polling - Determines if polling should be used to determine if they library is ready to use. If set to false, then it will rely on a global callback called ${name}Callback where "name" is the first property passed to this method. When this is called, that will indicate when the library is ready. In most cases, you will want to pass true to this parameter to initiate a polling method to check for the library availability in the global context.
    * @return {Promise<object>} - A promise that will resolve when the plugin is ready to be used.
    */
-  static requireLibrary(name: string, property: string, src: string | Array<string>, polling: boolean = false) {
+  static requireLibrary(name: string, property: string, src: string | Array<string>, polling: boolean = false, onload?: (ready: Promise<any>) => void) {
     if (!Formio.libraries.hasOwnProperty(name)) {
       Formio.libraries[name] = {};
       Formio.libraries[name].ready = new Promise((resolve, reject) => {
@@ -2305,7 +2305,9 @@ export class Formio {
               element.setAttribute(attr, attrs[attr]);
             }
           }
-
+          if (onload) {
+            element.addEventListener('load', () => onload(Formio.libraries[name].ready));
+          }
           const { head } = document;
           if (head) {
             head.appendChild(element);
@@ -2324,7 +2326,9 @@ export class Formio {
         }
       }
     }
-    return Formio.libraries[name].ready;
+
+    const lib = Formio.libraries[name].ready;
+    return onload ? onload(lib) : lib;
   }
 
   /**
