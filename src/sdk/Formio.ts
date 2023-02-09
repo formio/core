@@ -2306,7 +2306,10 @@ export class Formio {
             }
           }
           if (onload) {
-            element.addEventListener('load', () => onload(Formio.libraries[name].ready));
+            element.addEventListener('load', () => {
+              Formio.libraries[name].loaded = true;
+              onload(Formio.libraries[name].ready);
+            });
           }
           const { head } = document;
           if (head) {
@@ -2327,8 +2330,8 @@ export class Formio {
       }
     }
 
-    const lib = Formio.libraries[name].ready;
-    return onload ? onload(lib) : lib;
+    const lib = Formio.libraries[name];
+    return onload && lib.loaded ? onload(lib.ready) : lib.ready;
   }
 
   /**
