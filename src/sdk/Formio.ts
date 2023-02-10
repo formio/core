@@ -19,6 +19,8 @@ export interface FormioOptions {
    * The project API url of the Form.io Project. Example: https://examples.form.io
    */
   project?: string;
+
+  useSessionToken?: boolean;
 }
 
 /**
@@ -246,6 +248,9 @@ export class Formio {
       return new Formio(path);
     }
 
+    if (options.useSessionToken) {
+      Formio.useSessionToken(options as any);
+    }
     if (options.hasOwnProperty('base') && options.base) {
       this.base = options.base;
     }
@@ -1675,6 +1680,30 @@ export class Formio {
     Formio.tokens.formioToken = token || '';
   }
 
+  static useSessionToken(options: string | { namespace: string}) {
+    let namespace = options
+    if (typeof options === 'object') {
+        options = options.namespace
+    }
+    const tokenName = `${namespace || Formio.namespace || 'formio'}Token`;
+    const token = localStorage.getItem(tokenName);
+
+    if (token) {
+      localStorage.removeItem(tokenName);
+      sessionStorage.setItem(tokenName, token);
+    }
+
+    const userName = `${namespace || Formio.namespace || 'formio'}User`;
+    const user = localStorage.getItem(userName);
+
+    if (user) {
+      localStorage.removeItem(userName);
+      sessionStorage.setItem(userName, JSON.stringify(user));
+    }
+
+    localStorage.setItem('useSessionToken', 'true');
+  }
+
   /**
    * Sets the JWT in storage to be used within an application.
    *
@@ -1693,6 +1722,8 @@ export class Formio {
       Formio.tokens = {};
     }
 
+    const storage = localStorage.getItem('useSessionToken') ? sessionStorage : localStorage;
+
     if (!token) {
       if (!opts.fromUser) {
         opts.fromToken = true;
@@ -1700,7 +1731,7 @@ export class Formio {
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        localStorage.removeItem(tokenName);
+        storage.removeItem(tokenName);
       }
       catch (err: any) {
         console.log(`Error removing token: ${err.message}`);
@@ -1713,7 +1744,7 @@ export class Formio {
       Formio.tokens[tokenName] = token;
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        localStorage.setItem(tokenName, token);
+        storage.setItem(tokenName, token);
       }
       catch (err: any) {
         console.log(`Error setting token: ${err.message}`);
@@ -1743,7 +1774,10 @@ export class Formio {
       return Formio.tokens[decodedTokenName];
     }
     try {
-      Formio.tokens[tokenName] = localStorage.getItem(tokenName) || '';
+      const token = localStorage.getItem('useSessionToken')
+        ? sessionStorage.getItem(tokenName)
+        : localStorage.getItem(tokenName);
+      Formio.tokens[tokenName] = token || '';
       return Formio.tokens[tokenName];
     }
     catch (e: any) {
@@ -1761,6 +1795,7 @@ export class Formio {
    */
   static setUser(user: any, opts: any = {}) {
     const userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
+    const storage = localStorage.getItem('useSessionToken') ? sessionStorage : localStorage;
     if (!user) {
       if (!opts.fromToken) {
         opts.fromUser = true;
@@ -1772,7 +1807,7 @@ export class Formio {
 
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        return localStorage.removeItem(userName);
+        return storage.removeItem(userName);
       }
       catch (err: any) {
         console.log(`Error removing token: ${err.message}`);
@@ -1781,7 +1816,7 @@ export class Formio {
     }
     // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
     try {
-      localStorage.setItem(userName, JSON.stringify(user));
+      storage.setItem(userName, JSON.stringify(user));
     }
     catch (err: any) {
       console.log(`Error setting token: ${err.message}`);
@@ -1802,7 +1837,12 @@ export class Formio {
     options = options || {};
     const userName = `${options.namespace || Formio.namespace || 'formio'}User`;
     try {
-      return JSON.parse((localStorage.getItem(userName) || null)!);
+      return JSON.parse(
+        (localStorage.getItem('useSessionToken')
+          ? sessionStorage
+          : localStorage
+        ).getItem(userName) || ''
+      );
     }
     catch (e: any) {
       console.log(`Error getting user: ${e.message}`);
