@@ -1698,7 +1698,7 @@ export class Formio {
 
     if (user) {
       localStorage.removeItem(userName);
-      sessionStorage.setItem(userName, JSON.stringify(user));
+      sessionStorage.setItem(userName, user);
     }
 
     localStorage.setItem('useSessionToken', 'true');
@@ -2044,20 +2044,22 @@ export class Formio {
   static logout(formio?: any, options: any = {}) {
     options.formio = formio;
     const projectUrl = Formio.authUrl ? Formio.authUrl : (formio ? formio.projectUrl : Formio.baseUrl);
+    const logout = () => {
+      Formio.setToken(null, options);
+      Formio.setUser(null, options);
+      Formio.clearCache();
+      localStorage.removeItem('useSessionToken');
+    };
     return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`)
       .then(function(result: any) {
-        Formio.setToken(null, options);
-        Formio.setUser(null, options);
-        Formio.clearCache();
+        logout();
         if (result.shouldRedirect && result.url) {
           window.location.href = result.url;
         }
         return result;
       })
       .catch(function(err: any) {
-        Formio.setToken(null, options);
-        Formio.setUser(null, options);
-        Formio.clearCache();
+        logout();
         throw err;
       });
   }
