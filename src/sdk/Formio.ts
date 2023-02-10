@@ -1646,7 +1646,7 @@ export class Formio {
       return Formio.cloneResponse(result);
     })
     .catch((err: any) => {
-      if (err === 'Bad Token') {
+      if (err === 'Bad Token' && opts.noToken !== false) {
         Formio.setToken(null, opts);
         Formio.events.emit('formio.badToken', err);
       }
