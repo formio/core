@@ -356,13 +356,19 @@ export class Formio {
       else if (hostName === this.base) {
         // Get project id as first part of path (subdirectory).
         if (hostparts && hostparts.length > 3 && path.split('/').length > 1) {
+          const isFile = path.match(/.json/);
           const pathParts = path.split('/');
-          pathParts.shift(); // Throw away the first /.
-          const projectId = pathParts.shift();
-          if (projectId) {
-            this.projectId = projectId;
-            path = `/${pathParts.join('/')}`;
-            this.projectUrl = `${hostName}/${this.projectId}`;
+          if (isFile) {
+            this.projectUrl = hostName;
+          }
+          else {
+            pathParts.shift(); // Throw away the first /.
+            const projectId = pathParts.shift();
+            if (projectId) {
+              this.projectId = projectId;
+              path = `/${pathParts.join('/')}`;
+              this.projectUrl = `${hostName}/${this.projectId}`;
+            }
           }
         }
       }
