@@ -2009,6 +2009,9 @@ export class Formio {
         Formio.setToken(null, options);
         Formio.setUser(null, options);
         Formio.clearCache();
+        if (result.shouldRedirect && result.url) {
+          window.location.href = result.url;
+        }
         return result;
       })
       .catch(function(err: any) {
