@@ -74,6 +74,7 @@
   },
   "dependencies": {
     "@formio/lodash": "0.0.9",
+    "browser-cookies": "^1.2.0",
     "core-js": "^3.21.1",
     "dayjs": "^1.10.8",
     "dompurify": "^2.3.6",

@@ -3,6 +3,7 @@ import { get, fastCloneDeep, defaults, isBoolean, isNil, isObject, intersection 
 import { eachComponent } from '@formio/utils/formUtil';
 import { jwtDecode } from '@formio/utils/jwtDecode';
 import EventEmitter from 'eventemitter3';
+import cookies from 'browser-cookies';
 const { fetch, Headers } = fetchPonyfill();
 import Plugins from './Plugins';
 declare const OktaAuth: any;
@@ -1739,20 +1740,20 @@ export class Formio {
         storage.removeItem(tokenName);
       }
       catch (err: any) {
-        console.log(`Error removing token: ${err.message}`);
+        cookies.erase(tokenName, { path: '/' });
       }
       Formio.tokens[tokenName] = token;
       return Promise.resolve(null);
     }
 
-    if (Formio.tokens[tokenName] !== token) {
+    if (Formio.tokens[tokenName] && Formio.tokens[tokenName] !== token) {
       Formio.tokens[tokenName] = token;
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
         storage.setItem(tokenName, token);
       }
       catch (err: any) {
-        console.log(`Error setting token: ${err.message}`);
+        cookies.set(tokenName, token, { path: '/' });
       }
     }
     // Return or updates the current user
@@ -1790,7 +1791,7 @@ export class Formio {
       return Formio.tokens[tokenName];
     }
     catch (e: any) {
-      console.log(`Error retrieving token: ${e.message}`);
+      Formio.tokens[tokenName] = cookies.get(tokenName);
       return '';
     }
   }
@@ -1819,8 +1820,7 @@ export class Formio {
         return storage.removeItem(userName);
       }
       catch (err: any) {
-        console.log(`Error removing token: ${err.message}`);
-        return;
+        return cookies.erase(userName, { path: '/' });
       }
     }
     // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
@@ -1828,7 +1828,7 @@ export class Formio {
       storage.setItem(userName, JSON.stringify(user));
     }
     catch (err: any) {
-      console.log(`Error setting token: ${err.message}`);
+      cookies.set(userName, JSON.stringify(user), { path: '/' });
     }
 
     // Emit an event on the authenticated user.
@@ -1854,8 +1854,7 @@ export class Formio {
       );
     }
     catch (e: any) {
-      console.log(`Error getting user: ${e.message}`);
-      return {};
+      return JSON.parse(cookies.get(userName)!);
     }
   }
 
