@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha -r ts-node/register --r mock-local-storage '**/*.spec.ts'",
+    "test:debug": "mocha -r ts-node/register --r mock-local-storage --debug-brk --inspect '**/*.spec.ts'",
     "docs": "./node_modules/typedoc/bin/typedoc --exclude '*.spec.ts' src/*.ts src/**/*.ts src/**/**/*.ts",
     "build:dev": "webpack --config config/webpack.config.js",
     "build:full": "webpack --config config/webpack.full.js",
