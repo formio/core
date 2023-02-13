@@ -1,6 +1,7 @@
 import fetchPonyfill from 'fetch-ponyfill';
 import { get, fastCloneDeep, defaults, isBoolean, isNil, isObject, intersection } from '@formio/lodash';
 import { eachComponent } from '@formio/utils/formUtil';
+import { jwtDecode } from '@formio/utils/jwtDecode';
 import EventEmitter from 'eventemitter3';
 const { fetch, Headers } = fetchPonyfill();
 import Plugins from './Plugins';
@@ -1515,7 +1516,7 @@ export class Formio {
     if (url[0] === '/') {
       url = Formio.baseUrl + url;
     }
-    
+
     // Set up and fetch request
     const headers = header || new Headers(opts.headers || {
       'Accept': 'application/json',
@@ -1782,6 +1783,10 @@ export class Formio {
         ? sessionStorage.getItem(tokenName)
         : localStorage.getItem(tokenName);
       Formio.tokens[tokenName] = token || '';
+      if (options.decode) {
+        Formio.tokens[decodedTokenName] = Formio.tokens[tokenName] ? jwtDecode(Formio.tokens[tokenName]) : {};
+        return Formio.tokens[decodedTokenName];
+      }
       return Formio.tokens[tokenName];
     }
     catch (e: any) {
