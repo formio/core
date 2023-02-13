@@ -1746,7 +1746,7 @@ export class Formio {
       return Promise.resolve(null);
     }
 
-    if (Formio.tokens[tokenName] && Formio.tokens[tokenName] !== token) {
+    if (Formio.tokens[tokenName] !== token) {
       Formio.tokens[tokenName] = token;
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
