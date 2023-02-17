@@ -1,7 +1,9 @@
 import fetchPonyfill from 'fetch-ponyfill';
 import { get, fastCloneDeep, defaults, isBoolean, isNil, isObject, intersection } from '@formio/lodash';
 import { eachComponent } from '@formio/utils/formUtil';
+import { jwtDecode } from '@formio/utils/jwtDecode';
 import EventEmitter from 'eventemitter3';
+import cookies from 'browser-cookies';
 const { fetch, Headers } = fetchPonyfill();
 import Plugins from './Plugins';
 declare const OktaAuth: any;
@@ -19,6 +21,8 @@ export interface FormioOptions {
    * The project API url of the Form.io Project. Example: https://examples.form.io
    */
   project?: string;
+
+  useSessionToken?: boolean;
 }
 
 /**
@@ -246,6 +250,9 @@ export class Formio {
       return new Formio(path);
     }
 
+    if (options.useSessionToken) {
+      Formio.useSessionToken(options as any);
+    }
     if (options.hasOwnProperty('base') && options.base) {
       this.base = options.base;
     }
@@ -356,13 +363,19 @@ export class Formio {
       else if (hostName === this.base) {
         // Get project id as first part of path (subdirectory).
         if (hostparts && hostparts.length > 3 && path.split('/').length > 1) {
+          const isFile = path.match(/.json/);
           const pathParts = path.split('/');
-          pathParts.shift(); // Throw away the first /.
-          const projectId = pathParts.shift();
-          if (projectId) {
-            this.projectId = projectId;
-            path = `/${pathParts.join('/')}`;
-            this.projectUrl = `${hostName}/${this.projectId}`;
+          if (isFile) {
+            this.projectUrl = hostName;
+          }
+          else {
+            pathParts.shift(); // Throw away the first /.
+            const projectId = pathParts.shift();
+            if (projectId) {
+              this.projectId = projectId;
+              path = `/${pathParts.join('/')}`;
+              this.projectUrl = `${hostName}/${this.projectId}`;
+            }
           }
         }
       }
@@ -494,7 +507,12 @@ export class Formio {
     if (!(this as any)[_id]) {
       return Promise.reject(`Missing ${_id}`);
     }
-    return this.makeRequest(type, (this as any)[_url] + query, 'get', null, opts);
+
+    let url = (this as any)[_url] + query;
+    if (type === 'form' && !isNaN(parseInt(this.vId))) {
+      url += `&formRevision=${this.vId}`;
+    }
+    return this.makeRequest(type, url, 'get', null, opts);
   }
 
   /**
@@ -704,6 +722,10 @@ export class Formio {
         if (currentForm.revisions === 'current' && this.submissionId) {
           return currentForm;
         }
+        // eslint-disable-next-line eqeqeq
+        if (currentForm._vid == this.vId || currentForm.revisionId === this.vId) {
+          return currentForm;
+        }
         // If they specified a revision form, load the revised form components.
         if (query && isObject(query)) {
           query = Formio.serialize((query as any).params);
@@ -719,6 +741,7 @@ export class Formio {
             currentForm._vid = revisionForm._vid;
             currentForm.components = revisionForm.components;
             currentForm.settings = revisionForm.settings;
+            currentForm.revisionId = revisionForm.revisionId;
             // Using object.assign so we don't cross polinate multiple form loads.
             return Object.assign({}, currentForm);
           })
@@ -824,7 +847,7 @@ export class Formio {
   loadSubmission(query?: any, opts?: any) {
     return this.load('submission', query, opts)
       .then((submission: any) => {
-        this.vId = submission._fvid;
+        this.vId = submission._frid || submission._fvid;
         this.vUrl = `${this.formUrl}/v/${this.vId}`;
         return submission;
       });
@@ -1109,6 +1132,17 @@ export class Formio {
   }
 
   /**
+   * Sets OAuth Logout URL.
+   *
+   * @param {string} uri - Logout URL.
+   * @param {string} options.namespace - The localStorage namespace to use when retrieving tokens from storage.
+   * @return {string}
+   */
+     oauthLogoutURI(uri: string, options: string | { namespace: string }): string {
+      return Formio.oauthLogoutURI(uri, Object.assign({ formio: this }, this.options, options));
+    }
+
+  /**
    * Returns the JWT token for this instance.
    *
    * @param {object} options - The following options are provided.
@@ -1185,7 +1219,8 @@ export class Formio {
     let apiUrl = `/project/${form.project}`;
     apiUrl += `/form/${form._id}`;
     apiUrl += `/submission/${this.submissionId}`;
-    apiUrl += '/download';
+    const postfix = form.submissionRevisions && form.settings.changeLog? '/download/changelog' : '/download';
+    apiUrl += postfix;
 
     let download = this.base + apiUrl;
     return new Promise((resolve, reject) => {
@@ -1479,6 +1514,10 @@ export class Formio {
       return Promise.resolve(Formio.cloneResponse(Formio.cache[cacheKey]));
     }
 
+    if (url[0] === '/') {
+      url = Formio.baseUrl + url;
+    }
+
     // Set up and fetch request
     const headers = header || new Headers(opts.headers || {
       'Accept': 'application/json',
@@ -1526,6 +1565,9 @@ export class Formio {
         }
         else if (response.status === 416) {
           Formio.events.emit('formio.rangeIsNotSatisfiable', response.body);
+        }
+        else if (response.status === 504) {
+          return Promise.reject(new Error('Network request failed'));
         }
         // Parse and return the error as a rejected promise to reject this promise
         return (response.headers.get('content-type').includes('application/json')
@@ -1615,12 +1657,12 @@ export class Formio {
       return Formio.cloneResponse(result);
     })
     .catch((err: any) => {
-      if (err === 'Bad Token') {
+      if (err === 'Bad Token' && opts.noToken !== false) {
         Formio.setToken(null, opts);
         Formio.events.emit('formio.badToken', err);
       }
       if (err.message) {
-        err.message = `Could not connect to API server (${err.message})`;
+        err = new Error(`Could not connect to API server (${err.message}): ${url}`);
         err.networkError = true;
       }
 
@@ -1644,6 +1686,30 @@ export class Formio {
     Formio.tokens.formioToken = token || '';
   }
 
+  static useSessionToken(options: string | { namespace: string}) {
+    let namespace = options
+    if (typeof options === 'object') {
+        options = options.namespace
+    }
+    const tokenName = `${namespace || Formio.namespace || 'formio'}Token`;
+    const token = localStorage.getItem(tokenName);
+
+    if (token) {
+      localStorage.removeItem(tokenName);
+      sessionStorage.setItem(tokenName, token);
+    }
+
+    const userName = `${namespace || Formio.namespace || 'formio'}User`;
+    const user = localStorage.getItem(userName);
+
+    if (user) {
+      localStorage.removeItem(userName);
+      sessionStorage.setItem(userName, user);
+    }
+
+    localStorage.setItem('useSessionToken', 'true');
+  }
+
   /**
    * Sets the JWT in storage to be used within an application.
    *
@@ -1662,6 +1728,8 @@ export class Formio {
       Formio.tokens = {};
     }
 
+    const storage = localStorage.getItem('useSessionToken') ? sessionStorage : localStorage;
+
     if (!token) {
       if (!opts.fromUser) {
         opts.fromToken = true;
@@ -1669,10 +1737,10 @@ export class Formio {
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        localStorage.removeItem(tokenName);
+        storage.removeItem(tokenName);
       }
       catch (err: any) {
-        console.log(`Error removing token: ${err.message}`);
+        cookies.erase(tokenName, { path: '/' });
       }
       Formio.tokens[tokenName] = token;
       return Promise.resolve(null);
@@ -1682,10 +1750,10 @@ export class Formio {
       Formio.tokens[tokenName] = token;
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        localStorage.setItem(tokenName, token);
+        storage.setItem(tokenName, token);
       }
       catch (err: any) {
-        console.log(`Error setting token: ${err.message}`);
+        cookies.set(tokenName, token, { path: '/' });
       }
     }
     // Return or updates the current user
@@ -1712,11 +1780,18 @@ export class Formio {
       return Formio.tokens[decodedTokenName];
     }
     try {
-      Formio.tokens[tokenName] = localStorage.getItem(tokenName) || '';
+      const token = localStorage.getItem('useSessionToken')
+        ? sessionStorage.getItem(tokenName)
+        : localStorage.getItem(tokenName);
+      Formio.tokens[tokenName] = token || '';
+      if (options.decode) {
+        Formio.tokens[decodedTokenName] = Formio.tokens[tokenName] ? jwtDecode(Formio.tokens[tokenName]) : {};
+        return Formio.tokens[decodedTokenName];
+      }
       return Formio.tokens[tokenName];
     }
     catch (e: any) {
-      console.log(`Error retrieving token: ${e.message}`);
+      Formio.tokens[tokenName] = cookies.get(tokenName);
       return '';
     }
   }
@@ -1729,7 +1804,8 @@ export class Formio {
    * @param {string} options.namespace - The namespace of the tokens
    */
   static setUser(user: any, opts: any = {}) {
-    var userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
+    const userName = `${opts.namespace || Formio.namespace || 'formio'}User`;
+    const storage = localStorage.getItem('useSessionToken') ? sessionStorage : localStorage;
     if (!user) {
       if (!opts.fromToken) {
         opts.fromUser = true;
@@ -1741,19 +1817,18 @@ export class Formio {
 
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        return localStorage.removeItem(userName);
+        return storage.removeItem(userName);
       }
       catch (err: any) {
-        console.log(`Error removing token: ${err.message}`);
-        return;
+        return cookies.erase(userName, { path: '/' });
       }
     }
     // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
     try {
-      localStorage.setItem(userName, JSON.stringify(user));
+      storage.setItem(userName, JSON.stringify(user));
     }
     catch (err: any) {
-      console.log(`Error setting token: ${err.message}`);
+      cookies.set(userName, JSON.stringify(user), { path: '/' });
     }
 
     // Emit an event on the authenticated user.
@@ -1769,13 +1844,17 @@ export class Formio {
    */
   static getUser(options?: any) {
     options = options || {};
-    var userName = `${options.namespace || Formio.namespace || 'formio'}User`;
+    const userName = `${options.namespace || Formio.namespace || 'formio'}User`;
     try {
-      return JSON.parse((localStorage.getItem(userName) || null)!);
+      return JSON.parse(
+        (localStorage.getItem('useSessionToken')
+          ? sessionStorage
+          : localStorage
+        ).getItem(userName) || ''
+      );
     }
     catch (e: any) {
-      console.log(`Error getting user: ${e.message}`);
-      return {};
+      return JSON.parse(cookies.get(userName)!);
     }
   }
 
@@ -1973,17 +2052,22 @@ export class Formio {
   static logout(formio?: any, options: any = {}) {
     options.formio = formio;
     const projectUrl = Formio.authUrl ? Formio.authUrl : (formio ? formio.projectUrl : Formio.baseUrl);
+    const logout = () => {
+      Formio.setToken(null, options);
+      Formio.setUser(null, options);
+      Formio.clearCache();
+      localStorage.removeItem('useSessionToken');
+    };
     return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`)
       .then(function(result: any) {
-        Formio.setToken(null, options);
-        Formio.setUser(null, options);
-        Formio.clearCache();
+        logout();
+        if (result.shouldRedirect && result.url) {
+          window.location.href = result.url;
+        }
         return result;
       })
       .catch(function(err: any) {
-        Formio.setToken(null, options);
-        Formio.setUser(null, options);
-        Formio.clearCache();
+        logout();
         throw err;
       });
   }
@@ -2047,6 +2131,14 @@ export class Formio {
         Authorization: `Bearer ${token}`
       }
     });
+  }
+
+  static oauthLogoutURI(uri: string, options: string | { namespace: string }): string {
+    options = (typeof options === 'string') ? { namespace: options } : options || {};
+    const logoutURIName = `${options.namespace || Formio.namespace || 'formio'}LogoutAuthUrl`;
+    Formio.tokens[logoutURIName];
+    localStorage.setItem(logoutURIName, uri);
+    return Formio.tokens[logoutURIName];
   }
 
   /**
@@ -2149,7 +2241,7 @@ export class Formio {
     return new Promise((resolve, reject) => {
       const Okta = options.OktaAuth;
       delete options.OktaAuth;
-      var authClient = new Okta(options);
+      const authClient = new Okta(options);
       authClient.tokenManager.get('accessToken')
         .then((accessToken: any) => {
           if (accessToken) {
@@ -2220,7 +2312,7 @@ export class Formio {
    * @param {boolean} polling - Determines if polling should be used to determine if they library is ready to use. If set to false, then it will rely on a global callback called ${name}Callback where "name" is the first property passed to this method. When this is called, that will indicate when the library is ready. In most cases, you will want to pass true to this parameter to initiate a polling method to check for the library availability in the global context.
    * @return {Promise<object>} - A promise that will resolve when the plugin is ready to be used.
    */
-  static requireLibrary(name: string, property: string, src: string | Array<string>, polling: boolean = false) {
+  static requireLibrary(name: string, property: string, src: string | Array<string>, polling: boolean = false, onload?: (ready: Promise<any>) => void) {
     if (!Formio.libraries.hasOwnProperty(name)) {
       Formio.libraries[name] = {};
       Formio.libraries[name].ready = new Promise((resolve, reject) => {
@@ -2277,7 +2369,12 @@ export class Formio {
               element.setAttribute(attr, attrs[attr]);
             }
           }
-
+          if (onload) {
+            element.addEventListener('load', () => {
+              Formio.libraries[name].loaded = true;
+              onload(Formio.libraries[name].ready);
+            });
+          }
           const { head } = document;
           if (head) {
             head.appendChild(element);
@@ -2296,7 +2393,9 @@ export class Formio {
         }
       }
     }
-    return Formio.libraries[name].ready;
+
+    const lib = Formio.libraries[name];
+    return onload && lib.loaded ? onload(lib.ready) : lib.ready;
   }
 
   /**

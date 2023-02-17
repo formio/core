@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha -r ts-node/register --r mock-local-storage '**/*.spec.ts'",
+    "test:debug": "mocha -r ts-node/register --r mock-local-storage --debug-brk --inspect '**/*.spec.ts'",
     "docs": "./node_modules/typedoc/bin/typedoc --exclude '*.spec.ts' src/*.ts src/**/*.ts src/**/**/*.ts",
     "build:dev": "webpack --config config/webpack.config.js",
     "build:full": "webpack --config config/webpack.full.js",
@@ -74,6 +75,7 @@
   },
   "dependencies": {
     "@formio/lodash": "0.0.9",
+    "browser-cookies": "^1.2.0",
     "core-js": "^3.21.1",
     "dayjs": "^1.10.8",
     "dompurify": "^2.3.6",
