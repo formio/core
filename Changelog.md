@@ -1,3 +1,8 @@
+## 1.3.0-rc.1
+### Changed
+  - Added types for core formio entities
+  - Missing commits from formio.js implemented
+
 ## 1.2.0
 ### Fixed
  - FIO-6123: Added an array cleanup to the removeAttachedListeners method and wrote test for it

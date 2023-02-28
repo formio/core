@@ -1,6 +1,6 @@
 {
   "name": "@formio/core",
-  "version": "1.2.0",
+  "version": "1.3.0-rc.1",
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
   "scripts": {
@@ -41,6 +41,7 @@
     "@formio/model": "file:src/model",
     "@formio/modules": "file:src/modules",
     "@formio/sdk": "file:src/sdk",
+    "@formio/types": "file:src/types",
     "@formio/utils": "file:src/utils",
     "@formio/validator": "file:src/validator",
     "@types/chai": "^4.3.0",

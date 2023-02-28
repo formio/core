@@ -12,6 +12,7 @@ export interface FormioOptions {
      * The project API url of the Form.io Project. Example: https://examples.form.io
      */
     project?: string;
+    useSessionToken?: boolean;
 }
 /**
  * The different path types for a project.
@@ -704,6 +705,16 @@ export declare class Formio {
      */
     accessInfo(): any;
     /**
+     * Sets OAuth Logout URL.
+     *
+     * @param {string} uri - Logout URL.
+     * @param {string} options.namespace - The localStorage namespace to use when retrieving tokens from storage.
+     * @return {string}
+     */
+    oauthLogoutURI(uri: string, options: string | {
+        namespace: string;
+    }): string;
+    /**
      * Returns the JWT token for this instance.
      *
      * @param {object} options - The following options are provided.
@@ -805,6 +816,9 @@ export declare class Formio {
     static request(url: string, method?: any, data?: any, header?: any, opts?: any): any;
     static get token(): any;
     static set token(token: any);
+    static useSessionToken(options: string | {
+        namespace: string;
+    }): void;
     /**
      * Sets the JWT in storage to be used within an application.
      *
@@ -988,6 +1002,9 @@ export declare class Formio {
      * @return {Promise<R>|*}
      */
     static oAuthCurrentUser(formio: any, token: string): any;
+    static oauthLogoutURI(uri: string, options: string | {
+        namespace: string;
+    }): string;
     /**
      * Perform a SAML initialization.
      *
@@ -1081,7 +1098,7 @@ export declare class Formio {
      * @param {boolean} polling - Determines if polling should be used to determine if they library is ready to use. If set to false, then it will rely on a global callback called ${name}Callback where "name" is the first property passed to this method. When this is called, that will indicate when the library is ready. In most cases, you will want to pass true to this parameter to initiate a polling method to check for the library availability in the global context.
      * @return {Promise<object>} - A promise that will resolve when the plugin is ready to be used.
      */
-    static requireLibrary(name: string, property: string, src: string | Array<string>, polling?: boolean): any;
+    static requireLibrary(name: string, property: string, src: string | Array<string>, polling?: boolean, onload?: (ready: Promise<any>) => void): any;
     /**
      * Determines if a lazy loaded library is ready to be used.
      *
