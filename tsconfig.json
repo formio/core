@@ -42,7 +42,7 @@
 
     /* Module Resolution Options */
     // "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
-    // "baseUrl": "./",                       /* Base directory to resolve non-absolute module names. */
+    "baseUrl": "./",                          /* Base directory to resolve non-absolute module names. */
     // "paths": {},                           /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     // "typeRoots": [],                       /* List of folders to include type definitions from. */
@@ -64,7 +64,23 @@
 
     /* Advanced Options */
     "skipLibCheck": true,                     /* Skip type checking of declaration files. */
-    "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
+    "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
+    "paths": {
+      "@formio/base": ["./src/base"],
+      "@formio/base/*": ["./src/base/*"],
+      "@formio/model": ["./src/model"],
+      "@formio/model/*": ["./src/model/*"],
+      "@formio/modules": ["./src/modules"],
+      "@formio/modules/*": ["./src/modules/*"],
+      "@formio/sdk": ["./src/sdk"],
+      "@formio/sdk/*": ["./src/sdk/*"],
+      "@formio/types": ["./src/types"],
+      "@formio/types/*": ["./src/types/*"],
+      "@formio/utils": ["./src/utils"],
+      "@formio/utils/*": ["./src/utils/*"],
+      "@formio/validator": ["./src/validator"],
+      "@formio/validator/*": ["./src/validator/*"]
+    }
   },
   "include": [
     "src/*.ts",
