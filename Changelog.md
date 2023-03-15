@@ -1,3 +1,7 @@
+## 1.3.0-rc.5
+### Changed
+ - Fixing the lib to contain production build of js files.
+
 ## 1.3.0-rc.4
 ### Changed
  - "main" in package.json changed to "dist" to support imports into other libraries.

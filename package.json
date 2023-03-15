@@ -1,18 +1,20 @@
 {
   "name": "@formio/core",
-  "version": "1.3.0-rc.4",
+  "version": "1.3.0-rc.5",
   "description": "The core Form.io renderering framework.",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "mocha -r ts-node/register -r tsconfig-paths/register --r mock-local-storage '**/*.spec.ts'",
+    "lib": "rm -rf lib && webpack --config config/webpack.lib.js",
+    "replace": "node -r tsconfig-paths/register -r ts-node/register ./lib/base/array/ArrayComponent.js",
     "test:debug": "mocha -r ts-node/register -r tsconfig-paths/register --r mock-local-storage --debug-brk --inspect '**/*.spec.ts'",
     "docs": "./node_modules/typedoc/bin/typedoc --exclude '*.spec.ts' src/*.ts src/**/*.ts src/**/**/*.ts",
     "build:dev": "webpack --config config/webpack.config.js",
     "build:full": "webpack --config config/webpack.full.js",
     "build:prod": "webpack --config config/webpack.prod.js",
     "clean": "rm -rf lib && rm -rf dist && rm -rf docs",
-    "build": "npm run clean && tsc && gulp templates && npm run docs && npm run build:dev && npm run build:prod && npm run build:full",
-    "prepublish": "npm run build && npm run test"
+    "build": "npm run clean && gulp templates && npm run docs && npm run lib && npm run build:dev && npm run build:prod && npm run build:full",
+    "prepublish": "npm run build:prod && npm run test"
   },
   "repository": {
     "type": "git",
