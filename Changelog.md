@@ -1,3 +1,11 @@
+## 1.3.0-rc.4
+### Changed
+ - "main" in package.json changed to "dist" to support imports into other libraries.
+
+## 1.3.0-rc.2 - 1.3.0-rc.3
+### Changed
+ - Experiment with typescript paths and imports.
+
 ## 1.3.0-rc.1
 ### Changed
   - Added types for core formio entities
