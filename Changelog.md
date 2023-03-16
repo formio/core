@@ -1,3 +1,8 @@
+## 1.3.0-rc.8
+## 1.3.0-rc.7
+### Fixed
+ - Fixed the ejs.js template import.
+
 ## 1.3.0-rc.6
 ### Changed
  - Fixed the export lib to contain relative paths for easy import.

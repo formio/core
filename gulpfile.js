@@ -21,4 +21,5 @@ gulp.task('templates', () =>
       extname: '.ejs.js'
     }))
     .pipe(gulp.dest('src'))
+    .pipe(gulp.dest('lib'))
 );
