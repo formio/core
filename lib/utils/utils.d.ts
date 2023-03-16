@@ -13,4 +13,4 @@ export declare function escapeRegExCharacters(value: string): string;
  * @param value
  * @return {boolean}
  */
-export declare function boolValue(value: any): any;
+export declare function boolValue(value: any): boolean;

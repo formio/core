@@ -1,3 +1,7 @@
+## 1.3.0-rc.9
+### Changed
+ - Upgrade all dependencies to latest versions.
+
 ## 1.3.0-rc.8
 ## 1.3.0-rc.7
 ### Fixed
