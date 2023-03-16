@@ -1,3 +1,7 @@
+## 1.3.0-rc.6
+### Changed
+ - Fixed the export lib to contain relative paths for easy import.
+
 ## 1.3.0-rc.5
 ### Changed
  - Fixing the lib to contain production build of js files.
