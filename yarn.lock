@@ -408,6 +408,11 @@
   resolved "https://registry.npmjs.org/@types/fetch-mock/-/fetch-mock-7.3.5.tgz"
   integrity sha512-sLecm9ohBdGIpYUP9rWk5/XIKY2xHMYTBJIcJuBBM8IJWnYoQ1DAj8F4OVjnfD0API1drlkWEV0LPNk+ACuhsg==
 
+"@types/json-logic-js@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/@types/json-logic-js/-/json-logic-js-2.0.1.tgz#c02a0bf3a09cf225b75d54f4b0316db41db568c9"
+  integrity sha512-exWt46x9L1dSe8xLH/REujkeb5Gcqm1Ygdxukmv2sSVZujJRIl6ARNgq73vONvosiN7miX8gYeBTzxivqiNSgw==
+
 "@types/json-schema@*", "@types/json-schema@^7.0.8":
   version "7.0.11"
   resolved "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.11.tgz"

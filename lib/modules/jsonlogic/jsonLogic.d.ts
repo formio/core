@@ -1,2 +1,2 @@
-declare const jsonLogic: any;
+import jsonLogic from 'json-logic-js';
 export { jsonLogic };

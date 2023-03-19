@@ -1,4 +1,4 @@
-const jsonLogic = require('json-logic-js');
+import jsonLogic from 'json-logic-js';
 import * as _ from '@formio/lodash';
 import dayjs from 'dayjs';
 import { lodashOperators } from './operators/operators';

@@ -3,6 +3,6 @@ declare const _default: {
     rules: {
         json: typeof import("./jsonlogic/rules/JSON").JSONRule;
     };
-    jsonLogic: any;
+    jsonLogic: typeof import("json-logic-js");
 }[];
 export default _default;
