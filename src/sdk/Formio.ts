@@ -2190,7 +2190,7 @@ export class Formio {
       if (window.location.hash) {
         uri += window.location.hash;
       }
-      window.history.replaceState({}, document.title, uri);
+      window.location.replace(uri);
       return retVal;
     }
 
