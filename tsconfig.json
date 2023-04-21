@@ -86,7 +86,8 @@
     "src/*.ts",
     "src/*.ejs",
     "src/**/*.ts",
-    "src/**/*.ejs"
+    "src/**/*.ejs",
+    "src/server/**/*.js"
   ],
   "exclude": [
     "node_modules",
