@@ -3,6 +3,8 @@ const has = require('lodash/has');
 const set = require('lodash/set');
 const get = require('lodash/get');
 const unset = require('lodash/unset');
+const debug = require('debug')('formio:action:login');
+const error = require('debug')('formio:error');
 const LoginAction = {
     // The action information.
     get info() {
@@ -223,36 +225,45 @@ const LoginAction = {
         const passfield = action.settings.password;
         const forms = await scope.utils.getForms(scope, action.settings.resources);
         return async (req, res, next) => {
+            debug('Login Action');
             const username = get(req.body?.data, userfield);
             const password = get(req.body?.data, passfield);
             if (!username) {
+                error('Missing username');
                 return next('Missing username');
             }
             if (!password) {
+                error('Missing password');
                 return next('Missing password');
             }
 
             // Find the user
+            debug('Finding user', `${userfield} = ${username}`);
             const user = await scope.utils.findUser(scope, forms, `data.${userfield}`, username);
             if (!user) {
+                error('User not found');
                 return next('User or password was incorrect');
             }
 
             // Get the current password hash.
             const hash = get(user.data, passfield);
             if (!hash || !hash.hash) {
+                error('User does not have a password');
                 return next('Your account does not have a password. You must reset your password to login.');
             }
 
             // Compare with bcrypt.
+            debug('Comparing password');
             bcrypt.compare(password, hash.hash, async (err, value) => {
                 if (err) {
+                    error(err);
                     return next(err);
                 }
 
                 // Check the login attempts.
                 const error = await LoginAction.checkAttempts(scope, !value, user);
                 if (error) {
+                    error(error);
                     return next(error === true ? 'User or password was incorrect' : error);
                 }
 
@@ -276,6 +287,7 @@ const LoginAction = {
                 else {
                     res.resource = { status: 200, item: req.user };
                 }
+                debug('Login Successful', req.user);
                 next();
             });
         };

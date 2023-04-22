@@ -3,6 +3,8 @@ const set = require('lodash/set');
 const has = require('lodash/has');
 const get = require('lodash/get');
 const async = require('async');
+const debug = require('debug')('formio:actions:save');
+const error = require('debug')('formio:error');
 const SaveAction = {
     // The action information.
     get info() {
@@ -265,15 +267,19 @@ const SaveAction = {
     async executor(scope) {
         const action = scope.action;
         return async (req, res, next) => {
+            debug('Save Action');
             if (req.skipSave || !req.body || (req.method !== 'POST' && req.method !== 'PUT')) {
+                debug('Skipping save action');
                 return next();
             }
 
             // If this is saving to another resource, then we need to use those handlers instead.
             if (action.settings?.resource) {
+                debug('Saving to resource: ' + action.settings.resource);
                 const saveTo = SaveAction.saveToForm(scope, action.settings.resource);
                 if (saveTo) {
                     if (!saveTo.handlers) {
+                        error('Cannot find resource handlers.');
                         return next('Cannot find resource handlers.');
                     }
                     const handlers = req.method === 'PUT' ? saveTo.handlers.update : saveTo.handlers.create;
@@ -281,6 +287,7 @@ const SaveAction = {
                     childReq.body = SaveAction.childSubmission(scope, req, res, childReq.body);
                     return async.series(handlers.map(handler => async.apply(handler, childReq, res)), (err) => {
                         if (err) {
+                            error(err);
                             return next(err);
                         }
 
@@ -293,6 +300,7 @@ const SaveAction = {
 
             // Save the submission.
             req.scope.saveSubmission = true;
+            debug('Saving submission');
             return next();
         };
     }

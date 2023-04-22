@@ -1,4 +1,6 @@
 const { MongoClient, ObjectId } = require('mongodb');
+const debug = require('debug')('formio:db');
+const error = require('debug')('formio:error');
 const pick = require('lodash/pick');
 const omit = require('lodash/omit');
 class Database {
@@ -29,6 +31,7 @@ class Database {
      */
     async connect() {
         try {
+            debug('db.connect()');
             const config = this.config.config ? JSON.parse(this.config.config) : {};
             const client = new MongoClient(this.config.url, config);
             await client.connect();
@@ -36,10 +39,10 @@ class Database {
             this.addIndex(this.db.collection('project'), 'name');
             this.defaultCollection = this.db.collection('submissions');
             await this.setupIndexes(this.defaultCollection);
-            console.log('Connected to database');
+            debug('Connected to database');
         }
         catch (err) {
-            console.log(err.message);
+            error(err.message);
             process.exit();
         }
     }
@@ -49,6 +52,7 @@ class Database {
         const collection = this.db.collection(collectionName);
         let result;
         try {
+            debug('db.save()', collectionName);
             result = await collection.findOneAndUpdate(
                 {_id: this.ObjectId(item._id)},
                 {$set: omit(item, '_id')},
@@ -56,15 +60,23 @@ class Database {
             );
         }
         catch (err) {
-            console.log(err.message);
+            error(err.message);
         }
         return result ? result.value : null;
     }
 
     // Generic load record method.
     async load(collectionName) {
+        debug('db.load()', collectionName);
         const collection = this.db.collection(collectionName);
-        return await collection.findOne({});
+        let item;
+        try {
+            item = await collection.findOne({});
+        }
+        catch (err) {
+            error(err.message);
+        } 
+        return item;
     }
 
     // Get the collection to use for the call.
@@ -77,12 +89,13 @@ class Database {
             }
             let collection;
             try {
+                debug('db.createCollection()', scope.form.settings.collection);
                 await this.db.createCollection(scope.form.settings.collection);
                 collection = this.db.collection(scope.form.settings.collection);
                 this.setupIndexes(collection, scope)
             }
             catch (err) {
-                // Do nothing... collection is already created.
+                error(err.message);
             }
             this.currentCollection = collection || this.db.collection(scope.form.settings.collection);
             this.currentCollectionName = scope.form.settings.collection;
@@ -116,10 +129,11 @@ class Database {
         const index = {};
         index[path] = 1;
         try {
+            debug('db.addIndex()', path);
             collection.createIndex(index, {background: true});
         }
         catch (err) {
-            console.log(`Cannot add index ${path}`);
+            error(err.message);
         }
     }
 
@@ -130,10 +144,11 @@ class Database {
         const index = {};
         index[path] = 1;
         try {
+            debug('db.removeIndex()', path);
             collection.dropIndex(index);
         }
         catch (err) {
-            console.log(`Cannot remove index ${path}`);
+            error(`Cannot remove index ${path}`);
         }
     }
 
@@ -143,7 +158,15 @@ class Database {
      * @param {*} query 
      */
     async index(scope, query = {}) {
-        return await this.find(scope, query);
+        let items;
+        try {
+            debug('db.index()', query);
+            items = await this.find(scope, query);
+        }
+        catch (err) {
+            error(err.message);
+        }
+        return items;
     }
 
     /**
@@ -163,21 +186,27 @@ class Database {
             record.owner = this.ObjectId(record.owner);
         }
         const collection = await this.collection(scope);
-        const result = await collection.insertOne(pick(record, [
-            'data', 
-            'metadata', 
-            'modified',
-            'created',
-            'deleted',
-            'form',
-            'project',
-            'owner',
-            'access'
-        ].concat(allowFields)));
-        if (!result.insertedId) {
-            return null;
+        try {
+            debug('db.create()', record);
+            const result = await collection.insertOne(pick(record, [
+                'data', 
+                'metadata', 
+                'modified',
+                'created',
+                'deleted',
+                'form',
+                'project',
+                'owner',
+                'access'
+            ].concat(allowFields)));
+            if (!result.insertedId) {
+                return null;
+            }
+            return await this.read(scope, result.insertedId);
         }
-        return await this.read(scope, result.insertedId);
+        catch (err) {
+            error(err.message);
+        }
     }
 
     /**
@@ -217,16 +246,28 @@ class Database {
      * Find many records that match a query.
      */
     async find(scope, query) {
-        const collection = await this.collection(scope);
-        return await collection.find(this.query(scope, query)).toArray();
+        try {
+            debug('db.find()', query);
+            const collection = await this.collection(scope);
+            return await collection.find(this.query(scope, query)).toArray();
+        }
+        catch (err) {
+            error(err.message);
+        }
     }
 
     /**
      * Find a record for a provided query.
      */
     async findOne(scope, query) {
-        const collection = await this.collection(scope);
-        return await collection.findOne(this.query(scope, query));
+        try {
+            debug('db.findOne()', query);
+            const collection = await this.collection(scope);
+            return await collection.findOne(this.query(scope, query));
+        }
+        catch (err) {
+            error(err.message);
+        }
     }
 
     /**
@@ -236,8 +277,14 @@ class Database {
      * @param {*} query 
      */
     async read(scope, id) {
-        const collection = await this.collection(scope);
-        return await collection.findOne(this.query(scope, {_id: id}));
+        try {
+            debug('db.read()', id);
+            const collection = await this.collection(scope);
+            return await collection.findOne(this.query(scope, {_id: id}));
+        }
+        catch (err) {
+            error(err.message);
+        }
     }
 
     /**
@@ -251,14 +298,20 @@ class Database {
             return null;
         }
         update.modified = new Date();
-        const collection = await this.collection(scope);
-        const result = await collection.updateOne(this.query(scope, {_id: id}), { 
-            $set: pick(update, ['data', 'metadata', 'modified'].concat(allowFields)) 
-        });
-        if (result.modifiedCount === 0) {
-            return null;
+        try {
+            debug('db.update()', id, update);
+            const collection = await this.collection(scope);
+            const result = await collection.updateOne(this.query(scope, {_id: id}), { 
+                $set: pick(update, ['data', 'metadata', 'modified'].concat(allowFields)) 
+            });
+            if (result.modifiedCount === 0) {
+                return null;
+            }
+            return await this.read(scope, id);
         }
-        return await this.read(scope, id);
+        catch (err) {
+            error(err.message);
+        }
     }
 
     /**
@@ -268,9 +321,15 @@ class Database {
         if (!id) {
             return false;
         }
-        const collection = await this.collection(scope);
-        const result = await collection.updateOne(this.query(scope, {_id: id}), { $set: {deleted: Date.now()} });
-        return result.modifiedCount > 0;
+        try {
+            debug('db.delete()', id);
+            const collection = await this.collection(scope);
+            const result = await collection.updateOne(this.query(scope, {_id: id}), { $set: {deleted: Date.now()} });
+            return result.modifiedCount > 0;
+        }
+        catch (err) {
+            error(err.message);
+        }
     }
 }
 

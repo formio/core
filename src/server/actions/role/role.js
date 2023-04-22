@@ -1,3 +1,5 @@
+const debug = require('debug')('formio:actions:role');
+const error = require('debug')('formio:error');
 const RoleAction = {
     // The action information.
     get info() {
@@ -100,23 +102,29 @@ const RoleAction = {
      */
     async executor(scope) {
         return async (req, res, next) => {
+            debug('Role Action');
             // Check the submission for the submissionId.
             if (scope.action.settings.association !== 'existing' && scope.action.settings.association !== 'new') {
+                error('Invalid setting `association` for the RoleAction; expecting `new` or `existing`.');
                 return res.status(400).send('Invalid setting `association` for the RoleAction; expecting `new` or `existing`.');
             }
             // Error if operation type is not valid.
             if (!scope.action.settings.type || (scope.action.settings.type !== 'add' && scope.action.settings.type !== 'remove')) {
+                error('Invalid setting `type` for the RoleAction; expecting `add` or `remove`.');
                 return res.status(400).send('Invalid setting `type` for the RoleAction; expecting `add` or `remove`.');
             }
             // Error if no resource is being returned.
             if (scope.action.settings.association === 'new' && res.hasOwnProperty('resource') && !res.resource.item && scope.action.settings.role) {
+                error('Invalid resource was provided for RoleAction association of `new`.');
                 return res.status(400).send('Invalid resource was provided for RoleAction association of `new`.');
             }
             // Error if association is existing and valid data was not provided.
             if (scope.action.settings.association === 'existing' && !scope.action.settings.role) {
+                error('Missing role for RoleAction association of "existing". Must specify role to assign in action settings or a form component named "role"');
                 return res.status(400).send('Missing role for RoleAction association of "existing". Must specify role to assign in action settings or a form component named "role"');
             }
             if (scope.action.settings.association === 'existing' && !res.resource.item) {
+                error('Missing submission for RoleAction association of "existing:. Form must have a resource field named "submission".');
                 return res.status(400).send('Missing submission for RoleAction association of "existing:. Form must have a resource field named "submission".');
             }
 
@@ -143,6 +151,8 @@ const RoleAction = {
                     resource.roles.slice(roleIndex, 1);
                     break;
             }
+
+            debug('Updating user with roles', resource.roles);
 
             // Update the user.
             await scope.db.update(scope, resource._id, resource, ['roles']);
