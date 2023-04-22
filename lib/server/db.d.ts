@@ -70,5 +70,5 @@ declare class Database {
     /**
      * Delete a record from the database.
      */
-    delete(scope: any, id: any): Promise<boolean>;
+    delete(scope: any, id: any): Promise<boolean | undefined>;
 }
