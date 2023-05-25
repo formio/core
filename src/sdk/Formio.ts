@@ -886,7 +886,7 @@ export class Formio {
    * @return {Promise<Object>}
    */
   saveSubmission(data?: any, opts?: any) {
-    if (!isNaN(parseInt(this.vId))) {
+    if (!isNaN(parseInt(this.vId)) && !data._fvid) {
       data._fvid = this.vId;
     }
     return this.save('submission', data, opts);
