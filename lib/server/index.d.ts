@@ -1,3 +1,3 @@
-export const db: typeof import("./db");
-export const auth: typeof import("./auth");
-export const actions: any;
+export let db: typeof import("./db");
+export let auth: typeof import("./auth");
+export let actions: any;

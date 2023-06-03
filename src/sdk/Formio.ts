@@ -2017,13 +2017,15 @@ export class Formio {
       authUrl = formio ? formio.projectUrl : (Formio.projectUrl || Formio.baseUrl);
     }
     authUrl += '/current';
-    const user = Formio.getUser(options);
-    if (user) {
-      return Plugins.pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
-        url: authUrl,
-        method: 'GET',
-        options
-      });
+    if (!options.ignoreCache) {
+      const user = Formio.getUser(options);
+      if (user) {
+        return Plugins.pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
+          url: authUrl,
+          method: 'GET',
+          options
+        });
+      }
     }
 
     const token = Formio.getToken(options);

@@ -1,5 +1,11 @@
-## 1.3.0-rc.9
+## 1.3.0-rc.13
+### Fixed
+ - FIO-6832: fixed issue where submission used wrong _fvid
+
 ### Changed
+ - Upgrade all dependencies to latest versions.
+
+## 1.3.0-rc.9
  - Upgrade all dependencies to latest versions.
 
 ## 1.3.0-rc.8

@@ -1,3 +1,19 @@
+export namespace info {
+    let name: string;
+    let title: string;
+    let description: string;
+    let priority: number;
+    namespace defaults {
+        let handler: string[];
+        let method: string[];
+    }
+    namespace access {
+        let handler_1: boolean;
+        export { handler_1 as handler };
+        let method_1: boolean;
+        export { method_1 as method };
+    }
+}
 export function mappingComponents(scope: any): Promise<({
     type: string;
     key: string;
