@@ -1,4 +1,4 @@
-import { RoleId } from '@formio/types/Role';
+import { RoleId } from 'types/Role';
 
 export type Access = {
     type: AccessType;

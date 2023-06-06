@@ -1,4 +1,4 @@
-import { Rule } from '@formio/validator';
+import { Rule } from 'validator';
 export class JSONRule extends Rule {
   defaultMessage = '{{error}}';
   public async check(value: any = this.component.dataValue, data: any = {}, row: any = {}, index: number = 0) {

@@ -1,7 +1,7 @@
 import fetchPonyfill from 'fetch-ponyfill';
 import { get, fastCloneDeep, defaults, isBoolean, isNil, isObject, intersection } from '@formio/lodash';
-import { eachComponent } from '@formio/utils/formUtil';
-import { jwtDecode } from '@formio/utils/jwtDecode';
+import { eachComponent } from 'utils/formUtil';
+import { jwtDecode } from 'utils/jwtDecode';
 import EventEmitter from 'eventemitter3';
 import cookies from 'browser-cookies';
 const { fetch, Headers } = fetchPonyfill();

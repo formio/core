@@ -1,4 +1,4 @@
-import { Component } from '@formio/base';
+import { Component } from 'base';
 import { HTML } from '../html/html';
 
 @Component({

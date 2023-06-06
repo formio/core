@@ -1,4 +1,4 @@
-import { ArrayComponent } from '@formio/base';
+import { ArrayComponent } from 'base';
 
 /**
  * A base class for a data table.

@@ -1,7 +1,0 @@
-{
-    "name": "@formio/utils",
-    "version": "0.1.0",
-    "description": "Standard utilities for the Form.io platform.",
-    "main": "index.ts",
-    "dependencies": {}
-}

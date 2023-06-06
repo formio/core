@@ -1,4 +1,4 @@
-import { NestedComponent } from '@formio/base';
+import { NestedComponent } from 'base';
 import { HTML, HTMLProperties } from '../html/html';
 
 /**

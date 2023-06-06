@@ -1,7 +1,0 @@
-{
-    "name": "@formio/modules",
-    "version": "0.1.0",
-    "description": "A collection of standard Form.io modules.",
-    "main": "index.ts",
-    "dependencies": {}
-}

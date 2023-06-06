@@ -3,6 +3,7 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { isNaN, isNil } from '@formio/lodash';
 import { Evaluator } from './Evaluator';
+import { DayComponent } from 'types';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -123,5 +124,18 @@ export function formatDate(value: any, format: any, timezone: any): string {
 
     return dateSetting.toDate();
   }
+
+  export const getDateValidationFormat = (component: DayComponent) => {
+    return component.dayFirst ? 'DD-MM-YYYY' : 'MM-DD-YYYY';
+};
+
+export const isPartialDay = (component: DayComponent, value: string | undefined) => {
+    if (!value) {
+        return false;
+    }
+    const [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+    const values = value.split('/');
+    return values[DAY] === '00' || values[MONTH] === '00' || values[YEAR] === '0000';
+};
 
 export { dayjs };

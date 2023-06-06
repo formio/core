@@ -4,3 +4,6 @@ export * from './Submission';
 export * from './Role';
 export * from './Action';
 export * from './Access';
+export * from './RuleFn';
+export * from './Component';
+export * from './ValidatorConfig.js'
