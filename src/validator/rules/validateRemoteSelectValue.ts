@@ -1,9 +1,10 @@
-import _ from 'lodash';
+import * as _ from '@formio/lodash';
 
-import { FieldError } from '../../error/FieldError';
-import { SelectComponent } from '../../types/Component';
-import { RuleFn } from '../../types/RuleFn';
+import { FieldError } from 'error/FieldError';
+import { SelectComponent } from 'types/Component';
+import { RuleFn } from 'types/RuleFn';
 import { getErrorMessage, isEmptyObject, toBoolean } from '../util';
+import { Evaluator } from 'utils';
 
 const isValidatableSelectComponent = (component: any): component is SelectComponent => {
     return (
@@ -63,8 +64,8 @@ export const validateRemoteSelectValue: RuleFn = async (component, data, config)
     }
 
     const baseUrl = new URL(
-        config.evaluator
-            ? config.evaluator.interpolate(component.data.url, data, {})
+        Evaluator
+            ? Evaluator.interpolate(component.data.url, data, {})
             : component.data.url
     );
     const url = generateUrl(baseUrl, component, value);
@@ -76,7 +77,7 @@ export const validateRemoteSelectValue: RuleFn = async (component, data, config)
         : {};
 
     // Set form.io authentication
-    if (component.authenticate && config.token) {
+    if (component.authenticate && config && config.token) {
         headers['x-jwt-token'] = config.token;
     }
 

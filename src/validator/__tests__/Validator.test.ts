@@ -1,10 +1,10 @@
+import { expect } from 'chai';
 import { Validator } from '../Validator';
 import { FieldError } from '../../error/FieldError';
 import { rules as allRules } from '../rules';
-import { normalEvalValidatorConfig } from 'test/fixtures/validatorConfig';
-import { simpleForm } from 'test/fixtures/forms';
+import { simpleForm } from './fixtures/forms';
 
-test('Validator will throw the correct errors given a flat components array', async () => {
+it('Validator will throw the correct errors given a flat components array', async () => {
     let errors: string[] = [];
     const data = {
         requiredField: '',
@@ -17,11 +17,11 @@ test('Validator will throw the correct errors given a flat components array', as
         submit: false,
     };
     for (let component of simpleForm.components) {
-        const validator = new Validator(component, allRules, normalEvalValidatorConfig);
+        const validator = new Validator(component, allRules);
         const errorArr: FieldError[] = await validator.process(data);
         if (errorArr) {
             errors = [...errors, ...errorArr.map((error) => error.message)];
         }
     }
-    expect(errors).toHaveLength(6);
+    expect(errors).to.have.length(6);
 });

@@ -1,23 +1,24 @@
+import {expect} from 'chai';
 import { FieldError } from '../../../error/FieldError';
 import {
     simpleRadioField,
     simpleSelectBoxes,
     simpleTextField,
     simpleSelectOptions,
-} from 'test/fixtures/components';
+} from './fixtures/components';
 import { RadioComponent, SelectComponent } from '../../../types/Component';
 import { validateAvailableItems } from '../validateAvailableItems';
 
-test('Validating a component without the available items validation parameter will return null', async () => {
+it('Validating a component without the available items validation parameter will return null', async () => {
     const component = simpleTextField;
     const data = {
         component: 'Hello, world!',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);
 });
 
-test('Validating a simple select boxes component without the available items validation parameter will return null', async () => {
+it('Validating a simple select boxes component without the available items validation parameter will return null', async () => {
     const component = simpleSelectBoxes;
     const data = {
         component: {
@@ -28,19 +29,19 @@ test('Validating a simple select boxes component without the available items val
         },
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });
 
-test('Validating a simple radio component without the available items validation parameter will return null', async () => {
+it('Validating a simple radio component without the available items validation parameter will return null', async () => {
     const component = simpleRadioField;
     const data = {
         component: 'bar',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });
 
-test('Validating a simple radio component with the available items validation parameter will return null if the item is valid', async () => {
+it('Validating a simple radio component with the available items validation parameter will return null if the item is valid', async () => {
     const component: RadioComponent = {
         ...simpleRadioField,
         validate: { onlyAvailableItems: true },
@@ -49,11 +50,11 @@ test('Validating a simple radio component with the available items validation pa
         component: 'Hello, world!',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeInstanceOf(FieldError);
-    expect(result?.message).toContain('is an invalid option');
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.message).to.contain('is an invalid option');
 });
 
-test('Validating a simple static values select component without the available items validation parameter will return null', async () => {
+it('Validating a simple static values select component without the available items validation parameter will return null', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'values',
@@ -70,10 +71,10 @@ test('Validating a simple static values select component without the available i
         component: 'foo',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });
 
-test('Validating a simple static values select component with the available items validation parameter will return null if the selected item is valid', async () => {
+it('Validating a simple static values select component with the available items validation parameter will return null if the selected item is valid', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'values',
@@ -91,10 +92,10 @@ test('Validating a simple static values select component with the available item
         component: 'foo',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });
 
-test('Validating a simple URL select component without the available items validation parameter will return null', async () => {
+it('Validating a simple URL select component without the available items validation parameter will return null', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'url',
@@ -107,10 +108,10 @@ test('Validating a simple URL select component without the available items valid
         component: 'foo',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });
 
-test('Validating a simple JSON select component (string JSON) without the available items validation parameter will return null', async () => {
+it('Validating a simple JSON select component (string JSON) without the available items validation parameter will return null', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'json',
@@ -122,10 +123,10 @@ test('Validating a simple JSON select component (string JSON) without the availa
         component: 'foo',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });
 
-test('Validating a simple JSON select component (string JSON) with the available items validation parameter will return a FieldError if the item is invalid', async () => {
+it('Validating a simple JSON select component (string JSON) with the available items validation parameter will return a FieldError if the item is invalid', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'json',
@@ -138,11 +139,11 @@ test('Validating a simple JSON select component (string JSON) with the available
         component: 'Hello, world!',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeInstanceOf(FieldError);
-    expect(result?.message).toContain('is an invalid option');
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.message).to.contain('is an invalid option');
 });
 
-test('Validating a simple JSON select component (string JSON) with the available items validation parameter will return null if the item is valid', async () => {
+it('Validating a simple JSON select component (string JSON) with the available items validation parameter will return null if the item is valid', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'json',
@@ -155,10 +156,10 @@ test('Validating a simple JSON select component (string JSON) with the available
         component: 'foo',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });
 
-test('Validating a simple JSON select component (nested string JSON) with the available items validation parameter will return null if the item is valid', async () => {
+it('Validating a simple JSON select component (nested string JSON) with the available items validation parameter will return null if the item is valid', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'json',
@@ -171,10 +172,10 @@ test('Validating a simple JSON select component (nested string JSON) with the av
         component: { foo: 'foo', bar: 'bar' },
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });
 
-test('Validating a simple JSON select component (nested string JSON) with the available items validation parameter will return a FieldError if the item is invalid', async () => {
+it('Validating a simple JSON select component (nested string JSON) with the available items validation parameter will return a FieldError if the item is invalid', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'json',
@@ -187,11 +188,11 @@ test('Validating a simple JSON select component (nested string JSON) with the av
         component: { foo: 'bar', bar: 'baz' },
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeInstanceOf(FieldError);
-    expect(result?.message).toContain('is an invalid option');
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.message).to.contain('is an invalid option');
 });
 
-test('Validating a simple JSON select component (nested string JSON with valueProperty) with the available items validation parameter will return a FieldError if the item is invalid', async () => {
+it('Validating a simple JSON select component (nested string JSON with valueProperty) with the available items validation parameter will return a FieldError if the item is invalid', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'json',
@@ -205,11 +206,11 @@ test('Validating a simple JSON select component (nested string JSON with valuePr
         component: 'Hello, world!',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeInstanceOf(FieldError);
-    expect(result?.message).toContain('is an invalid option');
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.message).to.contain('is an invalid option');
 });
 
-test('Validating a simple JSON select component (nested string JSON with valueProperty) with the available items validation parameter will return null if the item is valid', async () => {
+it('Validating a simple JSON select component (nested string JSON with valueProperty) with the available items validation parameter will return null if the item is valid', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'json',
@@ -223,10 +224,10 @@ test('Validating a simple JSON select component (nested string JSON with valuePr
         component: 'foo',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });
 
-test('Validating a simple JSON select component (actual JSON) without the available items validation parameter will return null', async () => {
+it('Validating a simple JSON select component (actual JSON) without the available items validation parameter will return null', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'json',
@@ -238,10 +239,10 @@ test('Validating a simple JSON select component (actual JSON) without the availa
         component: 'foo',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });
 
-test('Validating a simple JSON select component (actual JSON) with the available items validation parameter will return a FieldError if the selected item is invalid', async () => {
+it('Validating a simple JSON select component (actual JSON) with the available items validation parameter will return a FieldError if the selected item is invalid', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'json',
@@ -254,11 +255,11 @@ test('Validating a simple JSON select component (actual JSON) with the available
         component: 'Hello, world!',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeInstanceOf(FieldError);
-    expect(result?.message).toContain('is an invalid option');
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.message).to.contain('is an invalid option');
 });
 
-test('Validating a simple JSON select component (actual JSON) with the available items validation parameter will return null if the selected item is valid', async () => {
+it('Validating a simple JSON select component (actual JSON) with the available items validation parameter will return null if the selected item is valid', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'json',
@@ -271,10 +272,10 @@ test('Validating a simple JSON select component (actual JSON) with the available
         component: 'foo',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });
 
-test('Validating a simple JSON select component (nested actual JSON) with the available items validation parameter will return a FieldError if the selected item is invalid', async () => {
+it('Validating a simple JSON select component (nested actual JSON) with the available items validation parameter will return a FieldError if the selected item is invalid', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'json',
@@ -290,11 +291,11 @@ test('Validating a simple JSON select component (nested actual JSON) with the av
         component: { foo: 'baz', bar: 'biz' },
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeInstanceOf(FieldError);
-    expect(result?.message).toContain('is an invalid option');
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.message).to.contain('is an invalid option');
 });
 
-test('Validating a simple JSON select component (nested actual JSON) with the available items validation parameter will return null if the selected item is valid', async () => {
+it('Validating a simple JSON select component (nested actual JSON) with the available items validation parameter will return null if the selected item is valid', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'json',
@@ -310,10 +311,10 @@ test('Validating a simple JSON select component (nested actual JSON) with the av
         component: { foo: 'foo', bar: 'bar' },
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });
 
-test('Validating a simple JSON select component (nested actual JSON with valueProperty) with the available items validation parameter will return a FieldError if the selected item is invalid', async () => {
+it('Validating a simple JSON select component (nested actual JSON with valueProperty) with the available items validation parameter will return a FieldError if the selected item is invalid', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'json',
@@ -330,11 +331,11 @@ test('Validating a simple JSON select component (nested actual JSON with valuePr
         component: 'Hello, world!',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeInstanceOf(FieldError);
-    expect(result?.message).toContain('is an invalid option');
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.message).to.contain('is an invalid option');
 });
 
-test('Validating a simple JSON select component (nested actual JSON with valueProperty) with the available items validation parameter will return null if the selected item is valid', async () => {
+it('Validating a simple JSON select component (nested actual JSON with valueProperty) with the available items validation parameter will return null if the selected item is valid', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
         dataSrc: 'json',
@@ -351,5 +352,5 @@ test('Validating a simple JSON select component (nested actual JSON with valuePr
         component: 'foo',
     };
     const result = await validateAvailableItems(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });

@@ -1,7 +1,6 @@
 import { BaseEvaluator } from 'utils';
-import rules from './rules';
 import { jsonLogic } from './jsonLogic';
-export class JSONLogicEvaluator extends BaseEvaluator {
+class JSONLogicEvaluator extends BaseEvaluator {
     public static evaluate(func: any, args: any = {}, ret: any = '', tokenize: boolean = false, context: any = {}) {
         let returnVal = null;
         if (typeof func === 'object') {
@@ -22,6 +21,5 @@ export class JSONLogicEvaluator extends BaseEvaluator {
 
 export default {
     evaluator: JSONLogicEvaluator,
-    rules: rules,
     jsonLogic: jsonLogic
 }

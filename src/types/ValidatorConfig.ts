@@ -1,5 +1,5 @@
-import { Evaluator } from "../evaluator/Evaluator";
-import { Database } from "../database/Database"
+import { Evaluator } from "utils/Evaluator";
+import { Database } from "utils/Database"
 
 export type ValidatorConfig = {
     database?: Database;

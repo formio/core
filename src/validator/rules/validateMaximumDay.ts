@@ -1,12 +1,11 @@
-import dayjs from 'dayjs';
 import _ from 'lodash';
 
 import { ValidatorError } from 'error/ValidatorError';
-import { DayComponent } from '../../types/Component';
-import { RuleFn } from '../../types/RuleFn';
+import { DayComponent } from 'types/Component';
+import { RuleFn } from 'types/RuleFn';
 import { getErrorMessage } from 'validator/util';
-import { FieldError } from '../../error/FieldError';
-import { isPartialDay, getDateValidationFormat, getDateSetting } from 'utils/date'
+import { FieldError } from 'error/FieldError';
+import { dayjs, isPartialDay, getDateValidationFormat, getDateSetting } from 'utils/date';
 
 const isValidatableDayComponent = (component: any): component is DayComponent => {
     return component && component.type === 'day' && component.hasOwnProperty('maxDate');
@@ -24,9 +23,8 @@ export const validateMaximumDay: RuleFn = async (component, data) => {
         return null;
     }
     // TODO: this validation probably goes for dates and days
-    const date = getDateValidationFormat(component)
-        ? moment(value, getDateValidationFormat(component))
-        : moment(value);
+    const format = getDateValidationFormat(component);
+    const date = dayjs(value, format);
     const maxDate = getDateSetting(component.maxDate);
 
     if (maxDate === null) {
@@ -38,5 +36,5 @@ export const validateMaximumDay: RuleFn = async (component, data) => {
         component,
         getErrorMessage(component, `should not contain date after ${maxDate}`)
     );
-    return date.isBefore(maxDate) || date.isSame(maxDate) ? null : error;
+    return date.isBefore(dayjs(maxDate)) || date.isSame(dayjs(maxDate)) ? null : error;
 };

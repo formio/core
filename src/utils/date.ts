@@ -1,11 +1,13 @@
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { isNaN, isNil } from '@formio/lodash';
 import { Evaluator } from './Evaluator';
 import { DayComponent } from 'types';
 dayjs.extend(utc);
 dayjs.extend(timezone);
+dayjs.extend(customParseFormat);
 
 /**
  * Get the current timezone string.

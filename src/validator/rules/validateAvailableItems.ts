@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import { FieldError } from '../../error/FieldError';
 import { ValidatorError } from '../../error/ValidatorError';
-import { Evaluator } from '../../evaluator/Evaluator';
+import { Evaluator } from 'utils/Evaluator';
 import { RadioComponent, SelectComponent } from '../../types/Component';
 import { RuleFn } from '../../types';
 import { getErrorMessage, isObject, isPromise, toBoolean } from '../util';
@@ -36,7 +36,7 @@ function mapStaticValues(values: { label: string; value: string }[]) {
     return values.map((obj) => obj.value);
 }
 
-async function getAvailableValues(component: SelectComponent, evaluator: Evaluator | undefined) {
+async function getAvailableValues(component: SelectComponent) {
     switch (component.dataSrc) {
         case 'values':
             if (Array.isArray(component.data.values)) {
@@ -64,12 +64,7 @@ async function getAvailableValues(component: SelectComponent, evaluator: Evaluat
             }
         }
         case 'custom':
-            if (!evaluator) {
-                throw new ValidatorError(
-                    'Cannot validate available values in Custom select component: evaluator cannot be undefined'
-                );
-            }
-            const customItems = evaluator.evaluate(
+            const customItems = Evaluator.evaluate(
                 component.data.custom,
                 {
                     values: [],
@@ -134,7 +129,7 @@ export const validateAvailableItems: RuleFn = async (component, data, config) =>
         if (!value) {
             return null;
         }
-        const values = await getAvailableValues(component, config.evaluator);
+        const values = await getAvailableValues(component);
         if (values) {
             if (isObject(value)) {
                 return values.find((optionValue) => compareComplexValues(optionValue, value)) !==

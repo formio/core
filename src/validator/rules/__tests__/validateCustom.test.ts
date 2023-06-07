@@ -1,10 +1,10 @@
+import { expect } from 'chai';
 import { FieldError } from '../../../error/FieldError';
 import { validateCustom } from '../validateCustom';
-import { normalEvalValidatorConfig as config } from 'test/fixtures/validatorConfig';
 import { TextFieldComponent } from '../../../types/Component';
-import { simpleTextField } from 'test/fixtures/components';
+import { simpleTextField } from './fixtures/components';
 
-test('A simple custom validation will correctly be interpolated', async () => {
+it('A simple custom validation will correctly be interpolated', async () => {
     const component: TextFieldComponent = {
         ...simpleTextField,
         validate: {
@@ -15,14 +15,12 @@ test('A simple custom validation will correctly be interpolated', async () => {
         component,
         {
             simpleComponent: 'any thing',
-        },
-        config
-    );
-    expect(result).toBeInstanceOf(FieldError);
-    expect(result && result.message).toBe('Invalid entry');
+        });
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result && result.message).to.equal('Invalid entry');
 });
 
-test('A custom validation that includes data will correctly be interpolated', async () => {
+it('A custom validation that includes data will correctly be interpolated', async () => {
     const component: TextFieldComponent = {
         ...simpleTextField,
         validate: {
@@ -34,7 +32,6 @@ test('A custom validation that includes data will correctly be interpolated', as
         {
             simpleComponent: 'any thing',
         },
-        config
     );
-    expect(result).toBe(null);
+    expect(result).to.equal(null);
 });

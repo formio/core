@@ -5,7 +5,7 @@ import { RuleFn } from '../../types/index';
 import { getErrorMessage, isEmptyObject } from '../util';
 
 export const validateRequired: RuleFn = async (component, data) => {
-    const error = new FieldError(component, getErrorMessage(component, 'is required, you ninny'));
+    const error = new FieldError(component, getErrorMessage(component, 'is required'));
     const value = _.get(data, component.key);
     if (component.validate?.required) {
         if (Array.isArray(value) && value.length === 0) {

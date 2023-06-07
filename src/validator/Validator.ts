@@ -3,6 +3,7 @@ import { ValidatorConfig } from '../types/ValidatorConfig';
 import { FieldError } from '../error/FieldError';
 import { rules as allRules } from './rules';
 import { shouldSkipValidation } from './util';
+import { Evaluator } from 'utils';
 
 export class Validator {
     rules: RuleFn[];
@@ -12,7 +13,7 @@ export class Validator {
     constructor(
         component: Component,
         rules: RuleFn[] = allRules,
-        config: ValidatorConfig = {}
+        config: ValidatorConfig = { evaluator: Evaluator }
     ) {
         this.component = component;
         this.rules = rules;

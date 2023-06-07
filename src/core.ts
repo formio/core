@@ -1,6 +1,6 @@
 import 'core-js/features/object/from-entries';
 import { Formio } from './sdk';
-import { Validator } from './validator';
+import { Validator } from 'validator';
 import { Evaluator, Utils } from './utils';
 import { Components, render, Template } from './base';
 (Formio as any).render = render;

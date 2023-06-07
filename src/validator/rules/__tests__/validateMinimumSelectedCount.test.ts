@@ -1,17 +1,18 @@
+import { expect } from 'chai';
 import { FieldError } from '../../../error/FieldError';
-import { simpleSelectBoxes, simpleTextField } from 'test/fixtures/components';
+import { simpleSelectBoxes, simpleTextField } from './fixtures/components';
 import { validateMinimumSelectedCount } from '../validateMinimumSelectedCount';
 
-test('Validting a non-select boxes component will return null', async () => {
+it('Validting a non-select boxes component will return null', async () => {
     const component = simpleTextField;
     const data = {
         component: 'Hello, world!',
     };
     const result = await validateMinimumSelectedCount(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });
 
-test('Validating a select boxes component without minSelectedCount will return null', async () => {
+it('Validating a select boxes component without minSelectedCount will return null', async () => {
     const component = simpleSelectBoxes;
     const data = {
         component: {
@@ -22,10 +23,10 @@ test('Validating a select boxes component without minSelectedCount will return n
         },
     };
     const result = await validateMinimumSelectedCount(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });
 
-test('Validating a select boxes component where the number of selected fields is less than minSelectedCount will return a FieldError', async () => {
+it('Validating a select boxes component where the number of selected fields is less than minSelectedCount will return a FieldError', async () => {
     const component = { ...simpleSelectBoxes, validate: { minSelectedCount: 2 } };
     const data = {
         component: {
@@ -36,11 +37,11 @@ test('Validating a select boxes component where the number of selected fields is
         },
     };
     const result = await validateMinimumSelectedCount(component, data, {});
-    expect(result).toBeInstanceOf(FieldError);
-    expect(result?.message).toContain('must have at least 2 selected fields');
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.message).to.contain('must have at least 2 selected fields');
 });
 
-test('Validating a select boxes component where the number of selected fields is equal to minSelectedCount will return null', async () => {
+it('Validating a select boxes component where the number of selected fields is equal to minSelectedCount will return null', async () => {
     const component = { ...simpleSelectBoxes, validate: { minSelectedCount: 2 } };
     const data = {
         component: {
@@ -51,10 +52,10 @@ test('Validating a select boxes component where the number of selected fields is
         },
     };
     const result = await validateMinimumSelectedCount(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });
 
-test('Validating a select boxes component where the number of selected fields is greater than minSelectedCount will return null', async () => {
+it('Validating a select boxes component where the number of selected fields is greater than minSelectedCount will return null', async () => {
     const component = { ...simpleSelectBoxes, validate: { minSelectedCount: 2 } };
     const data = {
         component: {
@@ -65,5 +66,5 @@ test('Validating a select boxes component where the number of selected fields is
         },
     };
     const result = await validateMinimumSelectedCount(component, data, {});
-    expect(result).toBeNull();
+    expect(result).to.equal(null);;
 });

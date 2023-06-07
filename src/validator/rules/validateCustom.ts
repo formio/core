@@ -1,21 +1,18 @@
 import _ from 'lodash';
 
-import { RuleFn } from '../../types/RuleFn';
-import { ValidatorError } from '../../error/ValidatorError';
-import { FieldError } from '../../error/FieldError';
+import { RuleFn } from 'types/RuleFn';
+import { FieldError } from 'error/FieldError';
+import { Evaluator } from 'utils';
 import { getErrorMessage } from '../util';
 
-export const validateCustom: RuleFn = async (component, data, config) => {
+export const validateCustom: RuleFn = async (component, data) => {
     const customValidation = component.validate?.custom;
     const value = _.get(data, component.key);
     if (!customValidation) {
         return null;
     }
-    if (!config.evaluator) {
-        throw new ValidatorError('Cannot evaluate custom validation rule without an evaluator');
-    }
 
-    const isValid = config.evaluator.evaluate(
+    const isValid = Evaluator.evaluate(
         customValidation,
         {
             valid: true,

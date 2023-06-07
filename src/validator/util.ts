@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { ValidatorError } from '../error/ValidatorError';
 import { Component } from '../types';
 import { DayComponent } from '../types/Component';
-import { Evaluator } from '../evaluator/Evaluator';
+import { Evaluator } from 'utils/Evaluator';
 
 export function isComponentPersistent(component: Component) {
     return component.persistent ? component.persistent : true;
@@ -50,62 +50,6 @@ export function toBoolean(value: any) {
         default:
             return !!value;
     }
-}
-
-export const getDateValidationFormat = (component: DayComponent) => {
-    return component.dayFirst ? 'DD-MM-YYYY' : 'MM-DD-YYYY';
-};
-
-export const isPartialDay = (component: DayComponent, value: string | undefined) => {
-    if (!value) {
-        return false;
-    }
-    const [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];
-    const values = value.split('/');
-    return values[DAY] === '00' || values[MONTH] === '00' || values[YEAR] === '0000';
-};
-
-export function getDateSetting(date: unknown) {
-    if (date === null || date === undefined || Number.isNaN(date) || date === '') {
-        return null;
-    }
-
-    if (date instanceof Date) {
-        return date;
-    } else if (dayjs.isDayjs(date)) {
-        return date.isValid() ? date.toDate() : null;
-    }
-
-    let dateSetting =
-        typeof date !== 'string' || date.indexOf('moment(') === -1 ? dayjs(date) : null;
-    if (dateSetting && dateSetting.isValid()) {
-        return dateSetting.toDate();
-    }
-
-    dateSetting = null;
-    try {
-        const value = Evaluator.evaluator(`return ${date};`, false, 'moment')(dayjs);
-        if (typeof value === 'string') {
-            dateSetting = dayjs(value);
-        } else if (typeof value.toDate === 'function') {
-            dateSetting = dayjs(value.toDate().toUTCString());
-        } else if (value instanceof Date) {
-            dateSetting = dayjs(value);
-        }
-    } catch (e) {
-        return null;
-    }
-
-    if (!dateSetting) {
-        return null;
-    }
-
-    // Ensure this is a date.
-    if (!dateSetting.isValid()) {
-        return null;
-    }
-
-    return dateSetting.toDate();
 }
 
 export function isPromise(value: any): value is Promise<any> {

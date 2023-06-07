@@ -19,7 +19,7 @@ import { validateMinimumYear } from './validateMinimumYear';
 import { validateRegexPattern } from './validateRegexPattern';
 import { validateRemoteSelectValue } from './validateRemoteSelectValue';
 import { validateRequired } from './validateRequired';
-import { validateUnique } from './validateUnique';
+// import { validateUnique } from './validateUnique';
 import { validateUrl } from './validateUrl';
 
 export const rules = [
@@ -44,6 +44,6 @@ export const rules = [
     validateRegexPattern,
     validateRemoteSelectValue,
     validateRequired,
-    validateUnique,
+    // validateUnique,
     validateUrl,
 ];

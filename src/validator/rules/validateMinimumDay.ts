@@ -1,12 +1,11 @@
 import _ from 'lodash';
-import moment from 'moment';
 
 import { ValidatorError } from '../../error/ValidatorError';
 import { DayComponent } from '../../types/Component';
 import { RuleFn } from '../../types/RuleFn';
 import { getErrorMessage } from '../util';
 import { FieldError } from '../../error/FieldError';
-import { isPartialDay, getDateValidationFormat, getDateSetting } from '../util';
+import { dayjs, isPartialDay, getDateValidationFormat, getDateSetting } from 'utils/date';
 
 const isValidatableDayComponent = (component: any): component is DayComponent => {
     return component && component.type === 'day' && component.hasOwnProperty('minDate');
@@ -25,8 +24,8 @@ export const validateMinimumDay: RuleFn = async (component, data) => {
     }
 
     const date = getDateValidationFormat(component)
-        ? moment(value, getDateValidationFormat(component))
-        : moment(value);
+        ? dayjs(value, getDateValidationFormat(component))
+        : dayjs(value);
     const minDate = getDateSetting(component.minDate);
 
     if (minDate === null) {

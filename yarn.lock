@@ -417,6 +417,13 @@
   resolved "https://registry.npmjs.org/@types/fetch-mock/-/fetch-mock-7.3.5.tgz"
   integrity sha512-sLecm9ohBdGIpYUP9rWk5/XIKY2xHMYTBJIcJuBBM8IJWnYoQ1DAj8F4OVjnfD0API1drlkWEV0LPNk+ACuhsg==
 
+"@types/flatpickr@^3.1.2":
+  version "3.1.2"
+  resolved "https://registry.npmjs.org/@types/flatpickr/-/flatpickr-3.1.2.tgz#767e04fea776ddb399007028bed1a885e26d6d52"
+  integrity sha512-vCEuLqfSlpPhLDOvxyYMIlX20Dwn3XSEeYf9rXfcldDQdLVrtxDdIzE82xhlEFVeHpERujCCQIqETNEUrGsVtA==
+  dependencies:
+    flatpickr "*"
+
 "@types/json-logic-js@^2.0.1":
   version "2.0.2"
   resolved "https://registry.npmjs.org/@types/json-logic-js/-/json-logic-js-2.0.2.tgz#f22ae63b1ff529db77368e78dab196730a2f1527"
@@ -1979,7 +1986,7 @@ fastq@^1.6.0:
 
 fetch-mock@^9.11.0:
   version "9.11.0"
-  resolved "https://registry.npmjs.org/fetch-mock/-/fetch-mock-9.11.0.tgz"
+  resolved "https://registry.npmjs.org/fetch-mock/-/fetch-mock-9.11.0.tgz#371c6fb7d45584d2ae4a18ee6824e7ad4b637a3f"
   integrity sha512-PG1XUv+x7iag5p/iNHD4/jdpxL9FtVSqRMUQhPab4hVDt80T1MH5ehzVrL2IdXO9Q2iBggArFvPqjUbHFuI58Q==
   dependencies:
     "@babel/core" "^7.0.0"
@@ -2086,6 +2093,11 @@ flat@^5.0.2:
   version "5.0.2"
   resolved "https://registry.npmjs.org/flat/-/flat-5.0.2.tgz"
   integrity sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==
+
+flatpickr@*:
+  version "4.6.13"
+  resolved "https://registry.npmjs.org/flatpickr/-/flatpickr-4.6.13.tgz#8a029548187fd6e0d670908471e43abe9ad18d94"
+  integrity sha512-97PMG/aywoYpB4IvbvUJi0RQi8vearvU0oov1WW3k0WZPBMrTQVqekSX5CjSG/M4Q3i6A/0FKXC7RyAoAUUSPw==
 
 flush-write-stream@^1.0.2:
   version "1.1.1"

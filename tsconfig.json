@@ -76,6 +76,8 @@
       "modules/*": ["./src/modules/*"],
       "sdk": ["./src/sdk"],
       "sdk/*": ["./src/sdk/*"],
+      "test": ["./test"],
+      "test/*": ["./test/*"],
       "types": ["./src/types"],
       "types/*": ["./src/types/*"],
       "utils": ["./src/utils"],

@@ -1,25 +1,18 @@
 import _ from 'lodash';
 
 import { FieldError } from '../../error/FieldError';
-import { ValidatorError } from '../../error/ValidatorError';
 import { RuleFn } from '../../types/RuleFn';
 import { getErrorMessage } from '../util';
+import jsonLogic from 'modules/jsonlogic';
 
-export const validateJson: RuleFn = async (component, data, config) => {
+export const validateJson: RuleFn = async (component, data) => {
     const value = _.get(data, component.key);
     if (!value || !component.validate?.json) {
         return null;
     }
-    if (!config.evaluator) {
-        throw new ValidatorError('Cannot evaluate JSON logic without an evaluator');
-    }
 
-    const func = JSON.stringify(component.validate.json);
-    const error = new FieldError(
-        component,
-        getErrorMessage(component, 'fails JSON logic validation')
-    );
-    const valid: true | string = config.evaluator.evaluate(
+    const func = component.validate.json;
+    const valid: true | string = jsonLogic.evaluator.evaluate(
         func,
         {
             data,
