@@ -1,6 +1,6 @@
 import { expect } from 'chai';
+import { FieldError } from 'error/FieldError';
 import { Validator } from '../Validator';
-import { FieldError } from '../../error/FieldError';
 import { rules as allRules } from '../rules';
 import { simpleForm } from './fixtures/forms';
 

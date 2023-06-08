@@ -1,5 +1,4 @@
-import { RuleFn, Component } from 'types';
-import { ValidatorConfig } from '../types/ValidatorConfig';
+import { RuleFn, Component, ValidatorConfig } from 'types';
 import { FieldError } from '../error/FieldError';
 import { rules as allRules } from './rules';
 import { shouldSkipValidation } from './util';
@@ -10,7 +9,6 @@ export class Validator {
     config: ValidatorConfig;
 
     constructor(
-        component: Component,
         rules: RuleFn[] = allRules,
         config: ValidatorConfig = { evaluator: Evaluator }
     ) {
@@ -18,13 +16,13 @@ export class Validator {
         this.config = config;
     }
 
-    async process({component, data, rules, config}: {component: Component, data: Record<string, any>, rules: RuleFn[], config?: ValidatorConfig}): Promise<FieldError[]> {
+    async process(component: Component, data: Record<string, any>): Promise<FieldError[]> {
         if (shouldSkipValidation(component)) {
             return [];
         }
         const errors: FieldError[] = [];
         for (const rule of this.rules) {
-            const error = await rule(this.component, data, this.config);
+            const error = await rule(component, data, this.config);
             if (error) {
                 errors.push(error);
             }
