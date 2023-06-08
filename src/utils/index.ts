@@ -1,5 +1,6 @@
 export * as Utils from './formUtil';
 export { Evaluator, BaseEvaluator } from './Evaluator';
+export * from './Database';
 export { sanitize } from './sanitize';
 export { override } from './override';
 export { unwind } from './unwind';

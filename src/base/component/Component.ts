@@ -2,7 +2,7 @@ import { merge } from '@formio/lodash';
 
 import { Components } from '../Components';
 import { Template } from '../Template';
-import { Evaluator } from 'utils/Evaluator';
+import { Evaluator } from 'utils';
 import * as dom from 'utils/dom';
 import { sanitize } from 'utils/sanitize';
 import { Model, ModelDecoratorInterface,  ModelInterface } from 'model';

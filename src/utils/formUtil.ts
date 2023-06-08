@@ -144,3 +144,103 @@ export function uniqueName(name: string, template?: string, evalContext?: any) {
   const uniqueName = `${Evaluator.interpolate(template, evalContext)}${extension}`.replace(/[^0-9a-zA-Z.\-_ ]/g, '-');
   return uniqueName;
 }
+
+// Async each component data.
+export async function eachComponentDataAsync(components: any[], data: any, fn: any, path = '') {
+  if (!components || !data) {
+      return;
+  }
+  const originalPath = path;
+  return await eachComponentAsync(
+      components,
+      async (component: any) => {
+          path = originalPath ? `${originalPath}.${component.key}` : component.key;
+          if (component.key && component.type === 'form') {
+              path = `${path}.data`;
+              await eachComponentDataAsync(
+                  component.components,
+                  data[component.key].data,
+                  async (comp: any, components: any[]) =>
+                      await fn(comp, data.data, path, components),
+                  path
+              );
+              return true;
+          } else if (treeComps.includes(component.key) || component.tree) {
+              if (Array.isArray(data[component.key])) {
+                  for (let i = 0; i < data[component.key].length; i++) {
+                      path = `${path}[${i}]`;
+                      await eachComponentDataAsync(
+                          component.components,
+                          data[i],
+                          async (comp: any, components: any[]) =>
+                              await fn(comp, data[i], path, components),
+                          path
+                      );
+                  }
+                  return true;
+              }
+              await eachComponentDataAsync(
+                  component.components,
+                  data[component.key],
+                  async (comp: any, components: any[]) =>
+                      await fn(comp, data[component.key], path, components),
+                  path
+              );
+              return true;
+          } else {
+              return await fn(component, data, path, components);
+          }
+      },
+      true
+  );
+}
+
+// Async each component.
+export async function eachComponentAsync(
+  components: any[],
+  fn: any,
+  includeAll = false,
+  path = ''
+) {
+  if (!components) return;
+  for (let i = 0; i < components.length; i++) {
+      if (!components[i]) {
+          continue;
+      }
+      let component = components[i];
+      const hasColumns = component.columns && Array.isArray(component.columns);
+      const hasRows = component.rows && Array.isArray(component.rows);
+      const hasComps = component.components && Array.isArray(component.components);
+      const newPath = component.key ? (path ? `${path}.${component.key}` : component.key) : path;
+      const layoutTypes = ['htmlelement', 'content'];
+      const isLayoutComponent =
+          hasColumns || hasRows || hasComps || layoutTypes.indexOf(component.type) > -1;
+      if (includeAll || component.tree || !isLayoutComponent) {
+          if (await fn(component, components, newPath)) {
+              continue;
+          }
+      }
+
+      if (hasColumns) {
+          for (let j = 0; j < component.columns.length; j++) {
+              await eachComponentAsync(component.columns[j]?.components, fn, includeAll, path);
+          }
+      } else if (hasRows) {
+          for (let j = 0; j < component.rows.length; j++) {
+              let row = component.rows[j];
+              if (Array.isArray(row)) {
+                  for (let k = 0; k < row.length; k++) {
+                      await eachComponentAsync(row[k]?.components, fn, includeAll, path);
+                  }
+              }
+          }
+      } else if (hasComps) {
+          const subPath = isLayoutComponent
+              ? path
+              : component.type === 'form'
+              ? `${newPath}.data`
+              : newPath;
+          await eachComponentAsync(component.components, fn, includeAll, subPath);
+      }
+  }
+}

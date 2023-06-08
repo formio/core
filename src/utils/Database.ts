@@ -1,4 +1,4 @@
-import { DataObject } from '../types/DataObject';
+import { DataObject } from 'types/DataObject';
 
 export abstract class Database {
     abstract findOne(scope: any, query: string): Promise<any>;

@@ -7,7 +7,6 @@ import { Evaluator } from 'utils';
 
 export class Validator {
     rules: RuleFn[];
-    component: Component;
     config: ValidatorConfig;
 
     constructor(
@@ -15,13 +14,12 @@ export class Validator {
         rules: RuleFn[] = allRules,
         config: ValidatorConfig = { evaluator: Evaluator }
     ) {
-        this.component = component;
         this.rules = rules;
         this.config = config;
     }
 
-    async process(data: Record<string, any>): Promise<FieldError[]> {
-        if (shouldSkipValidation(this.component)) {
+    async process({component, data, rules, config}: {component: Component, data: Record<string, any>, rules: RuleFn[], config?: ValidatorConfig}): Promise<FieldError[]> {
+        if (shouldSkipValidation(component)) {
             return [];
         }
         const errors: FieldError[] = [];

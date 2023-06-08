@@ -1,9 +1,5 @@
-import dayjs from 'dayjs';
-
 import { ValidatorError } from '../error/ValidatorError';
 import { Component } from '../types';
-import { DayComponent } from '../types/Component';
-import { Evaluator } from 'utils/Evaluator';
 
 export function isComponentPersistent(component: Component) {
     return component.persistent ? component.persistent : true;

@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
-import { FieldError } from '../../error/FieldError';
-import { ValidatorError } from '../../error/ValidatorError';
-import { Evaluator } from 'utils/Evaluator';
+import { FieldError } from 'error/FieldError';
+import { ValidatorError } from 'error/ValidatorError';
+import { Evaluator } from 'utils';
 import { RadioComponent, SelectComponent } from '../../types/Component';
 import { RuleFn } from '../../types';
 import { getErrorMessage, isObject, isPromise, toBoolean } from '../util';
