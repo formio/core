@@ -1,5 +1,9 @@
 import * as _ from '@formio/lodash';
 import { Model, ModelInterface, ModelDecoratorInterface } from './Model';
+import { FieldError } from 'error/FieldError.js';
+import { ProcessType } from 'types/ProcessType.js';
+import { eachComponentDataAsync } from 'utils/formUtil.js';
+import { Validator } from 'validator';
 export function NestedModel(props: any = {}) : ModelDecoratorInterface {
     if (!props.schema) {
         props.schema = {};
@@ -163,6 +167,21 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
                     changed = comp.setValue(val) || changed;
                 });
                 return changed;
+            }
+
+            public async process(action: ProcessType): Promise<FieldError[]> {
+                if (action === ProcessType.Validate) {
+                    let errors: FieldError[] = [];
+                    await eachComponentDataAsync(this.components, this.dataValue, async (component: any, data: any) => {
+                        const validator = new Validator();
+                        const newErrors: FieldError[] = await validator.process(component, data);
+                        if (newErrors.length > 0) {
+                            errors = [...errors, ...newErrors];
+                        }
+                    });
+                    return errors;
+                }
+                return [];
             }
         }
     };
