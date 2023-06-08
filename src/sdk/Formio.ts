@@ -510,7 +510,8 @@ export class Formio {
 
     let url = (this as any)[_url] + query;
     if (type === 'form' && !isNaN(parseInt(this.vId))) {
-      url += `&formRevision=${this.vId}`;
+      url += url.indexOf('?') === -1 ? '?' : '&';
+      url += `formRevision=${this.vId}`;
     }
     return this.makeRequest(type, url, 'get', null, opts);
   }
