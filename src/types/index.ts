@@ -6,4 +6,6 @@ export * from './Action';
 export * from './Access';
 export * from './RuleFn';
 export * from './Component';
-export * from './ValidatorConfig.js'
+export * from './ValidatorConfig';
+export * from './process';
+export * from './DataObject';

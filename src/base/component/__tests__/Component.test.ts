@@ -1,5 +1,5 @@
 import { Component as ComponentBase } from '../Component';
-import { Validator } from '../../../validator';
+import { process } from '../../../processes/validation';
 var jsdom = require('mocha-jsdom');
 import { assert } from 'chai';
 const Component = ComponentBase()();
@@ -50,20 +50,20 @@ describe('Component', () => {
         comp.attach(element);
     });
 
-    xit ('Should validate a component', async () => {
-        const comp = new Component({
-            type: 'textfield',
-            key: 'firstName',
-            validate: {
-                required: true
-            }
-        }, {
-            validator: Validator
-        });
-        assert.equal(await comp.checkValidity(), false);
-        comp.dataValue = 'testing';
-        assert.equal(await comp.checkValidity(), true);
-    });
+    // xit ('Should validate a component', async () => {
+    //     const comp = new Component({
+    //         type: 'textfield',
+    //         key: 'firstName',
+    //         validate: {
+    //             required: true
+    //         }
+    //     }, {
+    //         validator: Validator
+    //     });
+    //     assert.equal(await comp.checkValidity(), false);
+    //     comp.dataValue = 'testing';
+    //     assert.equal(await comp.checkValidity(), true);
+    // });
 
     it ('Should clear attachedListeners array after detach', () => {
       const element = document.createElement('div');

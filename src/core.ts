@@ -1,11 +1,9 @@
 import 'core-js/features/object/from-entries';
 import { Formio } from './sdk';
-import { Validator } from 'validator';
 import { Evaluator, Utils } from './utils';
 import { Components, render, Template } from './base';
 (Formio as any).render = render;
 (Formio as any).Components = Components;
-(Formio as any).Validator = (Formio as any).Rules =  Validator;
 (Formio as any).Evaluator = Evaluator;
 (Formio as any).Utils = Utils;
 (Formio as any).Templates = Template;

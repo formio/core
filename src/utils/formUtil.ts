@@ -1,6 +1,8 @@
 import { Evaluator } from './Evaluator';
 import { last } from '@formio/lodash';
 
+const TREE_COMPONENTS = ['datagrid', 'editgrid', 'container', 'form', 'dynamicWizard', 'address'];
+
 /**
  * Iterate through each component within a form.
  *
@@ -165,7 +167,7 @@ export async function eachComponentDataAsync(components: any[], data: any, fn: a
                   path
               );
               return true;
-          } else if (treeComps.includes(component.key) || component.tree) {
+          } else if (TREE_COMPONENTS.includes(component.key) || component.tree) {
               if (Array.isArray(data[component.key])) {
                   for (let i = 0; i < data[component.key].length; i++) {
                       path = `${path}[${i}]`;

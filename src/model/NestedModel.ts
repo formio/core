@@ -1,9 +1,9 @@
 import * as _ from '@formio/lodash';
 import { Model, ModelInterface, ModelDecoratorInterface } from './Model';
-import { FieldError } from 'error/FieldError.js';
-import { ProcessType } from 'types/ProcessType.js';
-import { eachComponentDataAsync } from 'utils/formUtil.js';
-import { Validator } from 'validator';
+import { FieldError } from 'error/FieldError';
+import { MetaProcess } from 'types/process/MetaProcess';
+import { eachComponentDataAsync } from 'utils/formUtil';
+import { process as processValidation } from 'validation';
 export function NestedModel(props: any = {}) : ModelDecoratorInterface {
     if (!props.schema) {
         props.schema = {};
@@ -169,12 +169,11 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
                 return changed;
             }
 
-            public async process(action: ProcessType): Promise<FieldError[]> {
-                if (action === ProcessType.Validate) {
+            public async process(action: MetaProcess): Promise<FieldError[]> {
+                if (action === MetaProcess.Validate) {
                     let errors: FieldError[] = [];
                     await eachComponentDataAsync(this.components, this.dataValue, async (component: any, data: any) => {
-                        const validator = new Validator();
-                        const newErrors: FieldError[] = await validator.process(component, data);
+                        const newErrors: FieldError[] = await processValidation({component, data});
                         if (newErrors.length > 0) {
                             errors = [...errors, ...newErrors];
                         }

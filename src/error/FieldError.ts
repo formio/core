@@ -1,11 +1,21 @@
-import { Component } from '../types/Component';
+import { ProcessContext } from 'types/process/ProcessContext.js';
+import { Component } from '../types/Component.js';
 
-export class FieldError extends Error {
+type FieldErrorConstructorArgs = {
+    component: Component;
+    errorKeyOrMessage: string;
+    field: string;
+    context: ProcessContext;
+}
+export class FieldError {
     path: string;
-    message: string;
-    constructor(component: Component, message: string) {
-        super(message);
+    context: ProcessContext;
+    errorKeyOrMessage: string;
+    field: string;
+    constructor({component, errorKeyOrMessage, field, context}: FieldErrorConstructorArgs) {
         this.path = component.key;
-        this.message = message;
+        this.context = context;
+        this.errorKeyOrMessage = errorKeyOrMessage;
+        this.field = field;
     }
 }
