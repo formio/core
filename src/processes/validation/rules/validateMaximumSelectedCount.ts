@@ -22,7 +22,7 @@ function validateValue(value: DataObject[any]): asserts value is Record<string, 
     }
 }
 
-export const validateMaximumSelectedCount: RuleFn = async (component, data) => {
+export const validateMaximumSelectedCount: RuleFn = async (component, data, config) => {
     if (!isValidatableSelectBoxesComponent(component)) {
         return null;
     }
@@ -47,6 +47,6 @@ export const validateMaximumSelectedCount: RuleFn = async (component, data) => {
         return null;
     }
     return count > max
-        ? new FieldError({ component, errorKeyOrMessage: 'maxSelectedCount', field: getComponentErrorField(component), context: { process: ProcessType.Validation } })
+        ? new FieldError({ component, errorKeyOrMessage: 'maxSelectedCount', field: getComponentErrorField(component), context: config?.context })
         : null;
 };

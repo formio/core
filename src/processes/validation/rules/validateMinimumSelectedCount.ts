@@ -22,7 +22,7 @@ function validateValue(value: DataObject[any]): asserts value is Record<string, 
     }
 }
 
-export const validateMinimumSelectedCount: RuleFn = async (component, data) => {
+export const validateMinimumSelectedCount: RuleFn = async (component, data, config) => {
     if (!isValidatableSelectBoxesComponent(component)) {
         return null;
     }
@@ -47,6 +47,6 @@ export const validateMinimumSelectedCount: RuleFn = async (component, data) => {
         return null;
     }
     return count < min
-        ? new FieldError({ component, errorKeyOrMessage: 'minSelectedCount', field: getComponentErrorField(component), context: { process: ProcessType.Validation } })
+        ? new FieldError({ component, errorKeyOrMessage: 'minSelectedCount', field: getComponentErrorField(component), context: config?.context })
         : null;
 };

@@ -8,7 +8,7 @@ const isValidatableNumberComponent = (component: any): component is NumberCompon
     return component && component.validate?.hasOwnProperty('max');
 };
 
-export const validateMaximumValue: RuleFn = async (component, data) => {
+export const validateMaximumValue: RuleFn = async (component, data, config) => {
     if (!isValidatableNumberComponent(component)) {
         return null;
     }
@@ -34,5 +34,5 @@ export const validateMaximumValue: RuleFn = async (component, data) => {
 
     return parsedValue <= max
         ? null
-        : new FieldError({ component, errorKeyOrMessage: 'maxValue', field: getComponentErrorField(component), context: { process: ProcessType.Validation } });
+        : new FieldError({ component, errorKeyOrMessage: 'maxValue', field: getComponentErrorField(component), context: config?.context });
 };

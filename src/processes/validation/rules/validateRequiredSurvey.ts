@@ -16,7 +16,7 @@ const isValidatableSurveyComponent = (component: any): component is SurveyCompon
     return component && component.type === 'survey' && component.validate?.required;
 };
 
-export const validateRequiredSurvey: RuleFn = async (component, data) => {
+export const validateRequiredSurvey: RuleFn = async (component, data, config) => {
     if (!isValidatableSurveyComponent(component)) {
         return null;
     }
@@ -30,7 +30,7 @@ export const validateRequiredSurvey: RuleFn = async (component, data) => {
     }
     for (const question of component.questions) {
         if (!value[question.value]) {
-            const error = new FieldError({ component, errorKeyOrMessage: 'requiredSurvey', field: getComponentErrorField(component), context: { process: ProcessType.Validation } });        }
+            const error = new FieldError({ component, errorKeyOrMessage: 'requiredSurvey', field: getComponentErrorField(component), context: config?.context });        }
     }
     return null;
 };

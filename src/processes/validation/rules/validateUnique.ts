@@ -4,7 +4,7 @@ import { FieldError } from '../../../error/FieldError';
 import { RuleFn } from '../../../types/index';
 import { isEmptyObject } from '../util';
 
-// export const validateUnique: RuleFn = async (component, data) => {
+// export const validateUnique: RuleFn = async (component, data, config) => {
 //     if (!component.unique) {
 //         return null;
 //     }
@@ -17,5 +17,5 @@ import { isEmptyObject } from '../util';
 //     const isUnique = config.database?.isUnique(value);
 //     return isUnique
 //         ? null
-//         : new FieldError({ component, errorKeyOrMessage: 'unique', field: getComponentErrorField(component), context: { process: ProcessType.Validation } });
+//         : new FieldError({ component, errorKeyOrMessage: 'unique', field: getComponentErrorField(component), context: config?.context });
 // };

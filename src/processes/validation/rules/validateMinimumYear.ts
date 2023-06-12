@@ -12,7 +12,7 @@ const isValidatableDayComponent = (component: any): component is DayComponent =>
     );
 };
 
-export const validateMinimumYear: RuleFn = async (component, data) => {
+export const validateMinimumYear: RuleFn = async (component, data, config) => {
     if (!isValidatableDayComponent(component)) {
         return null;
     }
@@ -40,5 +40,5 @@ export const validateMinimumYear: RuleFn = async (component, data) => {
 
     return +year >= +minYear
         ? null
-        : new FieldError({ component, errorKeyOrMessage: 'minYear', field: getComponentErrorField(component), context: { process: ProcessType.Validation } });
+        : new FieldError({ component, errorKeyOrMessage: 'minYear', field: getComponentErrorField(component), context: config?.context });
 };

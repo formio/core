@@ -8,7 +8,7 @@ const isValidatableNumberComponent = (component: any): component is NumberCompon
     return component && component.validate?.hasOwnProperty('min');
 };
 
-export const validateMinimumValue: RuleFn = async (component, data) => {
+export const validateMinimumValue: RuleFn = async (component, data, config) => {
     if (!isValidatableNumberComponent(component)) {
         return null;
     }
@@ -34,6 +34,6 @@ export const validateMinimumValue: RuleFn = async (component, data) => {
 
     return parsedValue >= min
         ? null
-        : new FieldError({ component, errorKeyOrMessage: 'minValue', field: getComponentErrorField(component), context: { process: ProcessType.Validation } });
+        : new FieldError({ component, errorKeyOrMessage: 'minValue', field: getComponentErrorField(component), context: config?.context });
 
 };

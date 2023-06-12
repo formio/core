@@ -4,8 +4,8 @@ import { FieldError } from 'error';
 import { ProcessType, RuleFn } from 'types';
 import { getComponentErrorField, isEmptyObject } from '../util';
 
-export const validateRequired: RuleFn = async (component, data) => {
-    const error = new FieldError({ component, errorKeyOrMessage: 'required', field: getComponentErrorField(component), context: { process: ProcessType.Validation } });
+export const validateRequired: RuleFn = async (component, data, config) => {
+    const error = new FieldError({ component, errorKeyOrMessage: 'required', field: getComponentErrorField(component), context: config?.context });
     const value = _.get(data, component.key);
     if (component.validate?.required) {
         if (Array.isArray(value) && value.length === 0) {

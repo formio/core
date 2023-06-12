@@ -3,10 +3,9 @@ import _ from 'lodash';
 import { RuleFn } from 'types/RuleFn';
 import { FieldError } from 'error/FieldError';
 import { Evaluator } from 'utils';
-import { ProcessType } from 'types/process/ProcessType';
 import { getComponentErrorField } from 'validation/util';
 
-export const validateCustom: RuleFn = async (component, data) => {
+export const validateCustom: RuleFn = async (component, data, config) => {
     const customValidation = component.validate?.custom;
     const value = _.get(data, component.key);
     if (!customValidation) {
@@ -30,5 +29,5 @@ export const validateCustom: RuleFn = async (component, data) => {
         return null;
     }
 
-    return new FieldError({component, errorKeyOrMessage: isValid, field: getComponentErrorField(component), context: { process: ProcessType.Validation } });
+    return new FieldError({component, errorKeyOrMessage: isValid, field: getComponentErrorField(component), context: config?.context });
 };

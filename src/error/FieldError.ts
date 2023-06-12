@@ -5,11 +5,11 @@ type FieldErrorConstructorArgs = {
     component: Component;
     errorKeyOrMessage: string;
     field: string;
-    context: ProcessContext;
+    context?: ProcessContext;
 }
 export class FieldError {
     path: string;
-    context: ProcessContext;
+    context?: ProcessContext;
     errorKeyOrMessage: string;
     field: string;
     constructor({component, errorKeyOrMessage, field, context}: FieldErrorConstructorArgs) {

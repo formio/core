@@ -16,8 +16,8 @@ const isValidatable = (component: any) => {
     return isValidatableDateTimeComponent(component) || isValidatableTextFieldComponent(component);
 };
 
-export const validateDate: RuleFn = async (component, data) => {
-    const error = new FieldError({component, errorKeyOrMessage: 'invalidDate', field: getComponentErrorField(component), context: {process: ProcessType.Validation} });
+export const validateDate: RuleFn = async (component, data, config) => {
+    const error = new FieldError({component, errorKeyOrMessage: 'invalidDate', field: getComponentErrorField(component), context: config?.context });
     let value = _.get(data, component.key);
     if (!value || !isValidatable(component)) {
         return null;

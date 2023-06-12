@@ -8,8 +8,8 @@ const isValidatableEmailComponent = (component: any): component is EmailComponen
     return component && component.type === 'email';
 };
 
-export const validateEmail: RuleFn = async (component, data) => {
-    const error = new FieldError({ component, errorKeyOrMessage: 'invalidEmail', field: getComponentErrorField(component), context: { process: ProcessType.Validation } });
+export const validateEmail: RuleFn = async (component, data, config) => {
+    const error = new FieldError({ component, errorKeyOrMessage: 'invalidEmail', field: getComponentErrorField(component), context: config?.context });
     const value = _.get(data, component.key);
     if (!value) {
         return null;

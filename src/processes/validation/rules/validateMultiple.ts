@@ -2,7 +2,7 @@
 
 // TODO: This is just a required validation?
 
-// export const validateMultiple: RuleFn = async (component, data) => {
+// export const validateMultiple: RuleFn = async (component, data, config) => {
 //     // Skip multiple validation if the component tells us to
 //     if (!component.validateMultiple()) {
 //         return true;

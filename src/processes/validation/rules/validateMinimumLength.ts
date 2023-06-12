@@ -1,14 +1,14 @@
 import _ from 'lodash';
 
 import { FieldError } from 'error';
-import { ProcessType, RuleFn, TextFieldComponent } from 'types';
+import { RuleFn, TextFieldComponent } from 'types';
 import { getComponentErrorField } from 'validation/util';
 
 const isValidatableTextFieldComponent = (component: any): component is TextFieldComponent => {
     return component && component.validate?.hasOwnProperty('minLength');
 };
 
-export const validateMinimumLength: RuleFn = async (component, data) => {
+export const validateMinimumLength: RuleFn = async (component, data, config) => {
     if (!isValidatableTextFieldComponent(component)) {
         return null;
     }
@@ -19,7 +19,7 @@ export const validateMinimumLength: RuleFn = async (component, data) => {
     const value = _.get(data, component.key);
     if (value && minLength && typeof value === 'string') {
         if (value.length < minLength) {
-            const error = new FieldError({ component, errorKeyOrMessage: 'minLength', field: getComponentErrorField(component), context: { process: ProcessType.Validation } });
+            const error = new FieldError({ component, errorKeyOrMessage: 'minLength', field: getComponentErrorField(component), context: config?.context });
             return error;
         }
     }

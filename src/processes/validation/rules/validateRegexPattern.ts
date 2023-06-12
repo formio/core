@@ -10,7 +10,7 @@ const isValidatableTextFieldComponent = (
     return component && component.validate?.hasOwnProperty('pattern');
 };
 
-export const validateRegexPattern: RuleFn = async (component, data) => {
+export const validateRegexPattern: RuleFn = async (component, data, config) => {
     if (!isValidatableTextFieldComponent(component)) {
         return null;
     }
@@ -23,5 +23,5 @@ export const validateRegexPattern: RuleFn = async (component, data) => {
     const regex = new RegExp(`^${pattern}$`);
     return typeof value === 'string' && regex.test(value)
         ? null
-        : new FieldError({ component, errorKeyOrMessage: 'regex', field: getComponentErrorField(component), context: { process: ProcessType.Validation } });
+        : new FieldError({ component, errorKeyOrMessage: 'regex', field: getComponentErrorField(component), context: config?.context });
 };

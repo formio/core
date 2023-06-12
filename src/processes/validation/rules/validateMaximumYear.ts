@@ -13,7 +13,7 @@ const isValidatableDayComponent = (component: any): component is DayComponent =>
     );
 };
 
-export const validateMaximumYear: RuleFn = async (component, data) => {
+export const validateMaximumYear: RuleFn = async (component, data, config) => {
     if (!isValidatableDayComponent(component)) {
         return null;
     }
@@ -41,5 +41,5 @@ export const validateMaximumYear: RuleFn = async (component, data) => {
 
     return +year <= +maxYear
         ? null
-        : new FieldError({ component, errorKeyOrMessage: 'maxYear', field: getComponentErrorField(component), context: { process: ProcessType.Validation } });
+        : new FieldError({ component, errorKeyOrMessage: 'maxYear', field: getComponentErrorField(component), context: config?.context });
 };

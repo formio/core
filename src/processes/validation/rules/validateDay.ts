@@ -35,11 +35,11 @@ const isDayComponent = (component: any): component is DayComponent => {
     return component && component.type === 'day';
 };
 
-export const validateDay: RuleFn = async (component, data) => {
+export const validateDay: RuleFn = async (component, data, config) => {
     if (!isDayComponent(component)) {
         return null;
     }
-    const error = new FieldError({ component, errorKeyOrMessage: 'invalidDay', field: getComponentErrorField(component), context: { process: ProcessType.Validation } });
+    const error = new FieldError({ component, errorKeyOrMessage: 'invalidDay', field: getComponentErrorField(component), context: config?.context });
     const value = _.get(data, component.key);
     if (!value) {
         return null;

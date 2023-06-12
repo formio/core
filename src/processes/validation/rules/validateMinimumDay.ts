@@ -9,7 +9,7 @@ const isValidatableDayComponent = (component: any): component is DayComponent =>
     return component && component.type === 'day' && component.hasOwnProperty('minDate');
 };
 
-export const validateMinimumDay: RuleFn = async (component, data) => {
+export const validateMinimumDay: RuleFn = async (component, data, config) => {
     if (!isValidatableDayComponent(component)) {
         return null;
     }
@@ -31,6 +31,6 @@ export const validateMinimumDay: RuleFn = async (component, data) => {
     } else {
         minDate.setHours(0, 0, 0, 0);
     }
-    const error = new FieldError({ component, errorKeyOrMessage: 'minDay', field: getComponentErrorField(component), context: { process: ProcessType.Validation } });
+    const error = new FieldError({ component, errorKeyOrMessage: 'minDay', field: getComponentErrorField(component), context: config?.context });
     return date.isAfter(minDate) || date.isSame(minDate) ? null : error;
 };

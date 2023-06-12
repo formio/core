@@ -18,7 +18,7 @@ const isValidUrlAndProtocol = (url: string) => {
     return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
 };
 
-export const validateUrl: RuleFn = async (component, data) => {
+export const validateUrl: RuleFn = async (component, data, config) => {
     if (!isUrlComponent(component)) {
         return null;
     }
@@ -26,7 +26,7 @@ export const validateUrl: RuleFn = async (component, data) => {
     if (!value) {
         return null;
     }
-    const error = new FieldError({component, errorKeyOrMessage: 'invalidUrl', field: getComponentErrorField(component), context: { process: ProcessType.Validation }});
+    const error = new FieldError({component, errorKeyOrMessage: 'invalidUrl', field: getComponentErrorField(component), context: config?.context});
     if (typeof value !== 'string') {
         return error;
     }

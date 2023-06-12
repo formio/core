@@ -5,7 +5,7 @@ import { FieldError } from 'error';
 import { RuleFn, ProcessType } from 'types';
 import { getComponentErrorField } from 'validation/util';
 
-export const validateJson: RuleFn = async (component, data) => {
+export const validateJson: RuleFn = async (component, data, config) => {
     const value = _.get(data, component.key);
     if (!value || !component.validate?.json) {
         return null;
@@ -25,5 +25,5 @@ export const validateJson: RuleFn = async (component, data) => {
     }
     return valid === true
         ? null
-        : new FieldError({ component, errorKeyOrMessage: 'jsonLogic', field: getComponentErrorField(component), context: { process: ProcessType.Validation } });
+        : new FieldError({ component, errorKeyOrMessage: 'jsonLogic', field: getComponentErrorField(component), context: config?.context });
 };

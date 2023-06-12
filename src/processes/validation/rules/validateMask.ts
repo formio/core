@@ -89,7 +89,7 @@ export function matchInputMask(value: any, inputMask: any) {
 }
 
 // TODO: this function has side effects
-export const validateMask: RuleFn = async (component, data) => {
+export const validateMask: RuleFn = async (component, data, config) => {
     if (!isValidatableTextComponent(component)) {
         return null;
     }
@@ -107,7 +107,7 @@ export const validateMask: RuleFn = async (component, data) => {
         inputMask = getInputMask(component.inputMask || '');
     }
     if (value && inputMask) {
-        const error = new FieldError({ component, errorKeyOrMessage: 'mask', field: getComponentErrorField(component), context: { process: ProcessType.Validation } });
+        const error = new FieldError({ component, errorKeyOrMessage: 'mask', field: getComponentErrorField(component), context: config?.context });
         return matchInputMask(maskValue || value, inputMask) ? null : error;
     }
     return null;
