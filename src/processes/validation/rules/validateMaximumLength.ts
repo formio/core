@@ -19,7 +19,12 @@ export const validateMaximumLength: RuleFn = async (component, data, config) => 
     const value = _.get(data, component.key);
     if (value && maxLength && typeof value === 'string') {
         if (value.length > maxLength) {
-            const error = new FieldError({ component, errorKeyOrMessage: 'maxLength', field: getComponentErrorField(component), context: config?.context });
+            const error = new FieldError({
+                component,
+                errorKeyOrMessage: 'maxLength',
+                field: getComponentErrorField(component),
+                context: config?.context,
+            });
             return error;
         }
     }

@@ -34,5 +34,10 @@ export const validateMaximumValue: RuleFn = async (component, data, config) => {
 
     return parsedValue <= max
         ? null
-        : new FieldError({ component, errorKeyOrMessage: 'maxValue', field: getComponentErrorField(component), context: config?.context });
+        : new FieldError({
+              component,
+              errorKeyOrMessage: 'maxValue',
+              field: getComponentErrorField(component),
+              context: config?.context,
+          });
 };

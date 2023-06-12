@@ -20,7 +20,12 @@ export const validateMaximumWords: RuleFn = async (component, data, config) => {
 
     if (maxWords && typeof value === 'string') {
         if (value.trim().split(/\s+/).length > maxWords) {
-            const error = new FieldError({ component, errorKeyOrMessage: 'maxWords', field: getComponentErrorField(component), context: config?.context });
+            const error = new FieldError({
+                component,
+                errorKeyOrMessage: 'maxWords',
+                field: getComponentErrorField(component),
+                context: config?.context,
+            });
             return error;
         }
     }

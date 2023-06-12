@@ -29,5 +29,10 @@ export const validateCustom: RuleFn = async (component, data, config) => {
         return null;
     }
 
-    return new FieldError({component, errorKeyOrMessage: isValid, field: getComponentErrorField(component), context: config?.context });
+    return new FieldError({
+        component,
+        errorKeyOrMessage: isValid,
+        field: getComponentErrorField(component),
+        context: config?.context,
+    });
 };

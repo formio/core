@@ -19,7 +19,12 @@ export const validateRequiredDay: RuleFn = async (component, data, config) => {
     }
     const value = _.get(data, component.key);
     if (!value) {
-        const error = new FieldError({ component, errorKeyOrMessage: 'requiredDayEmpty', field: getComponentErrorField(component), context: config?.context });
+        const error = new FieldError({
+            component,
+            errorKeyOrMessage: 'requiredDayEmpty',
+            field: getComponentErrorField(component),
+            context: config?.context,
+        });
     }
     if (typeof value !== 'string') {
         throw new ValidatorError(
@@ -33,13 +38,28 @@ export const validateRequiredDay: RuleFn = async (component, data, config) => {
         year = values[YEAR];
 
     if (!day && component.fields.day.required === true) {
-        return new FieldError({ component, errorKeyOrMessage: 'requiredDayField', field: getComponentErrorField(component), context: config?.context });
+        return new FieldError({
+            component,
+            errorKeyOrMessage: 'requiredDayField',
+            field: getComponentErrorField(component),
+            context: config?.context,
+        });
     }
     if (!month && component.fields.month.required === true) {
-        return new FieldError({ component, errorKeyOrMessage: 'requiredMonthField', field: getComponentErrorField(component), context: config?.context });
+        return new FieldError({
+            component,
+            errorKeyOrMessage: 'requiredMonthField',
+            field: getComponentErrorField(component),
+            context: config?.context,
+        });
     }
     if (!year && component.fields.year.required === true) {
-        return new FieldError({ component, errorKeyOrMessage: 'requiredYearField', field: getComponentErrorField(component), context: config?.context });
+        return new FieldError({
+            component,
+            errorKeyOrMessage: 'requiredYearField',
+            field: getComponentErrorField(component),
+            context: config?.context,
+        });
     }
     return null;
 };

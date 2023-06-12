@@ -26,7 +26,12 @@ export const validateUrl: RuleFn = async (component, data, config) => {
     if (!value) {
         return null;
     }
-    const error = new FieldError({component, errorKeyOrMessage: 'invalidUrl', field: getComponentErrorField(component), context: config?.context});
+    const error = new FieldError({
+        component,
+        errorKeyOrMessage: 'invalidUrl',
+        field: getComponentErrorField(component),
+        context: config?.context,
+    });
     if (typeof value !== 'string') {
         return error;
     }

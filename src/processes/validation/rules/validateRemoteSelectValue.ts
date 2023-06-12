@@ -1,6 +1,6 @@
 import * as _ from '@formio/lodash';
 
-import { FieldError, ValidatorError} from 'error';
+import { FieldError, ValidatorError } from 'error';
 import { SelectComponent, RuleFn, ProcessType } from 'types';
 import { Evaluator } from 'utils';
 import { getComponentErrorField, isEmptyObject, toBoolean } from '../util';
@@ -63,9 +63,7 @@ export const validateRemoteSelectValue: RuleFn = async (component, data, config)
     }
 
     const baseUrl = new URL(
-        Evaluator
-            ? Evaluator.interpolate(component.data.url, data, {})
-            : component.data.url
+        Evaluator ? Evaluator.interpolate(component.data.url, data, {}) : component.data.url
     );
     const url = generateUrl(baseUrl, component, value);
     const headers: Record<string, string> = component.data.headers
@@ -85,15 +83,24 @@ export const validateRemoteSelectValue: RuleFn = async (component, data, config)
         // TODO: should we always expect JSON here?
         if (response.ok) {
             const data = await response.json();
-            const error = new FieldError({ component, errorKeyOrMessage: 'invalidSelection', field: getComponentErrorField(component), context: config?.context });
+            const error = new FieldError({
+                component,
+                errorKeyOrMessage: 'invalidSelection',
+                field: getComponentErrorField(component),
+                context: config?.context,
+            });
             if (Array.isArray(data)) {
                 return data && data.length ? null : error;
             }
             return data ? (isEmptyObject(data) ? error : null) : error;
         }
         const data = await response.text();
-        throw new ValidatorError(`Component with path ${component.key} returned an error while validating remote value: ${data}`);
+        throw new ValidatorError(
+            `Component with path ${component.key} returned an error while validating remote value: ${data}`
+        );
     } catch (err) {
-       throw new ValidatorError(`Component with path ${component.key} returned an error while validating remote value: ${err}`);
+        throw new ValidatorError(
+            `Component with path ${component.key} returned an error while validating remote value: ${err}`
+        );
     }
 };

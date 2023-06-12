@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 
 import { FieldError } from 'error';
 import { RadioComponent, SelectComponent } from 'types';

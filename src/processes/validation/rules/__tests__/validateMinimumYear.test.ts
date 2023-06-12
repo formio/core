@@ -28,7 +28,7 @@ it('Validating a day component with the minYear parameter will return a FieldErr
         ...simpleDayField,
         fields: {
             ...simpleDayField.fields,
-            year: { ...simpleDayField.fields.year, minYear: '2023'},
+            year: { ...simpleDayField.fields.year, minYear: '2023' },
         },
         minYear: '2023',
     };

@@ -107,7 +107,12 @@ export const validateMask: RuleFn = async (component, data, config) => {
         inputMask = getInputMask(component.inputMask || '');
     }
     if (value && inputMask) {
-        const error = new FieldError({ component, errorKeyOrMessage: 'mask', field: getComponentErrorField(component), context: config?.context });
+        const error = new FieldError({
+            component,
+            errorKeyOrMessage: 'mask',
+            field: getComponentErrorField(component),
+            context: config?.context,
+        });
         return matchInputMask(maskValue || value, inputMask) ? null : error;
     }
     return null;

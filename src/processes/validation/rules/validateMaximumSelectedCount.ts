@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { FieldError, ValidatorError } from 'error';
-import { SelectBoxesComponent, DataObject, RuleFn, ProcessType} from 'types';
+import { SelectBoxesComponent, DataObject, RuleFn, ProcessType } from 'types';
 import { getComponentErrorField } from 'validation/util';
 
 const isValidatableSelectBoxesComponent = (component: any): component is SelectBoxesComponent => {
@@ -47,6 +47,11 @@ export const validateMaximumSelectedCount: RuleFn = async (component, data, conf
         return null;
     }
     return count > max
-        ? new FieldError({ component, errorKeyOrMessage: 'maxSelectedCount', field: getComponentErrorField(component), context: config?.context })
+        ? new FieldError({
+              component,
+              errorKeyOrMessage: 'maxSelectedCount',
+              field: getComponentErrorField(component),
+              context: config?.context,
+          })
         : null;
 };

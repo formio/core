@@ -20,7 +20,12 @@ export const validateMinimumWords: RuleFn = async (component, data, config) => {
 
     if (minWords && typeof value === 'string') {
         if (value.trim().split(/\s+/).length < minWords) {
-            const error = new FieldError({ component, errorKeyOrMessage: 'minWords', field: getComponentErrorField(component), context: config?.context });
+            const error = new FieldError({
+                component,
+                errorKeyOrMessage: 'minWords',
+                field: getComponentErrorField(component),
+                context: config?.context,
+            });
             return error;
         }
     }

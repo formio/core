@@ -13,19 +13,13 @@ it('Validating a simple component that is required and not present in the data w
 
 it('Validating a simple component that is required and present in the data will return null', async () => {
     const component = { ...simpleTextField, validate: { required: true } };
-    const result = await validateRequired(
-        component,
-        { component: 'a simple value' },
-    );
+    const result = await validateRequired(component, { component: 'a simple value' });
     expect(result).to.equal(null);
 });
 
 it('Validating a simple component that is not required and present in the data will return null', async () => {
     const component = simpleTextField;
-    const result = await validateRequired(
-        component,
-        { simpleComponent: 'a simple value' },
-    );
+    const result = await validateRequired(component, { simpleComponent: 'a simple value' });
     expect(result).to.equal(null);
 });
 

@@ -41,5 +41,10 @@ export const validateMaximumYear: RuleFn = async (component, data, config) => {
 
     return +year <= +maxYear
         ? null
-        : new FieldError({ component, errorKeyOrMessage: 'maxYear', field: getComponentErrorField(component), context: config?.context });
+        : new FieldError({
+              component,
+              errorKeyOrMessage: 'maxYear',
+              field: getComponentErrorField(component),
+              context: config?.context,
+          });
 };

@@ -3,7 +3,7 @@ import { rules as allRules } from './rules';
 import { shouldSkipValidation } from './util';
 import { ProcessFn } from 'types/process/ProcessFn';
 
-export const process: ProcessFn = async ({component, data, rules = allRules, config = {}}) => {
+export const process: ProcessFn = async ({ component, data, rules = allRules, config = {} }) => {
     if (shouldSkipValidation(component)) {
         return [];
     }
@@ -15,4 +15,4 @@ export const process: ProcessFn = async ({component, data, rules = allRules, con
         }
     }
     return errors;
-}
+};

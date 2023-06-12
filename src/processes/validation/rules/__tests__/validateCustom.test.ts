@@ -12,11 +12,9 @@ it('A simple custom validation will correctly be interpolated', async () => {
             custom: 'valid = "Invalid entry"',
         },
     };
-    const result = await validateCustom(
-        component,
-        {
-            simpleComponent: 'any thing',
-        });
+    const result = await validateCustom(component, {
+        simpleComponent: 'any thing',
+    });
     expect(result).to.be.instanceOf(FieldError);
     expect(result && result.errorKeyOrMessage).to.equal('Invalid entry');
 });
@@ -28,11 +26,8 @@ it('A custom validation that includes data will correctly be interpolated', asyn
             custom: 'valid = data.simpleComponent === "any thing" ? true : "Invalid entry"',
         },
     };
-    const result = await validateCustom(
-        component,
-        {
-            simpleComponent: 'any thing',
-        },
-    );
+    const result = await validateCustom(component, {
+        simpleComponent: 'any thing',
+    });
     expect(result).to.equal(null);
 });

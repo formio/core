@@ -30,7 +30,13 @@ export const validateRequiredSurvey: RuleFn = async (component, data, config) =>
     }
     for (const question of component.questions) {
         if (!value[question.value]) {
-            const error = new FieldError({ component, errorKeyOrMessage: 'requiredSurvey', field: getComponentErrorField(component), context: config?.context });        }
+            const error = new FieldError({
+                component,
+                errorKeyOrMessage: 'requiredSurvey',
+                field: getComponentErrorField(component),
+                context: config?.context,
+            });
+        }
     }
     return null;
 };

@@ -86,7 +86,9 @@ it('Validating a select component with the remote validation parameter will retu
             value: 2,
         },
     };
-    fetchMock.mock(component.data.url, JSON.stringify({}), {query: { [component.searchField!]: data.component.value }});
+    fetchMock.mock(component.data.url, JSON.stringify({}), {
+        query: { [component.searchField!]: data.component.value },
+    });
 
     const result = await validateRemoteSelectValue(component, data, {});
     expect(result).to.be.instanceOf(FieldError);
@@ -111,7 +113,9 @@ it('Validating a select component with the remote validation parameter will retu
             value: 2,
         },
     };
-    fetchMock.mock(component.data.url, JSON.stringify({}), {query: { [component.searchField!]: data.component.value }});
+    fetchMock.mock(component.data.url, JSON.stringify({}), {
+        query: { [component.searchField!]: data.component.value },
+    });
     const result = await validateRemoteSelectValue(component, data, {});
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('invalidSelection');
@@ -135,7 +139,9 @@ it('Validating a select component with the remote validation parameter will retu
             value: 2,
         },
     };
-    fetchMock.mock(component.data.url, JSON.stringify([{ id: 'b', value: 2 }]), {query: { [component.searchField!]: data.component.value }});
+    fetchMock.mock(component.data.url, JSON.stringify([{ id: 'b', value: 2 }]), {
+        query: { [component.searchField!]: data.component.value },
+    });
     const result = await validateRemoteSelectValue(component, data, {});
     expect(result).to.equal(null);
 });

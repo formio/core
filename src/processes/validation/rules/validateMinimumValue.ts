@@ -34,6 +34,10 @@ export const validateMinimumValue: RuleFn = async (component, data, config) => {
 
     return parsedValue >= min
         ? null
-        : new FieldError({ component, errorKeyOrMessage: 'minValue', field: getComponentErrorField(component), context: config?.context });
-
+        : new FieldError({
+              component,
+              errorKeyOrMessage: 'minValue',
+              field: getComponentErrorField(component),
+              context: config?.context,
+          });
 };

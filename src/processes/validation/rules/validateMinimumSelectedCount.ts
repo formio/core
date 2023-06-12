@@ -47,6 +47,11 @@ export const validateMinimumSelectedCount: RuleFn = async (component, data, conf
         return null;
     }
     return count < min
-        ? new FieldError({ component, errorKeyOrMessage: 'minSelectedCount', field: getComponentErrorField(component), context: config?.context })
+        ? new FieldError({
+              component,
+              errorKeyOrMessage: 'minSelectedCount',
+              field: getComponentErrorField(component),
+              context: config?.context,
+          })
         : null;
 };

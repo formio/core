@@ -31,6 +31,11 @@ export const validateMaximumDay: RuleFn = async (component, data, config) => {
     } else {
         maxDate.setHours(0, 0, 0, 0);
     }
-    const error = new FieldError({ component, errorKeyOrMessage: 'maxDay', field: getComponentErrorField(component), context: config?.context });
+    const error = new FieldError({
+        component,
+        errorKeyOrMessage: 'maxDay',
+        field: getComponentErrorField(component),
+        context: config?.context,
+    });
     return date.isBefore(dayjs(maxDate)) || date.isSame(dayjs(maxDate)) ? null : error;
 };

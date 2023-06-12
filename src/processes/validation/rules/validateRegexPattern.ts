@@ -23,5 +23,10 @@ export const validateRegexPattern: RuleFn = async (component, data, config) => {
     const regex = new RegExp(`^${pattern}$`);
     return typeof value === 'string' && regex.test(value)
         ? null
-        : new FieldError({ component, errorKeyOrMessage: 'regex', field: getComponentErrorField(component), context: config?.context });
+        : new FieldError({
+              component,
+              errorKeyOrMessage: 'regex',
+              field: getComponentErrorField(component),
+              context: config?.context,
+          });
 };

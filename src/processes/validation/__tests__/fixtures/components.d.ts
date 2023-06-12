@@ -1,4 +1,12 @@
-import { DateTimeComponent, DayComponent, NumberComponent, RadioComponent, SelectBoxesComponent, SelectComponentOptions, TextFieldComponent } from '../../src/types/Component';
+import {
+    DateTimeComponent,
+    DayComponent,
+    NumberComponent,
+    RadioComponent,
+    SelectBoxesComponent,
+    SelectComponentOptions,
+    TextFieldComponent,
+} from '../../src/types/Component';
 export declare const simpleTextField: TextFieldComponent;
 export declare const simpleDateTimeField: DateTimeComponent;
 export declare const simpleDayField: DayComponent;

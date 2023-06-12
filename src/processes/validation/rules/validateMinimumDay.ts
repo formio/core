@@ -31,6 +31,11 @@ export const validateMinimumDay: RuleFn = async (component, data, config) => {
     } else {
         minDate.setHours(0, 0, 0, 0);
     }
-    const error = new FieldError({ component, errorKeyOrMessage: 'minDay', field: getComponentErrorField(component), context: config?.context });
+    const error = new FieldError({
+        component,
+        errorKeyOrMessage: 'minDay',
+        field: getComponentErrorField(component),
+        context: config?.context,
+    });
     return date.isAfter(minDate) || date.isSame(minDate) ? null : error;
 };

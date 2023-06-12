@@ -1,6 +1,16 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.simpleRadioField = exports.simpleSelectOptions = exports.simpleUrlField = exports.simpleNumberField = exports.simpleSelectBoxes = exports.simpleEmailField = exports.calendarTextField = exports.simpleDayField = exports.simpleDateTimeField = exports.simpleTextField = void 0;
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
+exports.simpleRadioField =
+    exports.simpleSelectOptions =
+    exports.simpleUrlField =
+    exports.simpleNumberField =
+    exports.simpleSelectBoxes =
+    exports.simpleEmailField =
+    exports.calendarTextField =
+    exports.simpleDayField =
+    exports.simpleDateTimeField =
+    exports.simpleTextField =
+        void 0;
 exports.simpleTextField = {
     type: 'textField',
     label: 'Simple Text Field',

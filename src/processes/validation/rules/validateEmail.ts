@@ -9,7 +9,12 @@ const isValidatableEmailComponent = (component: any): component is EmailComponen
 };
 
 export const validateEmail: RuleFn = async (component, data, config) => {
-    const error = new FieldError({ component, errorKeyOrMessage: 'invalidEmail', field: getComponentErrorField(component), context: config?.context });
+    const error = new FieldError({
+        component,
+        errorKeyOrMessage: 'invalidEmail',
+        field: getComponentErrorField(component),
+        context: config?.context,
+    });
     const value = _.get(data, component.key);
     if (!value) {
         return null;

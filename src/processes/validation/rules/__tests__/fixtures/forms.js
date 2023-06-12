@@ -1,6 +1,17 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.simpleNestedForm = exports.otherForm = exports.kitchenSink = exports.customerLoad = exports.inlineembed = exports.validationRulesNyHealth = exports.inlineEmbedFormPortal = exports.wizard = exports.simpleForm = exports.example = exports.w4 = void 0;
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
+exports.simpleNestedForm =
+    exports.otherForm =
+    exports.kitchenSink =
+    exports.customerLoad =
+    exports.inlineembed =
+    exports.validationRulesNyHealth =
+    exports.inlineEmbedFormPortal =
+    exports.wizard =
+    exports.simpleForm =
+    exports.example =
+    exports.w4 =
+        void 0;
 exports.w4 = {
     _id: '5994b43413a5f60007084c9f',
     machineName: 'examples:w4',
@@ -2564,7 +2575,8 @@ exports.wizard = {
     ],
     tags: ['common'],
     settings: {
-        controller: "['$scope', function($scope) { $scope.$watch('submission.data', function(data) { console.log(data); }, true); }]",
+        controller:
+            "['$scope', function($scope) { $scope.$watch('submission.data', function(data) { console.log(data); }, true); }]",
     },
     revisions: '',
     _vid: 0,
@@ -2581,7 +2593,8 @@ exports.inlineEmbedFormPortal = {
             label: 'HTML',
             tag: 'div',
             attrs: [{ attr: '', value: '' }],
-            content: "<h4>Quick Inline Embed</h4>\r\n<p>To quickly embed this form without using any framework, you can use the following code snippit and configure it using the <b>Inline Embed Configuration</b> form below.</p>\r\n<p>See our <a href='https://help.form.io/developers/rendering#quick-inline-embedding'>Inline Embed Documentation</a> to know more about it.</p>",
+            content:
+                "<h4>Quick Inline Embed</h4>\r\n<p>To quickly embed this form without using any framework, you can use the following code snippit and configure it using the <b>Inline Embed Configuration</b> form below.</p>\r\n<p>See our <a href='https://help.form.io/developers/rendering#quick-inline-embedding'>Inline Embed Documentation</a> to know more about it.</p>",
             refreshOnChange: false,
             key: 'html1',
             type: 'htmlelement',
@@ -2640,7 +2653,8 @@ exports.inlineEmbedFormPortal = {
             label: 'HTML',
             tag: 'pre',
             attrs: [{ attr: '', value: '' }],
-            content: '<textarea id="embed-code" style="width:100%;" rows="4" readonly="readonly">{% if (data.before || data.after || (data.config && Object.getOwnPropertyNames(data.config).length)) { %}&lt;script type="text/javascript"&gt;\nwindow.FormioConfig = {{ Object.getOwnPropertyNames(data.config).length ? JSON.stringify(data.config) : \'{}\' }};\nwindow.FormioConfig.before = {% if (data.before) { %}{{ data.before }}{% } else { %}function() {}{% } %};\nwindow.FormioConfig.after = {% if (data.after) { %}{{ data.after }}{% } else { %}function() {}{% } %};\n&lt;/script&gt;{% } %}\n&lt;script src="{{ data.embed }}src={{ data.src }}{% if (data.template) { %}&template={{ data.template }}{% } %}{% if (!data.inherit) { %}&libs=true{% } %}{% if (data.redirect) { %}&redirect={{ data.redirect }}{% } %}{% if (data.submit) { %}&submit={{ data.submit }}{% } %}{% if (data.debug) { %}&debug=true{% } %}{% if (data.project) { %}&project={{ data.project }}{% } %}{% if (data.base) { %}&base={{ data.base }}{% } %}"&gt;&lt;/script&gt;</textarea>',
+            content:
+                '<textarea id="embed-code" style="width:100%;" rows="4" readonly="readonly">{% if (data.before || data.after || (data.config && Object.getOwnPropertyNames(data.config).length)) { %}&lt;script type="text/javascript"&gt;\nwindow.FormioConfig = {{ Object.getOwnPropertyNames(data.config).length ? JSON.stringify(data.config) : \'{}\' }};\nwindow.FormioConfig.before = {% if (data.before) { %}{{ data.before }}{% } else { %}function() {}{% } %};\nwindow.FormioConfig.after = {% if (data.after) { %}{{ data.after }}{% } else { %}function() {}{% } %};\n&lt;/script&gt;{% } %}\n&lt;script src="{{ data.embed }}src={{ data.src }}{% if (data.template) { %}&template={{ data.template }}{% } %}{% if (!data.inherit) { %}&libs=true{% } %}{% if (data.redirect) { %}&redirect={{ data.redirect }}{% } %}{% if (data.submit) { %}&submit={{ data.submit }}{% } %}{% if (data.debug) { %}&debug=true{% } %}{% if (data.project) { %}&project={{ data.project }}{% } %}{% if (data.base) { %}&base={{ data.base }}{% } %}"&gt;&lt;/script&gt;</textarea>',
             refreshOnChange: true,
             key: 'html',
             type: 'htmlelement',
@@ -3105,7 +3119,8 @@ exports.inlineEmbedFormPortal = {
                     components: [
                         {
                             label: 'Redirect',
-                            tooltip: 'The URL you would like to redirect to after the form is submitted. ',
+                            tooltip:
+                                'The URL you would like to redirect to after the form is submitted. ',
                             tableView: true,
                             key: 'redirect',
                             type: 'url',
@@ -3170,7 +3185,8 @@ exports.inlineEmbedFormPortal = {
                         },
                         {
                             label: 'Submission Endpoint',
-                            tooltip: 'The endpoint you would like to POST the submission toward. This allows you to send the submission to endpoints other than the default submission endpoint.',
+                            tooltip:
+                                'The endpoint you would like to POST the submission toward. This allows you to send the submission to endpoints other than the default submission endpoint.',
                             tableView: true,
                             key: 'submit',
                             type: 'url',
@@ -3235,7 +3251,8 @@ exports.inlineEmbedFormPortal = {
                         },
                         {
                             label: 'Inherit Page CSS',
-                            tooltip: 'When it is unchecked, it loads all dependent CSS libraries to render the form.',
+                            tooltip:
+                                'When it is unchecked, it loads all dependent CSS libraries to render the form.',
                             tableView: false,
                             defaultValue: false,
                             calculateValue: 'if (data.encapsulate) {\n  value = true;\n}',
@@ -3294,7 +3311,8 @@ exports.inlineEmbedFormPortal = {
                         },
                         {
                             label: 'Debug Mode',
-                            tooltip: 'Add a number of console.log records to the browser on how this form is progressing through the embedding code.',
+                            tooltip:
+                                'Add a number of console.log records to the browser on how this form is progressing through the embedding code.',
                             tableView: false,
                             defaultValue: false,
                             key: 'debug',
@@ -3352,8 +3370,10 @@ exports.inlineEmbedFormPortal = {
                         },
                         {
                             label: 'Custom Configurations',
-                            description: '<span>The following FormioConfig parameters can be specified: <b>config</b>, <b>form</b>, <b>submission</b>, <b>libs</b>.</span>\n<p>Example:\n<code> { "config": { "readOnly": true } }</code>.\n<br/>Click <a href="https://help.form.io/developers/rendering#advanced-usage">here</a> for more examples.\n</p>\n',
-                            tooltip: 'Add configuration in JSON format for the global FormioConfig variable to control the embedded flow',
+                            description:
+                                '<span>The following FormioConfig parameters can be specified: <b>config</b>, <b>form</b>, <b>submission</b>, <b>libs</b>.</span>\n<p>Example:\n<code> { "config": { "readOnly": true } }</code>.\n<br/>Click <a href="https://help.form.io/developers/rendering#advanced-usage">here</a> for more examples.\n</p>\n',
+                            tooltip:
+                                'Add configuration in JSON format for the global FormioConfig variable to control the embedded flow',
                             editor: 'ace',
                             autoExpand: false,
                             tableView: true,
@@ -3425,8 +3445,10 @@ exports.inlineEmbedFormPortal = {
                         },
                         {
                             label: 'Before Render Handler',
-                            description: '<span>The callback accepts the following parameters: <b>Formio</b>, <b>element</b>, <b>config</b>.</span> \n<p>Example:\n<code>function(Formio, element, config) { console.log(Formio, element, config); }</code>\n</p>',
-                            tooltip: 'Provide a callback that is executed before the Form is rendered.',
+                            description:
+                                '<span>The callback accepts the following parameters: <b>Formio</b>, <b>element</b>, <b>config</b>.</span> \n<p>Example:\n<code>function(Formio, element, config) { console.log(Formio, element, config); }</code>\n</p>',
+                            tooltip:
+                                'Provide a callback that is executed before the Form is rendered.',
                             editor: 'ace',
                             autoExpand: false,
                             tableView: true,
@@ -3498,8 +3520,10 @@ exports.inlineEmbedFormPortal = {
                         },
                         {
                             label: 'After Render Handler',
-                            description: '<span>The callback accepts <b>instance</b> variable as a parameter.</span>\n<p>Example: <code>function(instance) { console.log(instance); }</code>\n</p>',
-                            tooltip: 'Provide a callback that is called after the form is done rendering.',
+                            description:
+                                '<span>The callback accepts <b>instance</b> variable as a parameter.</span>\n<p>Example: <code>function(instance) { console.log(instance); }</code>\n</p>',
+                            tooltip:
+                                'Provide a callback that is called after the form is done rendering.',
                             editor: 'ace',
                             autoExpand: false,
                             tableView: true,
@@ -3724,7 +3748,8 @@ exports.validationRulesNyHealth = {
                 {
                     label: 'HTML',
                     attrs: [{ attr: '', value: '' }],
-                    content: '<h3>Case 1:</h3>\n<h4>Box a value can not differ by a factor(.5) of n from Box b</h4>\n• EX: 100(b) -> a(max)50',
+                    content:
+                        '<h3>Case 1:</h3>\n<h4>Box a value can not differ by a factor(.5) of n from Box b</h4>\n• EX: 100(b) -> a(max)50',
                     refreshOnChange: false,
                     key: 'html1',
                     type: 'htmlelement',
@@ -3772,7 +3797,8 @@ exports.validationRulesNyHealth = {
                 {
                     label: 'HTML',
                     attrs: [{ attr: '', value: '' }],
-                    content: '<h3>Case 2:</h3>\n<h4>Box b  must compare the value on the number of repeating section </h4>\n• Value of b  must match the amount of repeating section </br>\n• Number of repeating sections must not exceed value of b\n\n<h3>Case 3:</h3>\n<h4>Box b in a repeating section 1a must be unique in all repeating section</h4>',
+                    content:
+                        '<h3>Case 2:</h3>\n<h4>Box b  must compare the value on the number of repeating section </h4>\n• Value of b  must match the amount of repeating section </br>\n• Number of repeating sections must not exceed value of b\n\n<h3>Case 3:</h3>\n<h4>Box b in a repeating section 1a must be unique in all repeating section</h4>',
                     refreshOnChange: false,
                     key: 'html',
                     type: 'htmlelement',
@@ -3786,7 +3812,8 @@ exports.validationRulesNyHealth = {
                     delimiter: false,
                     requireDecimal: false,
                     inputFormat: 'plain',
-                    calculateValue: "var dataGrid = instance.root.getComponent('dataGrid');\ndataGrid.component.validate.minLength = parseInt(value, 10);\ndataGrid.component.validate.maxLength = parseInt(value, 10);\ninstance.root.redraw();",
+                    calculateValue:
+                        "var dataGrid = instance.root.getComponent('dataGrid');\ndataGrid.component.validate.minLength = parseInt(value, 10);\ndataGrid.component.validate.maxLength = parseInt(value, 10);\ninstance.root.redraw();",
                     key: 'boxB1',
                     type: 'number',
                     input: true,
@@ -3831,7 +3858,8 @@ exports.validationRulesNyHealth = {
                 {
                     label: 'HTML',
                     attrs: [{ attr: '', value: '' }],
-                    content: '<h3>Case 4:</h3>\n<h4>Box b in a repeating section a1 must be greater then Box b in repeating section a2.</h4>',
+                    content:
+                        '<h3>Case 4:</h3>\n<h4>Box b in a repeating section a1 must be greater then Box b in repeating section a2.</h4>',
                     refreshOnChange: false,
                     key: 'html2',
                     type: 'htmlelement',
@@ -3900,7 +3928,8 @@ exports.validationRulesNyHealth = {
                 {
                     label: 'HTML',
                     attrs: [{ attr: '', value: '' }],
-                    content: '<h3>Case 5:</h3>\n<h4>Box b in a repeating section a1 must be greater than Box c in repeating section a1. and also it can be applied to fields outside repeating section</h4>\n',
+                    content:
+                        '<h3>Case 5:</h3>\n<h4>Box b in a repeating section a1 must be greater than Box c in repeating section a1. and also it can be applied to fields outside repeating section</h4>\n',
                     refreshOnChange: false,
                     key: 'html3',
                     type: 'htmlelement',
@@ -3951,7 +3980,8 @@ exports.validationRulesNyHealth = {
                 },
                 {
                     title: 'Case 5 - Number outside of Section',
-                    tooltip: 'This is dependent on which value in the repeating section above would need to be validated against.',
+                    tooltip:
+                        'This is dependent on which value in the repeating section above would need to be validated against.',
                     collapsible: false,
                     key: 'case5NumberOutsideOfSection1',
                     type: 'panel',
@@ -3990,7 +4020,8 @@ exports.validationRulesNyHealth = {
                 {
                     label: 'HTML',
                     attrs: [{ attr: '', value: '' }],
-                    content: '<h3>Case 6:</h3>\n<h4>Date field d should have a date that is at most/least N days/weeks/months/years ago/ from today\n \n</h4>',
+                    content:
+                        '<h3>Case 6:</h3>\n<h4>Date field d should have a date that is at most/least N days/weeks/months/years ago/ from today\n \n</h4>',
                     refreshOnChange: false,
                     key: 'html4',
                     type: 'htmlelement',
@@ -4185,7 +4216,8 @@ exports.inlineembed = {
                                             label: 'Inherit Page CSS',
                                             tableView: false,
                                             defaultValue: true,
-                                            calculateValue: 'if (data.encapsulate) {\n  value = true;\n}',
+                                            calculateValue:
+                                                'if (data.encapsulate) {\n  value = true;\n}',
                                             key: 'inherit',
                                             type: 'checkbox',
                                             input: true,
@@ -4257,7 +4289,8 @@ exports.inlineembed = {
                                     label: 'HTML',
                                     tag: 'pre',
                                     attrs: [{ attr: '', value: '' }],
-                                    content: '<textarea id="embed-code" style="width:100%;" rows="4" readonly="readonly">{% if (data.before || data.after || (data.config && Object.getOwnPropertyNames(data.config).length)) { %}&lt;script type="text/javascript"&gt;\nwindow.FormioConfig = {{ Object.getOwnPropertyNames(data.config).length ? JSON.stringify(data.config) : \'{}\' }};\nwindow.FormioConfig.before = {% if (data.before) { %}{{ data.before }}{% } else { %}function() {}{% } %};\nwindow.FormioConfig.after = {% if (data.after) { %}{{ data.after }}{% } else { %}function() {}{% } %};\n&lt;/script&gt;{% } %}\n&lt;script src="{{ data.embed }}?src={{ data.src }}{% if (data.template) { %}&template={{ data.template }}{% } %}{% if (!data.inherit) { %}&libs=true{% } %}{% if (data.redirect) { %}&redirect={{ data.redirect }}{% } %}{% if (data.submit) { %}&submit={{ data.submit }}{% } %}{% if (data.debug) { %}&debug=true{% } %}{% if (data.project) { %}&project={{ data.project }}{% } %}{% if (data.base) { %}&base={{ data.base }}{% } %}"&gt;&lt;/script&gt;</textarea>',
+                                    content:
+                                        '<textarea id="embed-code" style="width:100%;" rows="4" readonly="readonly">{% if (data.before || data.after || (data.config && Object.getOwnPropertyNames(data.config).length)) { %}&lt;script type="text/javascript"&gt;\nwindow.FormioConfig = {{ Object.getOwnPropertyNames(data.config).length ? JSON.stringify(data.config) : \'{}\' }};\nwindow.FormioConfig.before = {% if (data.before) { %}{{ data.before }}{% } else { %}function() {}{% } %};\nwindow.FormioConfig.after = {% if (data.after) { %}{{ data.after }}{% } else { %}function() {}{% } %};\n&lt;/script&gt;{% } %}\n&lt;script src="{{ data.embed }}?src={{ data.src }}{% if (data.template) { %}&template={{ data.template }}{% } %}{% if (!data.inherit) { %}&libs=true{% } %}{% if (data.redirect) { %}&redirect={{ data.redirect }}{% } %}{% if (data.submit) { %}&submit={{ data.submit }}{% } %}{% if (data.debug) { %}&debug=true{% } %}{% if (data.project) { %}&project={{ data.project }}{% } %}{% if (data.base) { %}&base={{ data.base }}{% } %}"&gt;&lt;/script&gt;</textarea>',
                                     refreshOnChange: true,
                                     key: 'html',
                                     type: 'htmlelement',
@@ -4567,7 +4600,8 @@ exports.kitchenSink = {
                                 {
                                     label: 'Last Name',
                                     placeholder: 'Enter your last name',
-                                    description: 'This is the name that should be on your birth certificate.',
+                                    description:
+                                        'This is the name that should be on your birth certificate.',
                                     tooltip: 'Seriously?  You still need help with this one?',
                                     tableView: true,
                                     alwaysEnabled: false,
@@ -5096,20 +5130,30 @@ exports.kitchenSink = {
                                                 complete: 'Submission Complete',
                                                 error: 'Please fix the following errors before submitting.',
                                                 required: '{{field}} is required',
-                                                pattern: '{{field}} does not match the pattern {{pattern}}',
-                                                minLength: '{{field}} must be longer than {{length}} characters.',
-                                                maxLength: '{{field}} must be shorter than {{length}} characters.',
-                                                minWords: '{{field}} must have more than {{length}} words.',
-                                                maxWords: '{{field}} must have less than {{length}} words.',
+                                                pattern:
+                                                    '{{field}} does not match the pattern {{pattern}}',
+                                                minLength:
+                                                    '{{field}} must be longer than {{length}} characters.',
+                                                maxLength:
+                                                    '{{field}} must be shorter than {{length}} characters.',
+                                                minWords:
+                                                    '{{field}} must have more than {{length}} words.',
+                                                maxWords:
+                                                    '{{field}} must have less than {{length}} words.',
                                                 min: '{{field}} cannot be less than {{min}}.',
                                                 max: '{{field}} cannot be greater than {{max}}.',
-                                                minSelectedCount: 'You must select at least {{minCount}} items to continue.',
-                                                maxSelectedCount: 'You can only select up to {{maxCount}} items to continue.',
-                                                maxDate: '{{field}} should not contain date after {{- maxDate}}',
-                                                minDate: '{{field}} should not contain date before {{- minDate}}',
+                                                minSelectedCount:
+                                                    'You must select at least {{minCount}} items to continue.',
+                                                maxSelectedCount:
+                                                    'You can only select up to {{maxCount}} items to continue.',
+                                                maxDate:
+                                                    '{{field}} should not contain date after {{- maxDate}}',
+                                                minDate:
+                                                    '{{field}} should not contain date before {{- minDate}}',
                                                 invalid_email: '{{field}} must be a valid email.',
                                                 invalid_url: '{{field}} must be a valid url.',
-                                                invalid_regex: '{{field}} does not match the pattern {{regex}}.',
+                                                invalid_regex:
+                                                    '{{field}} does not match the pattern {{regex}}.',
                                                 invalid_date: '{{field}} is not a valid date.',
                                                 invalid_day: '{{field}} is not a valid day.',
                                                 mask: '{{field}} does not match the mask.',
@@ -5161,20 +5205,30 @@ exports.kitchenSink = {
                                                 complete: 'Submission Complete',
                                                 error: 'Please fix the following errors before submitting.',
                                                 required: '{{field}} is required',
-                                                pattern: '{{field}} does not match the pattern {{pattern}}',
-                                                minLength: '{{field}} must be longer than {{length}} characters.',
-                                                maxLength: '{{field}} must be shorter than {{length}} characters.',
-                                                minWords: '{{field}} must have more than {{length}} words.',
-                                                maxWords: '{{field}} must have less than {{length}} words.',
+                                                pattern:
+                                                    '{{field}} does not match the pattern {{pattern}}',
+                                                minLength:
+                                                    '{{field}} must be longer than {{length}} characters.',
+                                                maxLength:
+                                                    '{{field}} must be shorter than {{length}} characters.',
+                                                minWords:
+                                                    '{{field}} must have more than {{length}} words.',
+                                                maxWords:
+                                                    '{{field}} must have less than {{length}} words.',
                                                 min: '{{field}} cannot be less than {{min}}.',
                                                 max: '{{field}} cannot be greater than {{max}}.',
-                                                minSelectedCount: 'You must select at least {{minCount}} items to continue.',
-                                                maxSelectedCount: 'You can only select up to {{maxCount}} items to continue.',
-                                                maxDate: '{{field}} should not contain date after {{- maxDate}}',
-                                                minDate: '{{field}} should not contain date before {{- minDate}}',
+                                                minSelectedCount:
+                                                    'You must select at least {{minCount}} items to continue.',
+                                                maxSelectedCount:
+                                                    'You can only select up to {{maxCount}} items to continue.',
+                                                maxDate:
+                                                    '{{field}} should not contain date after {{- maxDate}}',
+                                                minDate:
+                                                    '{{field}} should not contain date before {{- minDate}}',
                                                 invalid_email: '{{field}} must be a valid email.',
                                                 invalid_url: '{{field}} must be a valid url.',
-                                                invalid_regex: '{{field}} does not match the pattern {{regex}}.',
+                                                invalid_regex:
+                                                    '{{field}} does not match the pattern {{regex}}.',
                                                 invalid_date: '{{field}} is not a valid date.',
                                                 invalid_day: '{{field}} is not a valid day.',
                                                 mask: '{{field}} does not match the mask.',
@@ -5255,20 +5309,30 @@ exports.kitchenSink = {
                                                 complete: 'Submission Complete',
                                                 error: 'Please fix the following errors before submitting.',
                                                 required: '{{field}} is required',
-                                                pattern: '{{field}} does not match the pattern {{pattern}}',
-                                                minLength: '{{field}} must be longer than {{length}} characters.',
-                                                maxLength: '{{field}} must be shorter than {{length}} characters.',
-                                                minWords: '{{field}} must have more than {{length}} words.',
-                                                maxWords: '{{field}} must have less than {{length}} words.',
+                                                pattern:
+                                                    '{{field}} does not match the pattern {{pattern}}',
+                                                minLength:
+                                                    '{{field}} must be longer than {{length}} characters.',
+                                                maxLength:
+                                                    '{{field}} must be shorter than {{length}} characters.',
+                                                minWords:
+                                                    '{{field}} must have more than {{length}} words.',
+                                                maxWords:
+                                                    '{{field}} must have less than {{length}} words.',
                                                 min: '{{field}} cannot be less than {{min}}.',
                                                 max: '{{field}} cannot be greater than {{max}}.',
-                                                minSelectedCount: 'You must select at least {{minCount}} items to continue.',
-                                                maxSelectedCount: 'You can only select up to {{maxCount}} items to continue.',
-                                                maxDate: '{{field}} should not contain date after {{- maxDate}}',
-                                                minDate: '{{field}} should not contain date before {{- minDate}}',
+                                                minSelectedCount:
+                                                    'You must select at least {{minCount}} items to continue.',
+                                                maxSelectedCount:
+                                                    'You can only select up to {{maxCount}} items to continue.',
+                                                maxDate:
+                                                    '{{field}} should not contain date after {{- maxDate}}',
+                                                minDate:
+                                                    '{{field}} should not contain date before {{- minDate}}',
                                                 invalid_email: '{{field}} must be a valid email.',
                                                 invalid_url: '{{field}} must be a valid url.',
-                                                invalid_regex: '{{field}} does not match the pattern {{regex}}.',
+                                                invalid_regex:
+                                                    '{{field}} does not match the pattern {{regex}}.',
                                                 invalid_date: '{{field}} is not a valid date.',
                                                 invalid_day: '{{field}} is not a valid day.',
                                                 mask: '{{field}} does not match the mask.',
@@ -5321,20 +5385,30 @@ exports.kitchenSink = {
                                                 complete: 'Submission Complete',
                                                 error: 'Please fix the following errors before submitting.',
                                                 required: '{{field}} is required',
-                                                pattern: '{{field}} does not match the pattern {{pattern}}',
-                                                minLength: '{{field}} must be longer than {{length}} characters.',
-                                                maxLength: '{{field}} must be shorter than {{length}} characters.',
-                                                minWords: '{{field}} must have more than {{length}} words.',
-                                                maxWords: '{{field}} must have less than {{length}} words.',
+                                                pattern:
+                                                    '{{field}} does not match the pattern {{pattern}}',
+                                                minLength:
+                                                    '{{field}} must be longer than {{length}} characters.',
+                                                maxLength:
+                                                    '{{field}} must be shorter than {{length}} characters.',
+                                                minWords:
+                                                    '{{field}} must have more than {{length}} words.',
+                                                maxWords:
+                                                    '{{field}} must have less than {{length}} words.',
                                                 min: '{{field}} cannot be less than {{min}}.',
                                                 max: '{{field}} cannot be greater than {{max}}.',
-                                                minSelectedCount: 'You must select at least {{minCount}} items to continue.',
-                                                maxSelectedCount: 'You can only select up to {{maxCount}} items to continue.',
-                                                maxDate: '{{field}} should not contain date after {{- maxDate}}',
-                                                minDate: '{{field}} should not contain date before {{- minDate}}',
+                                                minSelectedCount:
+                                                    'You must select at least {{minCount}} items to continue.',
+                                                maxSelectedCount:
+                                                    'You can only select up to {{maxCount}} items to continue.',
+                                                maxDate:
+                                                    '{{field}} should not contain date after {{- maxDate}}',
+                                                minDate:
+                                                    '{{field}} should not contain date before {{- minDate}}',
                                                 invalid_email: '{{field}} must be a valid email.',
                                                 invalid_url: '{{field}} must be a valid url.',
-                                                invalid_regex: '{{field}} does not match the pattern {{regex}}.',
+                                                invalid_regex:
+                                                    '{{field}} does not match the pattern {{regex}}.',
                                                 invalid_date: '{{field}} is not a valid date.',
                                                 invalid_day: '{{field}} is not a valid day.',
                                                 mask: '{{field}} does not match the mask.',

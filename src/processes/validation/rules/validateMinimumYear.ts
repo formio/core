@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { FieldError, ValidatorError } from 'error';
-import { DayComponent, RuleFn, ProcessType} from 'types';
+import { DayComponent, RuleFn, ProcessType } from 'types';
 import { getComponentErrorField } from 'validation/util';
 
 const isValidatableDayComponent = (component: any): component is DayComponent => {
@@ -40,5 +40,10 @@ export const validateMinimumYear: RuleFn = async (component, data, config) => {
 
     return +year >= +minYear
         ? null
-        : new FieldError({ component, errorKeyOrMessage: 'minYear', field: getComponentErrorField(component), context: config?.context });
+        : new FieldError({
+              component,
+              errorKeyOrMessage: 'minYear',
+              field: getComponentErrorField(component),
+              context: config?.context,
+          });
 };

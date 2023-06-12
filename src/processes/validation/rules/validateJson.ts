@@ -25,5 +25,10 @@ export const validateJson: RuleFn = async (component, data, config) => {
     }
     return valid === true
         ? null
-        : new FieldError({ component, errorKeyOrMessage: 'jsonLogic', field: getComponentErrorField(component), context: config?.context });
+        : new FieldError({
+              component,
+              errorKeyOrMessage: 'jsonLogic',
+              field: getComponentErrorField(component),
+              context: config?.context,
+          });
 };
