@@ -1,5 +1,5 @@
 import { Evaluator } from './Evaluator';
-import { last } from '@formio/lodash';
+import { last, get } from '@formio/lodash';
 
 const TREE_COMPONENTS = ['datagrid', 'editgrid', 'container', 'form', 'dynamicWizard', 'address'];
 
@@ -167,15 +167,15 @@ export async function eachComponentDataAsync(components: any[], data: any, fn: a
                   path
               );
               return true;
-          } else if (TREE_COMPONENTS.includes(component.key) || component.tree) {
+          } else if (TREE_COMPONENTS.includes(component.type) || component.tree) {
               if (Array.isArray(data[component.key])) {
                   for (let i = 0; i < data[component.key].length; i++) {
-                      path = `${path}[${i}]`;
+                      path = `${component.key}[${i}]`;
                       await eachComponentDataAsync(
                           component.components,
-                          data[i],
+                          get(data, path),
                           async (comp: any, components: any[]) =>
-                              await fn(comp, data[i], path, components),
+                              await fn(comp, get(data, path), path, components),
                           path
                       );
                   }
