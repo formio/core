@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import { DayComponent } from 'types';
 import { FieldError } from 'error';
 import { simpleDayField, simpleTextField } from './fixtures/components';
+import { generateProcessContext } from './fixtures/util';
 import { validateMaximumYear } from '../validateMaximumYear';
 
 it('Validating a component without the maxYear parameter will return null', async () => {
@@ -10,7 +11,8 @@ it('Validating a component without the maxYear parameter will return null', asyn
     const data = {
         component: 'Hello, world!',
     };
-    const result = await validateMaximumYear(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMaximumYear(context);
     expect(result).to.equal(null);
 });
 
@@ -19,7 +21,8 @@ it('Validating a day component without the maxYear parameter will return null', 
     const data = {
         component: '01/22/2023',
     };
-    const result = await validateMaximumYear(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMaximumYear(context);
     expect(result).to.equal(null);
 });
 
@@ -35,7 +38,8 @@ it('Validating a day component with the maxYear parameter will return a FieldErr
     const data = {
         component: '01/22/2023',
     };
-    const result = await validateMaximumYear(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMaximumYear(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('maxYear');
 });
@@ -52,7 +56,8 @@ it('Validating a day component with the maxYear parameter will return null if th
     const data = {
         component: '01/22/2022',
     };
-    const result = await validateMaximumYear(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMaximumYear(context);
     expect(result).to.equal(null);
 });
 
@@ -68,6 +73,7 @@ it('Validating a day component with the maxYear parameter will return null if th
     const data = {
         component: '01/22/2021',
     };
-    const result = await validateMaximumYear(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMaximumYear(context);
     expect(result).to.equal(null);
 });

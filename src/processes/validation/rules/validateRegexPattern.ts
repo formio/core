@@ -1,8 +1,7 @@
 import _ from 'lodash';
 
 import { FieldError } from 'error';
-import { TextAreaComponent, TextFieldComponent, RuleFn, ProcessType } from 'types';
-import { getComponentErrorField } from 'validation/util';
+import { TextAreaComponent, TextFieldComponent, RuleFn } from 'types';
 
 const isValidatableTextFieldComponent = (
     component: any
@@ -10,7 +9,8 @@ const isValidatableTextFieldComponent = (
     return component && component.validate?.hasOwnProperty('pattern');
 };
 
-export const validateRegexPattern: RuleFn = async (component, data, config) => {
+export const validateRegexPattern: RuleFn = async (context) => {
+    const { component, data } = context;
     if (!isValidatableTextFieldComponent(component)) {
         return null;
     }
@@ -23,10 +23,5 @@ export const validateRegexPattern: RuleFn = async (component, data, config) => {
     const regex = new RegExp(`^${pattern}$`);
     return typeof value === 'string' && regex.test(value)
         ? null
-        : new FieldError({
-              component,
-              errorKeyOrMessage: 'regex',
-              field: getComponentErrorField(component),
-              context: config?.context,
-          });
+        : new FieldError('regex', context);
 };

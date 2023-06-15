@@ -1,8 +1,7 @@
 import _ from 'lodash';
 
 import { FieldError } from 'error';
-import { DayComponent, RuleFn, ProcessType } from 'types';
-import { getComponentErrorField } from 'validation/util';
+import { DayComponent, RuleFn } from 'types';
 
 const isLeapYear = (year: number) => {
     // Year is leap if it is evenly divisible by 400 or evenly divisible by 4 and not evenly divisible by 100.
@@ -35,16 +34,12 @@ const isDayComponent = (component: any): component is DayComponent => {
     return component && component.type === 'day';
 };
 
-export const validateDay: RuleFn = async (component, data, config) => {
+export const validateDay: RuleFn = async (context) => {
+    const { component, data } = context;
     if (!isDayComponent(component)) {
         return null;
     }
-    const error = new FieldError({
-        component,
-        errorKeyOrMessage: 'invalidDay',
-        field: getComponentErrorField(component),
-        context: config?.context,
-    });
+    const error = new FieldError('invalidDay', context);
     const value = _.get(data, component.key);
     if (!value) {
         return null;

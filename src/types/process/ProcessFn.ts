@@ -1,17 +1,4 @@
-import { FieldError } from "error/FieldError"
-import { Component } from "../Component.js";
-import { DataObject } from "../DataObject.js";
-import { RuleFn } from "../RuleFn.js";
-import { ProcessContext } from "./ProcessContext.js";
+import { FieldError } from "error";
+import { RuleFn, ProcessContext } from "types";
 
-type ProcessFnArgs = {
-    component: Component,
-    data: DataObject,
-    rules?: RuleFn[],
-    config?: {
-        context: ProcessContext,
-        [key: string]: any
-    }
-}
-
-export type ProcessFn = ({component, data, rules, config}: ProcessFnArgs) => Promise<FieldError[]>;
+export type ProcessFn = (context: ProcessContext, rules?: RuleFn[]) => Promise<FieldError[]>;

@@ -3,14 +3,16 @@ import { expect } from 'chai';
 import { DayComponent } from 'types';
 import { FieldError } from 'error';
 import { simpleDayField, simpleTextField } from './fixtures/components';
+import { generateProcessContext } from './fixtures/util';
 import { validateMinimumYear } from '../validateMinimumYear';
 
 it('Validating a component without the minYear parameter will return null', async () => {
     const component = simpleTextField;
     const data = {
         component: 'Hello, world!',
-    };
-    const result = await validateMinimumYear(component, data, {});
+    }
+    const context = generateProcessContext(component, data);
+    const result = await validateMinimumYear(context);
     expect(result).to.equal(null);
 });
 
@@ -19,7 +21,8 @@ it('Validating a day component without the minYear parameter will return null', 
     const data = {
         component: '01/22/2023',
     };
-    const result = await validateMinimumYear(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMinimumYear(context);
     expect(result).to.equal(null);
 });
 
@@ -35,7 +38,8 @@ it('Validating a day component with the minYear parameter will return a FieldErr
     const data = {
         component: '01/22/2022',
     };
-    const result = await validateMinimumYear(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMinimumYear(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.contain('minYear');
 });
@@ -52,7 +56,8 @@ it('Validating a day component with the minYear parameter will return null if th
     const data = {
         component: '01/22/2022',
     };
-    const result = await validateMinimumYear(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMinimumYear(context);
     expect(result).to.equal(null);
 });
 
@@ -68,6 +73,7 @@ it('Validating a day component with the minYear parameter will return null if th
     const data = {
         component: '01/22/2023',
     };
-    const result = await validateMinimumYear(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMinimumYear(context);
     expect(result).to.equal(null);
 });

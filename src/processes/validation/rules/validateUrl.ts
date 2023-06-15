@@ -1,8 +1,7 @@
 import _ from 'lodash';
 
 import { FieldError } from 'error';
-import { UrlComponent, RuleFn, ProcessType } from 'types';
-import { getComponentErrorField } from 'validation/util';
+import { UrlComponent, RuleFn } from 'types';
 
 const isUrlComponent = (component: any): component is UrlComponent => {
     return component && component.type === 'url';
@@ -18,7 +17,8 @@ const isValidUrlAndProtocol = (url: string) => {
     return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
 };
 
-export const validateUrl: RuleFn = async (component, data, config) => {
+export const validateUrl: RuleFn = async (context) => {
+    const { component, data } = context;
     if (!isUrlComponent(component)) {
         return null;
     }
@@ -26,12 +26,7 @@ export const validateUrl: RuleFn = async (component, data, config) => {
     if (!value) {
         return null;
     }
-    const error = new FieldError({
-        component,
-        errorKeyOrMessage: 'invalidUrl',
-        field: getComponentErrorField(component),
-        context: config?.context,
-    });
+    const error = new FieldError('invalidUrl', context);
     if (typeof value !== 'string') {
         return error;
     }

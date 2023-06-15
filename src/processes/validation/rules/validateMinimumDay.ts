@@ -1,15 +1,15 @@
 import _ from 'lodash';
 
 import { ValidatorError, FieldError } from 'error';
-import { DayComponent, RuleFn, ProcessType } from 'types';
+import { DayComponent, RuleFn } from 'types';
 import { dayjs, isPartialDay, getDateValidationFormat, getDateSetting } from 'utils/date';
-import { getComponentErrorField } from 'validation/util';
 
 const isValidatableDayComponent = (component: any): component is DayComponent => {
     return component && component.type === 'day' && component.hasOwnProperty('minDate');
 };
 
-export const validateMinimumDay: RuleFn = async (component, data, config) => {
+export const validateMinimumDay: RuleFn = async (context) => {
+    const { component, data } = context;
     if (!isValidatableDayComponent(component)) {
         return null;
     }
@@ -31,11 +31,6 @@ export const validateMinimumDay: RuleFn = async (component, data, config) => {
     } else {
         minDate.setHours(0, 0, 0, 0);
     }
-    const error = new FieldError({
-        component,
-        errorKeyOrMessage: 'minDay',
-        field: getComponentErrorField(component),
-        context: config?.context,
-    });
+    const error = new FieldError('minDay', context);
     return date.isAfter(minDate) || date.isSame(minDate) ? null : error;
 };

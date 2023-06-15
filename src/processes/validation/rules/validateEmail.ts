@@ -1,20 +1,15 @@
 import _ from 'lodash';
 
 import { FieldError } from 'error';
-import { EmailComponent, RuleFn, ProcessType } from 'types';
-import { getComponentErrorField } from '../util';
+import { EmailComponent, RuleFn } from 'types';
 
 const isValidatableEmailComponent = (component: any): component is EmailComponent => {
     return component && component.type === 'email';
 };
 
-export const validateEmail: RuleFn = async (component, data, config) => {
-    const error = new FieldError({
-        component,
-        errorKeyOrMessage: 'invalidEmail',
-        field: getComponentErrorField(component),
-        context: config?.context,
-    });
+export const validateEmail: RuleFn = async (context) => {
+    const error = new FieldError('invalidEmail', context);
+    const { component, data } = context;
     const value = _.get(data, component.key);
     if (!value) {
         return null;

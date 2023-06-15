@@ -2,6 +2,7 @@ import { expect } from 'chai';
 
 import { FieldError } from 'error';
 import { simpleTextField } from './fixtures/components';
+import { generateProcessContext } from './fixtures/util';
 import { validateRegexPattern } from '../validateRegexPattern';
 
 it('Validating a component without a pattern parameter will return null', async () => {
@@ -9,7 +10,8 @@ it('Validating a component without a pattern parameter will return null', async 
     const data = {
         component: 'Hello, world!',
     };
-    const result = await validateRegexPattern(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateRegexPattern(context);
     expect(result).to.equal(null);
 });
 
@@ -18,8 +20,8 @@ it('Validating a component with a pattern parameter will return a FieldError if 
     const data = {
         component: 'Hello, world!',
     };
-    const result = await validateRegexPattern(component, data, {});
-    expect(result).to.be.instanceOf(FieldError);
+    const context = generateProcessContext(component, data);
+    const result = await validateRegexPattern(context);    expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('regex');
 });
 
@@ -28,6 +30,6 @@ it('Validating a component with a pattern parameter will return null if the valu
     const data = {
         component: '12345',
     };
-    const result = await validateRegexPattern(component, data, {});
-    expect(result).to.equal(null);
+    const context = generateProcessContext(component, data);
+    const result = await validateRegexPattern(context);    expect(result).to.equal(null);
 });

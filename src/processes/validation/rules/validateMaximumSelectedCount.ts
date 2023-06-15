@@ -1,8 +1,7 @@
 import _ from 'lodash';
 
 import { FieldError, ValidatorError } from 'error';
-import { SelectBoxesComponent, DataObject, RuleFn, ProcessType } from 'types';
-import { getComponentErrorField } from 'validation/util';
+import { SelectBoxesComponent, DataObject, RuleFn } from 'types';
 
 const isValidatableSelectBoxesComponent = (component: any): component is SelectBoxesComponent => {
     return component && component.validate?.hasOwnProperty('maxSelectedCount');
@@ -22,7 +21,8 @@ function validateValue(value: DataObject[any]): asserts value is Record<string, 
     }
 }
 
-export const validateMaximumSelectedCount: RuleFn = async (component, data, config) => {
+export const validateMaximumSelectedCount: RuleFn = async (context) => {
+    const { component, data } = context;
     if (!isValidatableSelectBoxesComponent(component)) {
         return null;
     }
@@ -47,11 +47,6 @@ export const validateMaximumSelectedCount: RuleFn = async (component, data, conf
         return null;
     }
     return count > max
-        ? new FieldError({
-              component,
-              errorKeyOrMessage: 'maxSelectedCount',
-              field: getComponentErrorField(component),
-              context: config?.context,
-          })
+        ? new FieldError('maxSelectedCount', context)
         : null;
 };

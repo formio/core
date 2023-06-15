@@ -1,14 +1,14 @@
 import _ from 'lodash';
 
 import { FieldError } from 'error';
-import { TextFieldComponent, RuleFn, ProcessType } from 'types';
-import { getComponentErrorField } from 'validation/util';
+import { TextFieldComponent, RuleFn } from 'types';
 
 const isValidatableTextFieldComponent = (component: any): component is TextFieldComponent => {
     return component && component.validate?.hasOwnProperty('maxLength');
 };
 
-export const validateMaximumLength: RuleFn = async (component, data, config) => {
+export const validateMaximumLength: RuleFn = async (context) => {
+    const { component, data } = context;
     if (!isValidatableTextFieldComponent(component)) {
         return null;
     }
@@ -19,12 +19,7 @@ export const validateMaximumLength: RuleFn = async (component, data, config) => 
     const value = _.get(data, component.key);
     if (value && maxLength && typeof value === 'string') {
         if (value.length > maxLength) {
-            const error = new FieldError({
-                component,
-                errorKeyOrMessage: 'maxLength',
-                field: getComponentErrorField(component),
-                context: config?.context,
-            });
+            const error = new FieldError('maxLength', context);
             return error;
         }
     }

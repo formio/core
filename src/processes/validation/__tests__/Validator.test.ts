@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { FieldError } from 'error/FieldError';
 import { process } from '../process';
 import { simpleForm } from './fixtures/forms';
+import { ProcessType } from 'types';
 
 it('Validator will throw the correct errors given a flat components array', async () => {
     let errors: string[] = [];
@@ -16,7 +17,8 @@ it('Validator will throw the correct errors given a flat components array', asyn
         submit: false,
     };
     for (let component of simpleForm.components) {
-        const errorArr: FieldError[] = await process({ component, data });
+        const path = component.key;
+        const errorArr: FieldError[] = await process({ component, data, path, process: ProcessType.Validation });
         if (errorArr) {
             errors = [...errors, ...errorArr.map((error) => error.errorKeyOrMessage)];
         }

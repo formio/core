@@ -1,14 +1,14 @@
 import _ from 'lodash';
 
 import { FieldError, ValidatorError } from 'error';
-import { NumberComponent, RuleFn, ProcessType } from 'types';
-import { getComponentErrorField } from 'validation/util';
+import { NumberComponent, RuleFn } from 'types';
 
 const isValidatableNumberComponent = (component: any): component is NumberComponent => {
     return component && component.validate?.hasOwnProperty('max');
 };
 
-export const validateMaximumValue: RuleFn = async (component, data, config) => {
+export const validateMaximumValue: RuleFn = async (context) => {
+    const { component, data } = context;
     if (!isValidatableNumberComponent(component)) {
         return null;
     }
@@ -34,10 +34,5 @@ export const validateMaximumValue: RuleFn = async (component, data, config) => {
 
     return parsedValue <= max
         ? null
-        : new FieldError({
-              component,
-              errorKeyOrMessage: 'maxValue',
-              field: getComponentErrorField(component),
-              context: config?.context,
-          });
+        : new FieldError('maxValue', context);
 };

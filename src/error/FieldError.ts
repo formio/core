@@ -1,21 +1,13 @@
-import { ProcessContext } from 'types/process/ProcessContext.js';
-import { Component } from '../types/Component.js';
+import { ProcessContext } from 'types';
+import { getComponentErrorField } from 'processes/validation/util';
 
-type FieldErrorConstructorArgs = {
-    component: Component;
-    errorKeyOrMessage: string;
-    field: string;
-    context?: ProcessContext;
-}
 export class FieldError {
-    path: string;
-    context?: ProcessContext;
+    context: ProcessContext;
     errorKeyOrMessage: string;
     field: string;
-    constructor({component, errorKeyOrMessage, field, context}: FieldErrorConstructorArgs) {
-        this.path = component.key;
-        this.context = context;
+    constructor(errorKeyOrMessage: string, context: ProcessContext) {
         this.errorKeyOrMessage = errorKeyOrMessage;
-        this.field = field;
+        this.context = context;
+        this.field = getComponentErrorField(context.component);
     }
 }

@@ -2,8 +2,8 @@ import _ from 'lodash';
 
 import { FieldError, ValidatorError } from 'error';
 import { Evaluator } from 'utils';
-import { RadioComponent, SelectComponent, RuleFn, ProcessType } from 'types';
-import { isObject, isPromise, getComponentErrorField } from '../util';
+import { RadioComponent, SelectComponent, RuleFn } from 'types';
+import { isObject, isPromise } from '../util';
 
 function isValidatableRadioComponent(component: any): component is RadioComponent {
     return (
@@ -106,13 +106,9 @@ function compareComplexValues(valueA: unknown, valueB: unknown) {
     }
 }
 
-export const validateAvailableItems: RuleFn = async (component, data, config) => {
-    const error = new FieldError({
-        component,
-        errorKeyOrMessage: 'invalidOption',
-        field: getComponentErrorField(component),
-        context: config?.context,
-    });
+export const validateAvailableItems: RuleFn = async (context) => {
+    const { component, data } = context;
+    const error = new FieldError('invalidOption', context);
     if (isValidatableRadioComponent(component)) {
         const value = _.get(data, component.key);
         if (!value) {

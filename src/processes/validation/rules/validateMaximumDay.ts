@@ -4,13 +4,12 @@ import { ValidatorError, FieldError } from 'error';
 import { DayComponent, RuleFn } from 'types';
 import { dayjs, isPartialDay, getDateValidationFormat, getDateSetting } from 'utils/date';
 
-import { getComponentErrorField } from 'validation/util';
-
 const isValidatableDayComponent = (component: any): component is DayComponent => {
     return component && component.type === 'day' && component.hasOwnProperty('maxDate');
 };
 
-export const validateMaximumDay: RuleFn = async (component, data, config) => {
+export const validateMaximumDay: RuleFn = async (context) => {
+    const { component, data } = context;
     if (!isValidatableDayComponent(component)) {
         return null;
     }
@@ -31,11 +30,6 @@ export const validateMaximumDay: RuleFn = async (component, data, config) => {
     } else {
         maxDate.setHours(0, 0, 0, 0);
     }
-    const error = new FieldError({
-        component,
-        errorKeyOrMessage: 'maxDay',
-        field: getComponentErrorField(component),
-        context: config?.context,
-    });
+    const error = new FieldError('maxDay', context);
     return date.isBefore(dayjs(maxDate)) || date.isSame(dayjs(maxDate)) ? null : error;
 };

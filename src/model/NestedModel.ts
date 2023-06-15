@@ -168,20 +168,6 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
                 });
                 return changed;
             }
-
-            public async process(action: MetaProcess): Promise<FieldError[]> {
-                if (action === MetaProcess.Validate) {
-                    let errors: FieldError[] = [];
-                    await eachComponentDataAsync(this.components, this.dataValue, async (component: any, data: any) => {
-                        const newErrors: FieldError[] = await processValidation({component, data});
-                        if (newErrors.length > 0) {
-                            errors = [...errors, ...newErrors];
-                        }
-                    });
-                    return errors;
-                }
-                return [];
-            }
         }
     };
 };

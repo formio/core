@@ -2,8 +2,7 @@ import _ from 'lodash';
 
 import { ValidatorError, FieldError } from 'error';
 import { DayComponent } from 'types/Component';
-import { RuleFn, ProcessType } from 'types';
-import { getComponentErrorField } from 'validation/util';
+import { RuleFn } from 'types';
 
 const isValidatableDayComponent = (component: any): component is DayComponent => {
     return (
@@ -13,7 +12,8 @@ const isValidatableDayComponent = (component: any): component is DayComponent =>
     );
 };
 
-export const validateMaximumYear: RuleFn = async (component, data, config) => {
+export const validateMaximumYear: RuleFn = async (context) => {
+    const { component, data } = context;
     if (!isValidatableDayComponent(component)) {
         return null;
     }
@@ -41,10 +41,5 @@ export const validateMaximumYear: RuleFn = async (component, data, config) => {
 
     return +year <= +maxYear
         ? null
-        : new FieldError({
-              component,
-              errorKeyOrMessage: 'maxYear',
-              field: getComponentErrorField(component),
-              context: config?.context,
-          });
+        : new FieldError('maxYear', context);
 };

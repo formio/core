@@ -1,6 +1,7 @@
 import { expect } from 'chai';
-import { FieldError } from '../../../../error/FieldError';
+import { FieldError } from 'error';
 import { simpleTextField } from './fixtures/components';
+import { generateProcessContext } from './fixtures/util';
 import { validateMask } from '../validateMask';
 
 it('Validating a mask component should return a FieldError if the value does not match the mask', async () => {
@@ -8,7 +9,8 @@ it('Validating a mask component should return a FieldError if the value does not
     const data = {
         component: '1234',
     };
-    const result = await validateMask(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMask(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('mask');
 });
@@ -18,7 +20,8 @@ it('Validating a mask component should return null if the value matches the mask
     const data = {
         component: '123-456-7890',
     };
-    const result = await validateMask(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMask(context);
     expect(result).to.equal(null);
 });
 
@@ -40,14 +43,16 @@ it('Validating a multi-mask component should return a FieldError if the value do
     let data = {
         component: { maskName: 'maskOne', value: '14567890' },
     };
-    let result = await validateMask(component, data, {});
+    let context = generateProcessContext(component, data);
+    let result = await validateMask(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('mask');
 
     data = {
         component: { maskName: 'maskTwo', value: '1234567' },
     };
-    result = await validateMask(component, data, {});
+    context = generateProcessContext(component, data);
+    result = await validateMask(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('mask');
 });
@@ -70,12 +75,14 @@ it('Validating a mutil-mask component should return null if the value matches th
     let data = {
         component: { maskName: 'maskOne', value: '456-7890' },
     };
-    let result = await validateMask(component, data, {});
+    let context = generateProcessContext(component, data);
+    let result = await validateMask(context);
     expect(result).to.equal(null);
 
     data = {
         component: { maskName: 'maskTwo', value: '123-456-7890' },
     };
-    result = await validateMask(component, data, {});
+    context = generateProcessContext(component, data);
+    result = await validateMask(context);
     expect(result).to.equal(null);
 });

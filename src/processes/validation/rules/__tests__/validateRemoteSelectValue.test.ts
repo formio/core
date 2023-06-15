@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { DataObject, SelectComponent } from 'types';
 import { FieldError } from 'error';
 import { simpleSelectOptions, simpleTextField } from './fixtures/components';
+import { generateProcessContext } from './fixtures/util';
 import { validateRemoteSelectValue, generateUrl } from '../validateRemoteSelectValue';
 
 beforeEach(() => {
@@ -16,7 +17,8 @@ it('Validating a component without the remote value validation parameter will re
     const data = {
         component: 'Hello, world!',
     };
-    const result = await validateRemoteSelectValue(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateRemoteSelectValue(context);
     expect(result).to.equal(null);
 });
 
@@ -35,7 +37,8 @@ it('Validating a select component without the remote value validation parameter 
             value: 2,
         },
     };
-    const result = await validateRemoteSelectValue(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateRemoteSelectValue(context);
     expect(result).to.equal(null);
 });
 
@@ -90,7 +93,8 @@ it('Validating a select component with the remote validation parameter will retu
         query: { [component.searchField!]: data.component.value },
     });
 
-    const result = await validateRemoteSelectValue(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateRemoteSelectValue(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('invalidSelection');
 });
@@ -116,7 +120,8 @@ it('Validating a select component with the remote validation parameter will retu
     fetchMock.mock(component.data.url, JSON.stringify({}), {
         query: { [component.searchField!]: data.component.value },
     });
-    const result = await validateRemoteSelectValue(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateRemoteSelectValue(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('invalidSelection');
 });
@@ -142,6 +147,7 @@ it('Validating a select component with the remote validation parameter will retu
     fetchMock.mock(component.data.url, JSON.stringify([{ id: 'b', value: 2 }]), {
         query: { [component.searchField!]: data.component.value },
     });
-    const result = await validateRemoteSelectValue(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateRemoteSelectValue(context);
     expect(result).to.equal(null);
 });

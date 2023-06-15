@@ -2,6 +2,7 @@ import { expect } from 'chai';
 
 import { FieldError } from 'error';
 import { simpleTextField } from './fixtures/components';
+import { generateProcessContext } from './fixtures/util';
 import { validateMaximumWords } from '../validateMaximumWords';
 
 it('Validating a component without the maxWords property will return null', async () => {
@@ -9,7 +10,8 @@ it('Validating a component without the maxWords property will return null', asyn
     const data = {
         component: 'Hello, world!',
     };
-    const result = await validateMaximumWords(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMaximumWords(context);
     expect(result).to.equal(null);
 });
 
@@ -18,7 +20,8 @@ it('Validating a component with the maxWords property will return a FieldError i
     const data = {
         component: "Hello, world, it's me!",
     };
-    const result = await validateMaximumWords(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMaximumWords(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('maxWords');
 });
@@ -28,7 +31,8 @@ it('Validating a component with the maxWords property will return null if the nu
     const data = {
         component: 'Hello, world, again!',
     };
-    const result = await validateMaximumWords(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMaximumWords(context);
     expect(result).to.equal(null);
 });
 
@@ -37,6 +41,7 @@ it('Validating a component with the maxWords property will return null if the nu
     const data = {
         component: 'Hello, world!',
     };
-    const result = await validateMaximumWords(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMaximumWords(context);
     expect(result).to.equal(null);
 });

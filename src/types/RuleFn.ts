@@ -1,10 +1,6 @@
 import { Component } from './Component';
 import { FieldError } from '../error/FieldError';
 import { DataObject } from './DataObject';
-import { ValidatorConfig } from './ValidatorConfig';
+import { ProcessContext } from './process/ProcessContext.js';
 
-export type RuleFn = (
-    component: Component,
-    data: DataObject,
-    config?: ValidatorConfig
-) => Promise<FieldError | null>;
+export type RuleFn = (context: ProcessContext) => Promise<FieldError | null>;

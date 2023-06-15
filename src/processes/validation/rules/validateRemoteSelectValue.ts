@@ -1,9 +1,9 @@
 import * as _ from '@formio/lodash';
 
 import { FieldError, ValidatorError } from 'error';
-import { SelectComponent, RuleFn, ProcessType } from 'types';
+import { SelectComponent, RuleFn } from 'types';
 import { Evaluator } from 'utils';
-import { getComponentErrorField, isEmptyObject, toBoolean } from '../util';
+import { isEmptyObject, toBoolean } from '../util';
 
 const isValidatableSelectComponent = (component: any): component is SelectComponent => {
     return (
@@ -37,7 +37,8 @@ export const generateUrl = (baseUrl: URL, component: SelectComponent, value: any
     return url;
 };
 
-export const validateRemoteSelectValue: RuleFn = async (component, data, config) => {
+export const validateRemoteSelectValue: RuleFn = async (context) => {
+    const { component, data, config } = context;
     // Only run this validation if server-side
     if (typeof window !== 'undefined') {
         return null;
@@ -83,12 +84,7 @@ export const validateRemoteSelectValue: RuleFn = async (component, data, config)
         // TODO: should we always expect JSON here?
         if (response.ok) {
             const data = await response.json();
-            const error = new FieldError({
-                component,
-                errorKeyOrMessage: 'invalidSelection',
-                field: getComponentErrorField(component),
-                context: config?.context,
-            });
+            const error = new FieldError('invalidSelection', context);
             if (Array.isArray(data)) {
                 return data && data.length ? null : error;
             }

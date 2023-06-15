@@ -2,13 +2,13 @@ import _ from 'lodash';
 
 import { FieldError } from 'error';
 import { RuleFn, TextFieldComponent } from 'types';
-import { getComponentErrorField } from 'validation/util';
 
 const isValidatableTextFieldComponent = (component: any): component is TextFieldComponent => {
     return component && component.validate?.hasOwnProperty('minLength');
 };
 
-export const validateMinimumLength: RuleFn = async (component, data, config) => {
+export const validateMinimumLength: RuleFn = async (context) => {
+    const { component, data } = context;
     if (!isValidatableTextFieldComponent(component)) {
         return null;
     }
@@ -19,12 +19,7 @@ export const validateMinimumLength: RuleFn = async (component, data, config) => 
     const value = _.get(data, component.key);
     if (value && minLength && typeof value === 'string') {
         if (value.length < minLength) {
-            const error = new FieldError({
-                component,
-                errorKeyOrMessage: 'minLength',
-                field: getComponentErrorField(component),
-                context: config?.context,
-            });
+            const error = new FieldError('minLength', context);
             return error;
         }
     }

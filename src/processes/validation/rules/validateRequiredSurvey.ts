@@ -1,8 +1,7 @@
 import _ from 'lodash';
 
 import { FieldError, ValidatorError } from 'error';
-import { SurveyComponent, RuleFn, ProcessType } from 'types';
-import { getComponentErrorField } from '../util';
+import { SurveyComponent, RuleFn } from 'types';
 
 type SurveyDataObject = Record<string, string>;
 
@@ -16,7 +15,8 @@ const isValidatableSurveyComponent = (component: any): component is SurveyCompon
     return component && component.type === 'survey' && component.validate?.required;
 };
 
-export const validateRequiredSurvey: RuleFn = async (component, data, config) => {
+export const validateRequiredSurvey: RuleFn = async (context) => {
+    const { component, data } = context;
     if (!isValidatableSurveyComponent(component)) {
         return null;
     }
@@ -30,12 +30,8 @@ export const validateRequiredSurvey: RuleFn = async (component, data, config) =>
     }
     for (const question of component.questions) {
         if (!value[question.value]) {
-            const error = new FieldError({
-                component,
-                errorKeyOrMessage: 'requiredSurvey',
-                field: getComponentErrorField(component),
-                context: config?.context,
-            });
+            const error = new FieldError('requiredSurvey', context);
+            return error;
         }
     }
     return null;

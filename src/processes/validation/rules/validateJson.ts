@@ -2,10 +2,10 @@ import _ from 'lodash';
 
 import jsonLogic from 'modules/jsonlogic';
 import { FieldError } from 'error';
-import { RuleFn, ProcessType } from 'types';
-import { getComponentErrorField } from 'validation/util';
+import { RuleFn } from 'types';
 
-export const validateJson: RuleFn = async (component, data, config) => {
+export const validateJson: RuleFn = async (context) => {
+    const { component, data } = context;
     const value = _.get(data, component.key);
     if (!value || !component.validate?.json) {
         return null;
@@ -25,10 +25,5 @@ export const validateJson: RuleFn = async (component, data, config) => {
     }
     return valid === true
         ? null
-        : new FieldError({
-              component,
-              errorKeyOrMessage: 'jsonLogic',
-              field: getComponentErrorField(component),
-              context: config?.context,
-          });
+        : new FieldError('jsonLogic', context);
 };

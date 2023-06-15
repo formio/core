@@ -1,8 +1,7 @@
 import _, { isEmpty } from 'lodash';
 
 import { FieldError } from 'error';
-import { TextFieldComponent, DataObject, RuleFn, ProcessType } from 'types';
-import { getComponentErrorField } from 'validation/util';
+import { TextFieldComponent, DataObject, RuleFn } from 'types';
 
 const isMaskType = (obj: any): obj is DataObject & { maskName: string; value: string } => {
     return (
@@ -89,7 +88,8 @@ export function matchInputMask(value: any, inputMask: any) {
 }
 
 // TODO: this function has side effects
-export const validateMask: RuleFn = async (component, data, config) => {
+export const validateMask: RuleFn = async (context) => {
+    const { component, data } = context;
     if (!isValidatableTextComponent(component)) {
         return null;
     }
@@ -107,12 +107,7 @@ export const validateMask: RuleFn = async (component, data, config) => {
         inputMask = getInputMask(component.inputMask || '');
     }
     if (value && inputMask) {
-        const error = new FieldError({
-            component,
-            errorKeyOrMessage: 'mask',
-            field: getComponentErrorField(component),
-            context: config?.context,
-        });
+        const error = new FieldError('mask', context);
         return matchInputMask(maskValue || value, inputMask) ? null : error;
     }
     return null;

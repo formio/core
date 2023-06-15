@@ -2,6 +2,7 @@ import { expect } from 'chai';
 
 import { FieldError } from 'error';
 import { simpleSelectBoxes, simpleTextField } from './fixtures/components';
+import { generateProcessContext } from './fixtures/util';
 import { validateMinimumSelectedCount } from '../validateMinimumSelectedCount';
 
 it('Validting a non-select boxes component will return null', async () => {
@@ -9,7 +10,8 @@ it('Validting a non-select boxes component will return null', async () => {
     const data = {
         component: 'Hello, world!',
     };
-    const result = await validateMinimumSelectedCount(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMinimumSelectedCount(context);
     expect(result).to.equal(null);
 });
 
@@ -23,7 +25,8 @@ it('Validating a select boxes component without minSelectedCount will return nul
             biz: false,
         },
     };
-    const result = await validateMinimumSelectedCount(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMinimumSelectedCount(context);
     expect(result).to.equal(null);
 });
 
@@ -37,7 +40,8 @@ it('Validating a select boxes component where the number of selected fields is l
             biz: false,
         },
     };
-    const result = await validateMinimumSelectedCount(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMinimumSelectedCount(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.contain('minSelectedCount');
 });
@@ -52,7 +56,8 @@ it('Validating a select boxes component where the number of selected fields is e
             biz: false,
         },
     };
-    const result = await validateMinimumSelectedCount(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMinimumSelectedCount(context);
     expect(result).to.equal(null);
 });
 
@@ -66,6 +71,7 @@ it('Validating a select boxes component where the number of selected fields is g
             biz: false,
         },
     };
-    const result = await validateMinimumSelectedCount(component, data, {});
+    const context = generateProcessContext(component, data);
+    const result = await validateMinimumSelectedCount(context);
     expect(result).to.equal(null);
 });
