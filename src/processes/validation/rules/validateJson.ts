@@ -5,8 +5,8 @@ import { FieldError } from 'error';
 import { RuleFn } from 'types';
 
 export const validateJson: RuleFn = async (context) => {
-    const { component, data } = context;
-    const value = _.get(data, component.key);
+    const { component, data, path } = context;
+    const value = _.get(data, path);
     if (!value || !component.validate?.json) {
         return null;
     }

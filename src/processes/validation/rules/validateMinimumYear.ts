@@ -13,11 +13,11 @@ const isValidatableDayComponent = (component: any): component is DayComponent =>
 };
 
 export const validateMinimumYear: RuleFn = async (context) => {
-    const { component, data } = context;
+    const { component, data, path } = context;
     if (!isValidatableDayComponent(component)) {
         return null;
     }
-    const value = _.get(data, component.key);
+    const value = _.get(data, path);
     if (typeof value !== 'string' && typeof value !== 'number') {
         throw new ValidatorError(`Cannot validate minimum year for value ${value}`);
     }

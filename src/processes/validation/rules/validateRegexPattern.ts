@@ -10,11 +10,11 @@ const isValidatableTextFieldComponent = (
 };
 
 export const validateRegexPattern: RuleFn = async (context) => {
-    const { component, data } = context;
+    const { component, data, path } = context;
     if (!isValidatableTextFieldComponent(component)) {
         return null;
     }
-    const value = _.get(data, component.key);
+    const value = _.get(data, path);
 
     const pattern = component.validate?.pattern;
     if (!pattern) {

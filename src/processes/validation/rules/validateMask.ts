@@ -89,13 +89,13 @@ export function matchInputMask(value: any, inputMask: any) {
 
 // TODO: this function has side effects
 export const validateMask: RuleFn = async (context) => {
-    const { component, data } = context;
+    const { component, data, path } = context;
     if (!isValidatableTextComponent(component)) {
         return null;
     }
     let inputMask: (string | RegExp)[] | undefined;
     let maskValue: string | undefined;
-    const value = _.get(data, component.key);
+    const value = _.get(data, path);
     if (component.allowMultipleMasks && component.inputMasks?.length) {
         const mask = value && isMaskType(value) ? value : undefined;
         const formioInputMask = getMaskByLabel(component, mask?.maskName);

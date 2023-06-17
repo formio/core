@@ -173,9 +173,9 @@ export async function eachComponentDataAsync(components: any[], data: any, fn: a
                       path = `${component.key}[${i}]`;
                       await eachComponentDataAsync(
                           component.components,
-                          get(data, path),
-                          async (comp: any, components: any[]) =>
-                              await fn(comp, get(data, path), path, components),
+                          data,
+                          async (comp: any, data: any, path: string, components: any[]) =>
+                              await fn(comp, data, path, components),
                           path
                       );
                   }
@@ -185,7 +185,7 @@ export async function eachComponentDataAsync(components: any[], data: any, fn: a
                   component.components,
                   data[component.key],
                   async (comp: any, components: any[]) =>
-                      await fn(comp, data[component.key], path, components),
+                      await fn(comp, data, path, components),
                   path
               );
               return true;

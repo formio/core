@@ -17,8 +17,8 @@ const isValidatable = (component: any) => {
 
 export const validateDate: RuleFn = async (context) => {
     const error = new FieldError('invalidDate', context);
-    const { component, data } = context;
-    let value = _.get(data, component.key);
+    const { component, data, path} = context;
+    let value = _.get(data, path);
     if (!value || !isValidatable(component)) {
         return null;
     }

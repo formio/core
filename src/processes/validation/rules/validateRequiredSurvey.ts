@@ -16,11 +16,11 @@ const isValidatableSurveyComponent = (component: any): component is SurveyCompon
 };
 
 export const validateRequiredSurvey: RuleFn = async (context) => {
-    const { component, data } = context;
+    const { component, data, path } = context;
     if (!isValidatableSurveyComponent(component)) {
         return null;
     }
-    const value = _.get(data, component.key);
+    const value = _.get(data, path);
     // if value is nullish, this should get caught by regular old required validation
     if (!value) {
         return null;

@@ -9,7 +9,7 @@ import { isEmptyObject } from '../util';
 //         return null;
 //     }
 
-//     const value = _.get(data, component.key);
+//     const value = _.get(data, path);
 //     if (!value || isEmptyObject(value)) {
 //         return null;
 //     }
