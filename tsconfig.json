@@ -74,8 +74,8 @@
       "model/*": ["./src/model/*"],
       "modules": ["./src/modules"],
       "modules/*": ["./src/modules/*"],
-      "processes": ["./src/processes"],
-      "processes/*": ["./src/processes/*"],
+      "processes": ["src/process"],
+      "processes/*": ["src/process/*"],
       "sdk": ["./src/sdk"],
       "sdk/*": ["./src/sdk/*"],
       "test": ["./test"],
@@ -84,8 +84,8 @@
       "types/*": ["./src/types/*"],
       "utils": ["./src/utils"],
       "utils/*": ["./src/utils/*"],
-      "validation": ["./src/processes/validation"],
-      "validation/*": ["./src/processes/validation/*"]
+      "validation": ["src/process/validation"],
+      "validation/*": ["src/process/validation/*"]
     }
   },
   "include": [

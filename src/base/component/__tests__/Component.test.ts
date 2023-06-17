@@ -1,5 +1,5 @@
 import { Component as ComponentBase } from '../Component';
-import { process } from '../../../processes/validation';
+import { validate } from 'validation';
 var jsdom = require('mocha-jsdom');
 import { assert } from 'chai';
 const Component = ComponentBase()();

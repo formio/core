@@ -1,3 +1,5 @@
 export enum ProcessType {
-    Validation = 'validation'
+    Change = 'change',
+    Submit = 'submit',
+    Save = 'save',
 }

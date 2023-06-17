@@ -1,8 +1,7 @@
 import _ from 'lodash';
 
 import { FieldError, ValidatorError } from 'error';
-import { DayComponent, RuleFn, ProcessType } from 'types';
-import { getComponentErrorField } from 'validation/util';
+import { DayComponent, RuleFn } from 'types';
 
 const isValidatableDayComponent = (component: any): component is DayComponent => {
     return (

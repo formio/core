@@ -1,12 +1,12 @@
-import { MetaProcess } from "./MetaProcess.js";
 import { ProcessType } from "./ProcessType.js";
+import { ProcessorType } from "./ProcessorType.js";
 import { Component, DataObject, RuleFn } from "types";
 
-export type ProcessContext = {
+export type ProcessorContext = {
     component: Component;
     data: DataObject;
     path: string;
-    process: ProcessType;
-    metaProcess?: MetaProcess;
+    process: ProcessorType;
+    metaProcess?: ProcessType;
     config?: Record<string, any>;
 }

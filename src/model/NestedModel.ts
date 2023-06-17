@@ -1,9 +1,5 @@
 import * as _ from '@formio/lodash';
 import { Model, ModelInterface, ModelDecoratorInterface } from './Model';
-import { FieldError } from 'error/FieldError';
-import { MetaProcess } from 'types/process/MetaProcess';
-import { eachComponentDataAsync } from 'utils/formUtil';
-import { process as processValidation } from 'validation';
 export function NestedModel(props: any = {}) : ModelDecoratorInterface {
     if (!props.schema) {
         props.schema = {};

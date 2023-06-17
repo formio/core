@@ -10,7 +10,7 @@ module.exports = {
     'modules/index.js': './src/modules/index.ts',
     'sdk/index.js': './src/sdk/index.ts',
     'utils/index.js': './src/utils/index.ts',
-    'validation/index.js': './src/processes/validation/index.ts'
+    'validation/index.js': './src/process/validation/index.ts'
   },
   output: {
     library: {

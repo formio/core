@@ -1,11 +1,11 @@
-import { ProcessContext } from 'types';
-import { getComponentErrorField } from 'processes/validation/util';
+import { ProcessorContext } from 'types';
+import { getComponentErrorField } from 'validation/util';
 
 export class FieldError {
-    context: ProcessContext;
+    context: ProcessorContext;
     errorKeyOrMessage: string;
     field: string;
-    constructor(errorKeyOrMessage: string, context: ProcessContext) {
+    constructor(errorKeyOrMessage: string, context: ProcessorContext) {
         this.errorKeyOrMessage = errorKeyOrMessage;
         this.context = context;
         this.field = getComponentErrorField(context.component);

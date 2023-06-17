@@ -1,5 +1,5 @@
-import { ValidatorError } from '../../error/ValidatorError';
-import { Component } from '../../types';
+import { ValidatorError } from 'error';
+import { Component } from 'types';
 
 export function isComponentPersistent(component: Component) {
     return component.persistent ? component.persistent : true;

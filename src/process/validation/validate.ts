@@ -1,9 +1,9 @@
 import { FieldError } from '../../error/FieldError';
 import { rules as allRules } from './rules';
 import { shouldSkipValidation } from './util';
-import { ProcessFn } from 'types/process/ProcessFn';
+import { ProcessorFn } from 'types/process/ProcessorFn';
 
-export const process: ProcessFn = async (context, rules = allRules) => {
+export const validate: ProcessorFn = async (context, rules = allRules) => {
     if (shouldSkipValidation(context.component)) {
         return [];
     }
