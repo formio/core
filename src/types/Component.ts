@@ -463,6 +463,7 @@ export type TextAreaComponent = TextFieldComponent & {
     editor: string;
     fixedSize: boolean;
     inputFormat: string;
+    as?: string;
 };
 
 export type TimeComponent = TextFieldComponent & {

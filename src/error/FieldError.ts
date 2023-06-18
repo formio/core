@@ -6,8 +6,8 @@ type ErrorKey = 'min' | 'max' | 'length' | 'pattern' | 'minDate' | 'maxDate' | '
 type FieldErrorContext = ProcessorContext & {
     field?: string;
     // TODO: the following are needed for for backwards compatibility, do we need this?
-    // * error.level will determine whether the `alert` template will display
-    // * error.context.hasLabel will determine how the error is displayed in the `alert` template
+    // * context.level will determine whether the `alert` template will display
+    // * context.hasLabel will determine how the error is displayed in the `alert` template
     level?: string;
     hasLabel?: boolean;
     // TODO: these are the custom error properties according to the inline docs in the builer
