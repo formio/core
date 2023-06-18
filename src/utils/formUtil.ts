@@ -158,6 +158,7 @@ export async function eachComponentDataAsync(components: any[], data: any, fn: a
       async (component: any) => {
           path = originalPath ? `${originalPath}.${component.key}` : component.key;
           if (component.key && component.type === 'form') {
+              // TODO: this could be a fn or a generator
               path = `${path}.data`;
               await eachComponentDataAsync(
                   component.components,
@@ -168,9 +169,12 @@ export async function eachComponentDataAsync(components: any[], data: any, fn: a
               );
               return true;
           } else if (TREE_COMPONENTS.includes(component.type) || component.tree) {
-              if (Array.isArray(data[component.key])) {
-                  for (let i = 0; i < data[component.key].length; i++) {
-                      path = `${component.key}[${i}]`;
+              const contextualData = get(data, path);
+              if (Array.isArray(contextualData)) {
+                  // TODO: this could be a fn or a generator
+                  path = `${path}[0]`;
+                  for (let i = 0; i < contextualData.length; i++) {
+                      path = path.replace(/\[\d\]$/, `[${i}]`);
                       await eachComponentDataAsync(
                           component.components,
                           data,
@@ -183,16 +187,18 @@ export async function eachComponentDataAsync(components: any[], data: any, fn: a
               }
               await eachComponentDataAsync(
                   component.components,
-                  data[component.key],
+                  data,
                   async (comp: any, components: any[]) =>
                       await fn(comp, data, path, components),
                   path
               );
               return true;
           } else if (component.multiple) {
-            if (Array.isArray(data[component.key])) {
-                for (let i = 0; i < data[component.key].length; i++) {
-                    path = `${component.key}[${i}]`;
+            const contextualData = get(data, path);
+            if (Array.isArray(contextualData)) {
+                path = `${path}[0]`;
+                for (let i = 0; i < contextualData.length; i++) {
+                    path = path.replace(/\[\d\]$/, `[${i}]`);
                     await fn(component, data, path, components);
                 }
                 return true;
