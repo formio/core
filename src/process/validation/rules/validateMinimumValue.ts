@@ -34,5 +34,5 @@ export const validateMinimumValue: RuleFn = async (context) => {
 
     return parsedValue >= min
         ? null
-        : new FieldError('minValue', context);
+        : new FieldError('minValue', { ...context, min: String(min) });
 };

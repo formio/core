@@ -34,5 +34,5 @@ export const validateMaximumValue: RuleFn = async (context) => {
 
     return parsedValue <= max
         ? null
-        : new FieldError('maxValue', context);
+        : new FieldError('maxValue', {...context, max: String(max) });
 };

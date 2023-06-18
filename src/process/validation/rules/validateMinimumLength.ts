@@ -19,7 +19,7 @@ export const validateMinimumLength: RuleFn = async (context) => {
     const value = _.get(data, path);
     if (value && minLength && typeof value === 'string') {
         if (value.length < minLength) {
-            const error = new FieldError('minLength', context);
+            const error = new FieldError('minLength', { ...context, length: String(minLength) });
             return error;
         }
     }

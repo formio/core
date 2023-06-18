@@ -40,5 +40,5 @@ export const validateMinimumYear: RuleFn = async (context) => {
 
     return +year >= +minYear
         ? null
-        : new FieldError('minYear', context);
+        : new FieldError('minYear', { ...context, minYear: String(minYear) });
 };

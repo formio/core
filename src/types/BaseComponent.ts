@@ -40,6 +40,7 @@ export type BaseComponent = {
         required?: boolean;
         custom?: string;
         customPrivate?: boolean;
+        customMessage?: string;
         strictDateValidation?: boolean;
         multiple?: boolean;
         unique?: boolean;

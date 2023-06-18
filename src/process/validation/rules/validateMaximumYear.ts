@@ -41,5 +41,5 @@ export const validateMaximumYear: RuleFn = async (context) => {
 
     return +year <= +maxYear
         ? null
-        : new FieldError('maxYear', context);
+        : new FieldError('maxYear', {...context, maxYear: String(maxYear) });
 };

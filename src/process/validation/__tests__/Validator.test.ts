@@ -18,7 +18,7 @@ it('Validator will throw the correct errors given a flat components array', asyn
     };
     for (let component of simpleForm.components) {
         const path = component.key;
-        const errorArr: FieldError[] = await validate({ component, data, path, process: ProcessorType.Validator });
+        const errorArr: FieldError[] = await validate({ component, data, path, processor: ProcessorType.Validator });
         if (errorArr) {
             errors = [...errors, ...errorArr.map((error) => error.errorKeyOrMessage)];
         }

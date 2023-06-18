@@ -6,7 +6,7 @@ export type ProcessorContext = {
     component: Component;
     data: DataObject;
     path: string;
-    process: ProcessorType;
-    metaProcess?: ProcessType;
+    processor: ProcessorType;
+    process?: ProcessType;
     config?: Record<string, any>;
 }

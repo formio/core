@@ -29,5 +29,5 @@ export const validateCustom: RuleFn = async (context) => {
         return null;
     }
 
-    return new FieldError(isValid, context);
+    return new FieldError(isValid, {...context, hasLabel: false });
 };

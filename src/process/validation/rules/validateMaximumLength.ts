@@ -19,7 +19,7 @@ export const validateMaximumLength: RuleFn = async (context) => {
     const value = _.get(data, path);
     if (value && maxLength && typeof value === 'string') {
         if (value.length > maxLength) {
-            const error = new FieldError('maxLength', context);
+            const error = new FieldError('maxLength', { ...context, length: String(maxLength) });
             return error;
         }
     }
