@@ -1,8 +1,6 @@
 import { ProcessorContext } from 'types';
 import { getComponentErrorField } from 'validation/util';
 
-type ErrorKey = 'min' | 'max' | 'length' | 'pattern' | 'minDate' | 'maxDate' | 'minYear' | 'maxYear' | 'regex';
-
 type FieldErrorContext = ProcessorContext & {
     field?: string;
     // TODO: the following are needed for for backwards compatibility, do we need this?
@@ -24,15 +22,17 @@ type FieldErrorContext = ProcessorContext & {
 export class FieldError {
     context: FieldErrorContext
     errorKeyOrMessage: string;
+    level?: string;
     constructor(errorKeyOrMessage: string, context: FieldErrorContext) {
-        const { component, hasLabel = true, field = getComponentErrorField(component) } = context;
+        const { component, hasLabel = true, field = getComponentErrorField(component), level = 'error' } = context;
         if (context.component.validate?.customMessage) {
             this.errorKeyOrMessage = context.component.validate.customMessage;
-            this.context = { ...context, hasLabel: false, field };
+            this.context = { ...context, hasLabel: false, field, level };
         }
         else {
             this.errorKeyOrMessage = errorKeyOrMessage;
             this.context = { ...context, hasLabel, field };
+            this.level = level;
         }
     }
 }

@@ -19,6 +19,7 @@ import { validateMinimumYear } from './validateMinimumYear';
 import { validateRegexPattern } from './validateRegexPattern';
 import { validateRemoteSelectValue } from './validateRemoteSelectValue';
 import { validateRequired } from './validateRequired';
+import { validateMultiple } from './validateMultiple';
 // import { validateUnique } from './validateUnique';
 import { validateUrl } from './validateUrl';
 
@@ -41,6 +42,7 @@ export const rules = [
     validateMinimumValue,
     validateMinimumWords,
     validateMinimumYear,
+    validateMultiple,
     validateRegexPattern,
     validateRemoteSelectValue,
     validateRequired,

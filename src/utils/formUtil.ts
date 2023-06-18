@@ -189,6 +189,16 @@ export async function eachComponentDataAsync(components: any[], data: any, fn: a
                   path
               );
               return true;
+          } else if (component.multiple) {
+            if (Array.isArray(data[component.key])) {
+                for (let i = 0; i < data[component.key].length; i++) {
+                    path = `${component.key}[${i}]`;
+                    await fn(component, data, path, components);
+                }
+                return true;
+            }
+            await fn(component, data, path, components);
+            return true;
           } else {
               return await fn(component, data, path, components);
           }
