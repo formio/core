@@ -163,8 +163,7 @@ export async function eachComponentDataAsync(components: any[], data: any, fn: a
               await eachComponentDataAsync(
                   component.components,
                   data[component.key].data,
-                  async (comp: any, components: any[]) =>
-                      await fn(comp, data.data, path, components),
+                  fn,
                   path
               );
               return true;
@@ -178,8 +177,7 @@ export async function eachComponentDataAsync(components: any[], data: any, fn: a
                       await eachComponentDataAsync(
                           component.components,
                           data,
-                          async (comp: any, data: any, path: string, components: any[]) =>
-                              await fn(comp, data, path, components),
+                          fn,
                           path
                       );
                   }
@@ -188,8 +186,7 @@ export async function eachComponentDataAsync(components: any[], data: any, fn: a
               await eachComponentDataAsync(
                   component.components,
                   data,
-                  async (comp: any, components: any[]) =>
-                      await fn(comp, data, path, components),
+                  fn,
                   path
               );
               return true;
@@ -238,7 +235,6 @@ export async function eachComponentAsync(
               continue;
           }
       }
-
       if (hasColumns) {
           for (let j = 0; j < component.columns.length; j++) {
               await eachComponentAsync(component.columns[j]?.components, fn, includeAll, path);
