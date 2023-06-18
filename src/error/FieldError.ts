@@ -25,14 +25,14 @@ export class FieldError {
     context: FieldErrorContext
     errorKeyOrMessage: string;
     constructor(errorKeyOrMessage: string, context: FieldErrorContext) {
-        const { component, field = getComponentErrorField(component) } = context;
+        const { component, hasLabel = true, field = getComponentErrorField(component) } = context;
         if (context.component.validate?.customMessage) {
             this.errorKeyOrMessage = context.component.validate.customMessage;
             this.context = { ...context, hasLabel: false, field };
         }
         else {
             this.errorKeyOrMessage = errorKeyOrMessage;
-            this.context = { ...context, field };
+            this.context = { ...context, hasLabel, field };
         }
     }
 }
