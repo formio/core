@@ -1,3 +1,4 @@
 export enum ProcessorType {
-    Validator = 'validator'
+    Validator = 'validator',
+    Custom = 'custom'
 }

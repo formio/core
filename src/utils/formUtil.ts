@@ -1,3 +1,4 @@
+import { Component } from 'types';
 import { Evaluator } from './Evaluator';
 import { last, get } from '@formio/lodash';
 
@@ -148,7 +149,7 @@ export function uniqueName(name: string, template?: string, evalContext?: any) {
 }
 
 // Async each component data.
-export async function eachComponentDataAsync(components: any[], data: any, fn: any, path = '') {
+export async function eachComponentDataAsync(components: Component[], data: Record<string, any>, fn: (component: Component, data: Record<string, any>, path: string, components: Component[]) => void, path = '') {
   if (!components || !data) {
       return;
   }
@@ -203,7 +204,7 @@ export async function eachComponentDataAsync(components: any[], data: any, fn: a
           //   await fn(component, data, path, components);
           //   return true;
           } else {
-              return await fn(component, data, path, components);
+              return fn(component, data, path, components);
           }
       },
       true

@@ -63,4 +63,5 @@ export type BaseComponent = {
     allowMultipleMasks?: boolean;
     addons?: any[]; // TODO: this should go away
     inputType?: any;
+    errors?: Record<string, string>;
 };
