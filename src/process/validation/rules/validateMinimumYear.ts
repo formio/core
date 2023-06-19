@@ -29,7 +29,7 @@ export const validateMinimumYear: RuleFn = async (context) => {
         component.minYear !== component.fields.year.minYear
     ) {
         throw new ValidatorError(
-            'Cannot validate minimum year, component.minYear and component.fields.year.minYear are not equal'
+            'Cannot validate minimum year, component.minYear and component.fields.year.minYear are not equal',
         );
     }
     const minYear = component.minYear;

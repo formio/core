@@ -1,7 +1,7 @@
 import * as _ from '@formio/lodash';
 
 import { Component, ProcessType, ProcessorFn, ProcessorType } from "types";
-import { eachComponentDataAsync } from "utils";
+import { AsyncComponentDataCallback, eachComponentDataAsync } from "utils/formUtil";
 import { validate } from './validation';
 import { FieldError } from 'error';
 
@@ -13,42 +13,20 @@ type ProcessArgs = {
     after?: ProcessorFn[];
 }
 
-export async function process({components, data, process, before = [], after = []}: ProcessArgs) {
-    const errors: FieldError[] = [];
+export async function process({components, data, process, before = [], after = [] }: ProcessArgs, callback?: AsyncComponentDataCallback) {
+    const allErrors: FieldError[] = [];
     switch (process) {
         case ProcessType.Submit: {
-            await eachComponentDataAsync(components, data, async(component, data, path) => {
-                const beforeErrors = await before.reduce(async (promise, fn) => {
+            await eachComponentDataAsync(components, data, async(component, data, path, components) => {
+                const componentErrors: FieldError[] = [];
+
+                const beforeErrors = await before.reduce(async (promise, currFn) => {
                     const acc = await promise;
-                    const newErrors = await fn({ component, data, path, processor: ProcessorType.Custom });
+                    const newErrors = await currFn( {component, data, path, processor: ProcessorType.Custom });
                     return [...acc, ...newErrors];
                 }, Promise.resolve([] as FieldError[]));
-                errors.push(...beforeErrors);
+                componentErrors.push(...beforeErrors);
 
-                // TODO: to keep this backwards compatible (for now), we need to handle `multiple` components here because
-                // the DOM manipulation pipeline (i.e. component.setComponentValidity() etc.) expects a group of messages per component
-                // (rather than one message per constituent input if we were to handle this in eachComponentDataAsync); we need
-                // to fix the DOM manipulation pipeline to allow for the new paradigm of drilling down to each constituent component,
-                // at which point this will get a LOT cleaner
-                if (component.multiple) {
-                    const contextualData = _.get(data, path);
-                    if (contextualData.length > 0) {
-                        const componentErrors = [];
-                        for (let index = 0; index < _.get(data, path).length; index++) {
-                            const amendedPath = `${path}[${index}]`;
-                            const newErrors = await validate({
-                                component,
-                                data,
-                                path: amendedPath,
-                                processor: ProcessorType.Validator,
-                                process: ProcessType.Submit
-                            });
-                            componentErrors.push(...newErrors);
-                        }
-                        errors.push(...componentErrors);
-                        return;
-                    }
-                }
                 const validationErrors = await validate({
                     component,
                     data,
@@ -56,20 +34,26 @@ export async function process({components, data, process, before = [], after = [
                     process,
                     processor: ProcessorType.Validator,
                 });
-                errors.push(...validationErrors);
+                componentErrors.push(...validationErrors);
 
                 // add other processors here...
 
-                const afterErrors = await after.reduce(async (promise, fn) => {
+                const afterErrors = await after.reduce(async (promise, currFn) => {
                     const acc = await promise;
-                    const newErrors = await fn({ component, data, path, processor: ProcessorType.Custom });
+                    const newErrors = await currFn( {component, data, path, processor: ProcessorType.Custom });
                     return [...acc, ...newErrors];
                 }, Promise.resolve([] as FieldError[]));
-                errors.push(...afterErrors);
-            });
+                componentErrors.push(...afterErrors);
+
+                if (callback) {
+                    await callback(component, data, path, components, componentErrors);
+                }
+
+                allErrors.push(...componentErrors);
+            }, '');
         }
         default:
             break;
     }
-    return errors;
+    return allErrors;
 }

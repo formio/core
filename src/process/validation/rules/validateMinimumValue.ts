@@ -24,11 +24,11 @@ export const validateMinimumValue: RuleFn = async (context) => {
     const parsedValue = typeof value === 'string' ? parseFloat(value) : Number(value);
 
     if (Number.isNaN(min)) {
-        throw new ValidatorError('Cannot evaluate minimum value because it is invalid');
+        throw new ValidatorError(`Cannot evaluate minimum value ${min} because it is invalid`);
     }
     if (Number.isNaN(parsedValue)) {
         throw new ValidatorError(
-            `Cannot validate minimum value ${min} because the value is invalid`
+            `Cannot validate value ${parsedValue} because it is invalid`,
         );
     }
 

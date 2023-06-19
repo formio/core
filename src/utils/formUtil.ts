@@ -1,6 +1,13 @@
 import { Component } from 'types';
 import { Evaluator } from './Evaluator';
 import { last, get } from '@formio/lodash';
+import { FieldError } from 'error';
+
+export type AsyncComponentDataCallback =
+  (component: Component, data: Record<string, any>, path: string, components?: Component[], errors?: FieldError[]) => Promise<void>;
+
+type AsyncComponentDataIterator =
+  (components: Component[], data: Record<string, any>, fn: AsyncComponentDataCallback, path: string) => Promise<void>;
 
 const TREE_COMPONENTS = ['datagrid', 'editgrid', 'container', 'form', 'dynamicWizard', 'address'];
 
@@ -149,7 +156,7 @@ export function uniqueName(name: string, template?: string, evalContext?: any) {
 }
 
 // Async each component data.
-export async function eachComponentDataAsync(components: Component[], data: Record<string, any>, fn: (component: Component, data: Record<string, any>, path: string, components: Component[]) => void, path = '') {
+export const eachComponentDataAsync: AsyncComponentDataIterator = async (components, data, fn, path = '') => {
   if (!components || !data) {
       return;
   }

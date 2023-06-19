@@ -24,11 +24,11 @@ export const validateMaximumValue: RuleFn = async (context) => {
     const parsedValue = typeof value === 'string' ? parseFloat(value) : Number(value);
 
     if (Number.isNaN(max)) {
-        throw new ValidatorError('Cannot evaluate maximum value because it is invalid');
+        throw new ValidatorError(`Cannot evaluate maximum value ${max} because it is invalid`);
     }
     if (Number.isNaN(parsedValue)) {
         throw new ValidatorError(
-            `Cannot validate maximum value ${max} because the value is invalid`
+            `Cannot validate value ${parsedValue} because it is invalid`
         );
     }
 

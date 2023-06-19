@@ -23,7 +23,7 @@ export const validateRequiredDay: RuleFn = async (context) => {
     }
     if (typeof value !== 'string') {
         throw new ValidatorError(
-            `Cannot validate required day field of ${value} because it is not a string`
+            `Cannot validate required day field of ${value} because it is not a string`,
         );
     }
     const [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];

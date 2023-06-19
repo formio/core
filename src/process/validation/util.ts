@@ -1,4 +1,3 @@
-import { ValidatorError } from 'error';
 import { Component } from 'types';
 
 export function isComponentPersistent(component: Component) {
@@ -29,7 +28,7 @@ export function toBoolean(value: any) {
             } else if (value === 'false' || value === '0') {
                 return false;
             } else {
-                throw new ValidatorError(`Cannot coerce string ${value} to boolean}`);
+                throw `Cannot coerce string ${value} to boolean}`;
             }
         case 'boolean':
             return value;

@@ -30,7 +30,7 @@ export const validateMaximumYear: RuleFn = async (context) => {
         component.maxYear !== component.fields.year.maxYear
     ) {
         throw new ValidatorError(
-            'Cannot validate maximum year, component.maxYear and component.fields.year.maxYear are not equal'
+            'Cannot validate maximum year, component.maxYear and component.fields.year.maxYear are not equal',
         );
     }
     const maxYear = component.maxYear || component.fields.year.maxYear;

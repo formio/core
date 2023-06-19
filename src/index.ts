@@ -5,3 +5,4 @@ export * from './modules';
 export * from './utils';
 export * from './components';
 export * from './process/validation';
+export * from './process';
