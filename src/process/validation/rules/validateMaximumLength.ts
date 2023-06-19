@@ -17,7 +17,7 @@ export const validateMaximumLength: RuleFn = async (context) => {
             ? parseInt(component.validate.maxLength, 10)
             : component.validate?.maxLength;
     const value = _.get(data, path);
-    if (value && maxLength && typeof value === 'string') {
+    if (value != null && maxLength && typeof value === 'string') {
         if (value.length > maxLength) {
             const error = new FieldError('maxLength', { ...context, length: String(maxLength) });
             return error;

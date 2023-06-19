@@ -18,12 +18,12 @@ export const validateMaximumValue: RuleFn = async (context) => {
             ? parseFloat(component.validate.max)
             : component.validate?.max;
 
-    if (!value) {
+    if (!value || !max) {
         return null;
     }
     const parsedValue = typeof value === 'string' ? parseFloat(value) : Number(value);
 
-    if (Number.isNaN(max) || !max) {
+    if (Number.isNaN(max)) {
         throw new ValidatorError('Cannot evaluate maximum value because it is invalid');
     }
     if (Number.isNaN(parsedValue)) {
@@ -34,5 +34,5 @@ export const validateMaximumValue: RuleFn = async (context) => {
 
     return parsedValue <= max
         ? null
-        : new FieldError('maxValue', {...context, max: String(max) });
+        : new FieldError('max', {...context, max: String(max) });
 };

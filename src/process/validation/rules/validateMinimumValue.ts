@@ -4,7 +4,7 @@ import { FieldError, ValidatorError } from 'error';
 import { NumberComponent, RuleFn } from 'types';
 
 const isValidatableNumberComponent = (component: any): component is NumberComponent => {
-    return component && component.validate?.hasOwnProperty('min');
+    return component && component.validate?.hasOwnProperty('min') && component.validate?.min;
 };
 
 export const validateMinimumValue: RuleFn = async (context) => {
@@ -18,12 +18,12 @@ export const validateMinimumValue: RuleFn = async (context) => {
             ? parseFloat(component.validate.min)
             : component.validate?.min;
 
-    if (!value) {
+    if (!value || !min) {
         return null;
     }
     const parsedValue = typeof value === 'string' ? parseFloat(value) : Number(value);
 
-    if (Number.isNaN(min) || !min) {
+    if (Number.isNaN(min)) {
         throw new ValidatorError('Cannot evaluate minimum value because it is invalid');
     }
     if (Number.isNaN(parsedValue)) {
@@ -34,5 +34,5 @@ export const validateMinimumValue: RuleFn = async (context) => {
 
     return parsedValue >= min
         ? null
-        : new FieldError('minValue', { ...context, min: String(min) });
+        : new FieldError('min', { ...context, min: String(min) });
 };

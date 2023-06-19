@@ -17,7 +17,7 @@ export const validateMinimumLength: RuleFn = async (context) => {
             ? parseInt(component.validate.minLength, 10)
             : component.validate?.minLength;
     const value = _.get(data, path);
-    if (value && minLength && typeof value === 'string') {
+    if (value != null && minLength && typeof value === 'string') {
         if (value.length < minLength) {
             const error = new FieldError('minLength', { ...context, length: String(minLength) });
             return error;

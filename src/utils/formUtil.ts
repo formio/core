@@ -190,18 +190,18 @@ export async function eachComponentDataAsync(components: any[], data: any, fn: a
                   path
               );
               return true;
-          } else if (component.multiple) {
-            const contextualData = get(data, path);
-            if (Array.isArray(contextualData)) {
-                path = `${path}[0]`;
-                for (let i = 0; i < contextualData.length; i++) {
-                    path = path.replace(/\[\d\]$/, `[${i}]`);
-                    await fn(component, data, path, components);
-                }
-                return true;
-            }
-            await fn(component, data, path, components);
-            return true;
+          // } else if (component.multiple) {
+          //   const contextualData = get(data, path);
+          //   if (Array.isArray(contextualData)) {
+          //       path = `${path}[0]`;
+          //       for (let i = 0; i < contextualData.length; i++) {
+          //           path = path.replace(/\[\d\]$/, `[${i}]`);
+          //           await fn(component, data, path, components);
+          //       }
+          //       return true;
+          //   }
+          //   await fn(component, data, path, components);
+          //   return true;
           } else {
               return await fn(component, data, path, components);
           }
