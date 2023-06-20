@@ -16,6 +16,7 @@ type ProcessArgs = {
 export async function process({components, data, process, before = [], after = [] }: ProcessArgs, callback?: AsyncComponentDataCallback) {
     const allErrors: FieldError[] = [];
     switch (process) {
+        case ProcessType.Change:
         case ProcessType.Submit: {
             await eachComponentDataAsync(components, data, async(component, data, path, components) => {
                 const componentErrors: FieldError[] = [];
