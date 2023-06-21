@@ -8,7 +8,7 @@ const isValidatableTextFieldComponent = (component: any): component is TextField
 };
 
 export const validateMaximumLength: RuleFn = async (context) => {
-    const { component, data, path } = context;
+    const { component, value } = context;
     if (!isValidatableTextFieldComponent(component)) {
         return null;
     }
@@ -16,7 +16,6 @@ export const validateMaximumLength: RuleFn = async (context) => {
         typeof component.validate?.maxLength === 'string'
             ? parseInt(component.validate.maxLength, 10)
             : component.validate?.maxLength;
-    const value = _.get(data, path);
     if (value != null && maxLength && typeof value === 'string') {
         if (value.length > maxLength) {
             const error = new FieldError('maxLength', { ...context, length: String(maxLength) });

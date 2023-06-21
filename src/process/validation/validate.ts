@@ -12,28 +12,32 @@ export const validate: ProcessorFn = async (context, rules = allRules) => {
     }
     const errors: FieldError[] = [];
     const { component, data, path } = context;
-    for (const rule of rules ) {
-        try {
-            if (component.multiple) {
-                const contextualData = _.get(data, path);
-                if (contextualData.length > 0) {
-                    for (let i = 0; i < contextualData.length; i++) {
-                        const amendedPath = `${path}[${i}]`;
-                        const error = await rule({ ...context, path: amendedPath });
-                        if (error) {
-                            errors.push(error);
-                        }
+    if (component.multiple) {
+        const contextualData = _.get(data, path);
+        if (contextualData.length > 0) {
+            for (let i = 0; i < contextualData.length; i++) {
+                const amendedPath = `${path}[${i}]`;
+                const value = _.get(data, amendedPath);
+                for (const rule of rules) {
+                    const error = await rule({ ...context, value, path: amendedPath });
+                    if (error) {
+                        errors.push(error);
                     }
-                    continue;
                 }
             }
-            const error = await rule(context);
+            return errors;
+        }
+    }
+    const value = _.get(data, path);
+    for (const rule of rules ) {
+        try {
+            const error = await rule({ ...context, value });
             if (error) {
                 errors.push(error);
             }
         }
         catch (err) {
-            console.error(getErrorMessage(err));
+            console.error("Validator error:", getErrorMessage(err));
         }
     }
     return errors;

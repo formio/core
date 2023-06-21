@@ -43,7 +43,7 @@ it('Validating a number component that contains the min property will return a F
     const context = generateProcessContext(component, data);
     const result = await validateMinimumValue(context);
     expect(result).to.be.instanceOf(FieldError);
-    expect(result?.errorKeyOrMessage).to.contain('minValue');
+    expect(result?.errorKeyOrMessage).to.contain('min');
 });
 
 it('Validating a number component that contains the min property will return null if the value is equal to the minimum', async () => {

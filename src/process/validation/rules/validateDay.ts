@@ -35,12 +35,11 @@ const isDayComponent = (component: any): component is DayComponent => {
 };
 
 export const validateDay: RuleFn = async (context) => {
-    const { component, data, path } = context;
+    const { component, value } = context;
     if (!isDayComponent(component)) {
         return null;
     }
     const error = new FieldError('invalidDay', context);
-    const value = _.get(data, path);
     if (!value) {
         return null;
     }

@@ -18,11 +18,10 @@ const isValidUrlAndProtocol = (url: string) => {
 };
 
 export const validateUrl: RuleFn = async (context) => {
-    const { component, data, path } = context;
+    const { component, value } = context;
     if (!isUrlComponent(component)) {
         return null;
     }
-    const value = _.get(data, path);
     if (!value) {
         return null;
     }

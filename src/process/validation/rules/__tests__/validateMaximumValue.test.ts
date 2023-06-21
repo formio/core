@@ -43,7 +43,7 @@ it('Validating a number component that contains the max property will return a F
     const context = generateProcessContext(component, data);
     const result = await validateMaximumValue(context);
     expect(result).to.be.instanceOf(FieldError);
-    expect(result?.errorKeyOrMessage).to.equal('maxValue');
+    expect(result?.errorKeyOrMessage).to.equal('max');
 });
 
 it('Validating a number component that contains the max property will return null if the value is equal to the maximum', async () => {

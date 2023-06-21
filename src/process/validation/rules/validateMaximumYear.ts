@@ -13,11 +13,10 @@ const isValidatableDayComponent = (component: any): component is DayComponent =>
 };
 
 export const validateMaximumYear: RuleFn = async (context) => {
-    const { component, data, path } = context;
+    const { component, value } = context;
     if (!isValidatableDayComponent(component)) {
         return null;
     }
-    const value = _.get(data, path);
     if (typeof value !== 'string' && typeof value !== 'number') {
         throw new ValidatorError(`Cannot validate maximum year for value ${value}`);
     }

@@ -9,11 +9,10 @@ const isValidatableDayComponent = (component: any): component is DayComponent =>
 };
 
 export const validateMaximumDay: RuleFn = async (context) => {
-    const { component, data, path } = context;
+    const { component, value } = context;
     if (!isValidatableDayComponent(component)) {
         return null;
     }
-    const value = _.get(data, path);
     if (typeof value !== 'string') {
         throw new ValidatorError(`Cannot validate day value ${value} because it is not a string`);
     }

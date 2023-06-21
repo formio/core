@@ -13,13 +13,12 @@ const isValidatableDayComponent = (component: any): component is DayComponent =>
 };
 
 export const validateRequiredDay: RuleFn = async (context) => {
-    const { component, data, path } = context;
+    const { component, value } = context;
     if (!isValidatableDayComponent(component)) {
         return null;
     }
-    const value = _.get(data, path);
     if (!value) {
-        const error = new FieldError('requiredDayEmpty', context);
+        return new FieldError('requiredDayEmpty', context);
     }
     if (typeof value !== 'string') {
         throw new ValidatorError(

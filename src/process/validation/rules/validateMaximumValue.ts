@@ -8,11 +8,10 @@ const isValidatableNumberComponent = (component: any): component is NumberCompon
 };
 
 export const validateMaximumValue: RuleFn = async (context) => {
-    const { component, data, path } = context;
+    const { component, value } = context;
     if (!isValidatableNumberComponent(component)) {
         return null;
     }
-    const value = _.get(data, path);
     const max =
         typeof component.validate?.max === 'string'
             ? parseFloat(component.validate.max)

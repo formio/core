@@ -107,10 +107,9 @@ function compareComplexValues(valueA: unknown, valueB: unknown) {
 }
 
 export const validateAvailableItems: RuleFn = async (context) => {
-    const { component, data, path } = context;
+    const { component, data, path, value } = context;
     const error = new FieldError('invalidOption', context);
     if (isValidatableRadioComponent(component)) {
-        const value = _.get(data, path);
         if (!value) {
             return null;
         }

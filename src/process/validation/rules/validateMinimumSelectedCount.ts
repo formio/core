@@ -22,11 +22,10 @@ function validateValue(value: DataObject[any]): asserts value is Record<string, 
 }
 
 export const validateMinimumSelectedCount: RuleFn = async (context) => {
-    const { component, data, path } = context;
+    const { component, value } = context;
     if (!isValidatableSelectBoxesComponent(component)) {
         return null;
     }
-    const value = _.get(data, path);
     if (!value) {
         return null;
     }

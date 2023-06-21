@@ -40,12 +40,11 @@ const emptyValueIsArray = (component: Component) => {
 }
 
 export const validateMultiple: RuleFn = async (context) => {
-    const { component, data, path } = context;
+    const { component, value } = context;
     // Skip multiple validation if the component tells us to
     if (!isEligible(component)) {
         return null;
     }
-    const value = _.get(data, path);
 
     const shouldBeArray = !!component.multiple;
     const canBeArray = emptyValueIsArray(component);

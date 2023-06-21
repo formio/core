@@ -16,17 +16,16 @@ const isValidatableSurveyComponent = (component: any): component is SurveyCompon
 };
 
 export const validateRequiredSurvey: RuleFn = async (context) => {
-    const { component, data, path } = context;
+    const { component, value } = context;
     if (!isValidatableSurveyComponent(component)) {
         return null;
     }
-    const value = _.get(data, path);
     // if value is nullish, this should get caught by regular old required validation
     if (!value) {
         return null;
     }
     if (!isValidatableSurveyDataObject(value)) {
-        throw new ValidatorError(`Cannot validate survey component because ${data} is not valid`);
+        throw new ValidatorError(`Cannot validate survey component because ${value} is not valid`);
     }
     for (const question of component.questions) {
         if (!value[question.value]) {

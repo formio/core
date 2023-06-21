@@ -5,9 +5,8 @@ import { FieldError } from 'error/FieldError';
 import { Evaluator } from 'utils';
 
 export const validateCustom: RuleFn = async (context) => {
-    const { component, data, path} = context;
+    const { component, data, value} = context;
     const customValidation = component.validate?.custom;
-    const value = _.get(data, path);
     if (!customValidation) {
         return null;
     }

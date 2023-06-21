@@ -13,7 +13,7 @@ type ProcessArgs = {
     after?: ProcessorFn[];
 }
 
-export async function process({components, data, process, before = [], after = [] }: ProcessArgs, callback?: AsyncComponentDataCallback) {
+export async function process({components, data, process, before = [], after = [] }: ProcessArgs) {
     const allErrors: FieldError[] = [];
     switch (process) {
         case ProcessType.Change:
@@ -23,7 +23,7 @@ export async function process({components, data, process, before = [], after = [
 
                 const beforeErrors = await before.reduce(async (promise, currFn) => {
                     const acc = await promise;
-                    const newErrors = await currFn( {component, data, path, processor: ProcessorType.Custom });
+                    const newErrors = await currFn({ component, data, path, errors: componentErrors, processor: ProcessorType.Custom });
                     return [...acc, ...newErrors];
                 }, Promise.resolve([] as FieldError[]));
                 componentErrors.push(...beforeErrors);
@@ -37,18 +37,13 @@ export async function process({components, data, process, before = [], after = [
                 });
                 componentErrors.push(...validationErrors);
 
-                // add other processors here...
-
                 const afterErrors = await after.reduce(async (promise, currFn) => {
                     const acc = await promise;
-                    const newErrors = await currFn( {component, data, path, processor: ProcessorType.Custom });
+                    const newErrors = await currFn({ component, data, path, errors: componentErrors, processor: ProcessorType.Custom });
                     return [...acc, ...newErrors];
                 }, Promise.resolve([] as FieldError[]));
                 componentErrors.push(...afterErrors);
 
-                if (callback) {
-                    await callback(component, data, path, components, componentErrors);
-                }
 
                 allErrors.push(...componentErrors);
             }, '');

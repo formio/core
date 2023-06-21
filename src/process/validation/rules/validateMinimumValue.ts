@@ -8,11 +8,10 @@ const isValidatableNumberComponent = (component: any): component is NumberCompon
 };
 
 export const validateMinimumValue: RuleFn = async (context) => {
-    const { component, data, path } = context;
+    const { component, value } = context;
     if (!isValidatableNumberComponent(component)) {
         return null;
     }
-    const value = _.get(data, path);
     const min =
         typeof component.validate?.min === 'string'
             ? parseFloat(component.validate.min)
