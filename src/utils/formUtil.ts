@@ -1,13 +1,6 @@
-import { Component } from 'types';
+import { AsyncComponentDataCallback, Component, DataObject } from 'types';
 import { Evaluator } from './Evaluator';
-import { last, get } from '@formio/lodash';
-import { FieldError } from 'error';
-
-export type AsyncComponentDataCallback =
-  (component: Component, data: Record<string, any>, path: string, components?: Component[], errors?: FieldError[]) => Promise<void>;
-
-type AsyncComponentDataIterator =
-  (components: Component[], data: Record<string, any>, fn: AsyncComponentDataCallback, path: string) => Promise<void>;
+import { last, get } from 'lodash';
 
 const TREE_COMPONENTS = ['datagrid', 'editgrid', 'container', 'form', 'dynamicWizard', 'address'];
 
@@ -156,7 +149,12 @@ export function uniqueName(name: string, template?: string, evalContext?: any) {
 }
 
 // Async each component data.
-export const eachComponentDataAsync: AsyncComponentDataIterator = async (components, data, fn, path = '') => {
+export const eachComponentDataAsync = async (
+  components: Component[],
+  data: DataObject,
+  fn: AsyncComponentDataCallback,
+  path = ''
+) => {
   if (!components || !data) {
       return;
   }
@@ -170,7 +168,7 @@ export const eachComponentDataAsync: AsyncComponentDataIterator = async (compone
               path = `${path}.data`;
               await eachComponentDataAsync(
                   component.components,
-                  data[component.key].data,
+                  (data[component.key] as any)?.data,
                   fn,
                   path
               );
@@ -198,18 +196,6 @@ export const eachComponentDataAsync: AsyncComponentDataIterator = async (compone
                   path
               );
               return true;
-          // } else if (component.multiple) {
-          //   const contextualData = get(data, path);
-          //   if (Array.isArray(contextualData)) {
-          //       path = `${path}[0]`;
-          //       for (let i = 0; i < contextualData.length; i++) {
-          //           path = path.replace(/\[\d\]$/, `[${i}]`);
-          //           await fn(component, data, path, components);
-          //       }
-          //       return true;
-          //   }
-          //   await fn(component, data, path, components);
-          //   return true;
           } else {
               return fn(component, data, path, components);
           }

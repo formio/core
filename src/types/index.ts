@@ -9,3 +9,4 @@ export * from './Component';
 export * from './ValidatorConfig';
 export * from './process';
 export * from './DataObject';
+export * from './formUtil';
