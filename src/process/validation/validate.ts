@@ -19,7 +19,7 @@ export const validate: ProcessorFn = async (context, rules = allRules) => {
                 const amendedPath = `${path}[${i}]`;
                 const value = _.get(data, amendedPath);
                 for (const rule of rules) {
-                    const error = await rule({ ...context, value, path: amendedPath });
+                    const error = await rule({ ...context, value, index: i, path: amendedPath });
                     if (error) {
                         errors.push(error);
                     }
