@@ -90,7 +90,7 @@ export function matchInputMask(value: any, inputMask: any) {
 // TODO: this function has side effects
 export const validateMask: RuleFn = async (context) => {
     const { component, value } = context;
-    if (!isValidatableTextComponent(component)) {
+    if (!isValidatableTextComponent(component) || !value) {
         return null;
     }
     let inputMask: (string | RegExp)[] | undefined;

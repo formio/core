@@ -8,5 +8,6 @@ export type ProcessorContext = {
     processor: ProcessorType;
     errors?: FieldError[];
     process?: string;
+    index?: number;
     config?: Record<string, any>;
 }

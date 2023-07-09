@@ -7,11 +7,11 @@ import { ProcessorFn } from 'types';
 import { getErrorMessage } from 'utils/error';
 
 export const validate: ProcessorFn = async (context, rules = allRules) => {
-    if (shouldSkipValidation(context.component)) {
+    const { component, data, path } = context;
+    if (shouldSkipValidation(component)) {
         return [];
     }
     const errors: FieldError[] = [];
-    const { component, data, path } = context;
     if (component.multiple) {
         const contextualData = _.get(data, path);
         if (contextualData.length > 0) {

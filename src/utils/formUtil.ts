@@ -1,8 +1,9 @@
-import { AsyncComponentDataCallback, Component, DataObject } from 'types';
-import { Evaluator } from './Evaluator';
 import { last, get } from 'lodash';
 
-const TREE_COMPONENTS = ['datagrid', 'editgrid', 'container', 'form', 'dynamicWizard', 'address'];
+import { AddressComponentDataObject, AsyncComponentDataCallback, AutocompleteAddressComponentDataObject, Component, DataObject } from 'types';
+import { Evaluator } from './Evaluator';
+
+const TREE_COMPONENTS = ['datagrid', 'editgrid', 'container', 'form', 'dynamicWizard'];
 
 /**
  * Iterate through each component within a form.
@@ -148,12 +149,17 @@ export function uniqueName(name: string, template?: string, evalContext?: any) {
   return uniqueName;
 }
 
+const isAutocompleteAddressComponentDataObject = (value: any): value is AutocompleteAddressComponentDataObject => {
+  return value !== null && typeof value === 'object' && value.mode && value.mode === 'autocomplete' && value.address && typeof value.address === 'object';
+}
+
 // Async each component data.
 export const eachComponentDataAsync = async (
   components: Component[],
   data: DataObject,
   fn: AsyncComponentDataCallback,
-  path = ''
+  path = '',
+  index?: number
 ) => {
   if (!components || !data) {
       return;
@@ -175,6 +181,11 @@ export const eachComponentDataAsync = async (
               return true;
           } else if (TREE_COMPONENTS.includes(component.type) || component.tree) {
               const contextualData = get(data, path);
+              if (component.type === 'address') {
+                if (isAutocompleteAddressComponentDataObject(contextualData)) {
+                  await fn(component, data, path, components, index);
+                }
+              }
               if (Array.isArray(contextualData)) {
                   // TODO: this could be a fn or a generator
                   path = `${path}[0]`;
@@ -184,7 +195,8 @@ export const eachComponentDataAsync = async (
                           component.components,
                           data,
                           fn,
-                          path
+                          path,
+                          i
                       );
                   }
                   return true;
@@ -197,7 +209,7 @@ export const eachComponentDataAsync = async (
               );
               return true;
           } else {
-              return fn(component, data, path, components);
+              return fn(component, data, path, components, index);
           }
       },
       true

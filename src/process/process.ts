@@ -7,12 +7,12 @@ import { FieldError } from 'error';
 
 export async function process({components, data, process, before = [], after = [] }: ProcessContext) {
     const allErrors: FieldError[] = [];
-    await eachComponentDataAsync(components, data, async(component, data, path) => {
+    await eachComponentDataAsync(components, data, async(component, data, path, components, index) => {
         const componentErrors: FieldError[] = [];
 
         const beforeErrors = await before.reduce(async (promise, currFn) => {
             const acc = await promise;
-            const newErrors = await currFn({ component, data, path, errors: componentErrors, process, processor: ProcessorType.Custom });
+            const newErrors = await currFn({ component, data, path, index, errors: componentErrors, process, processor: ProcessorType.Custom });
             return [...acc, ...newErrors];
         }, Promise.resolve([] as FieldError[]));
         componentErrors.push(...beforeErrors);
@@ -21,6 +21,7 @@ export async function process({components, data, process, before = [], after = [
             component,
             data,
             path,
+            index,
             process,
             processor: ProcessorType.Validate,
         });
@@ -28,7 +29,7 @@ export async function process({components, data, process, before = [], after = [
 
         const afterErrors = await after.reduce(async (promise, currFn) => {
             const acc = await promise;
-            const newErrors = await currFn({ component, data, path, errors: componentErrors, processor: ProcessorType.Custom });
+            const newErrors = await currFn({ component, data, index, path, errors: componentErrors, processor: ProcessorType.Custom });
             return [...acc, ...newErrors];
         }, Promise.resolve([] as FieldError[]));
         componentErrors.push(...afterErrors);

@@ -9,7 +9,7 @@ export function isComponentProtected(component: Component) {
 }
 
 export function shouldSkipValidation(component: Component) {
-    return !isComponentPersistent(component) || isComponentProtected(component);
+    return !isComponentPersistent(component);
 }
 
 export function isEmptyObject(obj: any): obj is {} {
