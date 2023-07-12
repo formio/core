@@ -24,7 +24,7 @@ export class FieldError {
     errorKeyOrMessage: string;
     level?: string;
     constructor(errorKeyOrMessage: string, context: FieldErrorContext) {
-        const { component, hasLabel = true, field = getComponentErrorField(component), level = 'error' } = context;
+        const { component, hasLabel = true, field = getComponentErrorField(component, context), level = 'error' } = context;
         if (context.component.validate?.customMessage) {
             this.errorKeyOrMessage = context.component.validate.customMessage;
             this.context = { ...context, hasLabel: false, field, level };

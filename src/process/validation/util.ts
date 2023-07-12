@@ -1,4 +1,5 @@
-import { Component } from 'types';
+import { Component, ProcessorContext } from 'types';
+import { Evaluator } from 'utils';
 
 export function isComponentPersistent(component: Component) {
     return component.persistent ? component.persistent : true;
@@ -16,8 +17,9 @@ export function isEmptyObject(obj: any): obj is {} {
     return !!obj && Object.keys(obj).length === 0 && obj.constructor === Object;
 }
 
-export function getComponentErrorField(component: Component) {
-    return component.errorLabel || component.label || component.placeholder || component.key;
+export function getComponentErrorField(component: Component, context: ProcessorContext) {
+    const toInterpolate = component.errorLabel || component.label || component.placeholder || component.key;
+    return Evaluator.interpolate(toInterpolate, context);
 }
 
 export function toBoolean(value: any) {

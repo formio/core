@@ -149,10 +149,6 @@ export function uniqueName(name: string, template?: string, evalContext?: any) {
   return uniqueName;
 }
 
-const isAutocompleteAddressComponentDataObject = (value: any): value is AutocompleteAddressComponentDataObject => {
-  return value !== null && typeof value === 'object' && value.mode && value.mode === 'autocomplete' && value.address && typeof value.address === 'object';
-}
-
 // Async each component data.
 export const eachComponentDataAsync = async (
   components: Component[],
@@ -180,12 +176,9 @@ export const eachComponentDataAsync = async (
               );
               return true;
           } else if (TREE_COMPONENTS.includes(component.type) || component.tree) {
+              // evaluate the top level component before introspecting its child components
+              await fn(component, data, path, components, index);
               const contextualData = get(data, path);
-              if (component.type === 'address') {
-                if (isAutocompleteAddressComponentDataObject(contextualData)) {
-                  await fn(component, data, path, components, index);
-                }
-              }
               if (Array.isArray(contextualData)) {
                   // TODO: this could be a fn or a generator
                   path = `${path}[0]`;
