@@ -3,6 +3,13 @@
   "version": "1.3.0-rc.15",
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./utils": "./lib/utils/index.js",
+    "./sdk": "./lib/sdk/index.js",
+    "./model": "./lib/model/index.js",
+    "./validator": "./lib/validator/index.js"
+  },
   "scripts": {
     "test": "mocha -r ts-node/register -r tsconfig-paths/register --r mock-local-storage '**/*.spec.ts'",
     "lib": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
