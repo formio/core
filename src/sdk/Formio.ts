@@ -510,7 +510,8 @@ export class Formio {
 
     let url = (this as any)[_url] + query;
     if (type === 'form' && !isNaN(parseInt(this.vId))) {
-      url += `&formRevision=${this.vId}`;
+      url += url.indexOf('?') === -1 ? '?' : '&';
+      url += `formRevision=${this.vId}`;
     }
     return this.makeRequest(type, url, 'get', null, opts);
   }
@@ -2017,7 +2018,7 @@ export class Formio {
       authUrl = formio ? formio.projectUrl : (Formio.projectUrl || Formio.baseUrl);
     }
     authUrl += '/current';
-    if (!options.ignoreCache) {
+    if (!options.ignoreCache || options.fromCurrent) {
       const user = Formio.getUser(options);
       if (user) {
         return Plugins.pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
@@ -2036,6 +2037,8 @@ export class Formio {
         options
       });
     }
+
+    options.fromCurrent = true;
     return Formio.makeRequest(formio, 'currentUser', authUrl, 'GET', null, options)
       .then((response: any) => {
         Formio.setUser(response, options);

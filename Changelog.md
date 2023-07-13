@@ -1,3 +1,7 @@
+## 1.3.0-rc.14
+### Fixed
+ - Issue with invalid alias when loading a form with form revision.
+
 ## 1.3.0-rc.13
 ### Fixed
  - FIO-6832: fixed issue where submission used wrong _fvid
