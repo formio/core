@@ -20,6 +20,7 @@ import { validateRegexPattern } from './validateRegexPattern';
 import { validateRemoteSelectValue } from './validateRemoteSelectValue';
 import { validateRequired } from './validateRequired';
 import { validateMultiple } from './validateMultiple';
+import { validateAvailableValueProperty } from './validateAvailableValueProperty';
 // import { validateUnique } from './validateUnique';
 import { validateUrl } from './validateUrl';
 
@@ -48,4 +49,5 @@ export const rules = [
     validateRequired,
     // validateUnique,
     validateUrl,
+    validateAvailableValueProperty
 ];

@@ -1,0 +1,26 @@
+import _ from 'lodash';
+
+import { FieldError } from 'error';
+import { ListComponent, RuleFn } from 'types';
+
+const isValidatableListComponent = (comp: any): comp is ListComponent => {
+    return (
+        comp &&
+        comp.type &&
+        (comp.type === "radio" ||
+            comp.type === "selectboxes" ||
+            comp.type === "select")
+    );
+};
+
+export const validateAvailableValueProperty: RuleFn = async (context) => {
+    const { component, value } = context;
+    if (!isValidatableListComponent(component)) {
+        return null;
+    }
+    const error = new FieldError('invalidValueProperty', context);
+    if (component.dataSrc === 'url' && (_.isUndefined(value) || _.isObject(value))) {
+        return error;
+    }
+    return null;
+};

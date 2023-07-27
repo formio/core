@@ -22,7 +22,7 @@ it('Validating a component with a pattern parameter will return a FieldError if 
     };
     const context = generateProcessContext(component, data);
     const result = await validateRegexPattern(context);    expect(result).to.be.instanceOf(FieldError);
-    expect(result?.errorKeyOrMessage).to.equal('regex');
+    expect(result?.errorKeyOrMessage).to.equal('pattern');
 });
 
 it('Validating a component with a pattern parameter will return null if the value matches the pattern', async () => {
@@ -31,5 +31,17 @@ it('Validating a component with a pattern parameter will return null if the valu
         component: '12345',
     };
     const context = generateProcessContext(component, data);
-    const result = await validateRegexPattern(context);    expect(result).to.equal(null);
+    const result = await validateRegexPattern(context);
+    expect(result).to.equal(null);
 });
+
+it('Validating a component with an empty value will not trigger the pattern validation', async () => {
+    const component = {...simpleTextField, validate: { pattern: '\\d' } };
+    const data = {
+        component: ''
+    };
+
+    const context = generateProcessContext(component, data);
+    const result = await validateRegexPattern(context);
+    expect(result).to.equal(null);
+})

@@ -11,7 +11,7 @@ const isValidatableTextFieldComponent = (
 
 export const validateRegexPattern: RuleFn = async (context) => {
     const { component, value } = context;
-    if (!isValidatableTextFieldComponent(component)) {
+    if (!isValidatableTextFieldComponent(component) || !value) {
         return null;
     }
 
@@ -22,5 +22,5 @@ export const validateRegexPattern: RuleFn = async (context) => {
     const regex = new RegExp(`^${pattern}$`);
     return typeof value === 'string' && regex.test(value)
         ? null
-        : new FieldError('regex', { ...context, regex: String(regex), pattern: String(regex) });
+        : new FieldError('pattern', { ...context, regex: String(regex), pattern: String(regex) });
 };
