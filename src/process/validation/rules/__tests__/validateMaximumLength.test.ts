@@ -35,3 +35,13 @@ it('Validating a component with a maxLength property and a length less than maxL
     const result = await validateMaximumLength(context);
     expect(result).to.equal(null);
 });
+
+it('Validating a component with a maxLength property that is an empty string will return null', async () => {
+    const component = { ...simpleTextField, validate: { maxLength: 4 } };
+    const data = {
+        component: '',
+    };
+    const context = generateProcessContext(component, data);
+    const result = await validateMaximumLength(context);
+    expect(result).to.equal(null);
+})

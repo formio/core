@@ -17,7 +17,7 @@ export const validateMaximumValue: RuleFn = async (context) => {
             ? parseFloat(component.validate.max)
             : component.validate?.max;
 
-    if (!value || !max) {
+    if (value == null || !max) {
         return null;
     }
     const parsedValue = typeof value === 'string' ? parseFloat(value) : Number(value);

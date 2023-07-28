@@ -9,7 +9,7 @@ const isValidatableTextFieldComponent = (component: any): component is TextField
 
 export const validateMinimumLength: RuleFn = async (context) => {
     const { component, value } = context;
-    if (!isValidatableTextFieldComponent(component)) {
+    if (!isValidatableTextFieldComponent(component) || !value) {
         return null;
     }
     const minLength =

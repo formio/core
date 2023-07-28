@@ -17,7 +17,7 @@ export const validateMinimumValue: RuleFn = async (context) => {
             ? parseFloat(component.validate.min)
             : component.validate?.min;
 
-    if (!value || !min) {
+    if (value == null || !min) {
         return null;
     }
     const parsedValue = typeof value === 'string' ? parseFloat(value) : Number(value);

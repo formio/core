@@ -22,5 +22,5 @@ export const validateRegexPattern: RuleFn = async (context) => {
     const regex = new RegExp(`^${pattern}$`);
     return typeof value === 'string' && regex.test(value)
         ? null
-        : new FieldError('pattern', { ...context, regex: String(regex), pattern: String(regex) });
+        : new FieldError('pattern', { ...context, regex: pattern, pattern: pattern });
 };

@@ -8,7 +8,7 @@ const isValidatableEmailComponent = (component: any): component is EmailComponen
 };
 
 export const validateEmail: RuleFn = async (context) => {
-    const error = new FieldError('invalidEmail', context);
+    const error = new FieldError('invalid_email', context);
     const { component, value } = context;
     if (!value) {
         return null;
