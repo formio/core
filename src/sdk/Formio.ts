@@ -260,7 +260,8 @@ export class Formio {
       this.base = Formio.baseUrl;
     }
     else if (window && window.location) {
-      this.base = window.location.href.match(/http[s]?:\/\/api./)![0];
+      const match = window.location.href.match(/http[s]?:\/\/api./);
+      this.base = match ? match[0] : window.location.origin;
     }
 
     if (!path) {
