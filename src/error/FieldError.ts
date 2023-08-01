@@ -13,6 +13,8 @@ type FieldErrorContext = ProcessorContext & {
     max?: string;
     length?: string;
     pattern?: string;
+    minCount?: string;
+    maxCount?: string;
     minDate?: string;
     maxDate?: string;
     minYear?: string;

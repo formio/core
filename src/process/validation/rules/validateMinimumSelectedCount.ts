@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { FieldError, ValidatorError } from 'error';
-import { SelectBoxesComponent, DataObject, RuleFn } from 'types';
+import { SelectBoxesComponent, DataObject, RuleFn, RuleFnSync } from 'types';
 
 const isValidatableSelectBoxesComponent = (component: any): component is SelectBoxesComponent => {
     return component && component.validate?.hasOwnProperty('minSelectedCount');
@@ -46,6 +46,35 @@ export const validateMinimumSelectedCount: RuleFn = async (context) => {
         return null;
     }
     return count < min
-        ? new FieldError('minSelectedCount', context)
+        ? new FieldError('minSelectedCount', { ...context, min: String(min) })
+        : null;
+};
+
+export const validateMinimumSelectedCountSync: RuleFnSync = (context) => {
+    const { component, value } = context;
+    if (!isValidatableSelectBoxesComponent(component)) {
+        return null;
+    }
+    if (!value) {
+        return null;
+    }
+    validateValue(value);
+
+    const min =
+        typeof component.validate?.minSelectedCount === 'string'
+            ? parseFloat(component.validate.minSelectedCount)
+            : component.validate?.minSelectedCount;
+
+    if (!min) {
+        return null;
+    }
+    const count = Object.keys(value).reduce((sum, key) => (value[key] ? ++sum : sum), 0);
+
+    // Should not be triggered if there are no options selected at all
+    if (count <= 0) {
+        return null;
+    }
+    return count < min
+        ? new FieldError(component.minSelectedCountMessage || 'minSelectedCount', { ...context, minCount: String(min) })
         : null;
 };

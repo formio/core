@@ -401,6 +401,8 @@ export type SelectBoxesComponent = RadioComponent & {
         minSelectedCount?: number | string;
         maxSelectedCount?: number | string;
     };
+    minSelectedCountMessage?: string;
+    maxSelectedCountMessage?: string;
 };
 
 export type SignatureComponent = BaseComponent & {

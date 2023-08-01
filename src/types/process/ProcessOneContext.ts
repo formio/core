@@ -1,13 +1,14 @@
-import { Component } from "types/Component.js";
-import { DataObject } from "types/DataObject.js";
-import { ProcessorFn } from "./ProcessorFn.js";
-import { ProcessType } from "./ProcessType.js";
+import { Component, DataObject } from "types"
+import { ProcessorFn, ProcessorFnSync } from "./ProcessorFn";
+import { ProcessType } from "./ProcessType";
 
 export type ProcessOneContext = {
     component: Component;
     path: string;
     data: DataObject;
-    before?: ProcessorFn[];
-    after?: ProcessorFn[];
+    // TODO: need to type evalcontext
+    evalContext?: any;
+    before?: ProcessorFnSync[];
+    after?: ProcessorFnSync[];
     process?: ProcessType;
 }

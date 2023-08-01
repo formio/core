@@ -2,9 +2,32 @@ import _ from 'lodash';
 
 import jsonLogic from 'modules/jsonlogic';
 import { FieldError } from 'error';
-import { RuleFn } from 'types';
+import { RuleFn, RuleFnSync } from 'types';
 
 export const validateJson: RuleFn = async (context) => {
+    const { component, data, value } = context;
+    if (!value || !component.validate?.json) {
+        return null;
+    }
+
+    const func = component.validate.json;
+    const valid: true | string = jsonLogic.evaluator.evaluate(
+        func,
+        {
+            data,
+            input: value,
+        },
+        'valid'
+    );
+    if (valid === null) {
+        return null;
+    }
+    return valid === true
+        ? null
+        : new FieldError('jsonLogic', context);
+};
+
+export const validateJsonSync: RuleFnSync = (context) => {
     const { component, data, value } = context;
     if (!value || !component.validate?.json) {
         return null;

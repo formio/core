@@ -1,11 +1,15 @@
 import _ from 'lodash';
 
-import { RuleFn } from 'types/RuleFn';
+import { RuleFn, RuleFnSync } from 'types/RuleFn';
 import { FieldError } from 'error/FieldError';
 import { Evaluator } from 'utils';
 
 export const validateCustom: RuleFn = async (context) => {
-    const { component, data, value} = context;
+    return validateCustomSync(context);
+};
+
+export const validateCustomSync: RuleFnSync = (context) => {
+    const { component, data, value, evalContext } = context;
     const customValidation = component.validate?.custom;
     if (!customValidation) {
         return null;
@@ -17,6 +21,7 @@ export const validateCustom: RuleFn = async (context) => {
             valid: true,
             data,
             input: value,
+            ...evalContext,
         },
         'valid',
         true,

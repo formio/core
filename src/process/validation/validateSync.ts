@@ -1,12 +1,12 @@
 import * as _ from '@formio/lodash';
 
 import { FieldError } from 'error';
-import { rules as allRules } from './rules';
+import { rulesSync as allRules } from './rules';
 import { shouldSkipValidation } from './util';
-import { ProcessorFn } from 'types';
+import { ProcessorFnSync } from 'types';
 import { getErrorMessage } from 'utils/error';
 
-export const validate: ProcessorFn = async (context, rules = allRules) => {
+export const validateSync: ProcessorFnSync = (context, rules = allRules) => {
     const { component, data, path } = context;
     if (shouldSkipValidation(component)) {
         return [];
@@ -22,7 +22,7 @@ export const validate: ProcessorFn = async (context, rules = allRules) => {
                     value = value.trim().replace(/\s{2,}/g, ' ');
                 }
                 for (const rule of rules) {
-                    const error = await rule({ ...context, value, index: i, path: amendedPath });
+                    const error = rule({ ...context, value, index: i, path: amendedPath });
                     if (error) {
                         errors.push(error);
                     }
@@ -37,7 +37,7 @@ export const validate: ProcessorFn = async (context, rules = allRules) => {
     }
     for (const rule of rules ) {
         try {
-            const error = await rule({ ...context, value });
+            const error = rule({ ...context, value });
             if (error) {
                 errors.push(error);
             }

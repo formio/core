@@ -64,4 +64,5 @@ export type BaseComponent = {
     addons?: any[]; // TODO: this should go away
     inputType?: any;
     errors?: Record<string, string>;
+    truncateMultipleSpaces?: boolean;
 };

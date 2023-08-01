@@ -6,6 +6,7 @@ export type ProcessorContext = {
     data: DataObject;
     path: string;
     processor: ProcessorType;
+    evalContext?: any;
     errors?: FieldError[];
     process?: string;
     index?: number;

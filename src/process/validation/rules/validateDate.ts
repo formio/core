@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { FieldError } from 'error';
-import { DateTimeComponent, TextFieldComponent, RuleFn } from 'types';
+import { DateTimeComponent, TextFieldComponent, RuleFn, RuleFnSync } from 'types';
 
 const isValidatableDateTimeComponent = (obj: any): obj is DateTimeComponent => {
     return !!obj && !!obj.type && obj.type === 'datetime';
@@ -16,6 +16,10 @@ const isValidatable = (component: any) => {
 };
 
 export const validateDate: RuleFn = async (context) => {
+    return validateDateSync(context);
+};
+
+export const validateDateSync: RuleFnSync = (context) => {
     const error = new FieldError('invalidDate', context);
     const { component, value} = context;
     if (!value || !isValidatable(component)) {

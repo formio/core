@@ -1,4 +1,6 @@
-import { Component, ProcessorContext } from 'types';
+import * as _ from 'lodash';
+
+import { Component, DataObject, ProcessorContext } from 'types';
 import { Evaluator } from 'utils';
 
 export function isComponentPersistent(component: Component) {
@@ -50,4 +52,25 @@ export function isPromise(value: any): value is Promise<any> {
 
 export function isObject(obj: any): obj is Object {
     return typeof obj != null && (typeof obj === 'object' || typeof obj === 'function');
+}
+
+export function getEmptyValue(component: Component) {
+    switch (component.type) {
+        case 'textarea':
+        case 'textfield':
+        case 'time':
+        case 'datetime':
+        case 'day':
+            return '';
+        case 'datagrid':
+        case 'editgrid':
+            return [];
+
+        default:
+            return null;
+    }
+}
+export function isEmpty(component: Component, value: unknown) {
+    const isEmptyArray = (_.isArray(value) && value.length === 1) ? _.isEqual(value[0], getEmptyValue(component)) : false;
+    return value == null || (_.isArray(value) && value.length === 0) || isEmptyArray;
 }
