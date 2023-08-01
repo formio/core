@@ -23,5 +23,5 @@ it('Validating an invalid email will return a FieldError', async () => {
     const context = generateProcessContext(component, data);
     const result = await validateEmail(context);
     expect(result).to.be.instanceOf(FieldError);
-    expect(result?.errorKeyOrMessage).to.contain('invalidEmail');
+    expect(result?.errorKeyOrMessage).to.contain('invalid_email');
 });

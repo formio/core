@@ -13,7 +13,7 @@ it('Validating a URL component whose data contains an invalid URL returns a Fiel
     const context = generateProcessContext(component, data);
     const result = await validateUrl(context);
     expect(result).to.be.instanceOf(FieldError);
-    expect(result?.errorKeyOrMessage).to.contain('invalidUrl');
+    expect(result?.errorKeyOrMessage).to.contain('invalid_url');
 });
 
 it('Validating a URL component whose data contains an invalid URL returns a FieldError', async () => {
@@ -24,7 +24,7 @@ it('Validating a URL component whose data contains an invalid URL returns a Fiel
     const context = generateProcessContext(component, data);
     const result = await validateUrl(context);
     expect(result).to.be.instanceOf(FieldError);
-    expect(result?.errorKeyOrMessage).to.contain('invalidUrl');
+    expect(result?.errorKeyOrMessage).to.contain('invalid_url');
 });
 
 // it('Validating a URL component whose data contains an valid URL that is not HTTP or HTTPS returns a FieldError', async () => {
@@ -35,7 +35,7 @@ it('Validating a URL component whose data contains an invalid URL returns a Fiel
 //     const context = generateProcessContext(component, data);
 //     const result = await validateUrl(context);
 //     expect(result).to.be.instanceOf(FieldError);
-//     expect(result?.errorKeyOrMessage).to.contain('invalidUrl');
+//     expect(result?.errorKeyOrMessage).to.contain('invalid_url');
 // });
 
 // it('Validating a URL component whose data contains an valid URL that is not HTTP or HTTPS returns a FieldError', async () => {
@@ -46,7 +46,7 @@ it('Validating a URL component whose data contains an invalid URL returns a Fiel
 //     const context = generateProcessContext(component, data);
 //     const result = await validateUrl(context);
 //     expect(result).to.be.instanceOf(FieldError);
-//     expect(result?.errorKeyOrMessage).to.contain('invalidUrl');
+//     expect(result?.errorKeyOrMessage).to.contain('invalid_url');
 // });
 
 it('Validating a URL component whose data contains a valid HTTPS URL returns null', async () => {
