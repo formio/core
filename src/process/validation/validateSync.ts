@@ -14,7 +14,7 @@ export const validateSync: ProcessorFnSync = (context, rules = allRules) => {
     const errors: FieldError[] = [];
     if (component.multiple) {
         const contextualData = _.get(data, path);
-        if (contextualData.length > 0) {
+        if (contextualData?.length > 0) {
             for (let i = 0; i < contextualData.length; i++) {
                 const amendedPath = `${path}[${i}]`;
                 let value = _.get(data, amendedPath);
