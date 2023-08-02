@@ -1,6 +1,6 @@
-import * as _ from 'lodash';
+import _ from 'lodash';
 
-import { Component, DataObject, ProcessorContext } from 'types';
+import { Component, ProcessorContext } from 'types';
 import { Evaluator } from 'utils';
 
 export function isComponentPersistent(component: Component) {
@@ -70,6 +70,7 @@ export function getEmptyValue(component: Component) {
             return null;
     }
 }
+
 export function isEmpty(component: Component, value: unknown) {
     const isEmptyArray = (_.isArray(value) && value.length === 1) ? _.isEqual(value[0], getEmptyValue(component)) : false;
     return value == null || (_.isArray(value) && value.length === 0) || isEmptyArray;

@@ -83,7 +83,7 @@ export const validateRemoteSelectValue: RuleFn = async (context) => {
             // TODO: should we always expect JSON here?
             if (response.ok) {
                 const data = await response.json();
-                const error = new FieldError('invalidSelection', context);
+                const error = new FieldError('select', context);
                 if (Array.isArray(data)) {
                     return data && data.length ? null : error;
                 }
