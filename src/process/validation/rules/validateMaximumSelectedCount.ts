@@ -22,32 +22,7 @@ function validateValue(value: DataObject[any]): asserts value is Record<string, 
 }
 
 export const validateMaximumSelectedCount: RuleFn = async (context) => {
-    const { component, value } = context;
-    if (!isValidatableSelectBoxesComponent(component)) {
-        return null;
-    }
-    if (!value) {
-        return null;
-    }
-    validateValue(value);
-
-    const max =
-        typeof component.validate?.maxSelectedCount === 'string'
-            ? parseFloat(component.validate.maxSelectedCount)
-            : component.validate?.maxSelectedCount;
-
-    if (!max) {
-        return null;
-    }
-    const count = Object.keys(value).reduce((sum, key) => (value[key] ? ++sum : sum), 0);
-
-    // Should not be triggered if there is no options selected at all
-    if (count <= 0) {
-        return null;
-    }
-    return count > max
-        ?   new FieldError('maxSelectedCount', { ...context, max: String(max) })
-        : null;
+    return validateMaximumSelectedCountSync(context);
 };
 
 export const validateMaximumSelectedCountSync: RuleFnSync = (context) => {

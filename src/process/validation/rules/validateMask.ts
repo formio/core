@@ -88,31 +88,11 @@ export function matchInputMask(value: any, inputMask: any) {
     return true;
 }
 
-// TODO: this function has side effects
 export const validateMask: RuleFn = async (context) => {
-    const { component, value } = context;
-    if (!isValidatableComponent(component) || !value) {
-        return null;
-    }
-    let inputMask: (string | RegExp)[] | undefined;
-    let maskValue: string | undefined;
-    if (component.allowMultipleMasks && component.inputMasks?.length) {
-        const mask = value && isMaskType(value) ? value : undefined;
-        const formioInputMask = getMaskByLabel(component, mask?.maskName);
-        if (formioInputMask) {
-            inputMask = getInputMask(formioInputMask);
-        }
-        maskValue = mask?.value;
-    } else {
-        inputMask = getInputMask(component.inputMask || '');
-    }
-    if (value != null && inputMask) {
-        const error = new FieldError('mask', context);
-        return matchInputMask(maskValue || value, inputMask) ? null : error;
-    }
-    return null;
+    return validateMaskSync(context);
 };
 
+// TODO: this function has side effects
 export const validateMaskSync: RuleFnSync = (context) => {
     const { component, value } = context;
     if (!isValidatableComponent(component) || !value) {

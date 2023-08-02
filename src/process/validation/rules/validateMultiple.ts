@@ -40,30 +40,7 @@ const emptyValueIsArray = (component: Component) => {
 }
 
 export const validateMultiple: RuleFn = async (context) => {
-    const { component, value } = context;
-    // Skip multiple validation if the component tells us to
-    if (!isEligible(component)) {
-        return null;
-    }
-
-    const shouldBeArray = !!component.multiple;
-    const canBeArray = emptyValueIsArray(component);
-    const isArray = Array.isArray(value);
-    const isRequired = !!component.validate?.required;
-
-    if (shouldBeArray) {
-        if (isArray) {
-            return isRequired ? value.length > 0 ? null : new FieldError('array_nonempty', context): null;
-        } else {
-            // Null/undefined is ok if this value isn't required; anything else should fail
-            return _.isNil(value) ? isRequired ? new FieldError('array', context) : null : null;
-        }
-    } else {
-        if (!canBeArray && isArray) {
-            return new FieldError('nonarray', context);
-        }
-        return null;
-    }
+    return validateMultipleSync(context);
 };
 
 export const validateMultipleSync: RuleFnSync = (context) => {

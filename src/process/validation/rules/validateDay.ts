@@ -35,34 +35,7 @@ const isDayComponent = (component: any): component is DayComponent => {
 };
 
 export const validateDay: RuleFn = async (context) => {
-    const { component, value } = context;
-    if (!isDayComponent(component)) {
-        return null;
-    }
-    const error = new FieldError('invalidDay', context);
-    if (!value) {
-        return null;
-    }
-    if (typeof value !== 'string') {
-        return error;
-    }
-    const [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];
-    const values = value.split('/').map((x) => parseInt(x, 10)),
-        day = values[DAY],
-        month = values[MONTH],
-        year = values[YEAR],
-        maxDay = getDaysInMonthCount(month, year);
-
-    if (isNaN(day) || day < 0 || day > maxDay) {
-        return error;
-    }
-    if (isNaN(month) || month < 0 || month > 12) {
-        return error;
-    }
-    if (isNaN(year) || year < 0 || year > 9999) {
-        return error;
-    }
-    return null;
+    return validateDaySync(context);
 };
 
 export const validateDaySync: RuleFnSync = (context) => {

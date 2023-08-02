@@ -8,32 +8,7 @@ const isValidatableNumberComponent = (component: any): component is NumberCompon
 };
 
 export const validateMinimumValue: RuleFn = async (context) => {
-    const { component, value } = context;
-    if (!isValidatableNumberComponent(component)) {
-        return null;
-    }
-    const min =
-        typeof component.validate?.min === 'string'
-            ? parseFloat(component.validate.min)
-            : component.validate?.min;
-
-    if (value == null || !min) {
-        return null;
-    }
-    const parsedValue = typeof value === 'string' ? parseFloat(value) : Number(value);
-
-    if (Number.isNaN(min)) {
-        throw new ValidatorError(`Cannot evaluate minimum value ${min} because it is invalid`);
-    }
-    if (Number.isNaN(parsedValue)) {
-        throw new ValidatorError(
-            `Cannot validate value ${parsedValue} because it is invalid`,
-        );
-    }
-
-    return parsedValue >= min
-        ? null
-        : new FieldError('min', { ...context, min: String(min) });
+   return validateMinimumValueSync(context);
 };
 
 export const validateMinimumValueSync: RuleFnSync = (context) => {

@@ -8,21 +8,7 @@ const isValidatableTextFieldComponent = (component: any): component is TextField
 };
 
 export const validateMinimumLength: RuleFn = async (context) => {
-    const { component, value } = context;
-    if (!isValidatableTextFieldComponent(component) || !value) {
-        return null;
-    }
-    const minLength =
-        typeof component.validate?.minLength === 'string'
-            ? parseInt(component.validate.minLength, 10)
-            : component.validate?.minLength;
-    if (value != null && minLength && typeof value === 'string') {
-        if (value.length < minLength) {
-            const error = new FieldError('minLength', { ...context, length: String(minLength) });
-            return error;
-        }
-    }
-    return null;
+    return validateMinimumLengthSync(context);
 };
 
 export const validateMinimumLengthSync: RuleFnSync = (context) => {

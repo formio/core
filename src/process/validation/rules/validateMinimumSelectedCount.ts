@@ -22,32 +22,7 @@ function validateValue(value: DataObject[any]): asserts value is Record<string, 
 }
 
 export const validateMinimumSelectedCount: RuleFn = async (context) => {
-    const { component, value } = context;
-    if (!isValidatableSelectBoxesComponent(component)) {
-        return null;
-    }
-    if (!value) {
-        return null;
-    }
-    validateValue(value);
-
-    const min =
-        typeof component.validate?.minSelectedCount === 'string'
-            ? parseFloat(component.validate.minSelectedCount)
-            : component.validate?.minSelectedCount;
-
-    if (!min) {
-        return null;
-    }
-    const count = Object.keys(value).reduce((sum, key) => (value[key] ? ++sum : sum), 0);
-
-    // Should not be triggered if there is no options selected at all
-    if (count <= 0) {
-        return null;
-    }
-    return count < min
-        ? new FieldError('minSelectedCount', { ...context, min: String(min) })
-        : null;
+    return validateMinimumSelectedCountSync(context);
 };
 
 export const validateMinimumSelectedCountSync: RuleFnSync = (context) => {
