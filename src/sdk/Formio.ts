@@ -118,6 +118,11 @@ export class Formio {
   public static tokens: any = {};
 
   /**
+   * Name for the authentication token header.
+   */
+  public static tokenHeader: string = 'x-jwt-token';
+
+  /**
    * The version of this library.
    */
   public static version: string = '---VERSION---';
@@ -1525,8 +1530,10 @@ export class Formio {
       'Content-type': 'application/json'
     });
     const token = Formio.getToken(opts);
+    const tokenHeader = Formio.tokenHeader;
+
     if (token && !opts.noToken) {
-      headers.append('x-jwt-token', token);
+      headers.append(tokenHeader, token);
     }
 
     // The fetch-ponyfill can't handle a proper Headers class anymore. Change it back to an object.
@@ -1550,7 +1557,7 @@ export class Formio {
       opts.namespace = options.namespace ||  Formio.namespace;
     }
 
-    const requestToken = options.headers['x-jwt-token'];
+    const requestToken = options.headers[tokenHeader];
     const result = Plugins.pluginAlter('wrapFetchRequestPromise', Formio.fetch(url, options),
       { url, method, data, opts }).then((response: any) => {
       // Allow plugins to respond.
@@ -1580,7 +1587,7 @@ export class Formio {
       }
 
       // Handle fetch results
-      const token = response.headers.get('x-jwt-token');
+      const token = response.headers.get(tokenHeader);
 
       // In some strange cases, the fetch library will return an x-jwt-token without sending
       // one to the server. This has even been debugged on the server to verify that no token
@@ -1593,7 +1600,7 @@ export class Formio {
         token &&
         !opts.external &&
         !url.includes('token=') &&
-        !url.includes('x-jwt-token=')
+        !url.includes(`${tokenHeader}=`)
       ) {
         console.warn('Token was introduced in request.');
         tokenIntroduced = true;
