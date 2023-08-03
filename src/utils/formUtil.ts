@@ -1,9 +1,68 @@
 import { last, get } from 'lodash';
 
-import { AddressComponentDataObject, AsyncComponentDataCallback, AutocompleteAddressComponentDataObject, Component, DataObject } from 'types';
+import { AsyncComponentDataCallback, Component, ComponentDataCallback, DataObject } from 'types';
 import { Evaluator } from './Evaluator';
 
 const TREE_COMPONENTS = ['datagrid', 'editgrid', 'container', 'form', 'dynamicWizard'];
+
+export const eachComponentData = (
+  components: Component[],
+  data: DataObject,
+  fn: ComponentDataCallback,
+  path = '',
+  index?: number
+) => {
+  if (!components || !data) {
+      return;
+  }
+  const originalPath = path;
+  return eachComponent(
+      components,
+      (component: any) => {
+          path = originalPath ? `${originalPath}.${component.key}` : component.key;
+          if (component.key && component.type === 'form') {
+              // TODO: this could be a fn or a generator
+              path = `${path}.data`;
+              eachComponentData(
+                  component.components,
+                  (data[component.key] as any)?.data,
+                  fn,
+                  path
+              );
+              return true;
+          } else if (TREE_COMPONENTS.includes(component.type) || component.tree) {
+              // evaluate the top level component before introspecting its child components
+              fn(component, data, path, components, index);
+              const contextualData = get(data, path);
+              if (Array.isArray(contextualData)) {
+                  // TODO: this could be a fn or a generator
+                  path = `${path}[0]`;
+                  for (let i = 0; i < contextualData.length; i++) {
+                      path = path.replace(/\[\d\]$/, `[${i}]`);
+                      eachComponentData(
+                          component.components,
+                          data,
+                          fn,
+                          path,
+                          i
+                      );
+                  }
+                  return true;
+              }
+              eachComponentData(
+                  component.components,
+                  data,
+                  fn,
+                  path
+              );
+              return true;
+          } else {
+              return fn(component, data, path, components, index);
+          }
+      },
+      true
+  );
+}
 
 /**
  * Iterate through each component within a form.

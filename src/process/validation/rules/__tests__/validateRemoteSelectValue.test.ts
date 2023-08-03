@@ -96,7 +96,7 @@ it('Validating a select component with the remote validation parameter will retu
     const context = generateProcessContext(component, data);
     const result = await validateRemoteSelectValue(context);
     expect(result).to.be.instanceOf(FieldError);
-    expect(result?.errorKeyOrMessage).to.equal('invalidSelection');
+    expect(result?.errorKeyOrMessage).to.equal('select');
 });
 
 it('Validating a select component with the remote validation parameter will return a FieldError if the value does not exist and the API returns an object', async () => {
@@ -123,7 +123,7 @@ it('Validating a select component with the remote validation parameter will retu
     const context = generateProcessContext(component, data);
     const result = await validateRemoteSelectValue(context);
     expect(result).to.be.instanceOf(FieldError);
-    expect(result?.errorKeyOrMessage).to.equal('invalidSelection');
+    expect(result?.errorKeyOrMessage).to.equal('select');
 });
 
 it('Validating a select component with the remote validation parameter will return null if the value exists', async () => {
