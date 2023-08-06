@@ -3,6 +3,10 @@ import { Component, DataObject, ProcessorFn, ProcessorFnSync, ProcessType } from
 export type ProcessContext = {
     components: Component[];
     data: DataObject;
+    // TODO: woof, we have to type component instances
+    instances?: {
+        [key: string]: any;
+    }
     before?: ProcessorFn[];
     after?: ProcessorFn[];
     process?: ProcessType;
@@ -11,6 +15,9 @@ export type ProcessContext = {
 export type ProcessContextSync = {
     components: Component[];
     data: DataObject;
+    instances?: {
+        [key: string]: any;
+    }
     before?: ProcessorFnSync[];
     after?: ProcessorFnSync[];
     process?: ProcessType;

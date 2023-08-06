@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
-import { Component, ProcessorContext } from 'types';
-import { Evaluator } from 'utils';
+import { Component, DataObject, Form, ProcessorContext } from 'types';
+import { Evaluator, Utils } from 'utils';
 
 export function isComponentPersistent(component: Component) {
     return component.persistent ? component.persistent : true;
@@ -11,8 +11,21 @@ export function isComponentProtected(component: Component) {
     return component.protected ? component.protected : false;
 }
 
-export function shouldSkipValidation(component: Component) {
-    return !isComponentPersistent(component);
+export function shouldSkipValidation(component: Component, value: unknown) {
+    if (component.validate?.custom && (_.isEmpty(value)) && !component.validate?.required) {
+        return true;
+    }
+    if (!component.input) {
+        return true;
+    }
+    // TODO: is this correct? we don't want the client skipping validation on, say, a password but we may want the server to
+    if (typeof window === 'undefined' && component.protected) {
+        return true;
+    }
+    if (component.persistent === false || (component.persistent === 'client-only')) {
+        return true;
+    }
+    return false;
 }
 
 export function isEmptyObject(obj: any): obj is {} {

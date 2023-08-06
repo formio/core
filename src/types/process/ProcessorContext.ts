@@ -5,8 +5,9 @@ export type ProcessorContext = {
     component: Component;
     data: DataObject;
     path: string;
+    // TODO: need to type instance
+    instance?: any;
     processor: ProcessorType;
-    evalContext?: any;
     errors?: FieldError[];
     process?: string;
     index?: number;

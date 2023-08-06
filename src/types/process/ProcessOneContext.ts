@@ -6,8 +6,8 @@ export type ProcessOneContext = {
     component: Component;
     path: string;
     data: DataObject;
-    // TODO: need to type evalcontext
-    evalContext?: any;
+    // TODO: need to type instance
+    instance?: any;
     before?: ProcessorFn[];
     after?: ProcessorFn[];
     process?: ProcessType;
@@ -17,8 +17,8 @@ export type ProcessOneContextSync = {
     component: Component;
     path: string;
     data: DataObject;
-    // TODO: need to type evalcontext
-    evalContext?: any;
+    // TODO: need to type instance
+    instance?: any;
     before?: ProcessorFnSync[];
     after?: ProcessorFnSync[];
     process?: ProcessType;

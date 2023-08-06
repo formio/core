@@ -5,14 +5,22 @@ import { eachComponentData, eachComponentDataAsync } from "utils/formUtil";
 import { validate, validateSync } from './validation';
 import { FieldError } from 'error';
 
-export async function process({components, data, process, before = [], after = [] }: ProcessContext) {
+export async function process({components, data, process, instances, before = [], after = [] }: ProcessContext) {
     const allErrors: FieldError[] = [];
     await eachComponentDataAsync(components, data, async(component, data, path, components, index) => {
         const componentErrors: FieldError[] = [];
 
         const beforeErrors = await before.reduce(async (promise, currFn) => {
             const acc = await promise;
-            const newErrors = await currFn({ component, data, path, index, errors: componentErrors, process, processor: ProcessorType.Custom });
+            const newErrors = await currFn({
+                component,
+                data,
+                path,
+                index,
+                errors: componentErrors,
+                process,
+                processor: ProcessorType.Custom
+            });
             return [...acc, ...newErrors];
         }, Promise.resolve([] as FieldError[]));
         componentErrors.push(...beforeErrors);
@@ -22,6 +30,7 @@ export async function process({components, data, process, before = [], after = [
             data,
             path,
             index,
+            instance: instances ? instances[path] : undefined,
             process,
             processor: ProcessorType.Validate,
         });
@@ -29,7 +38,14 @@ export async function process({components, data, process, before = [], after = [
 
         const afterErrors = await after.reduce(async (promise, currFn) => {
             const acc = await promise;
-            const newErrors = await currFn({ component, data, index, path, errors: componentErrors, processor: ProcessorType.Custom });
+            const newErrors = await currFn({
+                component,
+                data,
+                index,
+                path,
+                errors: componentErrors,
+                processor: ProcessorType.Custom
+            });
             return [...acc, ...newErrors];
         }, Promise.resolve([] as FieldError[]));
         componentErrors.push(...afterErrors);
@@ -40,13 +56,21 @@ export async function process({components, data, process, before = [], after = [
     return allErrors;
 }
 
-export function processSync({components, data, process, before = [], after = [] }: ProcessContextSync) {
+export function processSync({components, data, process, instances, before = [], after = [] }: ProcessContextSync) {
     const allErrors: FieldError[] = [];
     eachComponentData(components, data, (component, data, path, components, index) => {
         const componentErrors: FieldError[] = [];
 
         const beforeErrors = before.reduce((acc, currFn) => {
-            const newErrors = currFn({ component, data, path, index, errors: componentErrors, process, processor: ProcessorType.Custom });
+            const newErrors = currFn({
+                component,
+                data,
+                path,
+                index,
+                errors: componentErrors,
+                process,
+                processor: ProcessorType.Custom
+            });
             return [...acc, ...newErrors];
         }, [] as FieldError[]);
         componentErrors.push(...beforeErrors);
@@ -56,13 +80,22 @@ export function processSync({components, data, process, before = [], after = [] 
             data,
             path,
             index,
+            instance: instances ? instances[path] : undefined,
             process,
             processor: ProcessorType.Validate,
         });
         componentErrors.push(...validationErrors);
 
         const afterErrors = after.reduce((acc, currFn) => {
-            const newErrors = currFn({ component, data, index, path, errors: componentErrors, processor: ProcessorType.Custom });
+            const newErrors = currFn({
+                component,
+                data,
+                index,
+                path,
+                errors:
+                componentErrors,
+                processor: ProcessorType.Custom
+            });
             return [...acc, ...newErrors];
         }, [] as FieldError[]);
         componentErrors.push(...afterErrors);
@@ -70,6 +103,6 @@ export function processSync({components, data, process, before = [], after = [] 
 
         allErrors.push(...componentErrors);
     });
-    
+
     return allErrors;
 }

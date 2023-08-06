@@ -13,7 +13,7 @@ export type BaseComponent = {
     multiple?: boolean;
     protected?: boolean;
     unique?: boolean;
-    persistent?: boolean;
+    persistent?: boolean | 'client-only';
     hidden?: boolean;
     clearOnHide?: boolean;
     refreshOn?: string;
@@ -48,6 +48,7 @@ export type BaseComponent = {
         json?: any;
     };
     conditional?: { show: boolean | null; when: string | null; eq: string };
+    customConditional?: string;
     overlay?: {
         style: string;
         left: string;

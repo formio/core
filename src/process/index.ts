@@ -1,2 +1,2 @@
-export { process } from './process';
-export { processOne } from './processOne';
+export { process, processSync } from './process';
+export { processOne, processOneSync } from './processOne';
