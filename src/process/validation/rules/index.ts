@@ -22,13 +22,13 @@ import { validateRemoteSelectValue } from './validateRemoteSelectValue';
 import { validateRequired, validateRequiredSync } from './validateRequired';
 import { validateMultiple, validateMultipleSync } from './validateMultiple';
 import { validateTime, validateTimeSync } from './validateTime';
-import { validateAvailableValueProperty, validateAvailableValuePropertySync } from './validateAvailableValueProperty';
+import { validateValueProperty, validateValuePropertySync } from './validateValueProperty';
 import { validateUnique } from './validateUnique';
 import { validateUrl, validateUrlSync } from './validateUrl';
 
 export const rules = [
     validateAvailableItems,
-    validateAvailableValueProperty,
+    validateValueProperty,
     validateCustom,
     validateDate,
     validateDay,
@@ -58,7 +58,7 @@ export const rules = [
 
 export const rulesSync = [
     validateAvailableItemsSync,
-    validateAvailableValuePropertySync,
+    validateValuePropertySync,
     validateCustomSync,
     validateDateSync,
     validateDaySync,

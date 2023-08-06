@@ -8,8 +8,9 @@ import { isObject, isPromise } from '../util';
 function isValidatableRadioComponent(component: any): component is RadioComponent {
     return (
         component &&
-        !!component.validate?.hasOwnProperty('onlyAvailableItems') &&
-        component.type === 'radio'
+        component.type === 'radio' &&
+        !!component.validate?.onlyAvailableItems &&
+        component.dataSrc === 'values'
     );
 }
 
@@ -34,7 +35,7 @@ function mapStaticValues(values: { label: string; value: string }[]) {
     return values.map((obj) => obj.value);
 }
 
-async function getAvailableValues(component: SelectComponent) {
+async function getAvailableSelectValues(component: SelectComponent) {
     switch (component.dataSrc) {
         case 'values':
             if (Array.isArray(component.data.values)) {
@@ -92,10 +93,10 @@ async function getAvailableValues(component: SelectComponent) {
     }
 }
 
-function getAvailableValuesSync(component: SelectComponent) {
+function getAvailableSelectValuesSync(component: SelectComponent) {
     switch (component.dataSrc) {
         case 'values':
-            if (Array.isArray(component.data.values)) {
+            if (Array.isArray(component.data?.values)) {
                 return mapStaticValues(component.data.values);
             }
             throw new ValidatorError(
@@ -175,7 +176,7 @@ export const validateAvailableItems: RuleFn = async (context) => {
         if (value == null || _.isEmpty(value)) {
             return null;
         }
-        const values = await getAvailableValues(component);
+        const values = await getAvailableSelectValues(component);
         if (values) {
             if (isObject(value)) {
                 return values.find((optionValue) => compareComplexValues(optionValue, value)) !==
@@ -210,7 +211,7 @@ export const validateAvailableItemsSync: RuleFnSync = (context) => {
         if (value == null || _.isEmpty(value)) {
             return null;
         }
-        const values = getAvailableValuesSync(component);
+        const values = getAvailableSelectValuesSync(component);
         if (values) {
             if (isObject(value)) {
                 return values.find((optionValue) => compareComplexValues(optionValue, value)) !==

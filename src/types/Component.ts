@@ -295,6 +295,7 @@ export type ListComponent = BaseComponent & {
     validate?: {
         onlyAvailableItems?: boolean;
     };
+    valueProperty?: string;
 };
 
 export type RadioComponent = ListComponent & {
