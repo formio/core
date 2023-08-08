@@ -21,13 +21,16 @@ export const eachComponentData = (
       (component: any) => {
           path = originalPath ? `${originalPath}.${component.key}` : component.key;
           if (component.key && component.type === 'form') {
+              // evaluate the top level component before introspecting its child components
+              fn(component, data, path, components, index);
               // TODO: this could be a fn or a generator
               path = `${path}.data`;
               eachComponentData(
                   component.components,
-                  (data[component.key] as any)?.data,
+                  data,
                   fn,
-                  path
+                  path,
+                  index
               );
               return true;
           } else if (TREE_COMPONENTS.includes(component.type) || component.tree) {
@@ -53,7 +56,8 @@ export const eachComponentData = (
                   component.components,
                   data,
                   fn,
-                  path
+                  path,
+                  index
               );
               return true;
           } else {
@@ -229,7 +233,7 @@ export const eachComponentDataAsync = async (
               path = `${path}.data`;
               await eachComponentDataAsync(
                   component.components,
-                  (data[component.key] as any)?.data,
+                  data,
                   fn,
                   path
               );
