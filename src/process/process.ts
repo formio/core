@@ -7,7 +7,7 @@ import { FieldError } from 'error';
 
 export async function process({components, data, process, instances, before = [], after = [] }: ProcessContext) {
     const allErrors: FieldError[] = [];
-    await eachComponentDataAsync(components, data, async(component, data, path, components, index) => {
+    await eachComponentDataAsync(components, data, data, async(component, data, row, path, components, index) => {
         const componentErrors: FieldError[] = [];
 
         const beforeErrors = await before.reduce(async (promise, currFn) => {
@@ -17,6 +17,7 @@ export async function process({components, data, process, instances, before = []
                 data,
                 path,
                 index,
+                row,
                 errors: componentErrors,
                 process,
                 processor: ProcessorType.Custom
@@ -30,6 +31,7 @@ export async function process({components, data, process, instances, before = []
             data,
             path,
             index,
+            row,
             instance: instances ? instances[path] : undefined,
             process,
             processor: ProcessorType.Validate,
@@ -43,6 +45,7 @@ export async function process({components, data, process, instances, before = []
                 data,
                 index,
                 path,
+                row,
                 errors: componentErrors,
                 processor: ProcessorType.Custom
             });
@@ -58,7 +61,7 @@ export async function process({components, data, process, instances, before = []
 
 export function processSync({components, data, process, instances, before = [], after = [] }: ProcessContextSync) {
     const allErrors: FieldError[] = [];
-    eachComponentData(components, data, (component, data, path, components, index) => {
+    eachComponentData(components, data, data, (component, data, row, path, components, index) => {
         const componentErrors: FieldError[] = [];
 
         const beforeErrors = before.reduce((acc, currFn) => {
@@ -67,6 +70,7 @@ export function processSync({components, data, process, instances, before = [], 
                 data,
                 path,
                 index,
+                row,
                 errors: componentErrors,
                 process,
                 processor: ProcessorType.Custom
@@ -80,6 +84,7 @@ export function processSync({components, data, process, instances, before = [], 
             data,
             path,
             index,
+            row,
             instance: instances ? instances[path] : undefined,
             process,
             processor: ProcessorType.Validate,
@@ -92,6 +97,7 @@ export function processSync({components, data, process, instances, before = [], 
                 data,
                 index,
                 path,
+                row,
                 errors:
                 componentErrors,
                 processor: ProcessorType.Custom
@@ -99,7 +105,6 @@ export function processSync({components, data, process, instances, before = [], 
             return [...acc, ...newErrors];
         }, [] as FieldError[]);
         componentErrors.push(...afterErrors);
-
 
         allErrors.push(...componentErrors);
     });

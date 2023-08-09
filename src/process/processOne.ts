@@ -5,12 +5,12 @@ import { FieldError } from 'error';
 import { validateSync, validate } from './validation';
 
 
-export async function processOne({component, path, data, process, instance = {}, before = [], after = []}: ProcessOneContext) {
+export async function processOne({component, path, data, row, process, instance = {}, before = [], after = []}: ProcessOneContext) {
     const componentErrors: FieldError[] = [];
 
     const beforeErrors = await before.reduce(async (promise, currFn) => {
         const acc = await promise;
-        const newErrors = await currFn({ component, data, path, errors: componentErrors, process, processor: ProcessorType.Custom });
+        const newErrors = await currFn({ component, data, path, row, errors: componentErrors, process, processor: ProcessorType.Custom });
         return [...acc, ...newErrors];
     }, Promise.resolve([] as FieldError[]));
     componentErrors.push(...beforeErrors);
@@ -18,6 +18,7 @@ export async function processOne({component, path, data, process, instance = {},
     const validationErrors = await validate({
         component,
         data,
+        row,
         instance,
         path,
         process,
@@ -27,20 +28,21 @@ export async function processOne({component, path, data, process, instance = {},
 
     const afterErrors = await after.reduce(async (promise, currFn) => {
         const acc = await promise;
-        const newErrors = await currFn({ component, data, path, errors: componentErrors, processor: ProcessorType.Custom });
+        const newErrors = await currFn({ component, data, row, path, errors: componentErrors, processor: ProcessorType.Custom });
         return [...acc, ...newErrors];
     }, Promise.resolve([] as FieldError[]));
     componentErrors.push(...afterErrors);
     return componentErrors;
 }
 
-export function processOneSync({component, path, data, process, instance = {}, before = [], after = [] }: ProcessOneContextSync) {
+export function processOneSync({component, path, data, row, process, instance = {}, before = [], after = [] }: ProcessOneContextSync) {
     const componentErrors: FieldError[] = [];
 
     const beforeErrors = before.reduce((acc, currFn) => {
         const newErrors = currFn({
             component,
             data,
+            row,
             path,
             errors: componentErrors,
             instance,
@@ -54,6 +56,7 @@ export function processOneSync({component, path, data, process, instance = {}, b
     const validationErrors = validateSync({
         component,
         data,
+        row,
         instance,
         path,
         process,
@@ -65,6 +68,7 @@ export function processOneSync({component, path, data, process, instance = {}, b
         const newErrors = currFn({
             component,
             data,
+            row,
             path,
             instance,
             errors: componentErrors,

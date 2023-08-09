@@ -9,7 +9,7 @@ export const validateCustom: RuleFn = async (context) => {
 };
 
 export const validateCustomSync: RuleFnSync = (context) => {
-    const { component, data, value, instance } = context;
+    const { component, data, row, value, instance } = context;
     const customValidation = component.validate?.custom;
     if (!customValidation || !value || ((typeof value === 'string' || typeof value === 'object') && _.isEmpty(value))) {
         return null;
@@ -20,6 +20,7 @@ export const validateCustomSync: RuleFnSync = (context) => {
         {
             valid: true,
             data,
+            row,
             input: value,
             ...(instance ? instance.evalContext() : {})
         },

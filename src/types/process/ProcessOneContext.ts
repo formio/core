@@ -6,6 +6,7 @@ export type ProcessOneContext = {
     component: Component;
     path: string;
     data: DataObject;
+    row: any;
     // TODO: need to type instance
     instance?: any;
     before?: ProcessorFn[];
@@ -17,6 +18,7 @@ export type ProcessOneContextSync = {
     component: Component;
     path: string;
     data: DataObject;
+    row: any;
     // TODO: need to type instance
     instance?: any;
     before?: ProcessorFnSync[];

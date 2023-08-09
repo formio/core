@@ -4,6 +4,7 @@ import { FieldError } from 'error';
 export type ProcessorContext = {
     component: Component;
     data: DataObject;
+    row: any;
     path: string;
     // TODO: need to type instance
     instance?: any;

@@ -4,5 +4,5 @@ import { Component, DataObject, ProcessorType, RuleContext } from "types";
 export const generateProcessContext = (component: Component, data: DataObject): RuleContext => {
     const path = component.key;
     const value = _.get(data, path);
-    return { component, data, path: component.key, value, processor: ProcessorType.Validate };
+    return { component, data, row: data, path: component.key, value, processor: ProcessorType.Validate };
 }
