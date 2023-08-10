@@ -1,11 +1,11 @@
-import { Component, DataObject, ProcessorFn, ProcessorFnSync, ProcessType } from "types";
+import { Component, DataObject, PassedComponentInstance, ProcessorFn, ProcessorFnSync, ProcessType } from "types";
 
 export type ProcessContext = {
     components: Component[];
     data: DataObject;
     // TODO: woof, we have to type component instances
     instances?: {
-        [key: string]: any;
+        [key: string]: PassedComponentInstance;
     }
     before?: ProcessorFn[];
     after?: ProcessorFn[];

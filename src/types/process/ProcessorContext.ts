@@ -1,4 +1,4 @@
-import { Component, DataObject, ProcessorType } from "types";
+import { Component, DataObject, Form, PassedComponentInstance, ProcessorType } from "types";
 import { FieldError } from 'error';
 
 export type ProcessorContext = {
@@ -6,8 +6,7 @@ export type ProcessorContext = {
     data: DataObject;
     row: any;
     path: string;
-    // TODO: need to type instance
-    instance?: any;
+    instance?: PassedComponentInstance;
     processor: ProcessorType;
     errors?: FieldError[];
     process?: string;

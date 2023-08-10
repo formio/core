@@ -5,7 +5,7 @@ import { FieldError } from 'error';
 import { validateSync, validate } from './validation';
 
 
-export async function processOne({component, path, data, row, process, instance = {}, before = [], after = []}: ProcessOneContext) {
+export async function processOne({component, path, data, row, process, instance, before = [], after = []}: ProcessOneContext) {
     const componentErrors: FieldError[] = [];
 
     const beforeErrors = await before.reduce(async (promise, currFn) => {
@@ -35,7 +35,7 @@ export async function processOne({component, path, data, row, process, instance 
     return componentErrors;
 }
 
-export function processOneSync({component, path, data, row, process, instance = {}, before = [], after = [] }: ProcessOneContextSync) {
+export function processOneSync({component, path, data, row, process, instance, before = [], after = [] }: ProcessOneContextSync) {
     const componentErrors: FieldError[] = [];
 
     const beforeErrors = before.reduce((acc, currFn) => {
