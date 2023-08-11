@@ -8,7 +8,7 @@
     "./utils": "./lib/utils/index.js",
     "./sdk": "./lib/sdk/index.js",
     "./model": "./lib/model/index.js",
-    "./validator": "./lib/validator/index.js"
+    "./validation": "./lib/process/validation/index.js"
   },
   "scripts": {
     "test": "mocha -r ts-node/register -r tsconfig-paths/register --r mock-local-storage -b -t 0 'src/**/__tests__/*.test.ts'",
