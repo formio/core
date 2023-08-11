@@ -192,5 +192,6 @@ exports.simpleRadioField = {
     ],
     key: 'component',
     type: 'radio',
+    dataSrc: 'values',
     input: true,
 };

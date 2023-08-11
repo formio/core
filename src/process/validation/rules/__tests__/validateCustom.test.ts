@@ -14,7 +14,7 @@ it('A simple custom validation will correctly be interpolated', async () => {
         },
     };
     const data = {
-        simpleComponent: 'any thing',
+        component: 'any thing',
     }
     const context = generateProcessContext(component, data);
     const result = await validateCustom(context);

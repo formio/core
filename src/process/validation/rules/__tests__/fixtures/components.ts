@@ -6,7 +6,7 @@ import {
     SelectBoxesComponent,
     SelectComponentOptions,
     TextFieldComponent,
-} from 'types/Component';
+} from 'types';
 
 export const simpleTextField: TextFieldComponent = {
     type: 'textField',
@@ -171,6 +171,7 @@ export const simpleSelectOptions: SelectComponentOptions = {
 
 export const simpleRadioField: RadioComponent = {
     label: 'Radio',
+    dataSrc: 'values',
     optionsLabelPosition: 'right',
     inline: false,
     tableView: false,

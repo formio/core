@@ -25,7 +25,6 @@ import { validateTime, validateTimeSync } from './validateTime';
 import { validateValueProperty, validateValuePropertySync } from './validateValueProperty';
 import { validateUnique } from './validateUnique';
 import { validateUrl, validateUrlSync } from './validateUrl';
-import { validateRow, validateRowSync } from './validateRow';
 import { validateRequiredDay, validateRequiredDaySync } from './validateRequiredDay';
 
 export const rules = [
@@ -54,7 +53,6 @@ export const rules = [
     validateRemoteSelectValue,
     validateRequired,
     validateRequiredDay,
-    // validateRow,
     validateTime,
     validateUnique,
     validateUrl,
@@ -85,7 +83,6 @@ export const rulesSync = [
     validateRegexPatternSync,
     validateRequiredSync,
     validateRequiredDaySync,
-    // validateRowSync,
     validateTimeSync,
     validateUrlSync,
 ];

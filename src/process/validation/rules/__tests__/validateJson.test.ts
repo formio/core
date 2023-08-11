@@ -41,7 +41,7 @@ it('A simple component with JSON logic evaluation will return a FieldError if th
     const context = generateProcessContext(component, data);
     const result = await validateJson(context);
     expect(result).to.be.instanceOf(FieldError);
-    expect(result?.errorKeyOrMessage).to.contain('jsonLogic');
+    expect(result?.errorKeyOrMessage).to.contain('Input must be \'foo\'');
 });
 
 it('A simple component with JSON logic evaluation will return null if the JSON logic returns valid', async () => {
