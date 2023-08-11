@@ -1,13 +1,13 @@
 import templates from './templates';
-import { HTMLComponent } from './html/html';
-import { HTMLContainerComponent } from './htmlcontainer/htmlcontainer';
-import { DataTableComponent } from './datatable/datatable';
-import { DataValueComponent } from './datavalue/datavalue';
+import { HTMLComponent } from './html';
+import { HTMLContainerComponent } from './htmlcontainer';
+import { DataTableComponent } from './datatable';
+import { DataValueComponent } from './datavalue';
 import { InputComponent } from './input/input';
-export { HTML, HTMLComponent } from './html/html';
-export { HTMLContainer, HTMLContainerComponent } from './htmlcontainer/htmlcontainer';
-export { DataTable, DataTableComponent } from './datatable/datatable';
-export { DataValueComponent } from './datavalue/datavalue';
+export { HTML, HTMLComponent } from './html';
+export { HTMLContainer, HTMLContainerComponent } from './htmlcontainer';
+export { DataTable, DataTableComponent } from './datatable';
+export { DataValueComponent } from './datavalue';
 export { Input, InputComponent } from './input/input';
 export default {
     components: {

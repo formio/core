@@ -1,5 +1,5 @@
-import { Component } from '@formio/base';
-import { HTML, HTMLProperties } from '../html/html';
+import { Component } from 'base';
+import { HTML, HTMLProperties } from '../html';
 
 /**
  * Base Input component for extending purposes.

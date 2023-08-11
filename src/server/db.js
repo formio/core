@@ -26,8 +26,8 @@ class Database {
 
     /**
      * Connect to the database.
-     * @param {*} scope 
-     * @returns 
+     * @param {*} scope
+     * @returns
      */
     async connect() {
         try {
@@ -75,7 +75,7 @@ class Database {
         }
         catch (err) {
             error(err.message);
-        } 
+        }
         return item;
     }
 
@@ -154,8 +154,8 @@ class Database {
 
     /**
      * Fetch a list of submissions from a table/collection.
-     * @param {*} table 
-     * @param {*} query 
+     * @param {*} table
+     * @param {*} query
      */
     async index(scope, query = {}) {
         let items;
@@ -189,8 +189,8 @@ class Database {
         try {
             debug('db.create()', record);
             const result = await collection.insertOne(pick(record, [
-                'data', 
-                'metadata', 
+                'data',
+                'metadata',
                 'modified',
                 'created',
                 'deleted',
@@ -211,9 +211,9 @@ class Database {
 
     /**
      * Return a query for a single mongo record.
-     * @param {*} form 
-     * @param {*} id 
-     * @returns 
+     * @param {*} form
+     * @param {*} id
+     * @returns
      */
     query(scope, query) {
         if (query._id) {
@@ -272,9 +272,9 @@ class Database {
 
     /**
      * Read a single submission from a form
-     * 
-     * @param {*} table 
-     * @param {*} query 
+     *
+     * @param {*} table
+     * @param {*} query
      */
     async read(scope, id) {
         try {
@@ -289,9 +289,9 @@ class Database {
 
     /**
      * Update a single submission of a form.
-     * 
-     * @param {*} table 
-     * @param {*} query 
+     *
+     * @param {*} table
+     * @param {*} query
      */
     async update(scope, id, update, allowFields = []) {
         if (!id || !update) {
@@ -301,8 +301,8 @@ class Database {
         try {
             debug('db.update()', id, update);
             const collection = await this.collection(scope);
-            const result = await collection.updateOne(this.query(scope, {_id: id}), { 
-                $set: pick(update, ['data', 'metadata', 'modified'].concat(allowFields)) 
+            const result = await collection.updateOne(this.query(scope, {_id: id}), {
+                $set: pick(update, ['data', 'metadata', 'modified'].concat(allowFields))
             });
             if (result.modifiedCount === 0) {
                 return null;
@@ -331,6 +331,11 @@ class Database {
             error(err.message);
         }
     }
+
+    /**
+     * Determine if a given entry is unique
+     */
+    async isUnique(scope) {}
 }
 
 module.exports = Database;

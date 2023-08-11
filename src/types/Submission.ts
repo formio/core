@@ -1,4 +1,4 @@
-import { Access, FormId, ProjectId, RoleId } from '@formio/types';
+import { Access, FormId, ProjectId, RoleId } from 'types';
 
 export type SubmissionId = string;
 

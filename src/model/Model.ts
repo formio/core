@@ -26,17 +26,6 @@ export function Model(props: any = {}) : ModelDecoratorInterface {
             public root: any = null;
 
             /**
-             * The component validator instance.
-             * @returns
-             */
-            public validator: any = null;
-
-            /**
-             * The validator for this component.
-             * @returns
-             */
-
-            /**
              * The default JSON schema
              * @param extend
              */
@@ -73,26 +62,6 @@ export function Model(props: any = {}) : ModelDecoratorInterface {
              */
             public init() {
                 this.hook('init');
-                if (this.options.validator) {
-                    this.validator = this.options.validator.fromComponent(this);
-                }
-            }
-
-            /**
-             * Check the validity of this specific component.
-             *
-             * @returns
-             */
-            public async checkComponentValidity() {
-                return this.validator ? this.validator.check() : true;
-            }
-
-            /**
-             * Checks the validity of this component and all child components.
-             * @returns
-             */
-            public async checkValidity() {
-                return this.checkComponentValidity();
             }
 
             /**

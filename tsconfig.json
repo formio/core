@@ -66,20 +66,26 @@
     "skipLibCheck": true,                     /* Skip type checking of declaration files. */
     "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
     "paths": {
-      "@formio/base": ["./src/base"],
-      "@formio/base/*": ["./src/base/*"],
-      "@formio/model": ["./src/model"],
-      "@formio/model/*": ["./src/model/*"],
-      "@formio/modules": ["./src/modules"],
-      "@formio/modules/*": ["./src/modules/*"],
-      "@formio/sdk": ["./src/sdk"],
-      "@formio/sdk/*": ["./src/sdk/*"],
-      "@formio/types": ["./src/types"],
-      "@formio/types/*": ["./src/types/*"],
-      "@formio/utils": ["./src/utils"],
-      "@formio/utils/*": ["./src/utils/*"],
-      "@formio/validator": ["./src/validator"],
-      "@formio/validator/*": ["./src/validator/*"]
+      "base": ["./src/base"],
+      "base/*": ["./src/base/*"],
+      "error": ["./src/error"],
+      "error/*": ["./src/error/*"],
+      "model": ["./src/model"],
+      "model/*": ["./src/model/*"],
+      "modules": ["./src/modules"],
+      "modules/*": ["./src/modules/*"],
+      "processes": ["src/process"],
+      "processes/*": ["src/process/*"],
+      "sdk": ["./src/sdk"],
+      "sdk/*": ["./src/sdk/*"],
+      "test": ["./test"],
+      "test/*": ["./test/*"],
+      "types": ["./src/types"],
+      "types/*": ["./src/types/*"],
+      "utils": ["./src/utils"],
+      "utils/*": ["./src/utils/*"],
+      "validation": ["src/process/validation"],
+      "validation/*": ["src/process/validation/*"]
     }
   },
   "include": [

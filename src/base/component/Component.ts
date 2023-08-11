@@ -1,10 +1,11 @@
+import { merge } from '@formio/lodash';
+
 import { Components } from '../Components';
 import { Template } from '../Template';
-import { Evaluator } from '@formio/utils/Evaluator';
-import * as dom from '@formio/utils/dom';
-import { sanitize } from '@formio/utils/sanitize';
-import { Model, ModelDecoratorInterface,  ModelInterface } from '@formio/model';
-import { merge } from '@formio/lodash/lib/object';
+import { Evaluator } from 'utils';
+import * as dom from 'utils/dom';
+import { sanitize } from 'utils/sanitize';
+import { Model, ModelDecoratorInterface,  ModelInterface } from 'model';
 
 /**
  * The component JSON schema.

@@ -1,4 +1,4 @@
-import { ProjectId } from '@formio/types';
+import { ProjectId } from 'types';
 
 export type RoleId = string;
 

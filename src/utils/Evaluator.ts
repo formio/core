@@ -2,11 +2,6 @@ import * as _ from '@formio/lodash';
 
 // BaseEvaluator is for extending.
 export class BaseEvaluator {
-    private static templateSettings = {
-        interpolate: /{{([\s\S]+?)}}/g,
-        evaluate: /\{%([\s\S]+?)%\}/g,
-        escape: /\{\{\{([\s\S]+?)\}\}\}/g
-    };
     public static noeval: boolean = false;
     public static evaluator(func: any, ...params: any) {
         if (Evaluator.noeval) {
@@ -90,11 +85,11 @@ export class BaseEvaluator {
      * @return {*}
      */
     public static evaluate(
-        func: any, 
-        args: any = {}, 
-        ret: any = '', 
-        interpolate: boolean = false, 
-        context: any = {}, 
+        func: any,
+        args: any = {},
+        ret: any = '',
+        interpolate: boolean = false,
+        context: any = {},
         options: any = {}
     ): any {
         let returnVal = null;
