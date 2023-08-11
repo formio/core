@@ -1,3 +1,7 @@
+## 1.3.0-rc.16
+### Fixed
+ - Adding exports to libraries.
+
 ## 1.3.0-rc.14
 ### Fixed
  - Issue with invalid alias when loading a form with form revision.
