@@ -28,5 +28,5 @@ export const validateJsonSync: RuleFnSync = (context) => {
     }
     return valid === true
         ? null
-        : new FieldError('jsonLogic', context);
+        : new FieldError(valid || 'jsonLogic', context);
 };

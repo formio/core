@@ -44,8 +44,9 @@ export type BaseComponent = {
         strictDateValidation?: boolean;
         multiple?: boolean;
         unique?: boolean;
-        // TODO: we should type this as RulesLogic but it's giving me too many problems
+        // TODO: we should type this as RulesLogic from the JSONLogic lib but it's giving me too many problems
         json?: any;
+        row?: string;
     };
     conditional?: { show: boolean | null; when: string | null; eq: string };
     customConditional?: string;

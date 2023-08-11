@@ -1,4 +1,4 @@
-import { last, get } from "lodash";
+import { last, get, isEmpty } from "lodash";
 
 import {
   AsyncComponentDataCallback,
@@ -87,7 +87,7 @@ export const eachComponentDataAsync = async (
     components,
     async (component: any) => {
       path = originalPath ? `${originalPath}.${component.key}` : component.key;
-      if (component.key && component.type === "form") {
+      if (component.key && component.type === 'form') {
         // TODO: this could be a fn or a generator
         path = `${path}.data`;
         await eachComponentDataAsync(component.components, data, row, fn, path);
@@ -110,6 +110,9 @@ export const eachComponentDataAsync = async (
               i
             );
           }
+          return true;
+        } else if (isEmpty(row)) {
+          // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
         await eachComponentDataAsync(component.components, data, row, fn, path);
@@ -166,6 +169,9 @@ export const eachComponentData = (
             path = path.replace(/\[\d\]$/, `[${i}]`);
             eachComponentData(component.components, data, row, fn, path, i);
           }
+          return true;
+        } else if (isEmpty(row)) {
+          // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
         eachComponentData(component.components, data, row, fn, path, index);
