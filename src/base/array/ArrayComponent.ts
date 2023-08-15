@@ -1,5 +1,5 @@
 import { Components } from '../Components';
-import { NestedArrayModel, ModelDecoratorInterface,  ModelInterface } from '@formio/model';
+import { NestedArrayModel, ModelDecoratorInterface,  ModelInterface } from 'model';
 import { NestedComponent } from '../nested/NestedComponent';
 /**
  * An array data type component. This provides a nested component that creates "rows" of data

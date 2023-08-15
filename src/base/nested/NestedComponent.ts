@@ -1,6 +1,6 @@
 import { Components } from '../Components';
 import { ComponentSchema, Component } from '../component/Component';
-import { NestedModel, ModelDecoratorInterface,  ModelInterface } from '@formio/model';
+import { NestedModel, ModelDecoratorInterface,  ModelInterface } from 'model';
 
 export interface NestedComponentSchema extends ComponentSchema {
     components: Array<ComponentSchema | any>;

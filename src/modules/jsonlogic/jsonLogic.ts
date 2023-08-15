@@ -1,7 +1,7 @@
 import jsonLogic from 'json-logic-js';
 import * as _ from '@formio/lodash';
-import dayjs from 'dayjs';
-import { lodashOperators } from './operators/operators';
+import { dayjs } from 'utils/date';
+import { lodashOperators } from './operators';
 
 // Configure JsonLogic
 lodashOperators.forEach((name: string) => {

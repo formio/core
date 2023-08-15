@@ -1,4 +1,4 @@
-import { FormId, RoleId } from '@formio/types';
+import { FormId, RoleId } from 'types';
 
 export type ActionId = string;
 
@@ -8,9 +8,8 @@ export type ActionSettings = {
     role: RoleId;
 };
 
-export type Action = {
+export type FormAction = {
     _id: ActionId;
-
     title: string;
     name: string;
     handler: Array<string>;
@@ -19,7 +18,6 @@ export type Action = {
     priority: number;
     settings: ActionSettings;
     form: FormId;
-
     // Database timestamps
     deleted: Date | string;
 };

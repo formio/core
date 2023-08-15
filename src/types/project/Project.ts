@@ -1,5 +1,5 @@
-import { Access, SubmissionId } from '@formio/types';
-import { ProjectSettings } from '@formio/types/project/settings';
+import { Access, SubmissionId } from 'types';
+import { ProjectSettings } from 'types/project/settings';
 
 export type ProjectId = string;
 

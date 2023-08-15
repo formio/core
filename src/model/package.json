@@ -1,7 +1,0 @@
-{
-    "name": "@formio/model",
-    "version": "0.1.0",
-    "description": "The core Form.io data modeling system",
-    "main": "index.ts",
-    "dependencies": {}
-}
