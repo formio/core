@@ -1689,6 +1689,10 @@ export class Formio {
   }
 
   static useSessionToken(options: string | { namespace: string}) {
+    if (typeof localStorage === 'undefined') {
+      return;
+    }
+
     let namespace = options
     if (typeof options === 'object') {
         options = options.namespace
