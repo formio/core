@@ -1,3 +1,7 @@
+## 1.3.0-rc.18
+### Fixed
+ - revert accidental deletion of templateSettings
+
 ## 1.3.0-rc.16
 ### Fixed
  - Adding exports to libraries.
