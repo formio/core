@@ -1,5 +1,3 @@
-import { FieldError } from "error";
-import { RuleFn, ProcessorContext, RuleFnSync } from "types";
-
-export type ProcessorFn = (context: ProcessorContext, rules?: RuleFn[]) => Promise<FieldError[]>;
-export type ProcessorFnSync = (context: ProcessorContext, rules?: RuleFnSync[]) => FieldError[];
+import { ProcessorContext } from "types";
+export type ProcessorFn<ProcessorScope> = (context: ProcessorContext<ProcessorScope>) => Promise<void>;
+export type ProcessorFnSync<ProcessorScope> = (context: ProcessorContext<ProcessorScope>) => void;

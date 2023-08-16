@@ -84,8 +84,8 @@
       "types/*": ["./src/types/*"],
       "utils": ["./src/utils"],
       "utils/*": ["./src/utils/*"],
-      "validation": ["src/process/validation"],
-      "validation/*": ["src/process/validation/*"]
+      "process": ["src/process"],
+      "process/*": ["src/process/*"]
     }
   },
   "include": [

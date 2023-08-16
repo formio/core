@@ -1,6 +1,6 @@
 import * as _ from '@formio/lodash';
 import { FieldError } from 'error';
-import { Component, TextAreaComponent, RuleFn, TagsComponent, RuleFnSync } from 'types';
+import { Component, TextAreaComponent, RuleFn, TagsComponent, RuleFnSync, ValidationContext } from 'types';
 
 const isEligible = (component: Component) => {
     // TODO: would be nice if this was type safe
@@ -39,11 +39,11 @@ const emptyValueIsArray = (component: Component) => {
     }
 }
 
-export const validateMultiple: RuleFn = async (context) => {
+export const validateMultiple: RuleFn = async (context: ValidationContext) => {
     return validateMultipleSync(context);
 };
 
-export const validateMultipleSync: RuleFnSync = (context) => {
+export const validateMultipleSync: RuleFnSync = (context: ValidationContext) => {
     const { component, value } = context;
     // Skip multiple validation if the component tells us to
     if (!isEligible(component)) {

@@ -1,12 +1,8 @@
-var jsdom = require('mocha-jsdom');
 import { assert } from 'chai';
 import { InputComponent, HTMLContainerComponent } from '../../test';
 import { comp1, comp2 } from './fixtures';
 
 describe('Input Component', () => {
-    jsdom({
-        url: "http://localhost"
-    });
     it('Should create a new input component', () => {
         const comp = new InputComponent(comp1);
         assert.equal(comp.render(), `<input ref="input" type="text" id="input-firstname" name="input-firstname" one="two" three="four"></input>`);

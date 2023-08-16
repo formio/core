@@ -21,7 +21,7 @@ export const validateMinimumWordsSync: RuleFnSync = (context) => {
             ? parseInt(component.validate.minWords, 10)
             : component.validate?.minWords;
 
-    if (minWords && typeof value === 'string') {
+    if (minWords && value && typeof value === 'string') {
         if (value.trim().split(/\s+/).length < minWords) {
             const error = new FieldError('minWords', { ...context, length: String(minWords) });
             return error;
