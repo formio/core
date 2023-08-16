@@ -1,6 +1,6 @@
 {
   "name": "@formio/core",
-  "version": "1.3.0-rc.18",
+  "version": "1.3.0-rc.19",
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
   "exports": {
@@ -8,7 +8,7 @@
     "./utils": "./lib/utils/index.js",
     "./sdk": "./lib/sdk/index.js",
     "./model": "./lib/model/index.js",
-    "./validation": "./lib/process/validation/index.js"
+    "./process": "./lib/process/index.js"
   },
   "scripts": {
     "test": "TEST=1 mocha -r ts-node/register -r tsconfig-paths/register -r mock-local-storage -r jsdom-global/register -b -t 0 'src/**/__tests__/*.test.ts'",

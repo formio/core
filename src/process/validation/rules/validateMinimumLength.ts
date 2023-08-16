@@ -20,7 +20,7 @@ export const validateMinimumLengthSync: RuleFnSync = (context) => {
         typeof component.validate?.minLength === 'string'
             ? parseInt(component.validate.minLength, 10)
             : component.validate?.minLength;
-    if (value != null && minLength && typeof value === 'string') {
+    if (value && minLength && typeof value === 'string') {
         if (value.length < minLength) {
             const error = new FieldError('minLength', { ...context, length: String(minLength) });
             return error;
