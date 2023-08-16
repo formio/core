@@ -2,6 +2,11 @@ import * as _ from '@formio/lodash';
 
 // BaseEvaluator is for extending.
 export class BaseEvaluator {
+    static templateSettings = {
+        interpolate: /{{([\s\S]+?)}}/g,
+        evaluate: /\{%([\s\S]+?)%\}/g,
+        escape: /\{\{\{([\s\S]+?)\}\}\}/g
+    };
     public static noeval: boolean = false;
     public static evaluator(func: any, ...params: any) {
         if (Evaluator.noeval) {
