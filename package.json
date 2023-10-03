@@ -1,6 +1,6 @@
 {
   "name": "@formio/core",
-  "version": "1.3.0-rc.18",
+  "version": "1.3.0-rc.19",
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
   "exports": {
