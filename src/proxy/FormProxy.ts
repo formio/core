@@ -27,6 +27,11 @@ export class FormProxy extends InstanceProxy {
         return JSON.parse(JSON.stringify(this.#instance.form));
     }
 
+    // Override `root` gettter from InstanceProxy
+    get root() {
+        return null;
+    }
+
     getComponent(key: string) {
         return new InstanceProxy(this.#instance.getComponent(key));
     }
