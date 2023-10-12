@@ -1,3 +1,7 @@
+## [Unreleased: 1.3.0-rc.20]
+### Changed
+ - Adding form and instance proxies
+
 ## 1.3.0-rc.18
 ### Fixed
  - revert accidental deletion of templateSettings
