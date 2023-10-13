@@ -41,7 +41,7 @@ export const generateUrl = (baseUrl: URL, component: SelectComponent, value: any
 export const validateRemoteSelectValue: RuleFn = async (context) => {
     const { component, value, data, config } = context;
     // Only run this validation if server-side
-    if (typeof window !== 'undefined') {
+    if (!process?.env?.TEST && typeof window !== 'undefined') {
         return null;
     }
     try {

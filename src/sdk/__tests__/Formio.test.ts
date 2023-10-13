@@ -1,4 +1,3 @@
-var jsdom = require('mocha-jsdom');
 import { Formio } from '../Formio';
 import { fastCloneDeep } from '@formio/lodash';
 import _each from 'lodash/each';
@@ -52,9 +51,6 @@ const runTests = function(fn: any, options?: any) {
 };
 
 describe('Formio.js Tests', () => {
-  jsdom({
-    url: "http://localhost"
-  });
   describe('Formio Constructor Tests', () => {
     runTests((tests: any) => {
       tests[`http://form.io/project/${  projectId  }/form/${  formId}`] = {

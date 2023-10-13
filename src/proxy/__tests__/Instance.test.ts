@@ -22,6 +22,6 @@ describe('InstanceProxy', () => {
         assert.deepEqual(proxy.data, { firstName: 'Joe' }, 'Should have access to the public data variable');
         assert.equal(proxy.getValue(), 'Joe', 'Should have access to the public getValue function');
         assert(proxy.root instanceof FormProxy, 'It should return a FormProxy for the root variable.');
-        assert.equal(typeof proxy.options.badFunction, 'string', 'It should not be able to execute a function.');
+        assert.equal(typeof proxy.options.badFunction, 'undefined', 'It should not be able to execute a function.');
     });
 });

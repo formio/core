@@ -1,12 +1,8 @@
-var jsdom = require('mocha-jsdom');
 import { assert } from 'chai';
 import { HTMLContainerComponent } from '../test';
 import { comp1, comp2 } from './fixtures';
 
 describe('HTMLContainerComponent', () => {
-    jsdom({
-        url: "http://localhost"
-    });
     it ('Should create an HTMLContainerComponent', () => {
         const comp = new HTMLContainerComponent(comp1);
         assert.equal(comp.render(), '<div ref="htmlcontainer" one="two" three="four" class="testing">' +

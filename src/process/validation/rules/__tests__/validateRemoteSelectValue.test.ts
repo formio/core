@@ -89,7 +89,7 @@ it('Validating a select component with the remote validation parameter will retu
             value: 2,
         },
     };
-    fetchMock.mock(component.data.url, JSON.stringify({}), {
+    fetchMock.mock(component.data.url, JSON.stringify([]), {
         query: { [component.searchField!]: data.component.value },
     });
 
