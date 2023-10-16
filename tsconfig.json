@@ -85,7 +85,9 @@
       "utils": ["./src/utils"],
       "utils/*": ["./src/utils/*"],
       "process": ["src/process"],
-      "process/*": ["src/process/*"]
+      "process/*": ["src/process/*"],
+      "template": ["src/template"],
+      "template/*": ["src/template/*"],
     }
   },
   "include": [

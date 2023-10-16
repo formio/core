@@ -25,6 +25,9 @@ export class Template {
      */
     public static addTemplate(name: string, template: any) {
         Template.templates[name] = _.merge(Template.current, template);
+        if (Template.templates.hasOwnProperty(Template._framework)) {
+            Template._current = Template.templates[Template._framework];
+        }
     }
 
     /**
@@ -34,6 +37,9 @@ export class Template {
      */
     public static extendTemplate(name: string, template: any) {
         Template.templates[name] = _.merge(Template.templates[name], template);
+        if (Template.templates.hasOwnProperty(Template._framework)) {
+            Template._current = Template.templates[Template._framework];
+        }
     }
 
     /**
@@ -64,8 +70,8 @@ export class Template {
      * Sets the current framework.
      */
     public static set framework(framework) {
+        Template._framework = framework;
         if (Template.templates.hasOwnProperty(framework)) {
-            Template._framework = framework;
             Template._current = Template.templates[framework];
         }
     }
