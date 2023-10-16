@@ -1,13 +1,8 @@
 import { Component as ComponentBase } from '../Component';
-import { validate } from 'validation';
-var jsdom = require('mocha-jsdom');
 import { assert } from 'chai';
 const Component = ComponentBase()();
 
 describe('Component', () => {
-    jsdom({
-        url: "http://localhost"
-    });
     it('Should create a new Component component', () => {
         // Default to an empty object.
         const comp = new Component({
