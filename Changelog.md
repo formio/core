@@ -1,4 +1,4 @@
-## [Unreleased: 1.3.0-rc.22]
+## 1.3.0-rc.22
 ### Fixed
  - FIO-7462: fix failing tests
 
