@@ -1527,7 +1527,7 @@ export class Formio {
     });
     const token = Formio.getToken(opts);
     if (token && !opts.noToken) {
-      headers.append('x-jwt-token', token);
+      headers.set('x-jwt-token', token);
     }
 
     // The fetch-ponyfill can't handle a proper Headers class anymore. Change it back to an object.
@@ -1581,7 +1581,7 @@ export class Formio {
       }
 
       // Handle fetch results
-      const token = response.headers.get('x-jwt-token');
+      const respToken = response.headers.get('x-jwt-token');
 
       // In some strange cases, the fetch library will return an x-jwt-token without sending
       // one to the server. This has even been debugged on the server to verify that no token
@@ -1591,7 +1591,7 @@ export class Formio {
       if (
         (method === 'GET') &&
         !requestToken &&
-        token &&
+        respToken &&
         !opts.external &&
         !url.includes('token=') &&
         !url.includes('x-jwt-token=')
@@ -1603,11 +1603,14 @@ export class Formio {
       if (
         response.status >= 200 &&
         response.status < 300 &&
-        token &&
-        token !== '' &&
+        respToken &&
+        respToken !== '' &&
         !tokenIntroduced
       ) {
-        Formio.setToken(token, opts);
+        Formio.setToken(respToken, {
+          ...opts,
+          ...{ fromCurrent: !token }
+        });
       }
       // 204 is no content. Don't try to .json() it.
       if (response.status === 204) {
