@@ -1527,7 +1527,7 @@ export class Formio {
     });
     const token = Formio.getToken(opts);
     if (token && !opts.noToken) {
-      headers.append('x-jwt-token', token);
+      headers.set('x-jwt-token', token);
     }
 
     // The fetch-ponyfill can't handle a proper Headers class anymore. Change it back to an object.
