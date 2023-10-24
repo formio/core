@@ -1609,7 +1609,7 @@ export class Formio {
       ) {
         Formio.setToken(respToken, {
           ...opts,
-          ...{ fromCurrent: !token }
+          ...{ fromCurrent: (opts.fromCurrent || !!requestToken) }
         });
       }
       // 204 is no content. Don't try to .json() it.
