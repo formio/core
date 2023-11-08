@@ -3,19 +3,20 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 module.exports = {
   mode: 'development',
   entry: {
-    'index.js': './src/index.ts',
-    'base/index.js': './src/base/index.ts',
-    'components/index.js': './src/components/index.ts',
-    'model/index.js': './src/model/index.ts',
-    'modules/index.js': './src/modules/index.ts',
-    'sdk/index.js': './src/sdk/index.ts',
-    'utils/index.js': './src/utils/index.ts',
-    'template/index.js': './src/template/index.ts',
-    'process/index.js': './src/process/index.ts'
+    'formio.core.js': './src/index.ts',
+    'formio.base.js': './src/base/index.ts',
+    'formio.components.js': './src/components/index.ts',
+    'formio.model.js': './src/model/index.ts',
+    'formio.modules.js': './src/modules/index.ts',
+    'formio.js': './src/sdk/index.ts',
+    'formio.utils.js': './src/utils/index.ts',
+    'formio.template.js': './src/template/index.ts',
+    'formio.process.js': './src/process/index.ts'
   },
   output: {
     library: {
-      type: 'umd'
+      type: 'umd',
+      name: 'FormioCore'
     },
     path: path.resolve(__dirname, '../dist'),
     filename: '[name]',

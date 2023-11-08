@@ -1377,12 +1377,12 @@ export class Formio {
   }
 
   static serialize(obj: any, _interpolate?: any) {
-    const str = [];
+    const str: string[] = [];
     const interpolate = (item: any) => {
       return _interpolate ? _interpolate(item) : item;
     };
     for (const p in obj) {
-      if (obj.hasOwnProperty(p)) {
+      if (Object.prototype.hasOwnProperty.call(obj, p)) {
         str.push(`${encodeURIComponent(p)}=${encodeURIComponent(interpolate(obj[p]))}`);
       }
     }
@@ -1609,7 +1609,7 @@ export class Formio {
       ) {
         Formio.setToken(respToken, {
           ...opts,
-          ...{ fromCurrent: !token }
+          ...{ fromCurrent: (opts.fromCurrent || !!requestToken) }
         });
       }
       // 204 is no content. Don't try to .json() it.

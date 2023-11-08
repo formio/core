@@ -18,10 +18,9 @@
     "test:debug": "mocha -r ts-node/register -r tsconfig-paths/register -r mock-local-storage -r jsdom-global/register --debug-brk --inspect '**/*.spec.ts'",
     "docs": "./node_modules/typedoc/bin/typedoc --exclude '*.spec.ts' src/*.ts src/**/*.ts src/**/**/*.ts",
     "build:dev": "webpack --config config/webpack.config.js",
-    "build:full": "webpack --config config/webpack.full.js",
     "build:prod": "webpack --config config/webpack.prod.js",
     "clean": "rm -rf lib && rm -rf dist && rm -rf docs",
-    "build": "npm run clean && gulp templates && npm run docs && npm run lib && npm run build:dev && npm run build:prod && npm run build:full",
+    "build": "npm run clean && gulp templates && npm run docs && npm run lib && npm run build:dev && npm run build:prod",
     "prepublish": "npm run build && npm run test"
   },
   "repository": {
