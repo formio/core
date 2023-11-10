@@ -1,5 +1,5 @@
 import jsonLogic from 'json-logic-js';
-import * as _ from '@formio/lodash';
+import * as _ from 'lodash';
 import { dayjs } from 'utils/date';
 import { lodashOperators } from './operators';
 

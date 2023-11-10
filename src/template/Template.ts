@@ -1,4 +1,4 @@
-import * as _ from '@formio/lodash';
+import merge from 'lodash/merge';
 
 /**
  * Manages all the available templates which can be rendered.
@@ -14,7 +14,7 @@ export class Template {
      */
     public static addTemplates(templates: any) {
         var framework = Template.framework;
-        Template.templates = _.merge(Template.templates, templates);
+        Template.templates = merge(Template.templates, templates);
         Template.framework = framework;
     }
 
@@ -24,7 +24,7 @@ export class Template {
      * @param template
      */
     public static addTemplate(name: string, template: any) {
-        Template.templates[name] = _.merge(Template.current, template);
+        Template.templates[name] = merge(Template.current, template);
         if (Template.templates.hasOwnProperty(Template._framework)) {
             Template._current = Template.templates[Template._framework];
         }
@@ -36,7 +36,7 @@ export class Template {
      * @param template
      */
     public static extendTemplate(name: string, template: any) {
-        Template.templates[name] = _.merge(Template.templates[name], template);
+        Template.templates[name] = merge(Template.templates[name], template);
         if (Template.templates.hasOwnProperty(Template._framework)) {
             Template._current = Template.templates[Template._framework];
         }
@@ -56,7 +56,7 @@ export class Template {
      */
     public static set current(templates) {
         const defaultTemplates = Template.current;
-        Template._current = _.merge(defaultTemplates, templates);
+        Template._current = merge(defaultTemplates, templates);
     }
 
     /**

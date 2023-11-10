@@ -1,5 +1,3 @@
-import * as _ from '@formio/lodash';
-
 import { ProcessContext, ProcessContextSync, ProcessorScope } from "types";
 import { eachComponentData, eachComponentDataAsync } from "utils/formUtil";
 import { processOne, processOneSync } from './processOne';

@@ -1,4 +1,4 @@
-import * as _ from '@formio/lodash';
+import isNil from 'lodash/isNil';
 import { FieldError } from 'error';
 import { Component, TextAreaComponent, RuleFn, TagsComponent, RuleFnSync, ValidationContext } from 'types';
 
@@ -60,7 +60,7 @@ export const validateMultipleSync: RuleFnSync = (context: ValidationContext) => 
             return isRequired ? value.length > 0 ? null : new FieldError('array_nonempty', context): null;
         } else {
             // Null/undefined is ok if this value isn't required; anything else should fail
-            return _.isNil(value) ? isRequired ? new FieldError('array', context) : null : null;
+            return isNil(value) ? isRequired ? new FieldError('array', context) : null : null;
         }
     } else {
         if (!canBeArray && isArray) {

@@ -1,4 +1,5 @@
-import * as _ from '@formio/lodash';
+import each from 'lodash/each';
+import get from 'lodash/get';
 import { Model, ModelInterface, ModelDecoratorInterface } from './Model';
 export function NestedModel(props: any = {}) : ModelDecoratorInterface {
     if (!props.schema) {
@@ -124,7 +125,7 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
              * @param {function} fn - Called for each component
              */
             eachComponent(fn: Function) {
-                _.each(this.components, (component: any, index: any) => {
+                each(this.components, (component: any, index: any) => {
                     if (fn(component, index) === false) {
                         return false;
                     }
@@ -140,7 +141,7 @@ export function NestedModel(props: any = {}) : ModelDecoratorInterface {
             public eachComponentValue(value: any, fn: any) {
                 if (Object.keys(value).length) {
                     this.eachComponent((comp: any) => {
-                        fn(comp, _.get(value, comp.component.key));
+                        fn(comp, get(value, comp.component.key));
                     });
                 }
             }

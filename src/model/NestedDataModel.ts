@@ -1,4 +1,5 @@
-import * as _ from '@formio/lodash';
+import get from 'lodash/get';
+import set from 'lodash/set';
 import { ModelInterface, ModelDecoratorInterface } from './Model';
 import { NestedModel } from './NestedModel';
 export function NestedDataModel(props: any = {}) : ModelDecoratorInterface {
@@ -15,15 +16,15 @@ export function NestedDataModel(props: any = {}) : ModelDecoratorInterface {
              * Get the component data.
              */
             componentData() {
-                const compData: any = _.get(this.data, this.component.key, this.defaultValue);
+                const compData: any = get(this.data, this.component.key, this.defaultValue);
                 if (!Object.keys(compData).length) {
-                    _.set(this.data, this.component.key, compData);
+                    set(this.data, this.component.key, compData);
                 }
                 return compData;
             }
 
             public get dataValue() {
-                return _.get(this.data, this.component.key);
+                return get(this.data, this.component.key);
             }
 
             public set dataValue(value: any) {

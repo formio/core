@@ -8,7 +8,7 @@ import { Template } from './template';
 (Formio as any).Evaluator = Evaluator;
 (Formio as any).Utils = Utils;
 (Formio as any).Templates = Template;
-import { merge } from '@formio/lodash';
+import merge from 'lodash/merge';
 
 /**
  * Register a specific plugin.

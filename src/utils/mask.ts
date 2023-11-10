@@ -1,4 +1,4 @@
-import { isRegExp } from '@formio/lodash';
+import isRegExp from 'lodash/isRegExp'
 
 /**
  * Returns an input mask that is compatible with the input mask library.

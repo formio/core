@@ -1,4 +1,4 @@
-import * as _ from '@formio/lodash';
+import get from 'lodash/get';
 import { rules, rulesSync } from './rules';
 import { shouldSkipValidation } from './util';
 import { ProcessorContext, ProcessorFn, ProcessorFnSync, ValidationScope } from 'types';
@@ -7,11 +7,11 @@ import { getErrorMessage } from 'utils/error';
 export const validateProcess: ProcessorFn<ValidationScope> = async (context: ProcessorContext<ValidationScope>) => {
     const { component, data, path, instance, scope } = context;
     if (component.multiple) {
-        const contextualData = _.get(data, path);
+        const contextualData: any = get(data, path);
         if (contextualData.length > 0) {
             for (let i = 0; i < contextualData.length; i++) {
                 const amendedPath = `${path}[${i}]`;
-                let value = _.get(data, amendedPath);
+                let value = get(data, amendedPath);
                 if (instance?.shouldSkipValidation(data) || shouldSkipValidation(component, data)) {
                     return;
                 }
@@ -28,7 +28,7 @@ export const validateProcess: ProcessorFn<ValidationScope> = async (context: Pro
             return;
         }
     }
-    let value = _.get(data, path);
+    let value = get(data, path);
     if (instance?.shouldSkipValidation(data) || shouldSkipValidation(component, data)) {
         return;
     }
@@ -52,11 +52,11 @@ export const validateProcess: ProcessorFn<ValidationScope> = async (context: Pro
 export const validateProcessSync: ProcessorFnSync<ValidationScope> = (context: ProcessorContext<ValidationScope>) => {
     const { component, data, path, instance, scope } = context;
     if (component.multiple) {
-        const contextualData = _.get(data, path);
+        const contextualData: any = get(data, path);
         if (contextualData?.length > 0) {
             for (let i = 0; i < contextualData.length; i++) {
                 const amendedPath = `${path}[${i}]`;
-                let value = _.get(data, amendedPath);
+                let value = get(data, amendedPath);
                 if (instance?.shouldSkipValidation(data) || shouldSkipValidation(component, data)) {
                     return;
                 }
@@ -73,7 +73,7 @@ export const validateProcessSync: ProcessorFnSync<ValidationScope> = (context: P
             return;
         }
     }
-    let value = _.get(data, path);
+    let value = get(data, path);
     if (instance?.shouldSkipValidation(data) || shouldSkipValidation(component, data)) {
         return;
     }

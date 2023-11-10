@@ -1,4 +1,5 @@
-import { noop, isNil } from '@formio/lodash';
+import noop from 'lodash/noop';
+import isNil from 'lodash/isNil';
 
 /**
  * The plugin initialization function, which will receive the Formio interface as its first argument.

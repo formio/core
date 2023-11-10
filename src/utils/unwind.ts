@@ -1,4 +1,10 @@
-import { fastCloneDeep, get, set, has, each, find, filter } from '@formio/lodash';
+import get from 'lodash/get';
+import set from 'lodash/set';
+import has from 'lodash/has';
+import each from 'lodash/each';
+import find from 'lodash/find';
+import filter from 'lodash/filter';
+import { fastCloneDeep } from './fastCloneDeep';
 import { eachComponent } from './formUtil';
 export function mergeObject(src: any, dst: any) {
     each(src, function (value: any, key: any) {

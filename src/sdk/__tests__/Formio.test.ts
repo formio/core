@@ -1,5 +1,5 @@
 import { Formio } from '../Formio';
-import { fastCloneDeep } from '@formio/lodash';
+import { fastCloneDeep } from '../../utils/fastCloneDeep';
 import _each from 'lodash/each';
 import assert from 'power-assert';
 import sinon from 'sinon';

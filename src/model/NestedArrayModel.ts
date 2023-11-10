@@ -1,4 +1,4 @@
-import * as _ from '@formio/lodash';
+import get from 'lodash/get';
 import { ModelInterface, ModelDecoratorInterface } from './Model';
 import { NestedDataModel } from './NestedDataModel';
 export function NestedArrayModel(props: any = {}) : ModelDecoratorInterface {
@@ -61,7 +61,7 @@ export function NestedArrayModel(props: any = {}) : ModelDecoratorInterface {
             rowChanged(rowData: any, index: number): boolean {
                 let changed = false;
                 this.row(index)?.forEach((comp: any) => {
-                    const hasChanged: boolean = comp.hasChanged(_.get(rowData, comp.component.key));
+                    const hasChanged: boolean = comp.hasChanged(get(rowData, comp.component.key));
                     changed = hasChanged || changed;
                     if (hasChanged) {
                         comp.bubble('change', comp);
@@ -130,7 +130,7 @@ export function NestedArrayModel(props: any = {}) : ModelDecoratorInterface {
              * Returns the dataValue for this component.
              */
             public get dataValue() {
-                return _.get(this.data, this.component.key);
+                return get(this.data, this.component.key);
             }
 
             /**

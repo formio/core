@@ -1,5 +1,3 @@
-import * as _ from '@formio/lodash';
-
 import { FieldError, ValidatorError } from 'error';
 import { SelectComponent, RuleFn } from 'types';
 import { Evaluator } from 'utils';

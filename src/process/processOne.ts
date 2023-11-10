@@ -1,5 +1,3 @@
-import * as _ from '@formio/lodash';
-
 import { ProcessorsContext, ProcessorsContextSync, ProcessorType } from "types";
 
 export async function processOne<ProcessorScope>({component, components, path, data, row, process, instance, processors, index, scope}: ProcessorsContext<ProcessorScope>) {
