@@ -1,5 +1,4 @@
-import get from 'lodash/get';
-import set from 'lodash/set';
+import { get, set } from 'lodash';
 import { ModelInterface, ModelDecoratorInterface } from './Model';
 import { NestedModel } from './NestedModel';
 export function NestedDataModel(props: any = {}) : ModelDecoratorInterface {

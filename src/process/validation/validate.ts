@@ -1,4 +1,4 @@
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { rules, rulesSync } from './rules';
 import { shouldSkipValidation } from './util';
 import { ProcessorContext, ProcessorFn, ProcessorFnSync, ValidationScope } from 'types';

@@ -1,10 +1,4 @@
-import noop from 'lodash/noop';
-import trim from 'lodash/trim';
-import keys from 'lodash/keys';
-import get from 'lodash/get';
-import set from 'lodash/set';
-import isObject from 'lodash/isObject';
-import values from 'lodash/values';
+import { noop, trim, keys, get, set, isObject, values } from 'lodash';
 
 // BaseEvaluator is for extending.
 export class BaseEvaluator {

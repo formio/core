@@ -1,4 +1,4 @@
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { ModelInterface, ModelDecoratorInterface } from './Model';
 import { NestedDataModel } from './NestedDataModel';
 export function NestedArrayModel(props: any = {}) : ModelDecoratorInterface {

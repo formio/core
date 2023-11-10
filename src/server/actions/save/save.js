@@ -1,7 +1,4 @@
-const each = require('lodash/each');
-const set = require('lodash/set');
-const has = require('lodash/has');
-const get = require('lodash/get');
+import { each, set, has, get } from 'lodash';
 const async = require('async');
 const debug = require('debug')('formio:actions:save');
 const error = require('debug')('formio:error');

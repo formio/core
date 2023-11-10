@@ -1,4 +1,4 @@
-import isNil from 'lodash/isNil';
+import { isNil } from 'lodash';
 import { FieldError } from 'error';
 import { Component, TextAreaComponent, RuleFn, TagsComponent, RuleFnSync, ValidationContext } from 'types';
 

@@ -1,8 +1,4 @@
-import merge from 'lodash/merge';
-import isArray from 'lodash/isArray';
-import isEqual from 'lodash/isEqual';
-import get from 'lodash/get';
-import set from 'lodash/set';
+import { merge, isArray, isEqual, get, set } from 'lodash';
 import { EventEmitter, ModelInterface } from './EventEmitter';
 export { ModelInterface };
 

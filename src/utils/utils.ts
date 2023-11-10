@@ -1,5 +1,4 @@
-import isBoolean from 'lodash/isBoolean';
-import isString from 'lodash/isString';
+import { isBoolean, isString } from 'lodash';
 
 /**
  * Escapes RegEx characters in provided String value.

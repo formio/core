@@ -1,4 +1,4 @@
-import merge from 'lodash/merge';
+import { merge } from 'lodash';
 
 /**
  * Manages all the available templates which can be rendered.

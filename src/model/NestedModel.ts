@@ -1,5 +1,4 @@
-import each from 'lodash/each';
-import get from 'lodash/get';
+import { each, get } from 'lodash';
 import { Model, ModelInterface, ModelDecoratorInterface } from './Model';
 export function NestedModel(props: any = {}) : ModelDecoratorInterface {
     if (!props.schema) {

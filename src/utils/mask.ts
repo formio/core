@@ -1,4 +1,4 @@
-import isRegExp from 'lodash/isRegExp'
+import { isRegExp } from 'lodash'
 
 /**
  * Returns an input mask that is compatible with the input mask library.

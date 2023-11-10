@@ -1,11 +1,6 @@
 import fetchPonyfill from 'fetch-ponyfill';
 import { fastCloneDeep } from '../utils/fastCloneDeep';
-import get from 'lodash/get';
-import defaults from 'lodash/defaults';
-import isBoolean from 'lodash/isBoolean';
-import isNil from 'lodash/isNil';
-import isObject from 'lodash/isObject';
-import intersection from 'lodash/intersection';
+import { get, defaults, isBoolean, isNil, isObject, intersection } from 'lodash';
 import { eachComponent } from 'utils/formUtil';
 import { jwtDecode } from 'utils/jwtDecode';
 import EventEmitter from 'eventemitter3';
