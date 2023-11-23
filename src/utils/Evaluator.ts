@@ -23,6 +23,12 @@ export class BaseEvaluator {
     };
 
     public static interpolateString(rawTemplate: string, data: any, options: any = {}) {
+        if (!rawTemplate) {
+            return '';
+        }
+        if (typeof rawTemplate !== 'string') {
+            return (rawTemplate as any).toString();
+        }
         return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => {
             // If this is a function call and we allow evals.
             if ($2.indexOf('(') !== -1) {
