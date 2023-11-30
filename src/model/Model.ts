@@ -1,4 +1,4 @@
-import * as _ from '@formio/lodash';
+import { merge, isArray, isEqual, get, set } from 'lodash';
 import { EventEmitter, ModelInterface } from './EventEmitter';
 export { ModelInterface };
 
@@ -42,7 +42,7 @@ export function Model(props: any = {}) : ModelDecoratorInterface {
             constructor(public component: any = {}, public options: any = {}, public data: any = {}) {
                 super(component, options, data);
                 this.id = `e${Math.random().toString(36).substring(7)}`;
-                this.component = _.merge({}, this.defaultSchema, this.component) as any;
+                this.component = merge({}, this.defaultSchema, this.component) as any;
                 this.options = {...this.defaultOptions, ...this.options};
                 if (!this.options.noInit) {
                     this.init();
@@ -88,15 +88,15 @@ export function Model(props: any = {}) : ModelDecoratorInterface {
              * @returns
              */
             isEmpty(value = this.dataValue) {
-                const isEmptyArray = (_.isArray(value) && value.length === 1) ? _.isEqual(value[0], this.emptyValue) : false;
-                return value == null || value.length === 0 || _.isEqual(value, this.emptyValue) || isEmptyArray;
+                const isEmptyArray = (isArray(value) && value.length === 1) ? isEqual(value[0], this.emptyValue) : false;
+                return value == null || value.length === 0 || isEqual(value, this.emptyValue) || isEmptyArray;
             }
 
             /**
              * Returns the data value for this component.
              */
             public get dataValue(): any {
-                return _.get(this.data, this.component.key);
+                return get(this.data, this.component.key);
             }
 
             /**
@@ -104,7 +104,7 @@ export function Model(props: any = {}) : ModelDecoratorInterface {
              */
             public set dataValue(value: any) {
                 if (this.component.key) {
-                    _.set(this.data, this.component.key, value);
+                    set(this.data, this.component.key, value);
                 }
             }
 

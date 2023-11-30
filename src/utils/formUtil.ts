@@ -81,32 +81,23 @@ export const eachComponentDataAsync = async (
   if (!components || !data) {
     return;
   }
-  const originalPath = path;
   row = row || data;
   return await eachComponentAsync(
     components,
-    async (component: any) => {
-      path = originalPath ? `${originalPath}.${component.key}` : component.key;
-      if (component.key && component.type === 'form') {
-        // TODO: this could be a fn or a generator
-        path = `${path}.data`;
-        await eachComponentDataAsync(component.components, data, row, fn, path);
+    async (component: any, componentComponents: any, compPath: string) => {
+      if (await fn(component, data, row, compPath, componentComponents, index) === true) {
         return true;
-      } else if (TREE_COMPONENTS.includes(component.type) || component.tree) {
-        row = get(data, path, data);
-        // evaluate the top level component before introspecting its child components
-        await fn(component, data, row, path, components, index);
+      }
+      if (TREE_COMPONENTS.includes(component.type) || component.tree) {
+        row = get(data, compPath, data);
         if (Array.isArray(row)) {
-          // TODO: this could be a fn or a generator
-          path = `${path}[0]`;
           for (let i = 0; i < row.length; i++) {
-            path = path.replace(/\[\d\]$/, `[${i}]`);
             await eachComponentDataAsync(
               component.components,
               data,
-              row,
+              row[i],
               fn,
-              path,
+              `${compPath}[${i}]`,
               i
             );
           }
@@ -115,13 +106,14 @@ export const eachComponentDataAsync = async (
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
-        await eachComponentDataAsync(component.components, data, row, fn, path);
+        await eachComponentDataAsync(component.components, data, row, fn, compPath);
         return true;
       } else {
-        return fn(component, data, row, path, components, index);
+        return false;
       }
     },
-    true
+    true,
+    path
   );
 };
 
@@ -144,43 +136,32 @@ export const eachComponentData = (
   if (!components || !data) {
     return;
   }
-  const originalPath = path;
   return eachComponent(
     components,
-    (component: any) => {
-      path = originalPath ? `${originalPath}.${component.key}` : component.key;
+    (component: any, compPath: string, componentComponents: any) => {
       row = row || data;
-      if (component.key && component.type === "form") {
-        // evaluate the top level component before introspecting its child components
-        // TODO: is row just an alias for data when it not in a row component?
-        fn(component, data, row, path, components, index);
-        // TODO: this could be a fn or a generator
-        path = `${path}.data`;
-        eachComponentData(component.components, data, row, fn, path, index);
+      if (fn(component, data, row, compPath, componentComponents, index) === true) {
         return true;
-      } else if (TREE_COMPONENTS.includes(component.type) || component.tree) {
-        row = get(data, path, data);
-        // evaluate the top level component before introspecting its child components
-        fn(component, data, row, path, components, index);
+      }
+      if (TREE_COMPONENTS.includes(component.type) || component.tree) {
+        row = get(data, compPath, data);
         if (Array.isArray(row)) {
-          // TODO: this could be a fn or a generator
-          path = `${path}[0]`;
           for (let i = 0; i < row.length; i++) {
-            path = path.replace(/\[\d\]$/, `[${i}]`);
-            eachComponentData(component.components, data, row, fn, path, i);
+            eachComponentData(component.components, data, row[i], fn, `${compPath}[${i}]`, i);
           }
           return true;
         } else if (isEmpty(row)) {
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
-        eachComponentData(component.components, data, row, fn, path, index);
+        eachComponentData(component.components, data, row, fn, compPath, index);
         return true;
       } else {
-        return fn(component, data, row, path, components, index);
+        return false;
       }
     },
-    true
+    true,
+    path
   );
 };
 
@@ -216,9 +197,10 @@ export function eachComponent(
     const hasComps =
       component.components && Array.isArray(component.components);
     let noRecurse = false;
+    const compPath = component.parentPath || path;
     const newPath = component.key
-      ? path
-        ? `${path}.${component.key}`
+      ? compPath
+        ? `${compPath}.${component.key}`
         : component.key
       : "";
 
@@ -268,7 +250,7 @@ export function eachComponent(
       } else if (component.key && component.type === "form") {
         return `${newPath}.data`;
       }
-      return path;
+      return compPath;
     };
 
     if (!noRecurse) {
@@ -326,11 +308,12 @@ export async function eachComponentAsync(
     const hasRows = component.rows && Array.isArray(component.rows);
     const hasComps =
       component.components && Array.isArray(component.components);
+    const compPath = component.parentPath || path;
     const newPath = component.key
-      ? path
-        ? `${path}.${component.key}`
+      ? compPath
+        ? `${compPath}.${component.key}`
         : component.key
-      : path;
+      : compPath;
     const layoutTypes = ["htmlelement", "content"];
     const isLayoutComponent =
       hasColumns ||
@@ -348,7 +331,7 @@ export async function eachComponentAsync(
           component.columns[j]?.components,
           fn,
           includeAll,
-          path
+          compPath
         );
       }
     } else if (hasRows) {
@@ -356,13 +339,13 @@ export async function eachComponentAsync(
         let row = component.rows[j];
         if (Array.isArray(row)) {
           for (let k = 0; k < row.length; k++) {
-            await eachComponentAsync(row[k]?.components, fn, includeAll, path);
+            await eachComponentAsync(row[k]?.components, fn, includeAll, compPath);
           }
         }
       }
     } else if (hasComps) {
       const subPath = isLayoutComponent
-        ? path
+        ? compPath
         : component.type === "form"
         ? `${newPath}.data`
         : newPath;

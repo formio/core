@@ -1,3 +1,21 @@
+## [Unreleased: 2.0.0]
+### Breaking Changes
+ - This version of the renderer will now produce different "binary" build files. The following are created.
+   - dist/formio.core.js => The complete core binary. This used to be "dist/index.js".
+   - dist/formio.base.js => The base components of the core library. This used to be "dist/base/index.js"
+   - dist/formio.components.js => The extended components classes of the core library. This used to be "dist/components/index.js"
+   - dist/formio.model.js => This is the data model base classes for the renderer. This used to be "dist/model/index.js"
+   - dist/formio.modules.js => The different modules such as "jsonlogic" used when rendering. This used to be "dist/modules/index.js"
+   - dist/formio.js => The Formio SDK => this used to be "dist/sdk/index.js"
+   - dist/formio.utils.js => The Formio Utils library => this used to be "dist/utils/index.js"
+   - dist/formio.template.js => The template handling library => this used to be "dist/template/index.js"
+   - dist/formio.process.js => The processing engine, such as validation => this used to be "dist/process/index.js"
+
+ - This version introduces the "processors" concept to our core library. This will become the "core" validation engine and data processing engine for
+   our renderer as well as server side logic.
+
+ - This version introduces the "template" handling logic so that it can be used by other libraries to manage templates.
+
 ## 1.3.0-rc.22
 ### Fixed
  - FIO-7462: fix failing tests

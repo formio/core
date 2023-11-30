@@ -1,13 +1,14 @@
 import 'core-js/features/object/from-entries';
 import { Formio } from './sdk';
 import { Evaluator, Utils } from './utils';
-import { Components, render, Template } from './base';
+import { Components, render } from './base';
+import { Template } from './template';
 (Formio as any).render = render;
 (Formio as any).Components = Components;
 (Formio as any).Evaluator = Evaluator;
 (Formio as any).Utils = Utils;
 (Formio as any).Templates = Template;
-import { merge } from '@formio/lodash';
+import { merge } from 'lodash';
 
 /**
  * Register a specific plugin.

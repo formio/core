@@ -10,5 +10,4 @@ config.entry = {
   'formio.min.js': './src/sdk/index.ts',
   'formio.utils.min.js': './src/utils/index.ts',
 };
-config.output.library.name = 'FormioCore';
 module.exports = config;

@@ -1,7 +1,7 @@
-import { ProcessorContext } from 'types';
-import { getComponentErrorField } from 'validation/util';
+import { getComponentErrorField } from 'process/validation/util';
+import { ValidationContext } from 'types';
 
-type FieldErrorContext = ProcessorContext & {
+type FieldErrorContext = ValidationContext & {
     field?: string;
     // TODO: the following are needed for for backwards compatibility, do we need this?
     // * context.level will determine whether the `alert` template will display

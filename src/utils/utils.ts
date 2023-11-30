@@ -1,4 +1,4 @@
-import * as _ from '@formio/lodash';
+import { isBoolean, isString } from 'lodash';
 
 /**
  * Escapes RegEx characters in provided String value.
@@ -19,10 +19,10 @@ export function escapeRegExCharacters(value: string) {
  * @return {boolean}
  */
  export function boolValue(value: any) {
-  if (_.isBoolean(value)) {
+  if (isBoolean(value)) {
     return value;
   }
-  else if (_.isString(value)) {
+  else if (isString(value)) {
     return (value.toLowerCase() === 'true');
   }
   else {

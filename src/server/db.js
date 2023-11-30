@@ -1,8 +1,7 @@
 const { MongoClient, ObjectId } = require('mongodb');
 const debug = require('debug')('formio:db');
 const error = require('debug')('formio:error');
-const pick = require('lodash/pick');
-const omit = require('lodash/omit');
+import { pick, omit } from 'lodash';
 class Database {
     constructor(config) {
         this.config = config;

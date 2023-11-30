@@ -1,15 +1,24 @@
-import { Component, DataObject, Form, PassedComponentInstance, ProcessorType } from "types";
-import { FieldError } from 'error';
+import { Component, DataObject, PassedComponentInstance, ProcessorScope, ProcessorType } from "types"
+import { ProcessorFn, ProcessorFnSync } from "./ProcessorFn";
+import { ProcessType } from "./ProcessType";
 
-export type ProcessorContext = {
+export type ProcessorContext<ProcessorScope> = {
     component: Component;
+    path: string;
     data: DataObject;
     row: any;
-    path: string;
+    components?: Component[];
     instance?: PassedComponentInstance;
-    processor: ProcessorType;
-    errors?: FieldError[];
-    process?: string;
-    index?: number;
+    process?: ProcessType;
+    processor?: ProcessorType;
     config?: Record<string, any>;
+    index?: number;
+    scope: ProcessorScope;
 }
+
+export type _ProcessorsContext<FunctionType> = {
+    processors: FunctionType[];
+}
+
+export type ProcessorsContext<ProcessorScope> = ProcessorContext<ProcessorScope> & _ProcessorsContext<ProcessorFn<ProcessorScope>>;
+export type ProcessorsContextSync<ProcessorScope> = ProcessorContext<ProcessorScope> & _ProcessorsContext<ProcessorFnSync<ProcessorScope>>;

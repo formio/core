@@ -1,8 +1,5 @@
 const bcrypt = require('bcryptjs');
-const has = require('lodash/has');
-const set = require('lodash/set');
-const get = require('lodash/get');
-const unset = require('lodash/unset');
+import { has, set, get, unset } from 'lodash';
 const debug = require('debug')('formio:action:login');
 const error = require('debug')('formio:error');
 const LoginAction = {

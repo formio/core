@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { Component, DataObject, Form, ProcessorContext } from 'types';
+import { Component, DataObject, Form, ProcessorContext, ValidationContext } from 'types';
 import { Evaluator, Utils } from 'utils';
 
 export function isComponentPersistent(component: Component) {
@@ -32,7 +32,7 @@ export function isEmptyObject(obj: any): obj is {} {
     return !!obj && Object.keys(obj).length === 0 && obj.constructor === Object;
 }
 
-export function getComponentErrorField(component: Component, context: ProcessorContext) {
+export function getComponentErrorField(component: Component, context: ValidationContext) {
     const toInterpolate = component.errorLabel || component.label || component.placeholder || component.key;
     return Evaluator.interpolate(toInterpolate, context);
 }

@@ -5,6 +5,8 @@ export * from './Role';
 export * from './Action';
 export * from './Access';
 export * from './RuleFn';
+export * from './ValidationScope';
+export * from './ValidationContext';
 export * from './Component';
 export * from './ValidatorConfig';
 export * from './process';

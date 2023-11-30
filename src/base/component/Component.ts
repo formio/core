@@ -1,7 +1,6 @@
-import { merge } from '@formio/lodash';
-
+import { merge } from 'lodash';
 import { Components } from '../Components';
-import { Template } from '../Template';
+import { Template } from 'template';
 import { Evaluator } from 'utils';
 import * as dom from 'utils/dom';
 import { sanitize } from 'utils/sanitize';
