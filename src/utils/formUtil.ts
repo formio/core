@@ -84,7 +84,7 @@ export const eachComponentDataAsync = async (
   row = row || data;
   return await eachComponentAsync(
     components,
-    async (component: any, compPath: string, componentComponents: any) => {
+    async (component: any, componentComponents: any, compPath: string) => {
       if (await fn(component, data, row, compPath, componentComponents, index) === true) {
         return true;
       }
