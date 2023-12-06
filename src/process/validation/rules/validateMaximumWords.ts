@@ -1,26 +1,42 @@
-import _ from 'lodash';
+import _, { get } from 'lodash';
 
 import { FieldError } from 'error';
-import { TextFieldComponent, RuleFn, RuleFnSync } from 'types';
+import { TextFieldComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
+import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isValidatableTextFieldComponent = (component: any): component is TextFieldComponent => {
     return component && component.validate?.hasOwnProperty('maxWords');
 };
 
-export const validateMaximumWords: RuleFn = async (context) => {
+const getValidationSetting = (component: any) => {
+    let maxWords = (component as TextFieldComponent).validate?.maxWords;
+    if (typeof maxWords === 'string') {
+        maxWords = parseInt(maxWords, 10);
+    }
+    return maxWords;
+};
+
+const shouldValidate = (context: ValidationContext) => {
+    const { component, value } = context;
+    if (!isValidatableTextFieldComponent(component)) {
+        return false;
+    }
+    if (!getValidationSetting(component)) {
+        return false;
+    }
+    return true;
+}
+
+export const validateMaximumWords: RuleFn = async (context: ValidationContext) => {
     return validateMaximumWordsSync(context);
 };
 
-export const validateMaximumWordsSync: RuleFnSync = (context) => {
+export const validateMaximumWordsSync: RuleFnSync = (context: ValidationContext) => {
     const { component, value } = context;
-    if (!isValidatableTextFieldComponent(component)) {
+    if (!shouldValidate(context)) {
         return null;
     }
-    const maxWords =
-        typeof component.validate?.maxWords === 'string'
-            ? parseInt(component.validate.maxWords, 10)
-            : component.validate?.maxWords;
-
+    const maxWords = getValidationSetting(component);
     if (maxWords && typeof value === 'string') {
         if (value.trim().split(/\s+/).length > maxWords) {
             const error = new FieldError('maxWords', { ...context, length: String(maxWords) });
@@ -28,4 +44,11 @@ export const validateMaximumWordsSync: RuleFnSync = (context) => {
         }
     }
     return null;
+};
+
+export const validateMaximumWordsInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
+    name: 'validateMaximumWords',
+    process: validateMaximumWords,
+    processSync: validateMaximumWordsSync,
+    shouldProcess: shouldValidate,
 };

@@ -1,9 +1,9 @@
-import _ from 'lodash';
-
+import isEmpty from 'lodash/isEmpty';
 import { FieldError, ValidatorError } from 'error';
 import { Evaluator } from 'utils';
-import { RadioComponent, SelectComponent, RuleFn, RuleFnSync } from 'types';
+import { RadioComponent, SelectComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { isObject, isPromise } from '../util';
+import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 function isValidatableRadioComponent(component: any): component is RadioComponent {
     return (
@@ -156,11 +156,11 @@ function compareComplexValues(valueA: unknown, valueB: unknown) {
     }
 }
 
-export const validateAvailableItems: RuleFn = async (context) => {
+export const validateAvailableItems: RuleFn = async (context: ValidationContext) => {
     const { component, value } = context;
     const error = new FieldError('invalidOption', context);
     if (isValidatableRadioComponent(component)) {
-        if (value == null || _.isEmpty(value)) {
+        if (value == null || isEmpty(value)) {
             return null;
         }
 
@@ -173,7 +173,7 @@ export const validateAvailableItems: RuleFn = async (context) => {
 
         return null;
     } else if (isValidateableSelectComponent(component)) {
-        if (value == null || _.isEmpty(value)) {
+        if (value == null || isEmpty(value)) {
             return null;
         }
         const values = await getAvailableSelectValues(component);
@@ -191,26 +191,35 @@ export const validateAvailableItems: RuleFn = async (context) => {
     return null;
 };
 
-export const validateAvailableItemsSync: RuleFnSync = (context) => {
+export const shouldValidate = (context: any) => {
+    const { component, value } = context;
+    if (value == null || isEmpty(value)) {
+        return false;
+    }
+    if (isValidatableRadioComponent(component)) {
+        return true;
+    }
+    if (isValidateableSelectComponent(component)) {
+        return true;
+    }
+    return false;
+}
+
+export const validateAvailableItemsSync: RuleFnSync = (context: ValidationContext) => {
     const { component, value } = context;
     const error = new FieldError('invalidOption', context);
+    if (!shouldValidate(context)) {
+        return null;
+    }
     if (isValidatableRadioComponent(component)) {
-        if (value == null || _.isEmpty(value)) {
-            return null;
-        }
-
         const values = component.values;
         if (values) {
             return values.findIndex(({ value: optionValue }) => optionValue === value) !== -1
                 ? null
                 : error;
         }
-
         return null;
     } else if (isValidateableSelectComponent(component)) {
-        if (value == null || _.isEmpty(value)) {
-            return null;
-        }
         const values = getAvailableSelectValuesSync(component);
         if (values) {
             if (isObject(value)) {
@@ -219,9 +228,15 @@ export const validateAvailableItemsSync: RuleFnSync = (context) => {
                     ? null
                     : error;
             }
-
             return values.find((optionValue) => optionValue === value) !== undefined ? null : error;
         }
     }
     return null;
+};
+
+export const validateAvailableItemsInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
+    name: 'validateAvailableItems',
+    process: validateAvailableItems,
+    processSync: validateAvailableItemsSync,
+    shouldProcess: shouldValidate
 };

@@ -347,9 +347,22 @@ export async function eachComponentAsync(
       const subPath = isLayoutComponent
         ? compPath
         : component.type === "form"
-        ? `${newPath}.data`
-        : newPath;
+          ? `${newPath}.data`
+          : newPath;
       await eachComponentAsync(component.components, fn, includeAll, subPath);
     }
   }
+}
+
+// Provided components, data, and a key, this will return the components data.
+export function getComponentData(components: Component[], data: DataObject, path: string) {
+  const compData: any = { component: null, data: null };
+  eachComponentData(components, data, data, (component: Component, data: DataObject, row: any, compPath: string) => {
+    if (compPath === path) {
+      compData.component = component;
+      compData.data = row;
+      return true;
+    }
+  });
+  return compData;
 }

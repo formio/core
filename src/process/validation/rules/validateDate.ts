@@ -1,7 +1,8 @@
 import _ from 'lodash';
 
 import { FieldError } from 'error';
-import { DateTimeComponent, TextFieldComponent, RuleFn, RuleFnSync } from 'types';
+import { DateTimeComponent, TextFieldComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
+import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isValidatableDateTimeComponent = (obj: any): obj is DateTimeComponent => {
     return !!obj && !!obj.type && obj.type === 'datetime';
@@ -15,14 +16,22 @@ const isValidatable = (component: any) => {
     return isValidatableDateTimeComponent(component) || isValidatableTextFieldComponent(component);
 };
 
-export const validateDate: RuleFn = async (context) => {
+export const shouldValidate = (context: ValidationContext) => {
+    const { component, value} = context;
+    if (!value || !isValidatable(component)) {
+        return false;
+    }
+    return true;
+};
+
+export const validateDate: RuleFn = async (context: ValidationContext) => {
     return validateDateSync(context);
 };
 
-export const validateDateSync: RuleFnSync = (context) => {
+export const validateDateSync: RuleFnSync = (context: ValidationContext) => {
     const error = new FieldError('invalidDate', context);
     const { component, value} = context;
-    if (!value || !isValidatable(component)) {
+    if (!shouldValidate(context)) {
         return null;
     }
 
@@ -39,4 +48,11 @@ export const validateDateSync: RuleFnSync = (context) => {
         return value.toString() !== 'Invalid Date' ? null : error;
     }
     return error;
+};
+
+export const validateDateInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
+    name: 'validateDate',
+    process: validateDate,
+    processSync: validateDateSync,
+    shouldProcess: shouldValidate
 };

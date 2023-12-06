@@ -1,7 +1,8 @@
 import _ from 'lodash';
 
 import { FieldError, ValidatorError } from 'error';
-import { DayComponent, RuleFn, RuleFnSync } from 'types';
+import { DayComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
+import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isValidatableDayComponent = (component: any): component is DayComponent => {
     return (
@@ -11,14 +12,24 @@ const isValidatableDayComponent = (component: any): component is DayComponent =>
     );
 };
 
-export const validateMinimumYear: RuleFn = async (context) => {
+export const shouldValidate = (context: ValidationContext) => {
+    const { component } = context;
+    if (!isValidatableDayComponent(component)) {
+        return false;
+    }
+    if (!component.minYear && !component.fields?.year?.minYear) {
+        return false;
+    }
+    return true;
+};
+
+export const validateMinimumYear: RuleFn = async (context: ValidationContext) => {
     return validateMinimumYearSync(context);
 };
 
-
-export const validateMinimumYearSync: RuleFnSync = (context) => {
+export const validateMinimumYearSync: RuleFnSync = (context: ValidationContext) => {
     const { component, value } = context;
-    if (!isValidatableDayComponent(component)) {
+    if (!shouldValidate(context)) {
         return null;
     }
     if (typeof value !== 'string' && typeof value !== 'number') {
@@ -28,15 +39,15 @@ export const validateMinimumYearSync: RuleFnSync = (context) => {
     const testArr = /\d{4}$/.exec(testValue);
     const year = testArr ? testArr[0] : null;
     if (
-        component.minYear &&
-        component.fields?.year?.minYear &&
-        component.minYear !== component.fields.year.minYear
+        (component as DayComponent).minYear &&
+        (component as DayComponent).fields?.year?.minYear &&
+        (component as DayComponent).minYear !== (component as DayComponent).fields.year.minYear
     ) {
         throw new ValidatorError(
             'Cannot validate minimum year, component.minYear and component.fields.year.minYear are not equal',
         );
     }
-    const minYear = component.minYear;
+    const minYear = (component as DayComponent).minYear;
 
     if (!minYear || !year) {
         return null;
@@ -45,4 +56,11 @@ export const validateMinimumYearSync: RuleFnSync = (context) => {
     return +year >= +minYear
         ? null
         : new FieldError('minYear', { ...context, minYear: String(minYear) });
+};
+
+export const validateMinimumYearInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
+    name: 'validateMinimumYear',
+    process: validateMinimumYear,
+    processSync: validateMinimumYearSync,
+    shouldProcess: shouldValidate,
 };

@@ -4,7 +4,7 @@ export type BaseComponent = {
     input: boolean;
     type: string;
     key: string;
-    tableView: boolean;
+    tableView?: boolean;
     placeholder?: string;
     prefix?: string;
     customClass?: string;
@@ -31,6 +31,7 @@ export type BaseComponent = {
     disabled?: boolean;
     autofocus?: boolean;
     dbIndex?: boolean;
+    defaultValue?: any;
     customDefaultValue?: string;
     calculateValue?: string;
     calculateServer?: boolean;
@@ -48,7 +49,7 @@ export type BaseComponent = {
         json?: any;
         row?: string;
     };
-    conditional?: { show: boolean | null; when: string | null; eq: string };
+    conditional?: { show: boolean | null; when: string | null; eq: string, json?: any };
     customConditional?: string;
     overlay?: {
         style: string;
@@ -66,5 +67,6 @@ export type BaseComponent = {
     addons?: any[]; // TODO: this should go away
     inputType?: string;
     errors?: Record<string, string>;
+    isConditionallyHidden?: boolean;
     truncateMultipleSpaces?: boolean;
 };

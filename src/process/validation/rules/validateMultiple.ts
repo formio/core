@@ -1,6 +1,7 @@
 import { isNil } from 'lodash';
 import { FieldError } from 'error';
 import { Component, TextAreaComponent, RuleFn, TagsComponent, RuleFnSync, ValidationContext } from 'types';
+import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isEligible = (component: Component) => {
     // TODO: would be nice if this was type safe
@@ -39,6 +40,14 @@ const emptyValueIsArray = (component: Component) => {
     }
 }
 
+export const shouldValidate = (context: ValidationContext) => {
+    const { component } = context;
+    if (!isEligible(component)) {
+        return false;
+    }
+    return true;
+};
+
 export const validateMultiple: RuleFn = async (context: ValidationContext) => {
     return validateMultipleSync(context);
 };
@@ -69,3 +78,10 @@ export const validateMultipleSync: RuleFnSync = (context: ValidationContext) => 
         return null;
     }
 }
+
+export const validateMultipleInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
+    name: 'validateMultiple',
+    process: validateMultiple,
+    processSync: validateMultipleSync,
+    shouldProcess: shouldValidate,
+};

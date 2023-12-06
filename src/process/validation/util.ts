@@ -11,21 +11,22 @@ export function isComponentProtected(component: Component) {
     return component.protected ? component.protected : false;
 }
 
-export function shouldSkipValidation(component: Component, value: unknown) {
-    if (component.validate?.custom && (_.isEmpty(value)) && !component.validate?.required) {
-        return true;
+export function shouldValidate(context: ValidationContext): boolean {
+    const { component } = context;
+    if (component.hasOwnProperty('input') && !component.input) {
+        return false;
     }
-    if (!component.input) {
-        return true;
+    if (component.isConditionallyHidden) {
+        return false;
     }
     // TODO: is this correct? we don't want the client skipping validation on, say, a password but we may want the server to
     if (typeof window === 'undefined' && component.protected) {
-        return true;
+        return false;
     }
     if (component.persistent === false || (component.persistent === 'client-only')) {
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
 
 export function isEmptyObject(obj: any): obj is {} {

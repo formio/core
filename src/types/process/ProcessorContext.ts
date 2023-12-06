@@ -14,6 +14,7 @@ export type ProcessorContext<ProcessorScope> = {
     config?: Record<string, any>;
     index?: number;
     scope: ProcessorScope;
+    evalContext?: (context: ProcessorContext<ProcessorScope>) => any;
 }
 
 export type _ProcessorsContext<FunctionType> = {

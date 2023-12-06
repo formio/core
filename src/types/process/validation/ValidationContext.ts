@@ -1,4 +1,4 @@
-import { ProcessorContext } from "./process";
+import { ProcessorContext } from "..";
 import { ValidationScope } from "./ValidationScope";
 
 type AdditionalValidationContext = {

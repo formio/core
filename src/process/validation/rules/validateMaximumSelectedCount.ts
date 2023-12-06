@@ -1,10 +1,33 @@
 import _ from 'lodash';
 
 import { FieldError, ValidatorError } from 'error';
-import { SelectBoxesComponent, DataObject, RuleFn, RuleFnSync } from 'types';
+import { SelectBoxesComponent, DataObject, RuleFn, RuleFnSync, ValidationContext } from 'types';
+import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isValidatableSelectBoxesComponent = (component: any): component is SelectBoxesComponent => {
     return component && component.validate?.hasOwnProperty('maxSelectedCount');
+};
+
+const getValidationSetting = (component: SelectBoxesComponent) => {
+    let max = (component as SelectBoxesComponent).validate?.maxSelectedCount;
+    if (typeof max === 'string') {
+        max = parseFloat(max);
+    }
+    return max;
+}
+
+export const shouldValidate = (context: ValidationContext) => {
+    const { component, value } = context;
+    if (!isValidatableSelectBoxesComponent(component)) {
+        return false;
+    }
+    if (!value) {
+        return false;
+    }
+    if (!getValidationSetting(component)) {
+        return false;
+    }
+    return true;
 };
 
 function validateValue(value: DataObject[any]): asserts value is Record<string, boolean> {
@@ -21,25 +44,17 @@ function validateValue(value: DataObject[any]): asserts value is Record<string, 
     }
 }
 
-export const validateMaximumSelectedCount: RuleFn = async (context) => {
+export const validateMaximumSelectedCount: RuleFn = async (context: ValidationContext) => {
     return validateMaximumSelectedCountSync(context);
 };
 
-export const validateMaximumSelectedCountSync: RuleFnSync = (context) => {
+export const validateMaximumSelectedCountSync: RuleFnSync = (context: ValidationContext) => {
     const { component, value } = context;
-    if (!isValidatableSelectBoxesComponent(component)) {
-        return null;
-    }
-    if (!value) {
+    if (!shouldValidate(context)) {
         return null;
     }
     validateValue(value);
-
-    const max =
-        typeof component.validate?.maxSelectedCount === 'string'
-            ? parseFloat(component.validate.maxSelectedCount)
-            : component.validate?.maxSelectedCount;
-
+    const max = getValidationSetting(component as SelectBoxesComponent);
     if (!max) {
         return null;
     }
@@ -50,6 +65,13 @@ export const validateMaximumSelectedCountSync: RuleFnSync = (context) => {
         return null;
     }
     return count > max
-        ? new FieldError(component.maxSelectedCountMessage || 'maxSelectedCount', { ...context, maxCount: String(max) })
+        ? new FieldError((component as SelectBoxesComponent).maxSelectedCountMessage || 'maxSelectedCount', { ...context, maxCount: String(max) })
         : null;
 }
+
+export const validateMaximumSelectedCountInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
+    name: 'validateMaximumSelectedCount',
+    process: validateMaximumSelectedCount,
+    processSync: validateMaximumSelectedCountSync,
+    shouldProcess: shouldValidate,
+};

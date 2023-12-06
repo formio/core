@@ -1,7 +1,8 @@
 import _ from 'lodash';
 
 import { FieldError } from 'error';
-import { DayComponent, RuleFn, RuleFnSync } from 'types';
+import { DayComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
+import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isLeapYear = (year: number) => {
     // Year is leap if it is evenly divisible by 400 or evenly divisible by 4 and not evenly divisible by 100.
@@ -34,23 +35,31 @@ const isDayComponent = (component: any): component is DayComponent => {
     return component && component.type === 'day';
 };
 
-export const validateDay: RuleFn = async (context) => {
+export const shouldValidate = (context: ValidationContext) => {
+    const { component, value } = context;
+    if (!value) {
+        return false;
+    }
+    if (!isDayComponent(component)) {
+        return false;
+    }
+    return true;
+};
+
+export const validateDay: RuleFn = async (context: ValidationContext) => {
     return validateDaySync(context);
 };
 
-export const validateDaySync: RuleFnSync = (context) => {
+export const validateDaySync: RuleFnSync = (context: ValidationContext) => {
     const { component, value } = context;
-    if (!isDayComponent(component)) {
+    if (!shouldValidate(context)) {
         return null;
     }
     const error = new FieldError('invalidDay', context);
-    if (!value) {
-        return null;
-    }
     if (typeof value !== 'string') {
         return error;
     }
-    const [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+    const [DAY, MONTH, YEAR] = (component as DayComponent).dayFirst ? [0, 1, 2] : [1, 0, 2];
     const values = value.split('/').map((x) => parseInt(x, 10)),
         day = values[DAY],
         month = values[MONTH],
@@ -67,4 +76,11 @@ export const validateDaySync: RuleFnSync = (context) => {
         return error;
     }
     return null;
+};
+
+export const validateDayInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
+    name: 'validateDay',
+    process: validateDay,
+    processSync: validateDaySync,
+    shouldProcess: shouldValidate
 };

@@ -3,20 +3,31 @@ import _ from 'lodash';
 import { RuleFn, RuleFnSync } from 'types/RuleFn';
 import { FieldError } from 'error/FieldError';
 import { Evaluator } from 'utils';
+import { ValidationContext } from 'types';
+import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
-export const validateCustom: RuleFn = async (context) => {
+export const validateCustom: RuleFn = async (context: ValidationContext) => {
     return validateCustomSync(context);
 };
 
-export const validateCustomSync: RuleFnSync = (context) => {
-    const { component, data, row, value, index, instance } = context;
+export const shouldValidate = (context: ValidationContext) => {
+    const { component, value } = context;
     const customValidation = component.validate?.custom;
     if (!customValidation || !value || ((typeof value === 'string' || typeof value === 'object') && _.isEmpty(value))) {
+        return false;
+    }
+    return true;
+}
+
+export const validateCustomSync: RuleFnSync = (context: ValidationContext) => {
+    const { component, data, row, value, index, instance, evalContext } = context;
+    const customValidation = component.validate?.custom;
+    if (!shouldValidate(context)) {
         return null;
     }
 
-    const evalContext = {
-        ...(instance?.evalContext ? instance.evalContext() : {}),
+    const evalContextValue = {
+        ...(instance?.evalContext ? instance.evalContext() : (evalContext ? evalContext(context) : context)),
         component,
         data,
         row,
@@ -28,7 +39,7 @@ export const validateCustomSync: RuleFnSync = (context) => {
 
     const isValid = Evaluator.evaluate(
         customValidation,
-        evalContext,
+        evalContextValue,
         'valid',
         true,
         {},
@@ -40,4 +51,12 @@ export const validateCustomSync: RuleFnSync = (context) => {
     }
 
     return new FieldError(isValid, {...context, hasLabel: false });
+};
+
+
+export const validateCustomInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
+    name: 'validateCustom',
+    process: validateCustom,
+    processSync: validateCustomSync,
+    shouldProcess: shouldValidate
 };
