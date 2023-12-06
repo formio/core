@@ -69,11 +69,18 @@ export function uniqueName(name: string, template?: string, evalContext?: any) {
   return uniqueName;
 }
 
+const TREE_COMPONENTS = [
+  "datagrid",
+  "editgrid",
+  "container",
+  "form",
+  "dynamicWizard",
+];
+
 // Async each component data.
 export const eachComponentDataAsync = async (
   components: Component[],
   data: DataObject,
-  row: any,
   fn: AsyncComponentDataCallback,
   path = "",
   index?: number
@@ -81,21 +88,20 @@ export const eachComponentDataAsync = async (
   if (!components || !data) {
     return;
   }
-  row = row || data;
   return await eachComponentAsync(
     components,
     async (component: any, componentComponents: any, compPath: string) => {
+      const row = getContextualRowData(compPath, data);
       if (await fn(component, data, row, compPath, componentComponents, index) === true) {
         return true;
       }
       if (TREE_COMPONENTS.includes(component.type) || component.tree) {
-        row = get(data, compPath, data);
-        if (Array.isArray(row)) {
-          for (let i = 0; i < row.length; i++) {
+        const value = get(data, compPath, data);
+        if (Array.isArray(value)) {
+          for (let i = 0; i < value.length; i++) {
             await eachComponentDataAsync(
               component.components,
               data,
-              row[i],
               fn,
               `${compPath}[${i}]`,
               i
@@ -106,7 +112,7 @@ export const eachComponentDataAsync = async (
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
-        await eachComponentDataAsync(component.components, data, row, fn, compPath);
+        await eachComponentDataAsync(component.components, data, fn, compPath);
         return true;
       } else {
         return false;
@@ -117,18 +123,10 @@ export const eachComponentDataAsync = async (
   );
 };
 
-const TREE_COMPONENTS = [
-  "datagrid",
-  "editgrid",
-  "container",
-  "form",
-  "dynamicWizard",
-];
 
 export const eachComponentData = (
   components: Component[],
   data: DataObject,
-  row: any,
   fn: ComponentDataCallback,
   path = "",
   index?: number
@@ -139,22 +137,22 @@ export const eachComponentData = (
   return eachComponent(
     components,
     (component: any, compPath: string, componentComponents: any) => {
-      row = row || data;
+      const row = getContextualRowData(compPath, data);
       if (fn(component, data, row, compPath, componentComponents, index) === true) {
         return true;
       }
       if (TREE_COMPONENTS.includes(component.type) || component.tree) {
-        row = get(data, compPath, data);
-        if (Array.isArray(row)) {
-          for (let i = 0; i < row.length; i++) {
-            eachComponentData(component.components, data, row[i], fn, `${compPath}[${i}]`, i);
+        const value = get(data, compPath, data);
+        if (Array.isArray(value)) {
+          for (let i = 0; i < value.length; i++) {
+            eachComponentData(component.components, data, fn, `${compPath}[${i}]`, i);
           }
           return true;
         } else if (isEmpty(row)) {
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
-        eachComponentData(component.components, data, row, fn, compPath, index);
+        eachComponentData(component.components, data, fn, compPath, index);
         return true;
       } else {
         return false;
@@ -164,6 +162,30 @@ export const eachComponentData = (
     path
   );
 };
+
+
+export function getContextualRowData(path: string, data: any): any {
+  const lastDotIndex = path.lastIndexOf('.');
+  return lastDotIndex === -1 ? data : get(data, path.substring(0, lastDotIndex), data);
+}
+
+/*
+{
+  validations: ['default', 'calculate', 'conditional'],
+  form: {
+    components: [
+      {
+        key: "container"
+      },
+      {
+        key: "container.dataGrid"
+      }
+      {
+        key: "container.dataGrid[0].textField"
+      }
+    ]
+  }
+}
 
 /**
  * Iterate through each component within a form.
