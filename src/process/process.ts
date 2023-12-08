@@ -26,8 +26,8 @@ export const ProcessorOrder: string[] = [
 ];
 
 export async function process<ProcessScope>(context: ProcessContext<ProcessScope>): Promise<ProcessScope> {
-    const { instances, processors, components, data, row, scope, evalContext } = context;
-    await eachComponentDataAsync(components, data, row || data, async (component, data, row, path, components, index) => {
+    const { instances, processors, components, data, scope, evalContext } = context;
+    await eachComponentDataAsync(components, data, async (component, data, row, path, components, index) => {
         await processOne<ProcessScope>({
             component,
             components,
@@ -49,8 +49,8 @@ export async function process<ProcessScope>(context: ProcessContext<ProcessScope
 }
 
 export function processSync<ProcessScope>(context: ProcessContextSync<ProcessScope>): ProcessScope {
-    const { instances, processors, components, data, row, scope, evalContext } = context;
-    eachComponentData(components, data, row || data, (component, data, row, path, components, index) => {
+    const { instances, processors, components, data, scope, evalContext } = context;
+    eachComponentData(components, data, (component, data, row, path, components, index) => {
         processOneSync<ProcessScope>({
             component,
             components,
@@ -73,10 +73,10 @@ export function processSync<ProcessScope>(context: ProcessContextSync<ProcessSco
 
 // Perform a reduction on the processes to group the components by process types.
 export function processReduce(context: ProcessContext<ReducerScope>): ReducerScope {
-    const { components, data, row, scope } = context;
+    const { components, data, scope } = context;
     scope.filtered = {};
     scope.processes = {};
-    eachComponentData(components, data, row || data, (component, data, row, path, components, index) => {
+    eachComponentData(components, data, (component, data, row, path, components, index) => {
         // Create a filter for submission data.
         filterProcessInfo.processSync({component, data, row, path, components, index, scope});
 
