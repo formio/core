@@ -1,5 +1,10 @@
 import { RulesLogic } from 'json-logic-js';
 
+export type JSONConditional = { json: RulesLogic; };
+export type LegacyConditional = { show: boolean | null; when: string | null; eq: string };
+export type SimpleConditionalConditions = { component: string; operator: string; value: any}[];
+export type SimpleConditional = { show: boolean | null; conjunction: string; conditions: SimpleConditionalConditions};
+
 export type BaseComponent = {
     input: boolean;
     type: string;
@@ -13,7 +18,7 @@ export type BaseComponent = {
     multiple?: boolean;
     protected?: boolean;
     unique?: boolean;
-    persistent?: boolean | 'client-only';
+    persistent?: boolean | string;
     hidden?: boolean;
     clearOnHide?: boolean;
     refreshOn?: string;
@@ -49,7 +54,12 @@ export type BaseComponent = {
         json?: any;
         row?: string;
     };
-    conditional?: { show: boolean | null; when: string | null; eq: string, json?: any };
+    conditional?: 
+        (
+            JSONConditional | 
+            LegacyConditional |
+            SimpleConditional
+        );
     customConditional?: string;
     overlay?: {
         style: string;

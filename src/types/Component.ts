@@ -484,3 +484,5 @@ export type UrlComponent = TextFieldComponent;
 export type WellComponent = NestedComponent & {
     components: Component[];
 };
+
+export * from './BaseComponent';

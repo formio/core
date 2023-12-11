@@ -1,4 +1,4 @@
-import { ProcessContext, ProcessContextSync, ProcessorInfo, ProcessorScope, ReducerScope } from "types";
+import { Component, DataObject, ProcessContext, ProcessContextSync, ProcessorInfo, ProcessorScope, ReducerScope } from "types";
 import { eachComponentData, eachComponentDataAsync } from "utils/formUtil";
 import { processOne, processOneSync } from './processOne';
 import { validateProcessInfo } from "./validation";

@@ -1,2 +1,4 @@
 import { Component } from "types/Component";
-export type ProcessComponents = Record<string, Component[]>;
+export type ProcessComponents = {
+    [key: string]: Component[];
+};
