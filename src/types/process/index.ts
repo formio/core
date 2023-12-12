@@ -14,3 +14,4 @@ export * from './defaultValue';
 export * from './fetch';
 export * from './filter';
 export * from './reducer';
+export * from './populate';

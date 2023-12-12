@@ -1,4 +1,4 @@
-import { ProcessorFn, ProcessorFnSync, ProcessorInfo, ValidationContext, ValidationRuleInfo, ValidationScope } from "types";
+import { ProcessorFn, ProcessorFnSync, ValidationContext, ValidationRuleInfo, ValidationScope } from "types";
 import { shouldValidate } from './util';
 import { getErrorMessage } from 'utils/error';
 import get from 'lodash/get';

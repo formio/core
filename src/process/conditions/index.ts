@@ -126,5 +126,5 @@ export const conditionProcessInfo: ProcessorInfo<ConditionsContext, void> = {
     name: 'conditions',
     process: conditionProcess,
     processSync: conditionProcessSync,
-    shouldProcess: () => true,
+    shouldProcess: hasConditions,
 };

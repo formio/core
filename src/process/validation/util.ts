@@ -1,7 +1,6 @@
 import _ from 'lodash';
-
-import { Component, DataObject, Form, ProcessorContext, ValidationContext } from 'types';
-import { Evaluator, Utils } from 'utils';
+import { Component, ValidationContext } from 'types';
+import { Evaluator } from 'utils';
 
 export function isComponentPersistent(component: Component) {
     return component.persistent ? component.persistent : true;

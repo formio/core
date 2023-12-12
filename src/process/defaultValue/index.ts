@@ -6,7 +6,7 @@ const Evaluator = JSONLogic.evaluator;
 
 export const hasDefaultValue = (context: DefaultValueContext): boolean => {
     const { component } = context;
-    if (!component.hasOwnProperty('defaultValue') || !component.customDefaultValue) {
+    if (!component.hasOwnProperty('defaultValue') && !component.customDefaultValue) {
         return false;
     }
     return true;

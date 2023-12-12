@@ -1,9 +1,16 @@
 import { expect } from "chai";
-import form1 from './fixutures/form1.json';
-import { processReduce } from "processes/process";
+const form1 = require('./fixtures/form1.json');
+const data1a = require('./fixtures/data1a.json');
+import { processReduce } from "../index";
 describe('Process Tests', () => {
     it('Should perform a reduction on the tests to be performed with a form.', () => {
-        const reduced = processReduce(form1.components, {});
+        const reduced = processReduce({
+            components: form1.components,
+            data: data1a.data,
+            scope: {
+                processes: {}
+            }
+        });
         console.log(reduced);
     });
 });

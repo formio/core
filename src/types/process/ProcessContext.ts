@@ -4,10 +4,9 @@ export type ComponentInstances = {
     [key: string]: PassedComponentInstance;
 };
 
-export type _ProcessContext<FunctionType, ProcessorScope> = {
+export type BaseProcessorContext<ProcessorScope> = {
     components: Component[];
     data: DataObject;
-    processors: FunctionType[];
     scope: ProcessorScope;
     row?: DataObject;
     instances?: ComponentInstances;
@@ -15,6 +14,10 @@ export type _ProcessContext<FunctionType, ProcessorScope> = {
     form?: any;
     submission?: any;
     evalContext?: (context: ProcessorContext<ProcessorScope>) => any;
+}
+
+export type _ProcessContext<FunctionType, ProcessorScope> = BaseProcessorContext<ProcessorScope> & {
+    processors: FunctionType[];
 }
 
 export type ProcessContext<ProcessorScope> = _ProcessContext<ProcessorFn<ProcessorScope>, ProcessorScope>;

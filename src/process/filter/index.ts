@@ -5,9 +5,6 @@ import get from 'lodash/get';
 export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterContext) => {
     const { component, row, scope } = context;
     if (has(row, component.key)) {
-        if (!scope.filtered) {
-            scope.filtered = {};
-        }
         set(scope.filtered, component.key, get(row, component.key));
     }
 };
