@@ -45,7 +45,6 @@
   ],
   "homepage": "https://github.com/formio/core#readme",
   "devDependencies": {
-    "@formio/js": "^5.0.0-rc.30",
     "@types/chai": "^4.3.10",
     "@types/chance": "^1.1.6",
     "@types/dompurify": "^3.0.5",
@@ -90,6 +89,7 @@
     "eventemitter3": "^5.0.0",
     "fetch-ponyfill": "^7.1.0",
     "json-logic-js": "^2.0.2",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4"
   }
 }
