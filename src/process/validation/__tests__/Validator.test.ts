@@ -3,7 +3,6 @@ import { validateProcess } from '../validateProcess';
 import { Rules } from "../rules";
 import { simpleForm } from './fixtures/forms';
 import { ProcessorType, ValidationScope } from 'types';
-
 it('Validator will throw the correct errors given a flat components array', async () => {
     let errors: string[] = [];
     const data = {
@@ -18,8 +17,16 @@ it('Validator will throw the correct errors given a flat components array', asyn
     };
     for (let component of simpleForm.components) {
         const path = component.key;
-        const scope: ValidationScope = { errors: [], rules: Rules };
-        await validateProcess({ component, scope, data, row: data, path, processor: ProcessorType.Validate });
+        const scope: ValidationScope = { errors: [] };
+        await validateProcess({ 
+            component, 
+            scope, 
+            data, 
+            row: data, 
+            path, 
+            processor: ProcessorType.Validate,
+            rules: Rules
+        });
         if (scope.errors) {
             errors = [...errors, ...scope.errors.map((error) => error.errorKeyOrMessage)];
         }

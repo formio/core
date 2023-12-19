@@ -1,7 +1,5 @@
 import { FieldError } from "error";
-import { ProcessorScope, ValidationRuleInfo } from "..";
-
-export type ValidationScope = {
+import { ProcessorScope } from "..";
+export type ValidationScope = ProcessorScope & {
     errors: FieldError[];
-    rules?: ValidationRuleInfo[];
-} & ProcessorScope;
+};

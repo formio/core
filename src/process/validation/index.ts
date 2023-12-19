@@ -16,12 +16,12 @@ export function validateSync(components: Component[], data: DataObject, instance
 }
 
 export const validateAllProcess: ProcessorFn<ValidationScope> = async (context: ValidationContext) => {
-    context.scope.rules = Rules;
+    context.rules = Rules;
     return validateProcess(context);
 };
 
 export const validateAllProcessSync: ProcessorFnSync<ValidationScope> = (context: ValidationContext) => {
-    context.scope.rules = Rules;
+    context.rules = Rules;
     return validateProcessSync(context);
 };
 

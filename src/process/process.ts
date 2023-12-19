@@ -3,20 +3,15 @@ import { eachComponentData, eachComponentDataAsync } from "utils/formUtil";
 import { processOne, processOneSync } from './processOne';
 
 export async function process<ProcessScope>(context: ProcessContext<ProcessScope>): Promise<ProcessScope> {
-    const { instances, processors, components, data, scope, evalContext } = context;
+    const { instances, components, data, scope } = context;
     await eachComponentDataAsync(components, data, async (component, data, row, path, components, index) => {
-        await processOne<ProcessScope>({
+        await processOne<ProcessScope>({...context, ...{
             component,
-            components,
-            processors,
-            data,
             path,
             row,
             index,
-            scope,
-            instance: instances ? instances[path] : undefined,
-            evalContext
-        });
+            instance: instances ? instances[path] : undefined
+        }});
         if ((scope as ProcessorScope).noRecurse) {
             (scope as ProcessorScope).noRecurse = false;
             return true;
@@ -26,20 +21,15 @@ export async function process<ProcessScope>(context: ProcessContext<ProcessScope
 }
 
 export function processSync<ProcessScope>(context: ProcessContextSync<ProcessScope>): ProcessScope {
-    const { instances, processors, components, data, scope, evalContext } = context;
+    const { instances, components, data, scope } = context;
     eachComponentData(components, data, (component, data, row, path, components, index) => {
-        processOneSync<ProcessScope>({
+        processOneSync<ProcessScope>({...context, ...{
             component,
-            components,
-            processors,
-            data,
             path,
             row,
             index,
-            scope,
-            instance: instances ? instances[path] : undefined,
-            evalContext
-        });
+            instance: instances ? instances[path] : undefined
+        }});
         if ((scope as ProcessorScope).noRecurse) {
             (scope as ProcessorScope).noRecurse = false;
             return true;

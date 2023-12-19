@@ -1,11 +1,10 @@
-import { ProcessorFn, ProcessorFnSync, ValidationContext, ValidationRuleInfo, ValidationScope } from "types";
+import { ValidationProcessorFn, ValidationProcessorFnSync } from "types";
 import { shouldValidate } from './util';
 import { getErrorMessage } from 'utils/error';
 import get from 'lodash/get';
 
-export const validateProcess: ProcessorFn<ValidationScope> = async (context: ValidationContext) => {
-    const { component, data, path, instance, scope } = context;
-    const rules: ValidationRuleInfo[] = scope.rules?.length ? scope.rules : [];
+export const validateProcess: ValidationProcessorFn = async (context) => {
+    const { component, data, path, instance, scope, rules } = context;
     if (!rules || !rules.length) {
         return;
     }
@@ -56,9 +55,8 @@ export const validateProcess: ProcessorFn<ValidationScope> = async (context: Val
     return;
 };
 
-export const validateProcessSync: ProcessorFnSync<ValidationScope> = (context: ValidationContext) => {
-    const { component, data, path, instance, scope } = context;
-    const rules: ValidationRuleInfo[] = scope.rules?.length ? scope.rules : [];
+export const validateProcessSync: ValidationProcessorFnSync = (context) => {
+    const { component, data, path, instance, scope, rules } = context;
     if (!rules || !rules.length) {
         return;
     }

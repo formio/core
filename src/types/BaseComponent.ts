@@ -77,6 +77,6 @@ export type BaseComponent = {
     addons?: any[]; // TODO: this should go away
     inputType?: string;
     errors?: Record<string, string>;
-    isConditionallyHidden?: boolean;
+    conditionallyHidden?: boolean;
     truncateMultipleSpaces?: boolean;
 };

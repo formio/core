@@ -1,33 +1,15 @@
 import { ProcessorsContext, ProcessorsContextSync, ProcessorType } from "types";
 
-export async function processOne<ProcessorScope>({component, components, path, data, row, process, instance, processors, index, scope}: ProcessorsContext<ProcessorScope>) {
+export async function processOne<ProcessorScope>(context: ProcessorsContext<ProcessorScope>) {
+    const { processors } = context;
+    context.processor = ProcessorType.Custom;
     for (const processor of processors) {
-        await processor({
-            component,
-            components,
-            instance,
-            data,
-            path,
-            scope,
-            index,
-            row,
-            process,
-            processor: ProcessorType.Custom
-        });
+        await processor(context);
     }
 }
 
-export function processOneSync<ProcessorScope>({component, components, path, data, row, process, instance, processors, index, scope}: ProcessorsContextSync<ProcessorScope>) {
-    processors.forEach((processor) => processor({
-        component,
-        components,
-        instance,
-        data,
-        path,
-        scope,
-        index,
-        row,
-        process,
-        processor: ProcessorType.Custom
-    }));
+export function processOneSync<ProcessorScope>(context: ProcessorsContextSync<ProcessorScope>) {
+    const { processors } = context;
+    context.processor = ProcessorType.Custom;
+    processors.forEach((processor) => processor(context));
 }

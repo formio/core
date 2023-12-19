@@ -5,6 +5,7 @@ export * from './ProcessorFn';
 export * from './ProcessContext';
 export * from './ProcessorContext';
 export * from './ProcessorScope';
+export * from './ProcessorsScope';
 export * from './ProcessConfig';
 export * from './ProcessorInfo';
 export * from './validation';

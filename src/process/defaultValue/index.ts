@@ -4,12 +4,24 @@ import has from 'lodash/has';
 import set from 'lodash/set';
 const Evaluator = JSONLogic.evaluator;
 
-export const hasDefaultValue = (context: DefaultValueContext): boolean => {
+export const hasCustomDefaultValue = (context: DefaultValueContext): boolean => {
     const { component } = context;
-    if (!component.hasOwnProperty('defaultValue') && !component.customDefaultValue) {
+    if (!component.customDefaultValue) {
         return false;
     }
     return true;
+};
+
+export const hasSimpleDefaultValue = (context: DefaultValueContext): boolean => {
+    const { component } = context;
+    if (!component.hasOwnProperty('defaultValue')) {
+        return false;
+    }
+    return true;
+};
+
+export const hasDefaultValue = (context: DefaultValueContext): boolean => {
+    return hasSimpleDefaultValue(context) || hasCustomDefaultValue(context);
 };
 
 export const defaultValueProcess: ProcessorFn<ConditionsScope> = async (context: DefaultValueContext) => {
@@ -17,24 +29,31 @@ export const defaultValueProcess: ProcessorFn<ConditionsScope> = async (context:
 };
 
 export const defaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (context: DefaultValueContext) => {
-    const { component, row, evalContext } = context;
+    const { component, row, evalContext, scope } = context;
     if (has(row, component.key)) {
         return;
     }
-    let defaultValue;
     if (component.defaultValue) {
-        defaultValue = component.defaultValue;
+        scope.defaultValue = component.defaultValue;
     }
     else if (component.customDefaultValue) {
         const evalContextValue = evalContext ? evalContext(context) : context;
-        defaultValue = Evaluator.evaluate(component.customDefaultValue, evalContextValue, 'value');
+        evalContextValue.value = null;
+        scope.defaultValue = Evaluator.evaluate(component.customDefaultValue, evalContextValue, 'value');
     }
-    set(row, component.key, defaultValue);
+    set(row, component.key, scope.defaultValue);
 };
 
 export const defaultValueProcessInfo: ProcessorInfo<DefaultValueContext, void> = {
     name: 'defaultValue',
     process: defaultValueProcess,
     processSync: defaultValueProcessSync,
-    shouldProcess: hasDefaultValue,
+    shouldProcess: hasSimpleDefaultValue,
+};
+
+export const customDefaultValueProcessInfo: ProcessorInfo<DefaultValueContext, void> = {
+    name: 'customDefaultValue',
+    process: defaultValueProcess,
+    processSync: defaultValueProcessSync,
+    shouldProcess: hasCustomDefaultValue,
 };

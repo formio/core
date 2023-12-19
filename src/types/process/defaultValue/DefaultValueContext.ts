@@ -1,8 +1,4 @@
-import { ProcessorContext } from "..";
+import { ProcessorContext } from "../ProcessorContext";
 import { DefaultValueScope } from "./DefaultValueScope";
-
-type AdditionalDefaultValueContext = {
-    value?: unknown;
-}
-
-export type DefaultValueContext = ProcessorContext<DefaultValueScope> & AdditionalDefaultValueContext;
+export type DefaultValueProcessContext = {};
+export type DefaultValueContext = ProcessorContext<DefaultValueScope> & DefaultValueProcessContext;

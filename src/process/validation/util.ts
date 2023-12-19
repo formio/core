@@ -15,7 +15,7 @@ export function shouldValidate(context: ValidationContext): boolean {
     if (component.hasOwnProperty('input') && !component.input) {
         return false;
     }
-    if (component.isConditionallyHidden) {
+    if (component.conditionallyHidden) {
         return false;
     }
     // TODO: is this correct? we don't want the client skipping validation on, say, a password but we may want the server to

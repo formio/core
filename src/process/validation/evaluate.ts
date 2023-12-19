@@ -5,6 +5,12 @@ import { validator, validatorSync } from "./validate";
 import { validateProcess, validateProcessSync } from "./validateProcess";
 import { shouldValidate } from "./util";
 
+export function shouldValidateCustom(context: ValidationContext): boolean {
+    return shouldValidate(context) && EvaluationRules.reduce((acc, rule: ValidationRuleInfo) => {
+        return acc && rule.shouldProcess(context);
+    }, true);
+}
+
 // Perform a validation on a form asynchonously.
 export async function validate(components: Component[], data: DataObject, instances?: ComponentInstances): Promise<FieldError[]> {
     return validator(EvaluationRules)(components, data, instances);
@@ -16,20 +22,20 @@ export function validateSync(components: Component[], data: DataObject, instance
 }
 
 export const validateCustomProcess: ProcessorFn<ValidationScope> = async (context: ValidationContext) => {
-    context.scope.rules = EvaluationRules;
+    context.rules = EvaluationRules;
     return validateProcess(context);
 };
 
 export const validateCustomProcessSync: ProcessorFnSync<ValidationScope> = (context: ValidationContext) => {
-    context.scope.rules = EvaluationRules;
+    context.rules = EvaluationRules;
     return validateProcessSync(context);
 };
 
-export const validateServerProcessInfo: ProcessorInfo<ValidationContext, void> = {
+export const validateCustomProcessInfo: ProcessorInfo<ValidationContext, void> = {
     name: 'validateCustom',
     process: validateCustomProcess,
     processSync: validateCustomProcessSync,
-    shouldProcess: shouldValidate,
+    shouldProcess: shouldValidateCustom,
 };
 
 export * from './util';

@@ -1,8 +1,8 @@
-import { ProcessorContext } from "..";
+import { ProcessorContext } from "../ProcessorContext";
 import { ValidationScope } from "./ValidationScope";
-
-type AdditionalValidationContext = {
-    value?: unknown;
-}
-
-export type ValidationContext = ProcessorContext<ValidationScope> & AdditionalValidationContext;
+import { ValidationRuleInfo } from './ValidationRuleInfo';
+export type ValidationProcessContext = {
+    rules?: ValidationRuleInfo[];
+    value?: any;
+};
+export type ValidationContext = ProcessorContext<ValidationScope> & ValidationProcessContext;

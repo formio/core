@@ -1,10 +1,24 @@
-import { Component, DataObject, PassedComponentInstance, ProcessorContext, ProcessorFn, ProcessorFnSync, ProcessType } from "types";
+import { 
+    Component, 
+    DataObject, 
+    PassedComponentInstance, 
+    ProcessComponents, 
+    ProcessorContext, 
+    ProcessorFn, 
+    ProcessorFnSync, 
+    ProcessType,
+    FetchProcessContext,
+    CalculationProcessContext,
+    ConditionsProcessContext,
+    DefaultValueProcessContext,
+    ValidationProcessContext
+} from "types";
 
 export type ComponentInstances = {
     [key: string]: PassedComponentInstance;
 };
 
-export type BaseProcessorContext<ProcessorScope> = {
+export type BaseProcessContext<ProcessorScope> = {
     components: Component[];
     data: DataObject;
     scope: ProcessorScope;
@@ -16,7 +30,11 @@ export type BaseProcessorContext<ProcessorScope> = {
     evalContext?: (context: ProcessorContext<ProcessorScope>) => any;
 }
 
-export type _ProcessContext<FunctionType, ProcessorScope> = BaseProcessorContext<ProcessorScope> & {
+export type ReducedProcessContext<ProcessorScope> = BaseProcessContext<ProcessorScope> & FetchProcessContext & CalculationProcessContext & ConditionsProcessContext & DefaultValueProcessContext & ValidationProcessContext & {
+    processes: ProcessComponents;
+};
+
+export type _ProcessContext<FunctionType, ProcessorScope> = BaseProcessContext<ProcessorScope> & {
     processors: FunctionType[];
 }
 

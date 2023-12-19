@@ -1,8 +1,5 @@
-import { ProcessorContext } from "..";
+import { ProcessorContext } from "../ProcessorContext";
 import { FilterScope } from "./FilterScope";
-
-type AdditionalFilterContext = {
+export type FilterContext = ProcessorContext<FilterScope> & {
     filtered?: any;
-}
-
-export type FilterContext = ProcessorContext<FilterScope> & AdditionalFilterContext;
+};

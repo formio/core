@@ -134,6 +134,11 @@ export function componentDataPath(component: any, parentPath?: string) {
     // If the component does not have a key, then just always return the parent path.
     return parentPath;
   }
+
+  // If the component has a path property, then use it.
+  if (component.path) {
+    return component.path;
+  }
   
   // Calculate the new component data path.
   const newPath = parentPath ? `${parentPath}.${component.key}` : component.key;

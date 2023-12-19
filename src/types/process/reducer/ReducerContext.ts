@@ -1,5 +1,3 @@
-import { ProcessorContext } from "..";
+import { ProcessorContext } from "../ProcessorContext";
 import { ReducerScope } from "./ReducerScope";
-
-type AdditionalContext = {}
-export type ReducerContext = ProcessorContext<ReducerScope> & AdditionalContext;
+export type ReducerContext = ProcessorContext<ReducerScope>;

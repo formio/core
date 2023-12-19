@@ -1,8 +1,5 @@
-import { ProcessorContext } from "..";
+import { ProcessorContext } from "../ProcessorContext";
 import { PopulateScope } from "./PopulateScope";
-
-type AdditionalPopulateContext = {
+export type PopulateContext = ProcessorContext<PopulateScope> & {
     populated?: any;
-}
-
-export type PopulateContext = ProcessorContext<PopulateScope> & AdditionalPopulateContext;
+};

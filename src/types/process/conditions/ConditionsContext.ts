@@ -1,8 +1,4 @@
-import { ProcessorContext } from "..";
+import { ProcessorContext } from "../ProcessorContext";
 import { ConditionsScope } from "./ConditionsScope";
-
-type AdditionalConditionsContext = {
-    value?: unknown;
-}
-
-export type ConditionsContext = ProcessorContext<ConditionsScope> & AdditionalConditionsContext;
+export type ConditionsProcessContext = {};
+export type ConditionsContext = ProcessorContext<ConditionsScope> & ConditionsProcessContext;

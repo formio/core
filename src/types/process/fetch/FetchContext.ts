@@ -1,9 +1,7 @@
-import { ProcessorContext } from "..";
+import { ProcessorContext } from "../ProcessorContext";
 import { FetchScope } from "./FetchScope";
-
-type AdditionalFetchContext = {
+export type FetchProcessContext = {
     fetch?: (url: string, options?: RequestInit) => Promise<Response>;
     headers?: Record<string, string>;
-}
-
-export type FetchContext = ProcessorContext<FetchScope> & AdditionalFetchContext;
+};
+export type FetchContext = ProcessorContext<FetchScope> & FetchProcessContext;

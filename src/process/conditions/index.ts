@@ -26,17 +26,32 @@ const isSimpleConditional = (conditional: any): conditional is SimpleConditional
     return conditional && conditional.conjunction && conditional.conditions;
 }
 
-export const hasConditions = (context: ConditionsContext): boolean => {
+const hasCustomConditions = (context: ConditionsContext): boolean => {
     const { component } = context;
-    const { conditional, customConditional } = component;
-    // For server evaluations, we are only concerned with conditions if they have clearOnHide set.
     if (typeof window === 'undefined' && !component.clearOnHide) {
         return false;
     }
-    if (!isJSONConditional(conditional) && !isLegacyConditional(conditional) && !isSimpleConditional(conditional) && !customConditional) {
+    return !!component.customConditional;
+}
+
+const hasSimpleConditions = (context: ConditionsContext): boolean => {
+    const { component } = context;
+    const { conditional } = component;
+    if (typeof window === 'undefined' && !component.clearOnHide) {
         return false;
     }
-    return true;
+    if (
+        isLegacyConditional(conditional) ||
+        isSimpleConditional(conditional) ||
+        isJSONConditional(conditional)
+    ) {
+        return true;
+    }
+    return false;
+}
+
+export const hasConditions = (context: ConditionsContext): boolean => {
+    return hasSimpleConditions(context) || hasCustomConditions(context);
 };
 
 export function getComponentActualValue(compPath: string, data: any, row: any) {
@@ -59,6 +74,7 @@ export const isConditionallyHidden = (context: ConditionsContext): boolean => {
     const { conditional, customConditional } = component;
     const evalContextValue = evalContext ? evalContext(context) : context;
     if (customConditional) {
+        evalContextValue.show = true;
         return !Evaluator.evaluate(customConditional, evalContextValue, 'show');
     }
     if (isJSONConditional(conditional)) {
@@ -115,16 +131,23 @@ export const conditionProcess: ProcessorFn<ConditionsScope> = async (context: Co
 };
 
 export const conditionProcessSync: ProcessorFnSync<ConditionsScope> = (context: ConditionsContext) => {
-    const { component, row } = context;
-    component.isConditionallyHidden = isConditionallyHidden(context);
-    if (component.isConditionallyHidden && component.clearOnHide) {
+    const { component, row, scope } = context;
+    scope.conditionallyHidden = component.conditionallyHidden = isConditionallyHidden(context);
+    if (component.conditionallyHidden && component.clearOnHide) {
         unset(row, component.key);
     }
-};
+}; 
 
 export const conditionProcessInfo: ProcessorInfo<ConditionsContext, void> = {
     name: 'conditions',
     process: conditionProcess,
     processSync: conditionProcessSync,
-    shouldProcess: hasConditions,
+    shouldProcess: hasSimpleConditions,
+};
+
+export const customConditionalProcessInfo: ProcessorInfo<ConditionsContext, void> = {
+    name: 'customConditional',
+    process: conditionProcess,
+    processSync: conditionProcessSync,
+    shouldProcess: hasCustomConditions,
 };
