@@ -12,13 +12,18 @@ export const shouldCalculate = (context: CalculationContext): boolean => {
 };
 
 export const calculateProcessSync: ProcessorFnSync<CalculationScope> = (context: CalculationContext) => {
-    const { component, row, evalContext, scope } = context;
+    const { component, row, evalContext, scope, path } = context;
     if (!shouldCalculate(context)) {
         return;
     }
     const evalContextValue = evalContext ? evalContext(context) : context;
     evalContextValue.value = null;
+    if (!scope.calculated) scope.calculated = [];
     scope.value = Evaluator.evaluate(component.calculateValue, evalContextValue, 'value');
+    scope.calculated.push({
+        path,
+        value: Evaluator.evaluate(component.calculateValue, evalContextValue, 'value')
+    });
     _set(row, component.key, scope.value);
     return;
 };

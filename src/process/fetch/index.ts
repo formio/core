@@ -12,7 +12,7 @@ export const shouldFetch = (context: FetchContext): boolean => {
 };
 
 export const fetchProcess: ProcessorFn<FetchScope> = async (context: FetchContext) => {
-    const { component, row, fetch, evalContext } = context;
+    const { component, row, fetch, evalContext, path, scope } = context;
     if (!fetch) {
         console.log('You must provide a fetch interface to the fetch processor.');
         return;
@@ -20,6 +20,7 @@ export const fetchProcess: ProcessorFn<FetchScope> = async (context: FetchContex
     if (!shouldFetch(context)) {
         return;
     }
+    if (!scope.fetched) scope.fetched = [];
     const evalContextValue = evalContext ? evalContext(context) : context;
     const url = Evaluator.interpolateString(get(component, 'fetch.url', ''), evalContextValue);
     if (!url) {
@@ -60,6 +61,10 @@ export const fetchProcess: ProcessorFn<FetchScope> = async (context: FetchContex
             ...evalContextValue, 
             ...{responseData: result}
         }, 'value') : result);
+        scope.fetched.push({
+            path,
+            value: get(row, component.key)
+        });
     }
     catch (err: any) {
         console.log(err.message);

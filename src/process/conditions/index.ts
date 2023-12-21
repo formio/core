@@ -131,10 +131,12 @@ export const conditionProcess: ProcessorFn<ConditionsScope> = async (context: Co
 };
 
 export const conditionProcessSync: ProcessorFnSync<ConditionsScope> = (context: ConditionsContext) => {
-    const { component, row, scope } = context;
+    const { component, row, scope, path } = context;
     scope.conditionallyHidden = component.conditionallyHidden = isConditionallyHidden(context);
+    if (!scope.conditionals) scope.conditionals = [];
     if (component.conditionallyHidden && component.clearOnHide) {
         unset(row, component.key);
+        scope.conditionals.push({ path });
     }
 }; 
 
