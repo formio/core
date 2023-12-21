@@ -17,7 +17,7 @@ export const populateProcessSync: ProcessorFnSync<PopulateScope> = (context: Pop
                 scope.row = get(data, compDataPath)[0];
                 scope.populated.push({
                     path,
-                    value: get(data, compDataPath)
+                    row: get(data, compDataPath)[0]
                 });
             }
             break;
@@ -28,7 +28,7 @@ export const populateProcessSync: ProcessorFnSync<PopulateScope> = (context: Pop
                 scope.row = get(data, compDataPath);
                 scope.populated.push({
                     path,
-                    value: get(data, compDataPath)
+                    row: get(data, compDataPath)
                 });
             }
             break;
