@@ -71,9 +71,10 @@ export function processReduce(context: BaseProcessContext<ReducerScope>): Reduce
                     scope.processes[processorName] = [];
                 }
                 scope.processes[processorName].push({
-                    ...component, 
-                    ...{path}
-                });
+                    ...component,
+                    path,
+                    components: null,
+                } as any);
             }
         }
     });
@@ -82,7 +83,10 @@ export function processReduce(context: BaseProcessContext<ReducerScope>): Reduce
 }
 
 // Process a reduced set of processes and components.
-export function processReducedSync(context: ReducedProcessContext<ProcessorsScope>) {
+export function processReducedSync(context: ReducedProcessContext<ProcessorsScope>): ProcessorsScope {
+    if (!context.scope) {
+        context.scope = {} as ProcessorsScope;
+    }
     const { scope, processes } = context;
     ProcessorOrder.forEach((processorName: string) => {
         if (processes.hasOwnProperty(processorName) && ProcessorMap.hasOwnProperty(processorName)) {
@@ -99,7 +103,10 @@ export function processReducedSync(context: ReducedProcessContext<ProcessorsScop
 }
 
 // Asynchronoously process a reduced set of processes and components.
-export async function processReduced(context: ReducedProcessContext<ProcessorsScope>) {
+export async function processReduced(context: ReducedProcessContext<ProcessorsScope>): Promise<ProcessorsScope> {
+    if (!context.scope) {
+        context.scope = {} as ProcessorsScope;
+    }
     const { scope, processes } = context;
     for (const processorName of ProcessorOrder) {
         if (processes.hasOwnProperty(processorName) && ProcessorMap.hasOwnProperty(processorName)) {

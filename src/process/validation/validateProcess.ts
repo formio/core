@@ -2,9 +2,14 @@ import { ValidationProcessorFn, ValidationProcessorFnSync } from "types";
 import { shouldValidate } from './util';
 import { getErrorMessage } from 'utils/error';
 import get from 'lodash/get';
+import pick from 'lodash/pick';
 
 export const validateProcess: ValidationProcessorFn = async (context) => {
     const { component, data, path, instance, scope, rules } = context;
+
+    if (!scope.validated) scope.validated = [];
+    if (!scope.errors) scope.errors = [];
+
     if (!rules || !rules.length) {
         return;
     }
@@ -24,7 +29,8 @@ export const validateProcess: ValidationProcessorFn = async (context) => {
                     if (rule && rule.process) {
                         const error = await rule.process({ ...context, value, index: i, path: amendedPath });
                         if (error) {
-                            scope.errors.push(error);
+                            scope.errors.push(cleanupValidationError(error));
+                            scope.validated.push({ path, error: cleanupValidationError(error) });
                         }
                     }
                 }
@@ -44,7 +50,8 @@ export const validateProcess: ValidationProcessorFn = async (context) => {
             if (rule && rule.process) {
                 const error = await rule.process({ ...context, value });
                 if (error) {
-                    scope.errors.push(error);
+                    scope.errors.push(cleanupValidationError(error));
+                    scope.validated.push({ path, error: cleanupValidationError(error) });
                 }
             }
         }
@@ -57,6 +64,10 @@ export const validateProcess: ValidationProcessorFn = async (context) => {
 
 export const validateProcessSync: ValidationProcessorFnSync = (context) => {
     const { component, data, path, instance, scope, rules } = context;
+
+    if (!scope.validated) scope.validated = [];
+    if (!scope.errors) scope.errors = [];
+
     if (!rules || !rules.length) {
         return;
     }
@@ -76,7 +87,8 @@ export const validateProcessSync: ValidationProcessorFnSync = (context) => {
                     if (rule && rule.processSync) {
                         const error = rule.processSync({ ...context, value, index: i, path: amendedPath });
                         if (error) {
-                            scope.errors.push(error);
+                            scope.errors.push(cleanupValidationError(error));
+                            scope.validated.push({ path, error: cleanupValidationError(error) });
                         }
                     }
                 }
@@ -96,7 +108,8 @@ export const validateProcessSync: ValidationProcessorFnSync = (context) => {
             if (rule && rule.processSync) {
                 const error = rule.processSync({ ...context, value });
                 if (error) {
-                    scope.errors.push(error);
+                    scope.errors.push(cleanupValidationError(error));
+                    scope.validated.push({ path, error: cleanupValidationError(error) });
                 }
             }
         }
@@ -106,3 +119,12 @@ export const validateProcessSync: ValidationProcessorFnSync = (context) => {
     }
     return;
 };
+
+// Cleans up validation errors to remove unnessesary parts
+// and make them transferable to ivm.
+const cleanupValidationError = (error: any) => ({
+    ...error,
+    context: pick(error.context,
+        ['component', 'path', 'index', 'value', 'field', 'hasLabel']
+    ),
+});

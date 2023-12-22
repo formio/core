@@ -29,19 +29,29 @@ export const defaultValueProcess: ProcessorFn<ConditionsScope> = async (context:
 };
 
 export const defaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (context: DefaultValueContext) => {
-    const { component, row, evalContext, scope } = context;
+    const { component, row, evalContext, scope, path } = context;
+    if (!scope.defaultValues) scope.defaultValues = [];
     if (has(row, component.key)) {
         return;
     }
+    let defaultValue = null;
     if (component.defaultValue) {
-        scope.defaultValue = component.defaultValue;
+        defaultValue = component.defaultValue;
+        scope.defaultValues.push({
+            path,
+            value: defaultValue
+        });
     }
     else if (component.customDefaultValue) {
         const evalContextValue = evalContext ? evalContext(context) : context;
         evalContextValue.value = null;
-        scope.defaultValue = Evaluator.evaluate(component.customDefaultValue, evalContextValue, 'value');
+        defaultValue = Evaluator.evaluate(component.customDefaultValue, evalContextValue, 'value');
+        scope.defaultValues.push({
+            path,
+            value: defaultValue
+        });
     }
-    set(row, component.key, scope.defaultValue);
+    set(row, component.key, defaultValue);
 };
 
 export const defaultValueProcessInfo: ProcessorInfo<DefaultValueContext, void> = {

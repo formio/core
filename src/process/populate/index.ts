@@ -9,11 +9,16 @@ export const populateProcessSync: ProcessorFnSync<PopulateScope> = (context: Pop
     const { data } = scope;
     const compDataPath = componentDataPath(component, getContextualRowPath(path));
     const compData: any = get(data, compDataPath);
+    if (!scope.populated) scope.populated = [];
     switch (getModelType(component)) {
         case 'array':
             if (!compData || !compData.length) {
                 set(data, compDataPath, [{}]);
                 scope.row = get(data, compDataPath)[0];
+                scope.populated.push({
+                    path,
+                    row: get(data, compDataPath)[0]
+                });
             }
             break;
         case 'dataObject':
@@ -21,6 +26,10 @@ export const populateProcessSync: ProcessorFnSync<PopulateScope> = (context: Pop
             if (!compData || typeof compData !== 'object') {
                 set(data, compDataPath, {});
                 scope.row = get(data, compDataPath);
+                scope.populated.push({
+                    path,
+                    row: get(data, compDataPath)
+                });
             }
             break;
     }
