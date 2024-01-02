@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { FieldError, ValidatorError } from 'error';
 import { SelectBoxesComponent, DataObject, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
@@ -65,7 +63,11 @@ export const validateMaximumSelectedCountSync: RuleFnSync = (context: Validation
         return null;
     }
     return count > max
-        ? new FieldError((component as SelectBoxesComponent).maxSelectedCountMessage || 'maxSelectedCount', { ...context, maxCount: String(max) })
+        ? new FieldError((component as SelectBoxesComponent).maxSelectedCountMessage || 'maxSelectedCount', { 
+            ...context, 
+            maxCount: String(max),
+            setting: String(max),
+        })
         : null;
 }
 

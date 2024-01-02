@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { FieldError, ValidatorError } from 'error';
 import { SelectBoxesComponent, DataObject, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
@@ -65,7 +63,11 @@ export const validateMinimumSelectedCountSync: RuleFnSync = (context: Validation
         return null;
     }
     return count < min
-        ? new FieldError((component as SelectBoxesComponent).minSelectedCountMessage || 'minSelectedCount', { ...context, minCount: String(min) })
+        ? new FieldError((component as SelectBoxesComponent).minSelectedCountMessage || 'minSelectedCount', { 
+            ...context,
+            minCount: String(min),
+            setting: String(min),
+        })
         : null;
 };
 

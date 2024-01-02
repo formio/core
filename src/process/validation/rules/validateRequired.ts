@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { FieldError } from 'error';
 import { AddressComponentDataObject, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { isEmptyObject } from '../util';
@@ -22,7 +20,7 @@ export const validateRequired: RuleFn = async (context: ValidationContext) => {
 };
 
 export const validateRequiredSync: RuleFnSync = (context: ValidationContext) => {
-    const error = new FieldError('required', context);
+    const error = new FieldError('required', {...context, setting: true});
     const { component, value } = context;
     if (!shouldValidate(context)) {
         return null;

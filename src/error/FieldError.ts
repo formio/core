@@ -8,6 +8,7 @@ type FieldErrorContext = ValidationContext & {
     // * context.hasLabel will determine how the error is displayed in the `alert` template
     level?: string;
     hasLabel?: boolean;
+    setting?: string | boolean | number;
     // TODO: these are the custom error properties according to the inline docs in the builer
     min?: string;
     max?: string;
@@ -38,3 +39,5 @@ export class FieldError {
         }
     }
 }
+
+export type InterpolateErrorFn = (text: string, context: FieldErrorContext) => string;

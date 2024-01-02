@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { FieldError } from 'error';
 import { RuleFn, RuleFnSync, TextFieldComponent, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
@@ -42,7 +40,7 @@ export const validateMinimumLengthSync: RuleFnSync = (context: ValidationContext
     const minLength = getValidationSetting(component as TextFieldComponent);
     if (value && minLength && typeof value === 'string') {
         if (value.length < minLength) {
-            const error = new FieldError('minLength', { ...context, length: String(minLength) });
+            const error = new FieldError('minLength', { ...context, length: String(minLength), setting: String(minLength) });
             return error;
         }
     }

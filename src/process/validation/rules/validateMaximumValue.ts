@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { FieldError, ValidatorError } from 'error';
 import { NumberComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
@@ -24,7 +22,7 @@ export const shouldValidate = (context: ValidationContext) => {
     if (value === null) {
         return false;
     }
-    if (!getValidationSetting(component)) {
+    if (Number.isNaN(getValidationSetting(component))) {
         return false;
     }
     return true;
@@ -40,14 +38,10 @@ export const validateMaximumValueSync: RuleFnSync = (context: ValidationContext)
         return null;
     }
     const max = getValidationSetting(component);
-    if (!max) {
+    if (max === undefined || Number.isNaN(max)) {
         return null;
     }
     const parsedValue = typeof value === 'string' ? parseFloat(value) : Number(value);
-
-    if (Number.isNaN(max)) {
-        throw new ValidatorError(`Cannot evaluate maximum value ${max} because it is invalid`);
-    }
     if (Number.isNaN(parsedValue)) {
         throw new ValidatorError(
             `Cannot validate value ${parsedValue} because it is invalid`
@@ -56,7 +50,7 @@ export const validateMaximumValueSync: RuleFnSync = (context: ValidationContext)
 
     return parsedValue <= max
         ? null
-        : new FieldError('max', {...context, max: String(max) });
+        : new FieldError('max', {...context, max: String(max), setting: String(max) });
 };
 
 export const validateMaximumValueInfo: ProcessorInfo<ValidationContext, FieldError | null> = {

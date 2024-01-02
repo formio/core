@@ -1,5 +1,5 @@
 import ConditionOperator from './ConditionOperator';
-import _ from 'lodash';
+import { isNumber } from 'lodash';
 
 export default class LessThan extends ConditionOperator {
     static get operatorKey() {
@@ -11,6 +11,6 @@ export default class LessThan extends ConditionOperator {
     }
 
     execute({ value, comparedValue }) {
-        return  _.isNumber(value) && value < comparedValue;
+        return isNumber(value) && value < comparedValue;
     }
 }

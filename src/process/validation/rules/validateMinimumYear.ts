@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { FieldError, ValidatorError } from 'error';
 import { DayComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
@@ -55,7 +53,7 @@ export const validateMinimumYearSync: RuleFnSync = (context: ValidationContext) 
 
     return +year >= +minYear
         ? null
-        : new FieldError('minYear', { ...context, minYear: String(minYear) });
+        : new FieldError('minYear', { ...context, minYear: String(minYear), setting: String(minYear) });
 };
 
 export const validateMinimumYearInfo: ProcessorInfo<ValidationContext, FieldError | null> = {

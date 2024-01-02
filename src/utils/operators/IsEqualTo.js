@@ -1,5 +1,5 @@
 import ConditionOperator from './ConditionOperator';
-import _ from 'lodash';
+import { isString, isObject, isEqual } from 'lodash';
 
 export default class IsEqualTo extends ConditionOperator {
     static get operatorKey() {
@@ -11,7 +11,7 @@ export default class IsEqualTo extends ConditionOperator {
     }
 
     execute({ value, comparedValue }) {
-        if (value && comparedValue && typeof value !== typeof comparedValue && _.isString(comparedValue)) {
+        if (value && comparedValue && typeof value !== typeof comparedValue && isString(comparedValue)) {
             try {
                 comparedValue = JSON.parse(comparedValue);
             }
@@ -20,10 +20,10 @@ export default class IsEqualTo extends ConditionOperator {
         }
 
         //special check for select boxes
-        if (_.isObject(value) && comparedValue && _.isString(comparedValue)) {
+        if (isObject(value) && comparedValue && isString(comparedValue)) {
             return value[comparedValue];
         }
 
-        return  _.isEqual(value, comparedValue);
+        return  isEqual(value, comparedValue);
     }
 }

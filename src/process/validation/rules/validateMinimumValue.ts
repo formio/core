@@ -1,11 +1,9 @@
-import _ from 'lodash';
-
 import { FieldError, ValidatorError } from 'error';
 import { NumberComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isValidatableNumberComponent = (component: any): component is NumberComponent => {
-    return component && component.validate?.hasOwnProperty('min') && component.validate?.min;
+    return component && component.validate?.hasOwnProperty('min');
 };
 
 const getValidationSetting = (component: any) => {
@@ -21,10 +19,10 @@ export const shouldValidate = (context: ValidationContext) => {
     if (!isValidatableNumberComponent(component)) {
         return false;
     }
-    if (!value) {
+    if (Number.isNaN(parseFloat(value))) {
         return false;
     }
-    if (!getValidationSetting(component)) {
+    if (Number.isNaN(getValidationSetting(component))) {
         return false;
     }
     return true;
@@ -40,14 +38,10 @@ export const validateMinimumValueSync: RuleFnSync = (context: ValidationContext)
         return null;
     }
     const min = getValidationSetting(component);
-    if (!value || !min) {
+    if (min === undefined) {
         return null;
     }
     const parsedValue = typeof value === 'string' ? parseFloat(value) : Number(value);
-
-    if (Number.isNaN(min)) {
-        throw new ValidatorError(`Cannot evaluate minimum value ${min} because it is invalid`);
-    }
     if (Number.isNaN(parsedValue)) {
         throw new ValidatorError(
             `Cannot validate value ${parsedValue} because it is invalid`,
@@ -56,7 +50,7 @@ export const validateMinimumValueSync: RuleFnSync = (context: ValidationContext)
 
     return parsedValue >= min
         ? null
-        : new FieldError('min', { ...context, min: String(min) });
+        : new FieldError('min', { ...context, min: String(min), setting: String(min) });
 };
 
 export const validateMinimumValueInfo: ProcessorInfo<ValidationContext, FieldError | null> = {

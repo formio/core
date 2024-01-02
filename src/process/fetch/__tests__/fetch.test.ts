@@ -1,11 +1,11 @@
 import { expect } from 'chai';
 import { process } from '../../process'
-import { fetchProcess } from '../index';
+import { fetchProcessInfo } from '../index';
 import { FetchScope, ProcessContext } from 'types';
 
 const processForm = async (form: any, submission: any) => {
     const context: ProcessContext<FetchScope> = {
-        processors: [fetchProcess],
+        processors: [fetchProcessInfo],
         components: form.components,
         data: submission.data,
         scope: {}

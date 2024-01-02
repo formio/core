@@ -1,4 +1,6 @@
+import { FieldError, InterpolateErrorFn } from 'error';
 import { isBoolean, isString } from 'lodash';
+import { Component } from 'types';
 
 /**
  * Escapes RegEx characters in provided String value.
@@ -28,4 +30,18 @@ export function escapeRegExCharacters(value: string) {
   else {
     return !!value;
   }
+}
+
+/**
+ * Unescape HTML characters like &lt, &gt, &amp and etc.
+ * @param str
+ * @returns {string}
+ */
+export function unescapeHTML(str: string) {
+  if (typeof window === 'undefined' || !('DOMParser' in window)) {
+    return str;
+  }
+
+  const doc = new window.DOMParser().parseFromString(str, 'text/html');
+  return doc.documentElement.textContent;
 }

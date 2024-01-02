@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { FieldError } from '../../../error/FieldError';
 import { RuleFn, ValidationContext } from '../../../types/index';
 import { isEmptyObject } from '../util';
@@ -24,10 +22,10 @@ export const validateUnique: RuleFn = async (context: ValidationContext) => {
         return null;
     }
 
-    if (!config) {
+    if (!config || !config.database) {
         throw new ValidatorError("Can't test for unique value without a database config object");
     }
-    const isUnique = await config.database?.isUnique(value);
+    const isUnique = await config.database?.isUnique(context, value);
     return isUnique
         ? null
         : new FieldError('unique', context);
@@ -35,6 +33,7 @@ export const validateUnique: RuleFn = async (context: ValidationContext) => {
 
 export const validateUniqueInfo: ProcessorInfo<ValidationContext, FieldError | null>  = {
     name: 'validateUnique',
+    fullValue: true,
     process: validateUnique,
     shouldProcess: shouldValidate,
 };

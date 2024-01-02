@@ -1,5 +1,4 @@
-import _ from 'lodash';
-
+import { isEmpty, isUndefined, isObject } from 'lodash';
 import { FieldError } from 'error';
 import { ListComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
@@ -22,7 +21,7 @@ export const shouldValidate = (context: ValidationContext) => {
     if (component.dataSrc !== 'url') {
         return false;
     }
-    if (!value || (typeof value === 'object' && _.isEmpty(value))) {
+    if (!value || (typeof value === 'object' && isEmpty(value))) {
         return false;
     }
     const valueProperty = component.valueProperty;
@@ -45,7 +44,7 @@ export const validateValuePropertySync: RuleFnSync = (context: ValidationContext
     // TODO: at some point in the radio component's change pipeline, object values are coerced into strings; testing for
     // '[object Object]' is an ugly way to determine whether or not the ValueProperty is invalid, but it'll have to do
     // for now
-    if (component.inputType === 'radio' && (_.isUndefined(value) || _.isObject(value) || value === '[object Object]')) {
+    if (component.inputType === 'radio' && (isUndefined(value) || isObject(value) || value === '[object Object]')) {
         return error;
     }
     // TODO: a cousin to the above issue, but sometimes ValueProperty will resolve to a boolean value so the keys in

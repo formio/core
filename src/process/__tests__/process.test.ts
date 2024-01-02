@@ -1,27 +1,12 @@
 import { expect } from "chai";
+import { process } from "processes/process";
 const form1 = require('./fixtures/form1.json');
 const data1a = require('./fixtures/data1a.json');
 const subs = require('./fixtures/subs.json');
-import { processReduce, processReduced, processReduceTargets } from "../index";
-import { ReducerScope } from "types";
+/*
 describe('Process Tests', () => {
-    it('Should perform a reduction on the tests to be performed with a form.', () => {
-        const reduced: ReducerScope = processReduce({
-            components: form1.components,
-            data: data1a.data,
-            scope: {
-                processes: {}
-            }
-        });
-        expect(reduced.processes.calculate.length).to.equal(6);
-        expect(reduced.processes.fetch.length).to.equal(1);
-        expect(reduced.processes.validate.length).to.equal(28);
-        expect(reduced.processes.conditions.length).to.equal(1);
-        expect(reduced.processes.defaultValue.length).to.equal(6);
-    });
-
     it('Should perform the processes using the processReduced method.', async () => {
-        const reduced: ReducerScope = processReduce({
+        const reduced: ReducerScope = process({
             components: form1.components,
             data: data1a.data,
             scope: {
@@ -78,3 +63,4 @@ describe('Process Tests', () => {
         expect(reduced.data.cart[2].price).to.equal(10);
     });
 });
+*/

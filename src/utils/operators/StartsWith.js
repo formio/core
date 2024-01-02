@@ -1,5 +1,5 @@
 import ConditionOperator from './ConditionOperator';
-import _ from 'lodash';
+import { startsWith } from 'lodash';
 
 export default class StartsWith extends ConditionOperator {
     static get operatorKey() {
@@ -11,6 +11,6 @@ export default class StartsWith extends ConditionOperator {
     }
 
     execute({ value, comparedValue }) {
-        return  _.startsWith(value, comparedValue);
+        return startsWith(value, comparedValue);
     }
 }

@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { ValidatorError, FieldError } from 'error';
 import { DayComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { dayjs, isPartialDay, getDateValidationFormat, getDateSetting } from 'utils/date';
@@ -46,7 +44,7 @@ export const validateMinimumDaySync: RuleFnSync = (context: ValidationContext) =
     } else {
         minDate.setHours(0, 0, 0, 0);
     }
-    const error = new FieldError('minDay', { ...context, minDate: String(minDate) });
+    const error = new FieldError('minDay', { ...context, minDate: String(minDate), setting: String(minDate) });
     return date.isAfter(minDate) || date.isSame(minDate) ? null : error;
 };
 

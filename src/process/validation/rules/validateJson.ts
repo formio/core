@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import jsonLogic from 'modules/jsonlogic';
 import { FieldError } from 'error';
 import { RuleFn, RuleFnSync, ValidationContext } from 'types';

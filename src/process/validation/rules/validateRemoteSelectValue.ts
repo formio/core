@@ -18,11 +18,13 @@ export const generateUrl = (baseUrl: URL, component: SelectComponent, value: any
     const url = baseUrl;
     const query = url.searchParams;
     if (component.searchField) {
+        let searchValue = value;
         if (component.valueProperty) {
-            query.set(component.searchField, JSON.stringify(value[component.valueProperty]));
+            searchValue = value[component.valueProperty];
         } else {
-            query.set(component.searchField, JSON.stringify(value));
+            searchValue = value;
         }
+        query.set(component.searchField, typeof searchValue === 'string' ? searchValue : JSON.stringify(searchValue))
     }
     if (component.selectFields) {
         query.set('select', component.selectFields);
@@ -40,7 +42,7 @@ export const generateUrl = (baseUrl: URL, component: SelectComponent, value: any
 export const shouldValidate = (context: ValidationContext) => {
     const { component, value, data, config } = context;
     // Only run this validation if server-side
-    if (!process?.env?.TEST && typeof window !== 'undefined') {
+    if (!config?.server) {
         return false;
     }
     if (!isValidatableSelectComponent(component)) {
@@ -63,8 +65,12 @@ export const shouldValidate = (context: ValidationContext) => {
 };
 
 export const validateRemoteSelectValue: RuleFn = async (context: ValidationContext) => {
-    const { component, value, data, config } = context;
+    const { component, value, data, fetch, config } = context;
     try {
+        if (!fetch) {
+            console.log('You must provide a fetch interface to the fetch processor.');
+            return null;
+        }
         if (!shouldValidate(context)) {
             return null;
         }

@@ -1,4 +1,5 @@
-import { RulesLogic } from 'json-logic-js';
+import { RulesLogic } from "json-logic-js";
+import { AdvancedLogic } from "./AdvancedLogic";
 
 export type JSONConditional = { json: RulesLogic; };
 export type LegacyConditional = { show: boolean | null; when: string | null; eq: string };
@@ -9,6 +10,7 @@ export type BaseComponent = {
     input: boolean;
     type: string;
     key: string;
+    path?: string;
     tableView?: boolean;
     placeholder?: string;
     prefix?: string;
@@ -41,6 +43,7 @@ export type BaseComponent = {
     calculateValue?: string;
     calculateServer?: boolean;
     attributes?: Record<string, string>;
+    logic?: AdvancedLogic[];
     validateOn?: string;
     validate?: {
         required?: boolean;
@@ -77,6 +80,5 @@ export type BaseComponent = {
     addons?: any[]; // TODO: this should go away
     inputType?: string;
     errors?: Record<string, string>;
-    conditionallyHidden?: boolean;
     truncateMultipleSpaces?: boolean;
 };

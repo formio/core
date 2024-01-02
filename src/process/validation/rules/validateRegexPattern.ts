@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { FieldError } from 'error';
 import { TextAreaComponent, TextFieldComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
@@ -37,7 +35,7 @@ export const validateRegexPatternSync: RuleFnSync = (context: ValidationContext)
     const regex = new RegExp(`^${pattern}$`);
     return typeof value === 'string' && regex.test(value)
         ? null
-        : new FieldError('pattern', { ...context, regex: pattern, pattern: pattern });
+        : new FieldError('pattern', { ...context, regex: pattern, pattern: pattern, setting: pattern });
 };
 
 export const validateRegexPatternInfo: ProcessorInfo<ValidationContext, FieldError | null> = {

@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { FieldError } from 'error';
 import { TextFieldComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
@@ -19,13 +17,13 @@ export const shouldValidate = (context: ValidationContext) => {
     if (!isValidatableTextFieldComponent(component)) {
         return false;
     }
-    if (value === null) {
+    if (!value) {
         return false;
     }
     if (typeof value !== 'string') {
         return false;
     }
-    if (!getValidationSetting(component)) {
+    if (Number.isNaN(getValidationSetting(component))) {
         return false;
     }
     return true;
@@ -41,11 +39,15 @@ export const validateMaximumLengthSync: RuleFnSync = (context: ValidationContext
         return null;
     }
     const maxLength = getValidationSetting(component);
-    if (value != null && maxLength && typeof value === 'string') {
-        if (value.length > maxLength) {
-            const error = new FieldError('maxLength', { ...context, length: String(maxLength) });
-            return error;
-        }
+    if (maxLength === undefined || Number.isNaN(maxLength)) {
+        return null;
+    }
+    if (!value || typeof value !== 'string') {
+        return null;
+    }
+    if (value.length > maxLength) {
+        const error = new FieldError('maxLength', { ...context, length: String(maxLength), setting: String(maxLength) });
+        return error;
     }
     return null;
 }

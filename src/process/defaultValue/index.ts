@@ -12,7 +12,7 @@ export const hasCustomDefaultValue = (context: DefaultValueContext): boolean => 
     return true;
 };
 
-export const hasSimpleDefaultValue = (context: DefaultValueContext): boolean => {
+export const hasServerDefaultValue = (context: DefaultValueContext): boolean => {
     const { component } = context;
     if (!component.hasOwnProperty('defaultValue')) {
         return false;
@@ -21,7 +21,70 @@ export const hasSimpleDefaultValue = (context: DefaultValueContext): boolean => 
 };
 
 export const hasDefaultValue = (context: DefaultValueContext): boolean => {
-    return hasSimpleDefaultValue(context) || hasCustomDefaultValue(context);
+    return hasCustomDefaultValue(context) || hasServerDefaultValue(context);
+};
+
+export const customDefaultValueProcess: ProcessorFn<ConditionsScope> = async (context: DefaultValueContext) => {
+    return customDefaultValueProcessSync(context);
+};
+
+export const customDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (context: DefaultValueContext) => {
+    const { component, row, scope, evalContext, path } = context;
+    if (!hasCustomDefaultValue(context)) {
+        return;
+    }
+    if (!scope.defaultValues) scope.defaultValues = [];
+    if (has(row, component.key)) {
+        return;
+    }
+    let defaultValue = null;
+    if (component.customDefaultValue) {
+        const evalContextValue = evalContext ? evalContext(context) : context;
+        evalContextValue.value = null;
+        defaultValue = Evaluator.evaluate(component.customDefaultValue, evalContextValue, 'value');
+        if (component.multiple && !Array.isArray(defaultValue)) {
+            defaultValue = defaultValue ? [defaultValue] : [];
+        }
+        scope.defaultValues.push({
+            path,
+            value: defaultValue
+        });
+    }
+    if (defaultValue !== null && defaultValue !== undefined) {
+        set(row, component.key, defaultValue);
+    }
+};
+
+export const serverDefaultValueProcess: ProcessorFn<ConditionsScope> = async (context: DefaultValueContext) => {
+    return serverDefaultValueProcessSync(context);
+};
+
+export const serverDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (context: DefaultValueContext) => {
+    const { component, row, scope, path } = context;
+    if (!hasServerDefaultValue(context)) {
+        return;
+    }
+    if (!scope.defaultValues) scope.defaultValues = [];
+    if (has(row, component.key)) {
+        return;
+    }
+    let defaultValue = null;
+    if (
+        component.defaultValue !== undefined &&
+        component.defaultValue !== null
+    ) {
+        defaultValue = component.defaultValue;
+        if (component.multiple && !Array.isArray(defaultValue)) {
+            defaultValue = defaultValue ? [defaultValue] : [];
+        }
+        scope.defaultValues.push({
+            path,
+            value: defaultValue
+        });
+    }
+    if (defaultValue !== null && defaultValue !== undefined) {
+        set(row, component.key, defaultValue);
+    }
 };
 
 export const defaultValueProcess: ProcessorFn<ConditionsScope> = async (context: DefaultValueContext) => {
@@ -29,41 +92,27 @@ export const defaultValueProcess: ProcessorFn<ConditionsScope> = async (context:
 };
 
 export const defaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (context: DefaultValueContext) => {
-    const { component, row, evalContext, scope, path } = context;
-    if (!scope.defaultValues) scope.defaultValues = [];
-    if (has(row, component.key)) {
-        return;
-    }
-    let defaultValue = null;
-    if (component.defaultValue) {
-        defaultValue = component.defaultValue;
-        scope.defaultValues.push({
-            path,
-            value: defaultValue
-        });
-    }
-    else if (component.customDefaultValue) {
-        const evalContextValue = evalContext ? evalContext(context) : context;
-        evalContextValue.value = null;
-        defaultValue = Evaluator.evaluate(component.customDefaultValue, evalContextValue, 'value');
-        scope.defaultValues.push({
-            path,
-            value: defaultValue
-        });
-    }
-    set(row, component.key, defaultValue);
+    customDefaultValueProcessSync(context);
+    serverDefaultValueProcessSync(context);
+};
+
+export const customDefaultValueProcessInfo: ProcessorInfo<DefaultValueContext, void> = {
+    name: 'customDefaultValue',
+    process: customDefaultValueProcess,
+    processSync: customDefaultValueProcessSync,
+    shouldProcess: hasCustomDefaultValue,
+};
+
+export const serverDefaultValueProcessInfo: ProcessorInfo<DefaultValueContext, void> = {
+    name: 'serverDefaultValue',
+    process: serverDefaultValueProcess,
+    processSync: serverDefaultValueProcessSync,
+    shouldProcess: hasServerDefaultValue,
 };
 
 export const defaultValueProcessInfo: ProcessorInfo<DefaultValueContext, void> = {
     name: 'defaultValue',
     process: defaultValueProcess,
     processSync: defaultValueProcessSync,
-    shouldProcess: hasSimpleDefaultValue,
-};
-
-export const customDefaultValueProcessInfo: ProcessorInfo<DefaultValueContext, void> = {
-    name: 'customDefaultValue',
-    process: defaultValueProcess,
-    processSync: defaultValueProcessSync,
-    shouldProcess: hasCustomDefaultValue,
+    shouldProcess: hasDefaultValue,
 };

@@ -17,7 +17,7 @@ const getValidationSetting = (component: any) => {
 };
 
 const shouldValidate = (context: ValidationContext) => {
-    const { component, value } = context;
+    const { component } = context;
     if (!isValidatableTextFieldComponent(component)) {
         return false;
     }
@@ -39,7 +39,7 @@ export const validateMaximumWordsSync: RuleFnSync = (context: ValidationContext)
     const maxWords = getValidationSetting(component);
     if (maxWords && typeof value === 'string') {
         if (value.trim().split(/\s+/).length > maxWords) {
-            const error = new FieldError('maxWords', { ...context, length: String(maxWords) });
+            const error = new FieldError('maxWords', { ...context, length: String(maxWords), setting: String(maxWords) });
             return error;
         }
     }

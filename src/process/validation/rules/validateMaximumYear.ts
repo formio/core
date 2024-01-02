@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { ValidatorError, FieldError } from 'error';
 import { DayComponent } from 'types/Component';
 import { RuleFn, RuleFnSync, ValidationContext } from 'types';
@@ -55,7 +53,7 @@ export const validateMaximumYearSync: RuleFnSync = (context: ValidationContext) 
 
     return +year <= +maxYear
         ? null
-        : new FieldError('maxYear', {...context, maxYear: String(maxYear) });
+        : new FieldError('maxYear', {...context, maxYear: String(maxYear), setting: String(maxYear) });
 }
 
 export const validateMaximumYearInfo: ProcessorInfo<ValidationContext, FieldError | null> = {

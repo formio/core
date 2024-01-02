@@ -1,4 +1,4 @@
-import { Component, DataObject, PassedComponentInstance, ProcessorScope, ProcessorType } from "types"
+import { Component, DataObject, Form, PassedComponentInstance, ProcessorInfo, ProcessorScope, ProcessorType, Submission } from "types"
 import { ProcessorFn, ProcessorFnSync } from "./ProcessorFn";
 import { ProcessType } from "./ProcessType";
 
@@ -7,6 +7,9 @@ export type ProcessorContext<ProcessorScope> = {
     path: string;
     data: DataObject;
     row: any;
+    value: any;
+    form?: Form;
+    submission?: Submission;
     components?: Component[];
     instance?: PassedComponentInstance;
     process?: ProcessType;
@@ -17,9 +20,6 @@ export type ProcessorContext<ProcessorScope> = {
     evalContext?: (context: ProcessorContext<ProcessorScope>) => any;
 }
 
-export type _ProcessorsContext<FunctionType> = {
-    processors: FunctionType[];
-}
-
-export type ProcessorsContext<ProcessorScope> = ProcessorContext<ProcessorScope> & _ProcessorsContext<ProcessorFn<ProcessorScope>>;
-export type ProcessorsContextSync<ProcessorScope> = ProcessorContext<ProcessorScope> & _ProcessorsContext<ProcessorFnSync<ProcessorScope>>;
+export type ProcessorsContext<ProcessorScope> = ProcessorContext<ProcessorScope> & {
+    processors: ProcessorInfo<any, any>[];
+};

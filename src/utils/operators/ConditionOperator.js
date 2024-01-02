@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { isArray, some } from 'lodash';
 
 /* eslint-disable no-unused-vars */
 export default class ConditionOperator {
@@ -21,8 +21,8 @@ export default class ConditionOperator {
     getResult(options = {}) {
         const { value } = options;
 
-        if (_.isArray(value)) {
-            return _.some(value, valueItem => this.execute({ ...options, value: valueItem }));
+        if (isArray(value)) {
+            return some(value, valueItem => this.execute({ ...options, value: valueItem }));
         }
 
         return this.execute(options);

@@ -1,5 +1,5 @@
 import ConditionOperator from './ConditionOperator';
-import _ from 'lodash';
+import { includes } from 'lodash';
 
 export default class Includes extends ConditionOperator {
     static get operatorKey() {
@@ -11,6 +11,6 @@ export default class Includes extends ConditionOperator {
     }
 
     execute({ value, comparedValue }) {
-        return  _.includes(value, comparedValue);
+        return  includes(value, comparedValue);
     }
 }

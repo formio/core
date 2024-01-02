@@ -1,5 +1,5 @@
 import ConditionOperator from './ConditionOperator';
-import _ from 'lodash';
+import { endsWith } from 'lodash';
 
 export default class EndsWith extends ConditionOperator {
     static get operatorKey() {
@@ -11,6 +11,6 @@ export default class EndsWith extends ConditionOperator {
     }
 
     execute({ value, comparedValue }) {
-        return  _.endsWith(value, comparedValue);
+        return endsWith(value, comparedValue);
     }
 }

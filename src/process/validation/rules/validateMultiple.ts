@@ -66,14 +66,14 @@ export const validateMultipleSync: RuleFnSync = (context: ValidationContext) => 
 
     if (shouldBeArray) {
         if (isArray) {
-            return isRequired ? value.length > 0 ? null : new FieldError('array_nonempty', context): null;
+            return isRequired ? value.length > 0 ? null : new FieldError('array_nonempty', {...context, setting: true}): null;
         } else {
             // Null/undefined is ok if this value isn't required; anything else should fail
-            return isNil(value) ? isRequired ? new FieldError('array', context) : null : null;
+            return isNil(value) ? isRequired ? new FieldError('array', {...context, setting: true}) : null : null;
         }
     } else {
         if (!canBeArray && isArray) {
-            return new FieldError('nonarray', context);
+            return new FieldError('nonarray', {...context, setting: false});
         }
         return null;
     }

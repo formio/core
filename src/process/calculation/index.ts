@@ -19,12 +19,12 @@ export const calculateProcessSync: ProcessorFnSync<CalculationScope> = (context:
     const evalContextValue = evalContext ? evalContext(context) : context;
     evalContextValue.value = null;
     if (!scope.calculated) scope.calculated = [];
-    scope.value = Evaluator.evaluate(component.calculateValue, evalContextValue, 'value');
+    const newValue = Evaluator.evaluate(component.calculateValue, evalContextValue, 'value');
     scope.calculated.push({
         path,
-        value: Evaluator.evaluate(component.calculateValue, evalContextValue, 'value')
+        value: newValue
     });
-    _set(row, component.key, scope.value);
+    _set(row, component.key, newValue);
     return;
 };
 

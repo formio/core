@@ -1,11 +1,11 @@
 import { expect } from 'chai';
 import { process } from '../../process'
-import { conditionProcess } from '../index';
-import { ConditionsScope, ProcessContext, ProcessorScope } from 'types';
+import { conditionProcessInfo } from '../index';
+import { ConditionsScope, ProcessContext } from 'types';
 
 const processForm = async (form: any, submission: any) => {
     const context: ProcessContext<ConditionsScope> = {
-        processors: [conditionProcess],
+        processors: [conditionProcessInfo],
         components: form.components,
         data: submission.data,
         scope: {}

@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { FieldError } from 'error/FieldError';
 import { RuleFn, RuleFnSync, TextFieldComponent, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
@@ -42,7 +40,7 @@ export const validateMinimumWordsSync: RuleFnSync = (context: ValidationContext)
     const minWords = getValidationSetting(component as TextFieldComponent);
     if (minWords && value && typeof value === 'string') {
         if (value.trim().split(/\s+/).length < minWords) {
-            const error = new FieldError('minWords', { ...context, length: String(minWords) });
+            const error = new FieldError('minWords', { ...context, length: String(minWords), setting: String(minWords) });
             return error;
         }
     }

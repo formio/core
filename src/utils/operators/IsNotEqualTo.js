@@ -1,5 +1,5 @@
 import ConditionOperator from './ConditionOperator';
-import _ from 'lodash';
+import { isEqual } from 'lodash';
 
 export default class IsNotEqualTo extends ConditionOperator {
     static get operatorKey() {
@@ -11,6 +11,6 @@ export default class IsNotEqualTo extends ConditionOperator {
     }
 
     execute({ value, comparedValue }) {
-        return  !_.isEqual(value, comparedValue);
+        return  !isEqual(value, comparedValue);
     }
 }

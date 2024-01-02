@@ -2,16 +2,9 @@ import {
     Component, 
     DataObject, 
     PassedComponentInstance, 
-    ProcessComponents, 
     ProcessorContext, 
-    ProcessorFn, 
-    ProcessorFnSync, 
     ProcessType,
-    FetchProcessContext,
-    CalculationProcessContext,
-    ConditionsProcessContext,
-    DefaultValueProcessContext,
-    ValidationProcessContext
+    ProcessorInfo
 } from "types";
 
 export type ComponentInstances = {
@@ -27,16 +20,10 @@ export type BaseProcessContext<ProcessorScope> = {
     process?: ProcessType;
     form?: any;
     submission?: any;
+    flat?: boolean;
     evalContext?: (context: ProcessorContext<ProcessorScope>) => any;
 }
 
-export type ReducedProcessContext<ProcessorScope> = BaseProcessContext<ProcessorScope> & FetchProcessContext & CalculationProcessContext & ConditionsProcessContext & DefaultValueProcessContext & ValidationProcessContext & {
-    processes: ProcessComponents;
+export type ProcessContext<ProcessorScope> = BaseProcessContext<ProcessorScope> & {
+    processors: ProcessorInfo<any, any>[];
 };
-
-export type _ProcessContext<FunctionType, ProcessorScope> = BaseProcessContext<ProcessorScope> & {
-    processors: FunctionType[];
-}
-
-export type ProcessContext<ProcessorScope> = _ProcessContext<ProcessorFn<ProcessorScope>, ProcessorScope>;
-export type ProcessContextSync<ProcessorScope> = _ProcessContext<ProcessorFnSync<ProcessorScope>, ProcessorScope>;

@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import fetchMock from 'fetch-mock';
-import _ from 'lodash';
-
+import { get } from 'lodash';
 import { DataObject, SelectComponent } from 'types';
 import { FieldError } from 'error';
 import { simpleSelectOptions, simpleTextField } from './fixtures/components';
@@ -60,7 +59,7 @@ it('The remote value validation will generate the correct URL given a searchFiel
             value: 2,
         },
     };
-    const value = _.get(data, component.key);
+    const value = get(data, component.key);
 
     if (!component.data || !component.data.url) {
         throw new Error('Component passed to remote validation testing does not contain a URL');

@@ -1,11 +1,11 @@
 import { expect } from 'chai';
 import { processSync } from '../../process'
-import { populateProcessSync } from '../index';
-import { PopulateScope, ProcessContextSync } from 'types';
+import { populateProcessInfo } from '../index';
+import { PopulateScope, ProcessContext } from 'types';
 
 const processForm = async (form: any, submission: any) => {
-    const context: ProcessContextSync<PopulateScope> = {
-        processors: [populateProcessSync],
+    const context: ProcessContext<PopulateScope> = {
+        processors: [populateProcessInfo],
         components: form.components,
         data: submission.data,
         scope: { data: submission.data }
@@ -40,7 +40,7 @@ describe('Populate processor', () => {
         };
     
         const submission = {data: {}};
-        const context: ProcessContextSync<PopulateScope> = await processForm(form, submission);
+        const context: ProcessContext<PopulateScope> = await processForm(form, submission);
         expect(context.data).to.deep.equal({
             grid: [
                 {}

@@ -1,11 +1,11 @@
 import { expect } from 'chai';
 import { process } from '../../process'
-import { defaultValueProcess } from '../index';
+import { defaultValueProcessInfo } from '../index';
 import { DefaultValueScope, ProcessContext } from 'types';
 
 const processForm = async (form: any, submission: any) => {
     const context: ProcessContext<DefaultValueScope> = {
-        processors: [defaultValueProcess],
+        processors: [defaultValueProcessInfo],
         components: form.components,
         data: submission.data,
         scope: {}

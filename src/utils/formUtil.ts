@@ -1,4 +1,4 @@
-import { last, get, isEmpty } from "lodash";
+import { last, get, isEmpty, isNil, isObject } from "lodash";
 
 import {
   AsyncComponentDataCallback,
@@ -111,10 +111,26 @@ export function getModelType(component: any) {
     }
     return 'object';
   }
+  if ((component.input === false) || isComponentModelType(component, 'layout')) {
+    return 'inherit';
+  }
   if (component.key) {
     return 'value';
   }
   return 'inherit';
+}
+
+export function getComponentPath(component: Component, path: string) {
+  if (!component.key) {
+    return path;
+  }
+  if (!path) {
+    return component.key;
+  }
+  if (path.match(new RegExp(`${component.key}$`))) {
+    return path;
+  }
+  return (getModelType(component) === 'inherit') ? `${path}.${component.key}` : path;
 }
 
 export function isComponentModelType(component: any, modelType: string) {
@@ -128,7 +144,7 @@ export function isComponentNestedDataType(component: any) {
     isComponentModelType(component, 'map');
 }
 
-export function componentDataPath(component: any, parentPath?: string) {
+export function componentPath(component: any, parentPath?: string) {
   parentPath = component.parentPath || parentPath;
   if (!component.key) {
     // If the component does not have a key, then just always return the parent path.
@@ -139,23 +155,33 @@ export function componentDataPath(component: any, parentPath?: string) {
   if (component.path) {
     return component.path;
   }
-  
-  // Calculate the new component data path.
-  const newPath = parentPath ? `${parentPath}.${component.key}` : component.key;
 
+  let key = component.key;
+  if (
+    component.type === 'checkbox' && 
+    component.inputType === 'radio' && 
+    component.name
+  ) {
+      key = component.name;
+  }
+  
+  return parentPath ? `${parentPath}.${key}` : key;
+}
+
+export const componentChildPath = (component: any, parentPath?: string, path?: string) => {
+  parentPath = component.parentPath || parentPath;
+  path = path || componentPath(component, parentPath);
   // See if we are a nested component.
   if (component.components && Array.isArray(component.components)) {
     if (isComponentModelType(component, 'dataObject')) {
-      return `${newPath}.data`;
+      return `${path}.data`;
     }
     if (isComponentNestedDataType(component)) {
-      return newPath;
+      return path;
     }
     return parentPath;
   }
-
-  // We are not a nested component, but have a key, then we are a value component.
-  return newPath;
+  return path;
 }
 
 // Async each component data.
@@ -193,7 +219,7 @@ export const eachComponentDataAsync = async (
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
-        await eachComponentDataAsync(component.components, data, fn, compPath);
+        await eachComponentDataAsync(component.components, data, fn, componentChildPath(component, path, compPath));
         return true;
       } else {
         return false;
@@ -232,7 +258,7 @@ export const eachComponentData = (
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
-        eachComponentData(component.components, data, fn, compPath, index);
+        eachComponentData(component.components, data, fn, componentChildPath(component, path, compPath), index);
         return true;
       } else {
         return false;
@@ -306,7 +332,7 @@ export function eachComponent(
       delete component.parent.rows;
     }
     if (includeAll || component.tree || !info.iterable) {
-      noRecurse = fn(component, componentDataPath(component, path), components);
+      noRecurse = fn(component, componentPath(component, path), components);
     }
 
     if (!noRecurse) {
@@ -339,7 +365,7 @@ export function eachComponent(
           component.components,
           fn,
           includeAll,
-          componentDataPath(component, path),
+          componentChildPath(component, path),
           parent ? component : null
         );
       }
@@ -362,7 +388,7 @@ export async function eachComponentAsync(
     let component = components[i];
     const info = componentInfo(component);
     if (includeAll || component.tree || !info.iterable) {
-      if (await fn(component, components, componentDataPath(component, path))) {
+      if (await fn(component, components, componentPath(component, path))) {
         continue;
       }
     }
@@ -385,7 +411,7 @@ export async function eachComponentAsync(
         }
       }
     } else if (info.hasComps) {
-      await eachComponentAsync(component.components, fn, includeAll, componentDataPath(component, path));
+      await eachComponentAsync(component.components, fn, includeAll, componentChildPath(component, path));
     }
   }
 }
@@ -401,4 +427,18 @@ export function getComponentData(components: Component[], data: DataObject, path
     }
   });
   return compData;
+}
+
+export function getComponentActualValue(compPath: string, data: any, row: any) {
+  let value = null;
+  if (row) {
+      value = get(row, compPath);
+  }
+  if (data && isNil(value)) {
+      value = get(data, compPath);
+  }
+  if (isNil(value) || (isObject(value) && isEmpty(value))) {
+      value = '';
+  }
+  return value;
 }

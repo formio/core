@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { FieldError } from 'error';
 import { DateTimeComponent, TextFieldComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';

@@ -1,5 +1,4 @@
-import _ from 'lodash';
-
+import { isEmpty } from 'lodash';
 import { RuleFn, RuleFnSync } from 'types/RuleFn';
 import { FieldError } from 'error/FieldError';
 import { Evaluator } from 'utils';
@@ -13,7 +12,7 @@ export const validateCustom: RuleFn = async (context: ValidationContext) => {
 export const shouldValidate = (context: ValidationContext) => {
     const { component, value } = context;
     const customValidation = component.validate?.custom;
-    if (!customValidation || !value || ((typeof value === 'string' || typeof value === 'object') && _.isEmpty(value))) {
+    if (!customValidation || !value || ((typeof value === 'string' || typeof value === 'object') && isEmpty(value))) {
         return false;
     }
     return true;
@@ -50,7 +49,7 @@ export const validateCustomSync: RuleFnSync = (context: ValidationContext) => {
         return null;
     }
 
-    return new FieldError(isValid, {...context, hasLabel: false });
+    return new FieldError('custom', {...context, hasLabel: false });
 };
 
 

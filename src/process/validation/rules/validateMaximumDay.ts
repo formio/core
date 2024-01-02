@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { ValidatorError, FieldError } from 'error';
 import { DayComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { dayjs, isPartialDay, getDateValidationFormat, getDateSetting } from 'utils/date';
@@ -45,7 +43,7 @@ export const validateMaximumDaySync: RuleFnSync = (context: ValidationContext) =
     } else {
         maxDate.setHours(0, 0, 0, 0);
     }
-    const error = new FieldError('maxDay', { ...context, maxDate: String(maxDate) });
+    const error = new FieldError('maxDay', { ...context, maxDate: String(maxDate), setting: String(maxDate) });
     return date.isBefore(dayjs(maxDate)) || date.isSame(dayjs(maxDate)) ? null : error;
 };
 

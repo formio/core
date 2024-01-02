@@ -1,13 +1,13 @@
 import set from 'lodash/set';
 import get from 'lodash/get';
 import { PopulateContext, PopulateScope, ProcessorFnSync } from 'types';
-import { componentDataPath, getContextualRowPath, getModelType } from 'utils/formUtil';
+import { componentPath, getContextualRowPath, getModelType } from 'utils/formUtil';
 
 // This processor ensures that a "linked" row context is provided to every component.
 export const populateProcessSync: ProcessorFnSync<PopulateScope> = (context: PopulateContext) => {
     const { component, path, scope } = context;
     const { data } = scope;
-    const compDataPath = componentDataPath(component, getContextualRowPath(path));
+    const compDataPath = componentPath(component, getContextualRowPath(path));
     const compData: any = get(data, compDataPath);
     if (!scope.populated) scope.populated = [];
     switch (getModelType(component)) {
@@ -38,5 +38,6 @@ export const populateProcessSync: ProcessorFnSync<PopulateScope> = (context: Pop
 
 export const populateProcessInfo = {
     name: 'populate',
+    shouldProcess: (context: PopulateContext) => true,
     processSync: populateProcessSync,
 };
