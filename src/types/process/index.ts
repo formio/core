@@ -31,7 +31,4 @@ export const processes = {
     validation: validateProcessInfo
 }
 
-export type ProcessTarget = {
-    target: 'server' | 'evaluator';
-    processors: ProcessorInfo<any, any>[];
-};
+export type ProcessTarget = Record<string, ProcessorInfo<any, any>[]>;

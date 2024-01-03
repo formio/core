@@ -6,7 +6,7 @@ const JSONLogicEvaluator = JSONLogic.evaluator;
 import ConditionOperators from './operators';
 
 export const isJSONConditional = (conditional: any): conditional is JSONConditional => {
-    return conditional && conditional.json;
+    return conditional && conditional.json && isObject(conditional.json);
 }
 
 export const isLegacyConditional = (conditional: any): conditional is LegacyConditional => {

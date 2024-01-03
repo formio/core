@@ -2,10 +2,11 @@ import jsonLogic from 'modules/jsonlogic';
 import { FieldError } from 'error';
 import { RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
+import { isObject } from 'lodash';
 
 export const shouldValidate = (context: ValidationContext) => {
     const { component, value } = context;
-    if (!value || !component.validate?.json) {
+    if (!value || !component.validate?.json || !isObject(component.validate.json)) {
         return false;
     }
     return true;

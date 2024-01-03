@@ -85,7 +85,7 @@ export const isSimpleConditionallyHidden = (context: ConditionsContext): boolean
     if (isSimpleConditional(conditional)) {
         show = checkSimpleConditional(conditional, context);
     }
-    if (show === null) {
+    if (show === null || show === undefined) {
         return false;
     }
     return !show;

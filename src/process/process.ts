@@ -95,25 +95,19 @@ export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
     validateServer: validateServerProcessInfo
 };
 
-export const ProcessTargets: ProcessTarget[] = [
-    {
-        target: 'server',
-        processors: [
-            filterProcessInfo,
-            serverDefaultValueProcessInfo,
-            fetchProcessInfo,
-            simpleConditionProcessInfo,
-            validateServerProcessInfo
-        ]
-    },
-    {
-        target: 'evaluator',
-        processors: [
-            customDefaultValueProcessInfo,
-            calculateProcessInfo, 
-            logicProcessInfo, 
-            conditionProcessInfo, 
-            validateProcessInfo
-        ]
-    }
-];
+export const ProcessTargets: ProcessTarget = {
+    server: [
+        filterProcessInfo,
+        serverDefaultValueProcessInfo,
+        fetchProcessInfo,
+        simpleConditionProcessInfo,
+        validateServerProcessInfo
+    ],
+    evaluator: [
+        customDefaultValueProcessInfo,
+        calculateProcessInfo,
+        logicProcessInfo,
+        conditionProcessInfo,
+        validateProcessInfo
+    ]
+};
