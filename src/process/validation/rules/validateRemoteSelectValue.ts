@@ -1,5 +1,5 @@
 import { FieldError, ValidatorError } from 'error';
-import { SelectComponent, RuleFn, ValidationContext, RuleFnSync } from 'types';
+import { SelectComponent, RuleFn, ValidationContext, RuleFnSync, FetchFn } from 'types';
 import { Evaluator } from 'utils';
 import { isEmptyObject, toBoolean } from '../util';
 import { getErrorMessage } from 'utils/error';
@@ -65,9 +65,16 @@ export const shouldValidate = (context: ValidationContext) => {
 };
 
 export const validateRemoteSelectValue: RuleFn = async (context: ValidationContext) => {
-    const { component, value, data, fetch, config } = context;
+    const { component, value, data, config } = context;
+    let _fetch: FetchFn | null = null;
     try {
-        if (!fetch) {
+        _fetch = context.fetch ? context.fetch : fetch;
+    }
+    catch (err) {
+        _fetch = null;
+    }
+    try {
+        if (!_fetch) {
             console.log('You must provide a fetch interface to the fetch processor.');
             return null;
         }
@@ -92,7 +99,7 @@ export const validateRemoteSelectValue: RuleFn = async (context: ValidationConte
         }
 
         try {
-            const response = await fetch(url.toString(), { method: 'GET', headers });
+            const response = await _fetch(url.toString(), { method: 'GET', headers });
             // TODO: should we always expect JSON here?
             if (response.ok) {
                 const data = await response.json();

@@ -1,4 +1,4 @@
 import { ProcessorScope } from "..";
 export type FilterScope = {
-    filtered: any;
+    filter: any;
 } & ProcessorScope;

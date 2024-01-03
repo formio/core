@@ -1,4 +1,4 @@
-import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, ConditionsContext, SimpleConditional, JSONConditional, LegacyConditional, SimpleConditionalConditions, Component, NestedComponent } from 'types';
+import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, ConditionsContext, SimpleConditional, JSONConditional, LegacyConditional, SimpleConditionalConditions, Component, NestedComponent, FilterScope } from 'types';
 import { Utils } from 'utils';
 import unset from 'lodash/unset';
 import { componentInfo, getComponentPath } from 'utils/formUtil';
@@ -11,6 +11,7 @@ import {
     isSimpleConditional,
     isJSONConditional
 } from 'utils/conditions';
+import { has } from 'lodash';
 
 const skipOnServer = (context: ConditionsContext): boolean => {
     const { component, config } = context;

@@ -1,15 +1,10 @@
 import { expect } from 'chai';
-import fetchMock from 'fetch-mock';
 import { get } from 'lodash';
 import { DataObject, SelectComponent } from 'types';
 import { FieldError } from 'error';
 import { simpleSelectOptions, simpleTextField } from './fixtures/components';
 import { generateProcessContext } from './fixtures/util';
 import { validateRemoteSelectValue, generateUrl } from '../validateRemoteSelectValue';
-
-beforeEach(() => {
-    fetchMock.reset();
-});
 
 it('Validating a component without the remote value validation parameter will return null', async () => {
     const component = simpleTextField;
@@ -88,10 +83,6 @@ it('Validating a select component with the remote validation parameter will retu
             value: 2,
         },
     };
-    fetchMock.mock(component.data.url, JSON.stringify([]), {
-        query: { [component.searchField!]: data.component.value },
-    });
-
     const context = generateProcessContext(component, data);
     const result = await validateRemoteSelectValue(context);
     expect(result).to.be.instanceOf(FieldError);
@@ -116,9 +107,6 @@ it('Validating a select component with the remote validation parameter will retu
             value: 2,
         },
     };
-    fetchMock.mock(component.data.url, JSON.stringify({}), {
-        query: { [component.searchField!]: data.component.value },
-    });
     const context = generateProcessContext(component, data);
     const result = await validateRemoteSelectValue(context);
     expect(result).to.be.instanceOf(FieldError);
@@ -143,10 +131,14 @@ it('Validating a select component with the remote validation parameter will retu
             value: 2,
         },
     };
-    fetchMock.mock(component.data.url, JSON.stringify([{ id: 'b', value: 2 }]), {
-        query: { [component.searchField!]: data.component.value },
-    });
+
     const context = generateProcessContext(component, data);
+    context.fetch = (url: string, options?: RequestInit | undefined) => {
+        return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve([{ id: 'b', value: 2 }])
+        });
+    };
     const result = await validateRemoteSelectValue(context);
     expect(result).to.equal(null);
 });

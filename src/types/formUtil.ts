@@ -5,3 +5,5 @@ export type AsyncComponentDataCallback =
 
 export type ComponentDataCallback =
   (component: Component, data: DataObject, row: any, path: string, components?: Component[], index?: number) => boolean | void;
+
+export type FetchFn = (url: string, options?: RequestInit) => Promise<any>;

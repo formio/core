@@ -35,8 +35,12 @@ const cleanupValidationError = (error: any) => ({
 });
 
 export function shouldValidate(context: ValidationContext, rules: ValidationRuleInfo[]): boolean {
-    const { component, scope, path } = context;
+    const { component, scope, path, config } = context;
     if (component.hasOwnProperty('input') && !component.input) {
+        return false;
+    }
+    // Server validation is skipped if the value is not persistent on the server.
+    if (config?.server && (component.persistent === false || (component.persistent === 'client-only'))) {
         return false;
     }
     // Do not perform validation on conditionally hidden components.
@@ -63,10 +67,6 @@ export function shouldValidateCustom(context: ValidationContext): boolean {
 export function shouldValidateServer(context: ValidationContext): boolean {
     const { component } = context;
     if (shouldValidateCustom(context)) {
-        return false;
-    }
-    // Server validation is skipped if the value is not persistent on the server.
-    if (component.persistent === false || (component.persistent === 'client-only')) {
         return false;
     }
     return shouldValidate(context, Rules);

@@ -1,7 +1,8 @@
+import { FetchFn } from "types/formUtil";
 import { ProcessorContext } from "../ProcessorContext";
 import { FetchScope } from "./FetchScope";
 export type FetchProcessContext = {
-    fetch?: (url: string, options?: RequestInit) => Promise<Response>;
+    fetch?: FetchFn;
     headers?: Record<string, string>;
 };
 export type FetchContext = ProcessorContext<FetchScope> & FetchProcessContext;

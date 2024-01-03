@@ -1,4 +1,4 @@
-import { ProcessorFn, ProcessorInfo, FetchContext, FetchScope } from 'types';
+import { ProcessorFn, ProcessorInfo, FetchContext, FetchScope, FetchFn } from 'types';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import { Evaluator } from 'utils';
@@ -12,8 +12,15 @@ export const shouldFetch = (context: FetchContext): boolean => {
 };
 
 export const fetchProcess: ProcessorFn<FetchScope> = async (context: FetchContext) => {
-    const { component, row, fetch, evalContext, path, scope } = context;
-    if (!fetch) {
+    const { component, row, evalContext, path, scope } = context;
+    let _fetch: FetchFn | null = null;
+    try {
+        _fetch = context.fetch ? context.fetch : fetch;
+    }
+    catch (err) {
+        _fetch = null;
+    }
+    if (!_fetch) {
         console.log('You must provide a fetch interface to the fetch processor.');
         return;
     }
@@ -53,7 +60,7 @@ export const fetchProcess: ProcessorFn<FetchScope> = async (context: FetchContex
 
     try {
         // Perform the fetch.
-        const result = await (await fetch(url, request)).json();
+        const result = await (await _fetch(url, request)).json();
         const mapFunction = get(component, 'fetch.mapFunction');
 
         // Set the row data of the fetched value.
