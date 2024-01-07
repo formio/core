@@ -1,7 +1,6 @@
-import { CheckboxComponent, Component, ProcessContext, ProcessTarget, ProcessorInfo, ProcessorScope } from "types";
+import { ProcessContext, ProcessTarget, ProcessorInfo, ProcessorScope } from "types";
 import { eachComponentData, eachComponentDataAsync } from "utils/formUtil";
 import { processOne, processOneSync } from './processOne';
-import get from 'lodash/get';
 import { defaultValueProcessInfo, serverDefaultValueProcessInfo, customDefaultValueProcessInfo } from "./defaultValue";
 import { fetchProcessInfo } from "./fetch";
 import { calculateProcessInfo } from "./calculation";
@@ -10,27 +9,15 @@ import { conditionProcessInfo, customConditionProcessInfo, simpleConditionProces
 import { validateCustomProcessInfo, validateProcessInfo, validateServerProcessInfo } from "./validation";
 import { filterProcessInfo } from "./filter";
 
-export function dataValue(component: Component, row: any) {
-    let key = component.key;
-    if (
-        component.type === 'checkbox' && 
-        component.inputType === 'radio' && 
-        (component as CheckboxComponent).name
-    ) {
-        key = (component as CheckboxComponent).name;
-    }
-    return key ? get(row, key) : undefined;
-}
-
 export async function process<ProcessScope>(context: ProcessContext<ProcessScope>): Promise<ProcessScope> {
     const { instances, components, data, scope, flat, processors } = context;
     await eachComponentDataAsync(components, data, async (component, data, row, path, components, index) => {
         await processOne<ProcessScope>({...context, ...{
             component,
+            components,
             path,
             row,
             index,
-            value: dataValue(component, row),
             instance: instances ? instances[path] : undefined
         }});
         if (flat) {
@@ -55,10 +42,10 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
     eachComponentData(components, data, (component, data, row, path, components, index) => {
         processOneSync<ProcessScope>({...context, ...{
             component,
+            components,
             path,
             row,
             index,
-            value: dataValue(component, row),
             instance: instances ? instances[path] : undefined
         }});
         if (flat) {

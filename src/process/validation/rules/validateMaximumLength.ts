@@ -23,7 +23,11 @@ export const shouldValidate = (context: ValidationContext) => {
     if (typeof value !== 'string') {
         return false;
     }
-    if (Number.isNaN(getValidationSetting(component))) {
+    const setting = getValidationSetting(component);
+    if (setting === undefined) {
+        return false;
+    }
+    if (!setting || Number.isNaN(setting)) {
         return false;
     }
     return true;

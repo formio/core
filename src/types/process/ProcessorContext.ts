@@ -7,7 +7,7 @@ export type ProcessorContext<ProcessorScope> = {
     path: string;
     data: DataObject;
     row: any;
-    value: any;
+    value?: any;
     form?: Form;
     submission?: Submission;
     components?: Component[];

@@ -34,26 +34,30 @@ const cleanupValidationError = (error: any) => ({
     ),
 });
 
-export function shouldValidate(context: ValidationContext, rules: ValidationRuleInfo[]): boolean {
+export function validationRules(context: ValidationContext, rules: ValidationRuleInfo[]): ValidationRuleInfo[] {
     const { component, scope, path, config } = context;
     if (component.hasOwnProperty('input') && !component.input) {
-        return false;
+        return [];
     }
     // Server validation is skipped if the value is not persistent on the server.
     if (config?.server && (component.persistent === false || (component.persistent === 'client-only'))) {
-        return false;
+        return [];
     }
     // Do not perform validation on conditionally hidden components.
     if (find((scope as ConditionsScope).conditionals, {path: getComponentPath(component, path), conditionallyHidden: true})) {
-        return false;
+        return [];
     }
+    const validationRules: ValidationRuleInfo[] = [];
     return rules.reduce((acc, rule: ValidationRuleInfo) => {
-        return acc || rule.shouldProcess(context);
-    }, false);
+        if (rule.shouldProcess && rule.shouldProcess(context)) {
+            acc.push(rule);
+        }
+        return acc;
+    }, validationRules);
 }
 
 export function shouldValidateAll(context: ValidationContext): boolean {
-    return shouldValidate(context, Rules);
+    return validationRules(context, Rules).length > 0;
 }
 
 export function shouldValidateCustom(context: ValidationContext): boolean {
@@ -69,7 +73,7 @@ export function shouldValidateServer(context: ValidationContext): boolean {
     if (shouldValidateCustom(context)) {
         return false;
     }
-    return shouldValidate(context, Rules);
+    return shouldValidateAll(context);
 }
 
 function handleError(error: FieldError | null, context: ValidationContext) {
@@ -86,7 +90,7 @@ function handleError(error: FieldError | null, context: ValidationContext) {
 }
 
 export const validateProcess: ValidationProcessorFn = async (context) => {
-    const { component, data, path, instance, scope, rules } = context;
+    const { component, data, row, path, instance, scope, rules } = context;
     let { value } = context;
     if (!scope.validated) scope.validated = [];
     if (!scope.errors) scope.errors = [];
@@ -99,13 +103,17 @@ export const validateProcess: ValidationProcessorFn = async (context) => {
         for (let i = 0; i < value.length; i++) {
             const amendedPath = `${path}[${i}]`;
             let amendedValue = get(data, amendedPath);
-            if (instance?.shouldSkipValidation(data) || !shouldValidate(context, Rules)) {
+            if (instance?.shouldSkipValidation(data)) {
+                return;
+            }
+            const rulesToExecute: ValidationRuleInfo[] = validationRules(context, otherRules);
+            if (!rulesToExecute.length) {
                 return;
             }
             if (component.truncateMultipleSpaces && amendedValue && typeof amendedValue === 'string') {
                 amendedValue = amendedValue.trim().replace(/\s{2,}/g, ' ');
             }
-            for (const rule of otherRules) {
+            for (const rule of rulesToExecute) {
                 if (rule && rule.process) {
                     handleError(await rule.process({ 
                         ...context, 
@@ -126,13 +134,17 @@ export const validateProcess: ValidationProcessorFn = async (context) => {
         }
         return;
     }
-    if (instance?.shouldSkipValidation(data) || !shouldValidate(context, Rules)) {
+    if (instance?.shouldSkipValidation(data, row)) {
+        return;
+    }
+    const rulesToExecute: ValidationRuleInfo[] = validationRules(context, rules);
+    if (!rulesToExecute.length) {
         return;
     }
     if (component.truncateMultipleSpaces && value && typeof value === 'string') {
         value = value.trim().replace(/\s{2,}/g, ' ');
     }
-    for (const rule of rules) {
+    for (const rule of rulesToExecute) {
         try {
             if (rule && rule.process) {
                 handleError(await rule.process({ ...context, value }), context);
@@ -146,7 +158,7 @@ export const validateProcess: ValidationProcessorFn = async (context) => {
 };
 
 export const validateProcessSync: ValidationProcessorFnSync = (context) => {
-    const { component, data, path, instance, scope, rules } = context;
+    const { component, data, row, path, instance, scope, rules } = context;
     let { value } = context;
     if (!scope.validated) scope.validated = [];
     if (!scope.errors) scope.errors = [];
@@ -154,30 +166,48 @@ export const validateProcessSync: ValidationProcessorFnSync = (context) => {
         return;
     }
     if (component.multiple && Array.isArray(value) && value.length > 0) {
+        const fullValueRules = rules.filter(rule => rule.fullValue);
+        const otherRules = rules.filter(rule => !rule.fullValue);
         for (let i = 0; i < value.length; i++) {
             const amendedPath = `${path}[${i}]`;
             let amendedValue = get(data, amendedPath);
-            if (instance?.shouldSkipValidation(data) || !shouldValidate(context, Rules)) {
+            if (instance?.shouldSkipValidation(data)) {
+                return;
+            }
+            const rulesToExecute: ValidationRuleInfo[] = validationRules(context, otherRules);
+            if (!rulesToExecute.length) {
                 return;
             }
             if (component.truncateMultipleSpaces && amendedValue && typeof amendedValue === 'string') {
                 amendedValue = amendedValue.trim().replace(/\s{2,}/g, ' ');
             }
-            for (const rule of rules) {
+            for (const rule of rulesToExecute) {
                 if (rule && rule.processSync) {
                     handleError(rule.processSync({ ...context, value: amendedValue, index: i, path: amendedPath }), context);
                 }
             }
         }
+        for (const rule of fullValueRules) {
+            if (rule && rule.processSync) {
+                handleError(rule.processSync({ 
+                    ...context, 
+                    value
+                }), context);
+            }
+        }
         return;
     }
-    if (instance?.shouldSkipValidation(data) || !shouldValidate(context, Rules)) {
+    if (instance?.shouldSkipValidation(data, row)) {
+        return;
+    }
+    const rulesToExecute: ValidationRuleInfo[] = validationRules(context, rules);
+    if (!rulesToExecute.length) {
         return;
     }
     if (component.truncateMultipleSpaces && value && typeof value === 'string') {
         value = value.trim().replace(/\s{2,}/g, ' ');
     }
-    for (const rule of rules) {
+    for (const rule of rulesToExecute) {
         try {
             if (rule && rule.processSync) {
                 handleError(rule.processSync({ ...context, value }), context);
