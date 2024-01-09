@@ -18,7 +18,8 @@ function isValidateableSelectComponent(component: any): component is SelectCompo
     return (
         component &&
         !!component.validate?.hasOwnProperty('onlyAvailableItems') &&
-        component.type === 'select'
+        component.type === 'select' &&
+        component.dataSrc !== 'resource'
     );
 }
 
