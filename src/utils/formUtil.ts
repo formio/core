@@ -190,16 +190,17 @@ export const eachComponentDataAsync = async (
   data: DataObject,
   fn: AsyncComponentDataCallback,
   path = "",
-  index?: number
+  index?: number,
+  parent?: Component
 ) => {
   if (!components || !data) {
     return;
   }
   return await eachComponentAsync(
     components,
-    async (component: any, componentComponents: any, compPath: string) => {
+    async (component: any, compPath: string, componentComponents: any, compParent: any) => {
       const row = getContextualRowData(compPath, data);
-      if (await fn(component, data, row, compPath, componentComponents, index) === true) {
+      if (await fn(component, data, row, compPath, componentComponents, index, compParent) === true) {
         return true;
       }
       if (isComponentNestedDataType(component)) {
@@ -211,7 +212,8 @@ export const eachComponentDataAsync = async (
               data,
               fn,
               `${compPath}[${i}]`,
-              i
+              i,
+              component
             );
           }
           return true;
@@ -219,14 +221,15 @@ export const eachComponentDataAsync = async (
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
-        await eachComponentDataAsync(component.components, data, fn, componentChildPath(component, path, compPath));
+        await eachComponentDataAsync(component.components, data, fn, componentChildPath(component, path, compPath), index, component);
         return true;
       } else {
         return false;
       }
     },
     true,
-    path
+    path,
+    parent
   );
 };
 
@@ -235,37 +238,39 @@ export const eachComponentData = (
   data: DataObject,
   fn: ComponentDataCallback,
   path = "",
-  index?: number
+  index?: number,
+  parent?: Component
 ) => {
   if (!components || !data) {
     return;
   }
   return eachComponent(
     components,
-    (component: any, compPath: string, componentComponents: any) => {
+    (component: any, compPath: string, componentComponents: any, compParent: any) => {
       const row = getContextualRowData(compPath, data);
-      if (fn(component, data, row, compPath, componentComponents, index) === true) {
+      if (fn(component, data, row, compPath, componentComponents, index, compParent) === true) {
         return true;
       }
       if (isComponentNestedDataType(component)) {
         const value = get(data, compPath, data);
         if (Array.isArray(value)) {
           for (let i = 0; i < value.length; i++) {
-            eachComponentData(component.components, data, fn, `${compPath}[${i}]`, i);
+            eachComponentData(component.components, data, fn, `${compPath}[${i}]`, i, component);
           }
           return true;
         } else if (isEmpty(row)) {
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
-        eachComponentData(component.components, data, fn, componentChildPath(component, path, compPath), index);
+        eachComponentData(component.components, data, fn, componentChildPath(component, path, compPath), index, component);
         return true;
       } else {
         return false;
       }
     },
     true,
-    path
+    path,
+    parent
   );
 };
 
@@ -332,7 +337,7 @@ export function eachComponent(
       delete component.parent.rows;
     }
     if (includeAll || component.tree || !info.iterable) {
-      noRecurse = fn(component, componentPath(component, path), components);
+      noRecurse = fn(component, componentPath(component, path), components, parent);
     }
 
     if (!noRecurse) {
@@ -378,7 +383,8 @@ export async function eachComponentAsync(
   components: any[],
   fn: any,
   includeAll = false,
-  path = ""
+  path = "",
+  parent?: any
 ) {
   if (!components) return;
   for (let i = 0; i < components.length; i++) {
@@ -388,7 +394,7 @@ export async function eachComponentAsync(
     let component = components[i];
     const info = componentInfo(component);
     if (includeAll || component.tree || !info.iterable) {
-      if (await fn(component, components, componentPath(component, path))) {
+      if (await fn(component, componentPath(component, path), components, parent)) {
         continue;
       }
     }
@@ -398,7 +404,8 @@ export async function eachComponentAsync(
           component.columns[j]?.components,
           fn,
           includeAll,
-          path
+          path,
+          parent ? component : null
         );
       }
     } else if (info.hasRows) {
@@ -406,12 +413,23 @@ export async function eachComponentAsync(
         let row = component.rows[j];
         if (Array.isArray(row)) {
           for (let k = 0; k < row.length; k++) {
-            await eachComponentAsync(row[k]?.components, fn, includeAll, path);
+            await eachComponentAsync(
+              row[k]?.components,
+              fn, includeAll,
+              path,
+              parent ? component : null
+            );
           }
         }
       }
     } else if (info.hasComps) {
-      await eachComponentAsync(component.components, fn, includeAll, componentChildPath(component, path));
+      await eachComponentAsync(
+        component.components,
+        fn,
+        includeAll,
+        componentChildPath(component, path),
+        parent ? component : null
+      );
     }
   }
 }
