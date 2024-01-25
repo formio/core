@@ -199,7 +199,7 @@ export const eachComponentDataAsync = async (
   return await eachComponentAsync(
     components,
     async (component: any, compPath: string, componentComponents: any, compParent: any) => {
-      const row = getContextualRowData(compPath, data);
+      const row = getContextualRowData(component, compPath, data);
       if (await fn(component, data, row, compPath, componentComponents, index, compParent) === true) {
         return true;
       }
@@ -247,7 +247,7 @@ export const eachComponentData = (
   return eachComponent(
     components,
     (component: any, compPath: string, componentComponents: any, compParent: any) => {
-      const row = getContextualRowData(compPath, data);
+      const row = getContextualRowData(component, compPath, data);
       if (fn(component, data, row, compPath, componentComponents, index, compParent) === true) {
         return true;
       }
@@ -274,14 +274,13 @@ export const eachComponentData = (
   );
 };
 
-export function getContextualRowPath(path: string): string {
-  const lastDotIndex = path.lastIndexOf('.');
-  return lastDotIndex === -1 ? '' : path.substring(0, lastDotIndex);
+export function getContextualRowPath(component: Component, path: string): string {
+  return path.replace(new RegExp(`\.?${component.key}$`), '');
 }
 
 
-export function getContextualRowData(path: string, data: any): any {
-  const rowPath = getContextualRowPath(path);
+export function getContextualRowData(component: Component, path: string, data: any): any {
+  const rowPath = getContextualRowPath(component, path);
   return rowPath ? get(data, rowPath, null) : data;
 }
 
