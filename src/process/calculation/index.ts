@@ -1,5 +1,5 @@
 import JSONLogic from 'modules/jsonlogic';
-import { ProcessorFn, ProcessorFnSync, CalculationScope, CalculationContext, ProcessorInfo } from 'types';
+import { ProcessorFn, ProcessorFnSync, CalculationScope, CalculationContext, ProcessorInfo, FilterScope } from 'types';
 import _set from 'lodash/set';
 const Evaluator = JSONLogic.evaluator;
 
@@ -25,6 +25,7 @@ export const calculateProcessSync: ProcessorFnSync<CalculationScope> = (context:
         value: newValue
     });
     _set(row, component.key, newValue);
+    context.value = newValue;
     return;
 };
 

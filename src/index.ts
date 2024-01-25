@@ -7,3 +7,4 @@ export * from './components';
 export * from './process/validation';
 export * from './process';
 export * from './template';
+export * from './types/process';

@@ -1,5 +1,5 @@
 import JSONLogic from 'modules/jsonlogic';
-import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, DefaultValueContext } from 'types';
+import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, DefaultValueContext, FilterScope } from 'types';
 import has from 'lodash/has';
 import set from 'lodash/set';
 const Evaluator = JSONLogic.evaluator;
@@ -84,6 +84,10 @@ export const serverDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
     }
     if (defaultValue !== null && defaultValue !== undefined) {
         set(row, component.key, defaultValue);
+        if ((scope as FilterScope).filter) {
+            set((scope as FilterScope).filter, path, defaultValue);
+        }
+        context.value = defaultValue;
     }
 };
 
