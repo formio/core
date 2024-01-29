@@ -12,11 +12,7 @@ describe('getContextualRowData', () => {
             },
         };
         const path = 'a.b.c';
-        const actual = getContextualRowData({
-           type: 'textfield',
-           input: true,
-           key: 'c' 
-        }, path, data);
+        const actual = getContextualRowData(path, data);
         const expected = { c: 'hello' };
         expect(actual).to.deep.equal(expected);
     });
@@ -30,11 +26,7 @@ describe('getContextualRowData', () => {
             },
         };
         const path = 'a.b';
-        const actual = getContextualRowData({
-            type: 'textfield',
-            input: true,
-            key: 'b' 
-         }, path, data);
+        const actual = getContextualRowData(path, data);
         const expected = { b: { c: 'hello' } };
         expect(actual).to.deep.equal(expected);
     });
@@ -48,11 +40,7 @@ describe('getContextualRowData', () => {
             },
         };
         const path = 'a';
-        const actual = getContextualRowData({
-            type: 'textfield',
-            input: true,
-            key: 'a' 
-         }, path, data);
+        const actual = getContextualRowData(path, data);
         const expected = { a: { b: { c: 'hello' } } };
         expect(actual).to.deep.equal(expected);
     });
@@ -64,15 +52,10 @@ describe('getContextualRowData', () => {
                     c: 'hello',
                 },
             },
-            d: 'there'
         };
         const path = '';
-        const actual = getContextualRowData({
-            type: 'textfield',
-            input: true,
-            key: 'd' 
-         }, path, data);
-        const expected = { a: { b: { c: 'hello' } }, d: 'there' };
+        const actual = getContextualRowData(path, data);
+        const expected = { a: { b: { c: 'hello' } } };
         expect(actual).to.deep.equal(expected);
     });
 
@@ -81,11 +64,7 @@ describe('getContextualRowData', () => {
             a: [{b: 'hello', c: 'world'}, {b: 'foo', c: 'bar'}],
         }
         const path = 'a[0].b';
-        const actual = getContextualRowData({
-            type: 'textfield',
-            input: true,
-            key: 'b' 
-         }, path, data);
+        const actual = getContextualRowData(path, data);
         const expected = {b: 'hello', c: 'world'};
         expect(actual).to.deep.equal(expected);
     });
@@ -95,11 +74,7 @@ describe('getContextualRowData', () => {
             a: [{b: 'hello', c: 'world'}, {b: 'foo', c: 'bar'}],
         }
         const path = 'a[1].b';
-        const actual = getContextualRowData({
-            type: 'textfield',
-            input: true,
-            key: 'b' 
-         }, path, data);
+        const actual = getContextualRowData(path, data);
         const expected = {b: 'foo', c: 'bar'};
         expect(actual).to.deep.equal(expected);
     });
@@ -109,11 +84,7 @@ describe('getContextualRowData', () => {
             a: [{b: 'hello', c: 'world'}, {b: 'foo', c: 'bar'}],
         }
         const path = 'a';
-        const actual = getContextualRowData({
-            type: 'textfield',
-            input: true,
-            key: 'a' 
-         }, path, data);
+        const actual = getContextualRowData(path, data);
         const expected = {
             a: [{b: 'hello', c: 'world'}, {b: 'foo', c: 'bar'}],
         }
@@ -125,11 +96,7 @@ describe('getContextualRowData', () => {
             a: [{b: 'hello', c: 'world'}, {b: 'foo', c: 'bar'}],
         }
         const path = '';
-        const actual = getContextualRowData({
-            type: 'textfield',
-            input: true,
-            key: 'a' 
-         }, path, data);
+        const actual = getContextualRowData(path, data);
         const expected = {
             a: [{b: 'hello', c: 'world'}, {b: 'foo', c: 'bar'}],
         }
@@ -143,11 +110,7 @@ describe('getContextualRowData', () => {
             },
         }
         const path = 'a.b[0].c';
-        const actual = getContextualRowData({
-            type: 'textfield',
-            input: true,
-            key: 'c' 
-         }, path, data);
+        const actual = getContextualRowData(path, data);
         const expected = {c: 'hello', d: 'world'};
         expect(actual).to.deep.equal(expected);
     });
@@ -159,11 +122,7 @@ describe('getContextualRowData', () => {
             },
         }
         const path = 'a.b[1].c';
-        const actual = getContextualRowData({
-            type: 'textfield',
-            input: true,
-            key: 'c' 
-         }, path, data);
+        const actual = getContextualRowData(path, data);
         const expected = {c: 'foo', d: 'bar'};
         expect(actual).to.deep.equal(expected);
     });
@@ -175,11 +134,7 @@ describe('getContextualRowData', () => {
             },
         }
         const path = 'a.b';
-        const actual = getContextualRowData({
-            type: 'textfield',
-            input: true,
-            key: 'b' 
-         }, path, data);
+        const actual = getContextualRowData(path, data);
         const expected = {b: [{c: 'hello', d: 'world'}, {c: 'foo', d: 'bar'}]};
         expect(actual).to.deep.equal(expected);
     });
@@ -191,11 +146,7 @@ describe('getContextualRowData', () => {
             },
         }
         const path = 'a';
-        const actual = getContextualRowData({
-            type: 'textfield',
-            input: true,
-            key: 'a' 
-         }, path, data);
+        const actual = getContextualRowData(path, data);
         const expected = {a: {b: [{c: 'hello', d: 'world'}, {c: 'foo', d: 'bar'}]}};
         expect(actual).to.deep.equal(expected);
     });
@@ -207,28 +158,8 @@ describe('getContextualRowData', () => {
             },
         }
         const path = '';
-        const actual = getContextualRowData({
-            type: 'textfield',
-            input: true,
-            key: 'a' 
-         }, path, data);
+        const actual = getContextualRowData(path, data);
         const expected = {a: {b: [{c: 'hello', d: 'world'}, {c: 'foo', d: 'bar'}]}};
-        expect(actual).to.deep.equal(expected);
-    });
-
-    it('Should work with a component key that has periods in it', () => {
-        const data = {
-            a: {
-                b: [{c: {e: 'zed'}, d: 'world'}, {c: {e: 'foo'}, d: 'bar'}],
-            },
-        }
-        const path = 'a.b[0].c.e';
-        const actual = getContextualRowData({
-            type: 'textfield',
-            input: true,
-            key: 'c.e' 
-         }, path, data);
-        const expected = {c: {e: 'zed'}, d: 'world'};
         expect(actual).to.deep.equal(expected);
     });
 });
