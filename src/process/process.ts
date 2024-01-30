@@ -83,7 +83,7 @@ export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
 };
 
 export const ProcessTargets: ProcessTarget = {
-    server: [
+    submission: [
         filterProcessInfo,
         serverDefaultValueProcessInfo,
         fetchProcessInfo,

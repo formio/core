@@ -17,7 +17,7 @@ export const shouldValidate = (context: ValidationContext) => {
 };
 
 export const validateUnique: RuleFn = async (context: ValidationContext) => {
-    const { value, config } = context;
+    const { value, config, component } = context;
     if (!shouldValidate(context)) {
         return null;
     }
@@ -25,10 +25,19 @@ export const validateUnique: RuleFn = async (context: ValidationContext) => {
     if (!config || !config.database) {
         throw new ValidatorError("Can't test for unique value without a database config object");
     }
-    const isUnique = await config.database?.isUnique(context, value);
-    return isUnique
-        ? null
-        : new FieldError('unique', context);
+    try {
+        const isUnique = await config.database?.isUnique(context, value);
+        if (typeof isUnique === 'string') {
+            return new FieldError('unique', {
+                ...context,
+                component: {...component, conflictId: isUnique},
+            });
+        }
+        return (isUnique === true) ? null : new FieldError('unique', context);
+    }
+    catch (err: any) {
+        throw new ValidatorError(err.message || err);
+    }
 };
 
 export const validateUniqueInfo: ProcessorInfo<ValidationContext, FieldError | null>  = {
