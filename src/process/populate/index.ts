@@ -7,7 +7,7 @@ import { componentPath, getContextualRowPath, getModelType } from 'utils/formUti
 export const populateProcessSync: ProcessorFnSync<PopulateScope> = (context: PopulateContext) => {
     const { component, path, scope } = context;
     const { data } = scope;
-    const compDataPath = componentPath(component, getContextualRowPath(path));
+    const compDataPath = componentPath(component, getContextualRowPath(component, path));
     const compData: any = get(data, compDataPath);
     if (!scope.populated) scope.populated = [];
     switch (getModelType(component)) {

@@ -124,6 +124,11 @@ export class Formio {
   public static version: string = '---VERSION---';
 
   /**
+   * The global options for the Formio library.
+   */
+  public static options: any = {};
+
+  /**
    * The base API url of the Form.io Platform. Example: https://api.form.io
    */
   public base = '';
