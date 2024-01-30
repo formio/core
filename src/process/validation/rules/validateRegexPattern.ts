@@ -1,7 +1,6 @@
-import _ from 'lodash';
-
 import { FieldError } from 'error';
-import { TextAreaComponent, TextFieldComponent, RuleFn, RuleFnSync } from 'types';
+import { TextAreaComponent, TextFieldComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
+import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isValidatableTextFieldComponent = (
     component: any
@@ -9,22 +8,39 @@ const isValidatableTextFieldComponent = (
     return component && component.validate?.hasOwnProperty('pattern');
 };
 
-export const validateRegexPattern: RuleFn = async (context) => {
-    return validateRegexPatternSync(context);
-};
-
-export const validateRegexPatternSync: RuleFnSync = (context) => {
+export const shouldValidate = (context: ValidationContext) => {
     const { component, value } = context;
     if (!isValidatableTextFieldComponent(component) || !value) {
-        return null;
+        return false;
     }
 
     const pattern = component.validate?.pattern;
     if (!pattern) {
+        return false;
+    }
+    return true;
+};
+
+export const validateRegexPattern: RuleFn = async (context: ValidationContext) => {
+    return validateRegexPatternSync(context);
+};
+
+export const validateRegexPatternSync: RuleFnSync = (context: ValidationContext) => {
+    const { component, value } = context;
+    if (!shouldValidate(context)) {
         return null;
     }
+
+    const pattern = (component as TextAreaComponent).validate?.pattern;
     const regex = new RegExp(`^${pattern}$`);
     return typeof value === 'string' && regex.test(value)
         ? null
-        : new FieldError('pattern', { ...context, regex: pattern, pattern: pattern });
+        : new FieldError('pattern', { ...context, regex: pattern, pattern: pattern, setting: pattern });
+};
+
+export const validateRegexPatternInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
+    name: 'validateRegexPattern',
+    process: validateRegexPattern,
+    processSync: validateRegexPatternSync,
+    shouldProcess: shouldValidate,
 };

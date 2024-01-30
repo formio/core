@@ -1,4 +1,4 @@
-import { Access, ProjectId, SubmissionId } from 'types';
+import { Access, Component, ProjectId, SubmissionId } from 'types';
 
 export type FormId = string;
 
@@ -18,7 +18,7 @@ export interface Form {
     fieldMatchAccess: any;
     owner: SubmissionId;
     machineName: string;
-    components: Array<any>;
+    components: Component[];
     settings?: FormSettings;
     properties: Record<string, string>;
     project: ProjectId;

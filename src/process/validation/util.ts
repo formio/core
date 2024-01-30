@@ -1,7 +1,8 @@
-import _ from 'lodash';
-
-import { Component, DataObject, Form, ProcessorContext, ValidationContext } from 'types';
-import { Evaluator, Utils } from 'utils';
+import { FieldError } from 'error';
+import { isArray, isEqual } from 'lodash';
+import { Component, ValidationContext } from 'types';
+import { Evaluator, unescapeHTML } from 'utils';
+import { VALIDATION_ERRORS } from './i18n';
 
 export function isComponentPersistent(component: Component) {
     return component.persistent ? component.persistent : true;
@@ -9,23 +10,6 @@ export function isComponentPersistent(component: Component) {
 
 export function isComponentProtected(component: Component) {
     return component.protected ? component.protected : false;
-}
-
-export function shouldSkipValidation(component: Component, value: unknown) {
-    if (component.validate?.custom && (_.isEmpty(value)) && !component.validate?.required) {
-        return true;
-    }
-    if (!component.input) {
-        return true;
-    }
-    // TODO: is this correct? we don't want the client skipping validation on, say, a password but we may want the server to
-    if (typeof window === 'undefined' && component.protected) {
-        return true;
-    }
-    if (component.persistent === false || (component.persistent === 'client-only')) {
-        return true;
-    }
-    return false;
 }
 
 export function isEmptyObject(obj: any): obj is {} {
@@ -85,6 +69,46 @@ export function getEmptyValue(component: Component) {
 }
 
 export function isEmpty(component: Component, value: unknown) {
-    const isEmptyArray = (_.isArray(value) && value.length === 1) ? _.isEqual(value[0], getEmptyValue(component)) : false;
-    return value == null || (_.isArray(value) && value.length === 0) || isEmptyArray;
+    const isEmptyArray = (isArray(value) && value.length === 1) ? isEqual(value[0], getEmptyValue(component)) : false;
+    return value == null || (isArray(value) && value.length === 0) || isEmptyArray;
 }
+
+/**
+ * Interpolates @formio/core errors so that they are compatible with the renderer
+ * @param {FieldError[]} errors
+ * @param firstPass
+ * @returns {[]}
+ */
+export const interpolateErrors = (errors: FieldError[], lang: string = 'en') => {
+    return errors.map((error) => {
+        const { errorKeyOrMessage, context } = error;
+        const i18n = VALIDATION_ERRORS[lang] || {};
+        const toInterpolate = i18n[errorKeyOrMessage] ? i18n[errorKeyOrMessage] : errorKeyOrMessage;
+        const paths: any = [];
+        context.path.split('.').forEach((part) => {
+            const match = part.match(/\[([0-9]+)\]$/);
+            if (match) {
+                paths.push(part.substring(0, match.index));
+                paths.push(parseInt(match[1]));
+            }
+            else {
+                paths.push(part);
+            }
+        });
+        return { 
+            message: unescapeHTML(Evaluator.interpolateString(toInterpolate, context)),
+            level: error.level,
+            path: paths,
+            context: {
+                validator: errorKeyOrMessage || context.processor,
+                hasLabel: context.hasLabel,
+                key: context.component.key,
+                label: context.component.label || context.component.placeholder || context.component.key,
+                path: context.path,
+                value: context.value,
+                setting: context.setting,
+                index: context.index || 0
+            }
+        };
+     });
+   };

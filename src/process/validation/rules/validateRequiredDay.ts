@@ -1,7 +1,6 @@
-import _ from 'lodash';
-
 import { FieldError, ValidatorError } from 'error';
-import { DayComponent, RuleFn, RuleFnSync } from 'types';
+import { DayComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
+import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isValidatableDayComponent = (component: any): component is DayComponent => {
     return (
@@ -12,13 +11,21 @@ const isValidatableDayComponent = (component: any): component is DayComponent =>
     );
 };
 
-export const validateRequiredDay: RuleFn = async (context) => {
+export const shouldValidate = (context: ValidationContext) => {
+    const { component } = context;
+    if (!isValidatableDayComponent(component)) {
+        return false;
+    }
+    return true;
+};
+
+export const validateRequiredDay: RuleFn = async (context: ValidationContext) => {
     return validateRequiredDaySync(context);
 };
 
-export const validateRequiredDaySync: RuleFnSync = (context) => {
+export const validateRequiredDaySync: RuleFnSync = (context: ValidationContext) => {
     const { component, value } = context;
-    if (!isValidatableDayComponent(component)) {
+    if (!shouldValidate(context)) {
         return null;
     }
     if (!value) {
@@ -29,20 +36,27 @@ export const validateRequiredDaySync: RuleFnSync = (context) => {
             `Cannot validate required day field of ${value} because it is not a string`,
         );
     }
-    const [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+    const [DAY, MONTH, YEAR] = (component as DayComponent).dayFirst ? [0, 1, 2] : [1, 0, 2];
     const values = value.split('/').map((x) => parseInt(x, 10)),
         day = values[DAY],
         month = values[MONTH],
         year = values[YEAR];
 
-    if (!day && component.fields.day.required === true) {
+    if (!day && (component as DayComponent).fields.day.required === true) {
         return new FieldError('requiredDayField', context);
     }
-    if (!month && component.fields.month.required === true) {
+    if (!month && (component as DayComponent).fields.month.required === true) {
         return new FieldError('requiredMonthField', context);
     }
-    if (!year && component.fields.year.required === true) {
+    if (!year && (component as DayComponent).fields.year.required === true) {
         return new FieldError('requiredYearField', context);
     }
     return null;
+};
+
+export const validateRequiredDayInfo: ProcessorInfo<ValidationContext, FieldError | null>  = {
+    name: 'validateRequiredDay',
+    process: validateRequiredDay,
+    processSync: validateRequiredDaySync,
+    shouldProcess: shouldValidate,
 };

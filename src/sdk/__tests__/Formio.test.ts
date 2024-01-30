@@ -1,11 +1,10 @@
 import { Formio } from '../Formio';
 import { fastCloneDeep } from '../../utils/fastCloneDeep';
-import { each } from 'lodash';
 import assert from 'power-assert';
 import sinon from 'sinon';
 import Chance from 'chance';
 import fetchMock from 'fetch-mock';
-import _ from 'lodash';
+import { capitalize, startsWith, each, assign } from 'lodash';
 
 const chance = Chance();
 const protocol = 'https';
@@ -528,10 +527,10 @@ describe('Formio.js Tests', () => {
     const testRequest = function testRequest(url: any, method: any, type: any) {
       let fnName: any;
       switch (method) {
-        case 'GET': fnName = `load${_.capitalize(type)}`; break;
+        case 'GET': fnName = `load${capitalize(type)}`; break;
         case 'POST':
-        case 'PUT': fnName = `save${_.capitalize(type)}`; break;
-        case 'DELETE': fnName = `delete${_.capitalize(type)}`; break;
+        case 'PUT': fnName = `save${capitalize(type)}`; break;
+        case 'DELETE': fnName = `delete${capitalize(type)}`; break;
       }
 
       it(`Plugin ${method} ${fnName}`, (done) => {
@@ -547,7 +546,7 @@ describe('Formio.js Tests', () => {
           type: type,
           method: method,
           url: formio[type + (method === 'POST' ? 'sUrl' : 'Url')],
-          data: _.startsWith(fnName, 'save') ? testData : null,
+          data: startsWith(fnName, 'save') ? testData : null,
           opts: testOpts
         };
 
@@ -581,10 +580,10 @@ describe('Formio.js Tests', () => {
         };
 
         let promise;
-        if (_.startsWith(fnName, 'save')) {
+        if (startsWith(fnName, 'save')) {
           promise = formio[fnName](testData, testOpts);
         }
-        else if (_.startsWith(fnName, 'load')) {
+        else if (startsWith(fnName, 'load')) {
           promise = formio[fnName](null, testOpts);
         }
         else {
@@ -783,7 +782,7 @@ describe('Formio.js Tests', () => {
         if (test.mock) {
           const mock = test.mock();
           if (mock instanceof Array) {
-            _.each(mock, (_mock) => {
+            each(mock, (_mock) => {
               fetchMock.mock(_mock.url, _mock.response, { method: _mock.method });
             });
           }
@@ -1181,7 +1180,7 @@ describe('Formio.js Tests', () => {
               const body = JSON.parse(opts.body);
               const formId = generateID();
               form = fastCloneDeep(body);
-              _.assign(form, {
+              assign(form, {
                 _id: formId,
                 created: new Date().toISOString(),
                 modified: new Date().toISOString(),

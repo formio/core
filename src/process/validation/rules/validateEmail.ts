@@ -1,23 +1,30 @@
-import _ from 'lodash';
-
 import { FieldError } from 'error';
-import { EmailComponent, RuleFn, RuleFnSync } from 'types';
+import { EmailComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
+import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isValidatableEmailComponent = (component: any): component is EmailComponent => {
     return component && component.type === 'email';
 };
 
-export const validateEmail: RuleFn = async (context) => {
+export const shouldValidate = (context: ValidationContext) => {
+    const { component, value } = context;
+    if (!value) {
+        return false;
+    }
+    if (!isValidatableEmailComponent(component)) {
+        return false;
+    }
+    return true;
+};
+
+export const validateEmail: RuleFn = async (context: ValidationContext) => {
     return validateEmailSync(context);
 };
 
-export const validateEmailSync: RuleFnSync = (context) => {
+export const validateEmailSync: RuleFnSync = (context: ValidationContext) => {
     const error = new FieldError('invalid_email', context);
-    const { component, value } = context;
-    if (!value) {
-        return null;
-    }
-    if (!isValidatableEmailComponent(component)) {
+    const { value } = context;
+    if (!shouldValidate(context)) {
         return null;
     }
 
@@ -30,4 +37,11 @@ export const validateEmailSync: RuleFnSync = (context) => {
         return error;
     }
     return null;
+};
+
+export const validateEmailInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
+    name: 'validateEmail',
+    process: validateEmail,
+    processSync: validateEmailSync,
+    shouldProcess: shouldValidate
 };

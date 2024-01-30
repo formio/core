@@ -31,7 +31,7 @@ export class BaseEvaluator {
         }
         return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => {
             // If this is a function call and we allow evals.
-            if ($2.indexOf('(') !== -1) {
+            if ($2.indexOf('(') !== -1 && !(Evaluator.noeval || options.noeval)) {
                 return $2.replace(/([^\(]+)\(([^\)]+)\s*\);?/, (evalMatch: any, funcName: string, args: any) => {
                     funcName = trim(funcName);
                     const func = get(data, funcName);
@@ -75,7 +75,7 @@ export class BaseEvaluator {
     }
 
     public static interpolate(rawTemplate: any, data: any, options: any = {}) {
-        if (typeof rawTemplate === 'function') {
+        if (typeof rawTemplate === 'function' && !(Evaluator.noeval || options.noeval)) {
             try {
                 return rawTemplate(data);
             }
@@ -113,7 +113,7 @@ export class BaseEvaluator {
         const componentKey = component.key;
         if (typeof func === 'string') {
             if (ret) {
-                func += `;return ${ret}`;
+                func = `var ${ret};${func};return ${ret}`;
             }
 
             if (interpolate) {

@@ -1,6 +1,7 @@
 import { isNil } from 'lodash';
 import { FieldError } from 'error';
 import { Component, TextAreaComponent, RuleFn, TagsComponent, RuleFnSync, ValidationContext } from 'types';
+import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isEligible = (component: Component) => {
     // TODO: would be nice if this was type safe
@@ -39,6 +40,14 @@ const emptyValueIsArray = (component: Component) => {
     }
 }
 
+export const shouldValidate = (context: ValidationContext) => {
+    const { component } = context;
+    if (!isEligible(component)) {
+        return false;
+    }
+    return true;
+};
+
 export const validateMultiple: RuleFn = async (context: ValidationContext) => {
     return validateMultipleSync(context);
 };
@@ -57,15 +66,22 @@ export const validateMultipleSync: RuleFnSync = (context: ValidationContext) => 
 
     if (shouldBeArray) {
         if (isArray) {
-            return isRequired ? value.length > 0 ? null : new FieldError('array_nonempty', context): null;
+            return isRequired ? value.length > 0 ? null : new FieldError('array_nonempty', {...context, setting: true}): null;
         } else {
             // Null/undefined is ok if this value isn't required; anything else should fail
-            return isNil(value) ? isRequired ? new FieldError('array', context) : null : null;
+            return isNil(value) ? isRequired ? new FieldError('array', {...context, setting: true}) : null : null;
         }
     } else {
         if (!canBeArray && isArray) {
-            return new FieldError('nonarray', context);
+            return new FieldError('nonarray', {...context, setting: false});
         }
         return null;
     }
 }
+
+export const validateMultipleInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
+    name: 'validateMultiple',
+    process: validateMultiple,
+    processSync: validateMultipleSync,
+    shouldProcess: shouldValidate,
+};

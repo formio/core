@@ -1,33 +1,36 @@
-import { ProcessorsContext, ProcessorsContextSync, ProcessorType } from "types";
+import { get } from "lodash";
+import { CheckboxComponent, Component, ProcessorsContext, ProcessorType } from "types";
 
-export async function processOne<ProcessorScope>({component, components, path, data, row, process, instance, processors, index, scope}: ProcessorsContext<ProcessorScope>) {
+export function dataValue(component: Component, row: any) {
+    let key = component.key;
+    if (
+        component.type === 'checkbox' && 
+        component.inputType === 'radio' && 
+        (component as CheckboxComponent).name
+    ) {
+        key = (component as CheckboxComponent).name;
+    }
+    return key ? get(row, key) : undefined;
+}
+
+export async function processOne<ProcessorScope>(context: ProcessorsContext<ProcessorScope>) {
+    const { processors } = context;
+    context.processor = ProcessorType.Custom;
+    context.value = dataValue(context.component, context.row);
     for (const processor of processors) {
-        await processor({
-            component,
-            components,
-            instance,
-            data,
-            path,
-            scope,
-            index,
-            row,
-            process,
-            processor: ProcessorType.Custom
-        });
+        if (processor?.process) {
+            await processor.process(context);
+        }
     }
 }
 
-export function processOneSync<ProcessorScope>({component, components, path, data, row, process, instance, processors, index, scope}: ProcessorsContextSync<ProcessorScope>) {
-    processors.forEach((processor) => processor({
-        component,
-        components,
-        instance,
-        data,
-        path,
-        scope,
-        index,
-        row,
-        process,
-        processor: ProcessorType.Custom
-    }));
+export function processOneSync<ProcessorScope>(context: ProcessorsContext<ProcessorScope>) {
+    const { processors } = context;
+    context.processor = ProcessorType.Custom;
+    context.value = dataValue(context.component, context.row);
+    processors.forEach((processor) => {
+        if (processor?.processSync) {
+            processor.processSync(context)
+        }
+    });
 }

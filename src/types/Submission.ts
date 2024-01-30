@@ -1,4 +1,4 @@
-import { Access, FormId, ProjectId, RoleId } from 'types';
+import { Access, DataObject, FormId, ProjectId, RoleId } from 'types';
 
 export type SubmissionId = string;
 
@@ -10,7 +10,7 @@ export interface Submission {
     owner: SubmissionId;
     roles: Array<RoleId>;
     metadata: SubmissionMetadata;
-    data: any;
+    data: DataObject;
     project: ProjectId;
     state: SubmissionState;
     access: Access[];

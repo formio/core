@@ -1,4 +1,4 @@
-import { last, get, isEmpty } from "lodash";
+import { last, get, isEmpty, isNil, isObject } from "lodash";
 
 import {
   AsyncComponentDataCallback,
@@ -69,36 +69,151 @@ export function uniqueName(name: string, template?: string, evalContext?: any) {
   return uniqueName;
 }
 
+export const MODEL_TYPES: Record<string, string[]> = {
+  array: [
+    'datagrid',
+    'editgrid',
+    'datatable',
+    'dynamicWizard',
+  ],
+  dataObject: [
+    'form'
+  ],
+  object: [
+    'container',
+    'address'
+  ],
+  map: [
+    'datamap'
+  ],
+  content: [
+    'htmlelement',
+    'content'
+  ],
+  layout: [
+    'table',
+    'tabs',
+    'well',
+    'columns',
+    'fieldset',
+    'panel',
+    'tabs'
+  ],
+};
+
+export function getModelType(component: any) {
+  if (isComponentNestedDataType(component)) {
+    if (isComponentModelType(component, 'dataObject')) {
+      return 'dataObject';
+    }
+    if (isComponentModelType(component, 'array')) {
+      return 'array';
+    }
+    return 'object';
+  }
+  if ((component.input === false) || isComponentModelType(component, 'layout')) {
+    return 'inherit';
+  }
+  if (component.key) {
+    return 'value';
+  }
+  return 'inherit';
+}
+
+export function getComponentPath(component: Component, path: string) {
+  if (!component.key) {
+    return path;
+  }
+  if (!path) {
+    return component.key;
+  }
+  if (path.match(new RegExp(`${component.key}$`))) {
+    return path;
+  }
+  return (getModelType(component) === 'inherit') ? `${path}.${component.key}` : path;
+}
+
+export function isComponentModelType(component: any, modelType: string) {
+  return component.modelType === modelType || MODEL_TYPES[modelType].includes(component.type);
+}
+
+export function isComponentNestedDataType(component: any) {
+  return component.tree || isComponentModelType(component, 'array') || 
+    isComponentModelType(component, 'dataObject') ||
+    isComponentModelType(component, 'object') || 
+    isComponentModelType(component, 'map');
+}
+
+export function componentPath(component: any, parentPath?: string) {
+  parentPath = component.parentPath || parentPath;
+  if (!component.key) {
+    // If the component does not have a key, then just always return the parent path.
+    return parentPath;
+  }
+
+  // If the component has a path property, then use it.
+  if (component.path) {
+    return component.path;
+  }
+
+  let key = component.key;
+  if (
+    component.type === 'checkbox' && 
+    component.inputType === 'radio' && 
+    component.name
+  ) {
+      key = component.name;
+  }
+  
+  return parentPath ? `${parentPath}.${key}` : key;
+}
+
+export const componentChildPath = (component: any, parentPath?: string, path?: string) => {
+  parentPath = component.parentPath || parentPath;
+  path = path || componentPath(component, parentPath);
+  // See if we are a nested component.
+  if (component.components && Array.isArray(component.components)) {
+    if (isComponentModelType(component, 'dataObject')) {
+      return `${path}.data`;
+    }
+    if (isComponentNestedDataType(component)) {
+      return path;
+    }
+    return parentPath;
+  }
+  return path;
+}
+
 // Async each component data.
 export const eachComponentDataAsync = async (
   components: Component[],
   data: DataObject,
-  row: any,
   fn: AsyncComponentDataCallback,
   path = "",
-  index?: number
+  index?: number,
+  parent?: Component
 ) => {
   if (!components || !data) {
     return;
   }
-  row = row || data;
   return await eachComponentAsync(
     components,
-    async (component: any, componentComponents: any, compPath: string) => {
-      if (await fn(component, data, row, compPath, componentComponents, index) === true) {
+    async (component: any, compPath: string, componentComponents: any, compParent: any) => {
+      const row = getContextualRowData(component, compPath, data);
+      if (await fn(component, data, row, compPath, componentComponents, index, compParent) === true) {
         return true;
       }
-      if (TREE_COMPONENTS.includes(component.type) || component.tree) {
-        row = get(data, compPath, data);
-        if (Array.isArray(row)) {
-          for (let i = 0; i < row.length; i++) {
+      if (isComponentNestedDataType(component)) {
+        const value = get(data, compPath, data);
+        if (Array.isArray(value)) {
+          for (let i = 0; i < value.length; i++) {
             await eachComponentDataAsync(
               component.components,
               data,
-              row[i],
               fn,
               `${compPath}[${i}]`,
-              i
+              i,
+              component
             );
           }
           return true;
@@ -106,64 +221,80 @@ export const eachComponentDataAsync = async (
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
-        await eachComponentDataAsync(component.components, data, row, fn, compPath);
+        await eachComponentDataAsync(component.components, data, fn, componentChildPath(component, path, compPath), index, component);
         return true;
       } else {
         return false;
       }
     },
     true,
-    path
+    path,
+    parent
   );
 };
-
-const TREE_COMPONENTS = [
-  "datagrid",
-  "editgrid",
-  "container",
-  "form",
-  "dynamicWizard",
-];
 
 export const eachComponentData = (
   components: Component[],
   data: DataObject,
-  row: any,
   fn: ComponentDataCallback,
   path = "",
-  index?: number
+  index?: number,
+  parent?: Component
 ) => {
   if (!components || !data) {
     return;
   }
   return eachComponent(
     components,
-    (component: any, compPath: string, componentComponents: any) => {
-      row = row || data;
-      if (fn(component, data, row, compPath, componentComponents, index) === true) {
+    (component: any, compPath: string, componentComponents: any, compParent: any) => {
+      const row = getContextualRowData(component, compPath, data);
+      if (fn(component, data, row, compPath, componentComponents, index, compParent) === true) {
         return true;
       }
-      if (TREE_COMPONENTS.includes(component.type) || component.tree) {
-        row = get(data, compPath, data);
-        if (Array.isArray(row)) {
-          for (let i = 0; i < row.length; i++) {
-            eachComponentData(component.components, data, row[i], fn, `${compPath}[${i}]`, i);
+      if (isComponentNestedDataType(component)) {
+        const value = get(data, compPath, data);
+        if (Array.isArray(value)) {
+          for (let i = 0; i < value.length; i++) {
+            eachComponentData(component.components, data, fn, `${compPath}[${i}]`, i, component);
           }
           return true;
         } else if (isEmpty(row)) {
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
-        eachComponentData(component.components, data, row, fn, compPath, index);
+        eachComponentData(component.components, data, fn, componentChildPath(component, path, compPath), index, component);
         return true;
       } else {
         return false;
       }
     },
     true,
-    path
+    path,
+    parent
   );
 };
+
+export function getContextualRowPath(component: Component, path: string): string {
+  return path.replace(new RegExp(`\.?${component.key}$`), '');
+}
+
+
+export function getContextualRowData(component: Component, path: string, data: any): any {
+  const rowPath = getContextualRowPath(component, path);
+  return rowPath ? get(data, rowPath, null) : data;
+}
+
+export function componentInfo(component: any) {
+  const hasColumns = component.columns && Array.isArray(component.columns);
+  const hasRows = component.rows && Array.isArray(component.rows);
+  const hasComps = component.components && Array.isArray(component.components);
+  return {
+    hasColumns,
+    hasRows,
+    hasComps,
+    iterable: hasColumns || hasRows || hasComps || isComponentModelType(component, 'content'),
+  }
+}
 
 /**
  * Iterate through each component within a form.
@@ -192,17 +323,8 @@ export function eachComponent(
     if (!component) {
       return;
     }
-    const hasColumns = component.columns && Array.isArray(component.columns);
-    const hasRows = component.rows && Array.isArray(component.rows);
-    const hasComps =
-      component.components && Array.isArray(component.components);
+    const info = componentInfo(component);
     let noRecurse = false;
-    const compPath = component.parentPath || path;
-    const newPath = component.key
-      ? compPath
-        ? `${compPath}.${component.key}`
-        : component.key
-      : "";
 
     // Keep track of parent references.
     if (parent) {
@@ -213,58 +335,22 @@ export function eachComponent(
       delete component.parent.columns;
       delete component.parent.rows;
     }
-
-    // there's no need to add other layout components here because we expect that those would either have columns, rows or components
-    const layoutTypes = ["htmlelement", "content"];
-    const isLayoutComponent =
-      hasColumns ||
-      hasRows ||
-      hasComps ||
-      layoutTypes.indexOf(component.type) > -1;
-    if (includeAll || component.tree || !isLayoutComponent) {
-      noRecurse = fn(component, newPath, components);
+    if (includeAll || component.tree || !info.iterable) {
+      noRecurse = fn(component, componentPath(component, path), components, parent);
     }
 
-    const subPath = () => {
-      if (
-        component.key &&
-        ![
-          "panel",
-          "table",
-          "well",
-          "columns",
-          "fieldset",
-          "tabs",
-          "form",
-        ].includes(component.type) &&
-        ([
-          "datagrid",
-          "container",
-          "editgrid",
-          "address",
-          "dynamicWizard",
-        ].includes(component.type) ||
-          component.tree)
-      ) {
-        return newPath;
-      } else if (component.key && component.type === "form") {
-        return `${newPath}.data`;
-      }
-      return compPath;
-    };
-
     if (!noRecurse) {
-      if (hasColumns) {
+      if (info.hasColumns) {
         component.columns.forEach((column: any) =>
           eachComponent(
             column.components,
             fn,
             includeAll,
-            subPath(),
+            path,
             parent ? component : null
           )
         );
-      } else if (hasRows) {
+      } else if (info.hasRows) {
         component.rows.forEach((row: any) => {
           if (Array.isArray(row)) {
             row.forEach((column) =>
@@ -272,18 +358,18 @@ export function eachComponent(
                 column.components,
                 fn,
                 includeAll,
-                subPath(),
+                path,
                 parent ? component : null
               )
             );
           }
         });
-      } else if (hasComps) {
+      } else if (info.hasComps) {
         eachComponent(
           component.components,
           fn,
           includeAll,
-          subPath(),
+          componentChildPath(component, path),
           parent ? component : null
         );
       }
@@ -296,7 +382,8 @@ export async function eachComponentAsync(
   components: any[],
   fn: any,
   includeAll = false,
-  path = ""
+  path = "",
+  parent?: any
 ) {
   if (!components) return;
   for (let i = 0; i < components.length; i++) {
@@ -304,52 +391,71 @@ export async function eachComponentAsync(
       continue;
     }
     let component = components[i];
-    const hasColumns = component.columns && Array.isArray(component.columns);
-    const hasRows = component.rows && Array.isArray(component.rows);
-    const hasComps =
-      component.components && Array.isArray(component.components);
-    const compPath = component.parentPath || path;
-    const newPath = component.key
-      ? compPath
-        ? `${compPath}.${component.key}`
-        : component.key
-      : compPath;
-    const layoutTypes = ["htmlelement", "content"];
-    const isLayoutComponent =
-      hasColumns ||
-      hasRows ||
-      hasComps ||
-      layoutTypes.indexOf(component.type) > -1;
-    if (includeAll || component.tree || !isLayoutComponent) {
-      if (await fn(component, components, newPath)) {
+    const info = componentInfo(component);
+    if (includeAll || component.tree || !info.iterable) {
+      if (await fn(component, componentPath(component, path), components, parent)) {
         continue;
       }
     }
-    if (hasColumns) {
+    if (info.hasColumns) {
       for (let j = 0; j < component.columns.length; j++) {
         await eachComponentAsync(
           component.columns[j]?.components,
           fn,
           includeAll,
-          compPath
+          path,
+          parent ? component : null
         );
       }
-    } else if (hasRows) {
+    } else if (info.hasRows) {
       for (let j = 0; j < component.rows.length; j++) {
         let row = component.rows[j];
         if (Array.isArray(row)) {
           for (let k = 0; k < row.length; k++) {
-            await eachComponentAsync(row[k]?.components, fn, includeAll, compPath);
+            await eachComponentAsync(
+              row[k]?.components,
+              fn, includeAll,
+              path,
+              parent ? component : null
+            );
           }
         }
       }
-    } else if (hasComps) {
-      const subPath = isLayoutComponent
-        ? compPath
-        : component.type === "form"
-        ? `${newPath}.data`
-        : newPath;
-      await eachComponentAsync(component.components, fn, includeAll, subPath);
+    } else if (info.hasComps) {
+      await eachComponentAsync(
+        component.components,
+        fn,
+        includeAll,
+        componentChildPath(component, path),
+        parent ? component : null
+      );
     }
   }
+}
+
+// Provided components, data, and a key, this will return the components data.
+export function getComponentData(components: Component[], data: DataObject, path: string) {
+  const compData: any = { component: null, data: null };
+  eachComponentData(components, data, (component: Component, data: DataObject, row: any, compPath: string) => {
+    if (compPath === path) {
+      compData.component = component;
+      compData.data = row;
+      return true;
+    }
+  });
+  return compData;
+}
+
+export function getComponentActualValue(compPath: string, data: any, row: any) {
+  let value = null;
+  if (row) {
+      value = get(row, compPath);
+  }
+  if (data && isNil(value)) {
+      value = get(data, compPath);
+  }
+  if (isNil(value) || (isObject(value) && isEmpty(value))) {
+      value = '';
+  }
+  return value;
 }

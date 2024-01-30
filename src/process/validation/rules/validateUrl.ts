@@ -1,29 +1,25 @@
-import _ from 'lodash';
-
 import { FieldError } from 'error';
-import { UrlComponent, RuleFn, RuleFnSync } from 'types';
+import { UrlComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
+import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isUrlComponent = (component: any): component is UrlComponent => {
     return component && component.type === 'url';
 };
 
-const isValidUrlAndProtocol = (url: string) => {
-    let urlObj;
-    try {
-        urlObj = new URL(url);
-    } catch (e) {
-        return false;
-    }
-    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
-};
-
-
-export const validateUrlSync: RuleFnSync = (context) => {
+export const shouldValidate = (context: ValidationContext) => {
     const { component, value } = context;
     if (!isUrlComponent(component)) {
-        return null;
+        return false;
     }
     if (!value) {
+        return false;
+    }
+    return true;
+};
+
+export const validateUrlSync: RuleFnSync = (context: ValidationContext) => {
+    const { value } = context;
+    if (!shouldValidate(context)) {
         return null;
     }
     const error = new FieldError('invalid_url', context);
@@ -37,9 +33,15 @@ export const validateUrlSync: RuleFnSync = (context) => {
 
     // Allow urls to be valid if the component is pristine and no value is provided.
     return (re.test(value) && !emailRe.test(value)) ? null : error;
-    // return isValidUrlAndProtocol(value) ? null : error;
 };
 
-export const validateUrl: RuleFn = async (context) => {
+export const validateUrl: RuleFn = async (context: ValidationContext) => {
     return validateUrlSync(context);
+};
+
+export const validateUrlInfo: ProcessorInfo<ValidationContext, FieldError | null>  = {
+    name: 'validateUrl',
+    process: validateUrl,
+    processSync: validateUrlSync,
+    shouldProcess: shouldValidate
 };

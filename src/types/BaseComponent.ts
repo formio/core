@@ -1,10 +1,17 @@
-import { RulesLogic } from 'json-logic-js';
+import { RulesLogic } from "json-logic-js";
+import { AdvancedLogic } from "./AdvancedLogic";
+
+export type JSONConditional = { json: RulesLogic; };
+export type LegacyConditional = { show: boolean | null; when: string | null; eq: string };
+export type SimpleConditionalConditions = { component: string; operator: string; value: any}[];
+export type SimpleConditional = { show: boolean | null; conjunction: string; conditions: SimpleConditionalConditions};
 
 export type BaseComponent = {
     input: boolean;
     type: string;
     key: string;
-    tableView: boolean;
+    path?: string;
+    tableView?: boolean;
     placeholder?: string;
     prefix?: string;
     customClass?: string;
@@ -13,7 +20,7 @@ export type BaseComponent = {
     multiple?: boolean;
     protected?: boolean;
     unique?: boolean;
-    persistent?: boolean | 'client-only';
+    persistent?: boolean | string;
     hidden?: boolean;
     clearOnHide?: boolean;
     refreshOn?: string;
@@ -31,10 +38,12 @@ export type BaseComponent = {
     disabled?: boolean;
     autofocus?: boolean;
     dbIndex?: boolean;
+    defaultValue?: any;
     customDefaultValue?: string;
     calculateValue?: string;
     calculateServer?: boolean;
     attributes?: Record<string, string>;
+    logic?: AdvancedLogic[];
     validateOn?: string;
     validate?: {
         required?: boolean;
@@ -48,7 +57,12 @@ export type BaseComponent = {
         json?: any;
         row?: string;
     };
-    conditional?: { show: boolean | null; when: string | null; eq: string };
+    conditional?: 
+        (
+            JSONConditional | 
+            LegacyConditional |
+            SimpleConditional
+        );
     customConditional?: string;
     overlay?: {
         style: string;
