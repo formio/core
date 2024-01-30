@@ -116,7 +116,6 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
             scope.conditionals.push({ path, conditionallyHidden: true });
             if (!component.hasOwnProperty('clearOnHide') || component.clearOnHide) {
                 unset(row, component.key);
-                context.value = undefined;
             }
         }
     }
