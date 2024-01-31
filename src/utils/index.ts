@@ -7,4 +7,5 @@ export * as dom from './dom';
 export * from './utils';
 export * from './date';
 export * from './mask';
+export * from './fastCloneDeep';
 export * from './Database';

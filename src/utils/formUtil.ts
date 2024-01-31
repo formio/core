@@ -329,7 +329,11 @@ export function eachComponent(
     // Keep track of parent references.
     if (parent) {
       // Ensure we don't create infinite JSON structures.
-      component.parent = { ...parent };
+      Object.defineProperty(component, 'parent', {
+        enumerable: false,
+        writable: true,
+        value: { ...parent }
+      });
       delete component.parent.components;
       delete component.parent.componentMap;
       delete component.parent.columns;
