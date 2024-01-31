@@ -1,4 +1,4 @@
-## Form.io Core JavaScript Rendering Engine
+## Form.io Core JavaScript Framework
 This library is the core rendering engine behind the Form.io platform. It is a tiny (12k gzipped) rendering frameworks that allows for the rendering of complex components as well as managing the data models controlled by each component.
 
 ### Usage
