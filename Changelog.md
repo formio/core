@@ -1,4 +1,4 @@
-## [Unreleased: 2.0.0]
+## [Unreleased: 2.0.0-rc.10]
 ### Breaking Changes
  - This version of the renderer will now produce different "binary" build files. The following are created.
    - dist/formio.core.js => The complete core binary. This used to be "dist/index.js".
