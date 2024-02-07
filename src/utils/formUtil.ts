@@ -2,6 +2,7 @@ import { last, get, isEmpty, isNil, isObject } from "lodash";
 
 import {
   AsyncComponentDataCallback,
+  CheckboxComponent,
   Component,
   ComponentDataCallback,
   DataObject,
@@ -114,23 +115,24 @@ export function getModelType(component: any) {
   if ((component.input === false) || isComponentModelType(component, 'layout')) {
     return 'inherit';
   }
-  if (component.key) {
+  if (getComponentKey(component)) {
     return 'value';
   }
   return 'inherit';
 }
 
 export function getComponentPath(component: Component, path: string) {
-  if (!component.key) {
+  const key = getComponentKey(component);
+  if (!key) {
     return path;
   }
   if (!path) {
-    return component.key;
+    return key;
   }
-  if (path.match(new RegExp(`${component.key}$`))) {
+  if (path.match(new RegExp(`${key}$`))) {
     return path;
   }
-  return (getModelType(component) === 'inherit') ? `${path}.${component.key}` : path;
+  return (getModelType(component) === 'inherit') ? `${path}.${key}` : path;
 }
 
 export function isComponentModelType(component: any, modelType: string) {
@@ -146,7 +148,8 @@ export function isComponentNestedDataType(component: any) {
 
 export function componentPath(component: any, parentPath?: string) {
   parentPath = component.parentPath || parentPath;
-  if (!component.key) {
+  const key = getComponentKey(component);
+  if (!key) {
     // If the component does not have a key, then just always return the parent path.
     return parentPath;
   }
@@ -154,15 +157,6 @@ export function componentPath(component: any, parentPath?: string) {
   // If the component has a path property, then use it.
   if (component.path) {
     return component.path;
-  }
-
-  let key = component.key;
-  if (
-    component.type === 'checkbox' && 
-    component.inputType === 'radio' && 
-    component.name
-  ) {
-      key = component.name;
   }
   
   return parentPath ? `${parentPath}.${key}` : key;
@@ -274,8 +268,19 @@ export const eachComponentData = (
   );
 };
 
+export function getComponentKey(component: Component) {
+  if (
+    component.type === 'checkbox' && 
+    component.inputType === 'radio' &&
+    (component as CheckboxComponent).name
+  ) {
+    return (component as CheckboxComponent).name;
+  }
+  return component.key;
+}
+
 export function getContextualRowPath(component: Component, path: string): string {
-  return path.replace(new RegExp(`\.?${component.key}$`), '');
+  return path.replace(new RegExp(`\.?${getComponentKey(component)}$`), '');
 }
 
 
@@ -329,7 +334,11 @@ export function eachComponent(
     // Keep track of parent references.
     if (parent) {
       // Ensure we don't create infinite JSON structures.
-      component.parent = { ...parent };
+      Object.defineProperty(component, 'parent', {
+        enumerable: false,
+        writable: true,
+        value: { ...parent }
+      });
       delete component.parent.components;
       delete component.parent.componentMap;
       delete component.parent.columns;

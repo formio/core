@@ -3,6 +3,7 @@ import _, { isEmpty } from 'lodash';
 import { FieldError } from 'error';
 import { TextFieldComponent, DataObject, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
+import Inputmask from 'inputmask';
 
 const isMaskType = (obj: any): obj is DataObject & { maskName: string; value: string } => {
     return (
@@ -119,21 +120,28 @@ export const validateMaskSync: RuleFnSync = (context: ValidationContext) => {
     if (!shouldValidate(context)) {
         return null;
     }
-    let inputMask: (string | RegExp)[] | undefined;
+    let inputMask: string | string[] | undefined;
     let maskValue: string | undefined;
     if (component.allowMultipleMasks && (component as TextFieldComponent).inputMasks?.length) {
         const mask = value && isMaskType(value) ? value : undefined;
         const formioInputMask = getMaskByLabel(component as TextFieldComponent, mask?.maskName);
         if (formioInputMask) {
-            inputMask = getInputMask(formioInputMask);
+            inputMask = formioInputMask;
         }
         maskValue = mask?.value;
     } else {
-        inputMask = getInputMask((component as TextFieldComponent).inputMask || '');
+        inputMask = (component as TextFieldComponent).inputMask || '';
     }
-    if (value != null && inputMask) {
+    if (!inputMask) {
+        return null;
+    }
+    if (value && inputMask && typeof value === 'string' && component.type === 'textfield' ) {
+        return Inputmask.isValid(value, {mask: inputMask.toString()}) ? null : new FieldError('mask', context);
+    }
+    let inputMaskArr = getInputMask(inputMask);
+    if (value != null && inputMaskArr) {
         const error = new FieldError('mask', context);
-        return matchInputMask(maskValue || value, inputMask) ? null : error;
+        return matchInputMask(maskValue || value, inputMaskArr) ? null : error;
     }
     return null;
 };

@@ -3,6 +3,7 @@ import { checkCustomConditional, checkJsonConditional, checkLegacyConditional, c
 import { LogicActionCustomAction, LogicActionMergeComponentSchema, LogicActionProperty, LogicActionPropertyBoolean, LogicActionPropertyString, LogicActionValue } from "types/AdvancedLogic";
 import { get, set, clone, isEqual, assign } from 'lodash';
 import { evaluate, interpolate } from 'modules/jsonlogic';
+import { getComponentKey } from "./formUtil";
 
 export const hasLogic = (context: LogicContext): boolean => {
     const { component } = context;
@@ -79,7 +80,7 @@ export function setActionProperty(context: LogicContext, action: LogicActionProp
 
 export function setValueProperty(context: LogicContext, action: LogicActionValue) {
     const { component, row, value } = context;
-    const oldValue = get(row, component.key);
+    const oldValue = get(row, getComponentKey(component));
     const newValue = evaluate({...context, value}, action.value, 'value', (evalContext: any) => {
         evalContext.value = clone(oldValue);
     });
@@ -88,7 +89,7 @@ export function setValueProperty(context: LogicContext, action: LogicActionValue
         !(component.clearOnHide && conditionallyHidden(context as ProcessorContext<ConditionsScope>))
     ) {
         context.value = newValue;
-        set(row, component.key, newValue);
+        set(row, getComponentKey(component), newValue);
         return true;
     }
     return false;
@@ -96,7 +97,7 @@ export function setValueProperty(context: LogicContext, action: LogicActionValue
 
 export function setMergeComponentSchema(context: LogicContext, action: LogicActionMergeComponentSchema) {
     const { component, row } = context;
-    const oldValue = get(row, component.key);
+    const oldValue = get(row, getComponentKey(component));
     const schema = evaluate({...context, value: {}}, action.schemaDefinition, 'schema', (evalContext: any) => {
         evalContext.value = clone(oldValue);
     });

@@ -79,6 +79,7 @@ export type BaseComponent = {
     allowMultipleMasks?: boolean;
     addons?: any[]; // TODO: this should go away
     inputType?: string;
+    conflictId?: string;
     errors?: Record<string, string>;
     truncateMultipleSpaces?: boolean;
 };

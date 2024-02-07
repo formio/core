@@ -2,6 +2,7 @@ import { ProcessorFn, ProcessorInfo, FetchContext, FetchScope, FetchFn } from 't
 import get from 'lodash/get';
 import set from 'lodash/set';
 import { Evaluator } from 'utils';
+import { getComponentKey } from 'utils/formUtil';
 
 export const shouldFetch = (context: FetchContext): boolean => {
     const { component } = context;
@@ -64,13 +65,14 @@ export const fetchProcess: ProcessorFn<FetchScope> = async (context: FetchContex
         const mapFunction = get(component, 'fetch.mapFunction');
 
         // Set the row data of the fetched value.
-        set(row, component.key, mapFunction ? Evaluator.evaluate(mapFunction, {
+        const key = getComponentKey(component);
+        set(row, key, mapFunction ? Evaluator.evaluate(mapFunction, {
             ...evalContextValue, 
             ...{responseData: result}
         }, 'value') : result);
         scope.fetched.push({
             path,
-            value: get(row, component.key)
+            value: get(row, key)
         });
     }
     catch (err: any) {
