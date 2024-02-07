@@ -1,15 +1,9 @@
 import { get } from "lodash";
-import { CheckboxComponent, Component, ProcessorsContext, ProcessorType } from "types";
+import { Component, ProcessorsContext, ProcessorType } from "types";
+import { getComponentKey } from "utils/formUtil";
 
 export function dataValue(component: Component, row: any) {
-    let key = component.key;
-    if (
-        component.type === 'checkbox' && 
-        component.inputType === 'radio' && 
-        (component as CheckboxComponent).name
-    ) {
-        key = (component as CheckboxComponent).name;
-    }
+    const key = getComponentKey(component);
     return key ? get(row, key) : undefined;
 }
 
