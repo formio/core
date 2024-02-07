@@ -84,10 +84,6 @@ export const serverDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
     }
     if (defaultValue !== null && defaultValue !== undefined) {
         set(row, component.key, defaultValue);
-        if ((scope as FilterScope).filter) {
-            set((scope as FilterScope).filter, path, defaultValue);
-        }
-        context.value = defaultValue;
     }
 };
 

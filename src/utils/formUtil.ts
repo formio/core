@@ -2,6 +2,7 @@ import { last, get, isEmpty, isNil, isObject } from "lodash";
 
 import {
   AsyncComponentDataCallback,
+  CheckboxComponent,
   Component,
   ComponentDataCallback,
   DataObject,
@@ -275,6 +276,9 @@ export const eachComponentData = (
 };
 
 export function getContextualRowPath(component: Component, path: string): string {
+  if (component.type === 'checkbox' && component.inputType === 'radio' && (component as CheckboxComponent).name) {
+    return path.replace(new RegExp(`\.?${(component as CheckboxComponent).name}$`), '');
+  }
   return path.replace(new RegExp(`\.?${component.key}$`), '');
 }
 
