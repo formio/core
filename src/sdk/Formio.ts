@@ -7,7 +7,7 @@ import EventEmitter from 'eventemitter3';
 import cookies from 'browser-cookies';
 const { fetch, Headers } = fetchPonyfill();
 import Plugins from './Plugins';
-import { FormioOptions } from 'types';
+import { FormioOptions, FormioPathType } from 'types';
 declare const OktaAuth: any;
 
 /**
