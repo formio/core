@@ -7,8 +7,10 @@ import EventEmitter from 'eventemitter3';
 import cookies from 'browser-cookies';
 const { fetch, Headers } = fetchPonyfill();
 import Plugins from './Plugins';
+import { Component, PassedComponentInstance } from 'types';
 declare const OktaAuth: any;
 
+type HookError = Error | Error[] | { message: string } | { message: string }[];
 /**
  * The Formio class options interface.
  */
@@ -24,6 +26,67 @@ export interface FormioOptions {
   project?: string;
 
   useSessionToken?: boolean;
+  readOnly?: boolean;
+  noDefaults?: boolean;
+  language?: string;
+  i18n?: { [key: string]: string; };
+  viewAsHtml?: boolean;
+  renderMode?: 'form' | 'html' | 'flat' | 'builder' | 'pdf';
+  hightlightErrors?: boolean;
+  componentErrorClass?: string;
+  template?: string;
+  // TODO: type this better
+  templates?: any;
+  iconset?: string;
+  components?: { [key: string]: JSON };
+  disabled?: { [key: string]: boolean };
+  showHiddenFields?: boolean;
+  hide?: { [key: string]: boolean };
+  show?: { [key: string]: boolean };
+  formio?: Formio;
+  decimalSeparator?: string;
+  thousandsSeparator?: string;
+  hooks?: {
+    beforeSubmit?: (submission: JSON, next: (err?: HookError) => void) => void;
+    beforeNext?: (currentPage: JSON, submission: JSON, next: (err?: HookError) => void) => void;
+    beforePrev?: (currentPage: JSON, submission: JSON, next: (err?: HookError) => void) => void;
+    customValidation?: (submission: JSON, next: (err?: HookError) => void) => void;
+    attachWebform?: (element: HTMLElement, instance: any) => HTMLElement;
+    beforeCancel?: () => boolean;
+    attachComponent?: (element: HTMLElement, instance: any) => HTMLElement;
+    setDataValue?: (value: any, key: string, data: JSON) => any;
+    addComponents?: (components: Component[], instance: any) => Component[];
+    addComponent?: (component: Component, data: JSON, before: HTMLElement) => Component;
+    attachComponents?: (element: HTMLElement, components: (PassedComponentInstance & {component: Component})[], container: Component[], instance: any) => HTMLElement;
+  };
+  alwaysDirty?: boolean;
+  saveDraft?: boolean;
+  saveDraftThrottle?: number;
+  skipDraftRestore?: boolean;
+  display?: 'form' | 'wizard' | 'pdf';
+  cdnUrl?: string;
+  flatten?: boolean;
+  sanitize?: boolean;
+  noAlerts?: boolean;
+  sanitizeConfig?: {
+    addAttr?: string[];
+    addTags?: string[];
+    allowedAttrs?: string[];
+    allowedTags?: string[];
+    allowedUriRegex?: string[];
+    addUriSafeAttr?: string[];
+  }
+  buttonSettings?: {
+    showCancel?: boolean;
+    showPrevious?: boolean;
+    showNext?: boolean;
+    showSubmit?: boolean;
+  };
+  breadCrumbSettings?: { clickable: boolean };
+  allowPrevious?: boolean;
+  wizardButtonOrder?: string[];
+  showCheckboxBackground?: boolean;
+  zoom?: number;
 }
 
 /**
@@ -2319,7 +2382,7 @@ export class Formio {
    *
    * @example Load Google Maps API.
    * ```ts
-   * Formio.requireLibrary('googleMaps', 'google.maps.Map', 'https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap', true).then(() => {
+   * Formio.requireLibrary('googleMaps', 'google.maps.Map', 'https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&next=initMap', true).then(() => {
    *   // Once the promise resolves, the following can now be used within your application.
    *   const map = new google.maps.Map(document.getElementById("map"), {...});
    * });
@@ -2328,7 +2391,7 @@ export class Formio {
    * @param {string} name - The internal name to give to the library you are loading. This is useful for caching the library for later use.
    * @param {string} property - The name of the global property that will be added to the global namespace once the library has been loaded. This is used to check to see if the property exists before resolving the promise that the library is ready for use.
    * @param {string} src - The URL of the library to lazy load.
-   * @param {boolean} polling - Determines if polling should be used to determine if they library is ready to use. If set to false, then it will rely on a global callback called ${name}Callback where "name" is the first property passed to this method. When this is called, that will indicate when the library is ready. In most cases, you will want to pass true to this parameter to initiate a polling method to check for the library availability in the global context.
+   * @param {boolean} polling - Determines if polling should be used to determine if they library is ready to use. If set to false, then it will rely on a global next called ${name}Callback where "name" is the first property passed to this method. When this is called, that will indicate when the library is ready. In most cases, you will want to pass true to this parameter to initiate a polling method to check for the library availability in the global context.
    * @return {Promise<object>} - A promise that will resolve when the plugin is ready to be used.
    */
   static requireLibrary(name: string, property: string, src: string | Array<string>, polling: boolean = false, onload?: (ready: Promise<any>) => void) {
