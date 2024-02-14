@@ -4,13 +4,9 @@ module.exports = {
   mode: 'development',
   entry: {
     'formio.core.js': './src/index.ts',
-    'formio.base.js': './src/base/index.ts',
-    'formio.components.js': './src/components/index.ts',
-    'formio.model.js': './src/model/index.ts',
     'formio.modules.js': './src/modules/index.ts',
     'formio.js': './src/sdk/index.ts',
     'formio.utils.js': './src/utils/index.ts',
-    'formio.template.js': './src/template/index.ts',
     'formio.process.js': './src/process/index.ts'
   },
   output: {

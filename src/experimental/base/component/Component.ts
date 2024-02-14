@@ -1,10 +1,10 @@
 import { merge } from 'lodash';
 import { Components } from '../Components';
-import { Template } from 'template';
+import { Template } from 'src/experimental/template';
 import { Evaluator } from 'utils';
 import * as dom from 'utils/dom';
 import { sanitize } from 'utils/sanitize';
-import { Model, ModelDecoratorInterface,  ModelInterface } from 'model';
+import { Model, ModelDecoratorInterface,  ModelInterface } from 'src/experimental/model';
 
 /**
  * The component JSON schema.

@@ -6,7 +6,7 @@ import { jwtDecode } from 'utils/jwtDecode';
 import EventEmitter from 'eventemitter3';
 import cookies from 'browser-cookies';
 const { fetch, Headers } = fetchPonyfill();
-import Plugins from './Plugins';
+import Plugins from '../experimental/Plugins';
 declare const OktaAuth: any;
 
 /**

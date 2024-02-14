@@ -67,12 +67,12 @@
     "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
     "resolveJsonModule": true,
     "paths": {
-      "base": ["./src/base"],
-      "base/*": ["./src/base/*"],
+      "base": ["src/experimental/base"],
+      "base/*": ["src/experimental/base/*"],
       "error": ["./src/error"],
       "error/*": ["./src/error/*"],
-      "model": ["./src/model"],
-      "model/*": ["./src/model/*"],
+      "model": ["src/experimental/model"],
+      "model/*": ["src/experimental/model/*"],
       "modules": ["./src/modules"],
       "modules/*": ["./src/modules/*"],
       "processes": ["src/process"],
@@ -87,8 +87,8 @@
       "utils/*": ["./src/utils/*"],
       "process": ["src/process"],
       "process/*": ["src/process/*"],
-      "template": ["src/template"],
-      "template/*": ["src/template/*"],
+      "template": ["src/experimental/template"],
+      "template/*": ["src/experimental/template/*"],
     }
   },
   "include": [
