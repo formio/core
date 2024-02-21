@@ -1,14 +1,12 @@
 import { isNil } from 'lodash';
 import { FieldError } from 'error';
-import { Component, TextAreaComponent, RuleFn, TagsComponent, RuleFnSync, ValidationContext } from 'types';
+import { Component, TextAreaComponent, RuleFn, TagsComponent, RuleFnSync, ValidationContext, DataObject } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isEligible = (component: Component) => {
     // TODO: would be nice if this was type safe
     switch (component.type) {
         case 'hidden':
-        case 'select':
-            return false;
         case 'address':
             if (!component.multiple) {
                 return false;
@@ -25,13 +23,14 @@ const isEligible = (component: Component) => {
 }
 
 const emptyValueIsArray = (component: Component) => {
-    // TODO: yikes, this could be better
+    // TODO: How do we infer the data model of the compoennt given only its JSON? For now, we have to hardcode component types
     switch (component.type) {
         case 'datagrid':
         case 'editgrid':
         case 'tagpad':
         case 'sketchpad':
         case 'datatable':
+        case 'dynamicWizard':
         case 'file':
             return true;
         case 'select':
@@ -63,9 +62,8 @@ export const validateMultipleSync: RuleFnSync = (context: ValidationContext) => 
     }
 
     const shouldBeArray = !!component.multiple;
-    const canBeArray = emptyValueIsArray(component);
-    const isArray = Array.isArray(value);
     const isRequired = !!component.validate?.required;
+    const isArray = Array.isArray(value);
 
     if (shouldBeArray) {
         if (isArray) {
@@ -75,6 +73,7 @@ export const validateMultipleSync: RuleFnSync = (context: ValidationContext) => 
             return isNil(value) ? isRequired ? new FieldError('array', {...context, setting: true}) : null : null;
         }
     } else {
+        const canBeArray = emptyValueIsArray(component);
         if (!canBeArray && isArray) {
             return new FieldError('nonarray', {...context, setting: false});
         }
