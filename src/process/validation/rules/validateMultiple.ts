@@ -29,6 +29,9 @@ const emptyValueIsArray = (component: Component) => {
     switch (component.type) {
         case 'datagrid':
         case 'editgrid':
+        case 'tagpad':
+        case 'sketchpad':
+        case 'datatable':
         case 'file':
             return true;
         case 'select':
