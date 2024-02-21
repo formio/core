@@ -11,6 +11,7 @@ export type BaseComponent = {
     type: string;
     key: string;
     path?: string;
+    parent?: BaseComponent;
     tableView?: boolean;
     placeholder?: string;
     prefix?: string;
