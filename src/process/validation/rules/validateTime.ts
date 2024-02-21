@@ -24,8 +24,8 @@ export const validateTimeSync: RuleFnSync = (context: ValidationContext) => {
     }
     try {
         if (!value || isEmpty(component, value)) return null;
-        const isValid = typeof value === 'string' ?
-            dayjs(value, (component as TimeComponent).format).isValid() : dayjs(String(value), (component as TimeComponent).format).isValid();
+        const format = (component as TimeComponent).format || 'HH:mm';
+        const isValid = dayjs(String(value), format).isValid();
         return isValid ? null : new FieldError('time', context);
     }
     catch (err) {
