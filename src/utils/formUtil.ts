@@ -246,7 +246,7 @@ export const eachComponentData = (
         return true;
       }
       if (isComponentNestedDataType(component)) {
-        const value = get(data, compPath, data);
+        const value = get(data, compPath, data) as DataObject;
         if (Array.isArray(value)) {
           for (let i = 0; i < value.length; i++) {
             eachComponentData(component.components, data, fn, `${compPath}[${i}]`, i, component);
@@ -330,22 +330,27 @@ export function eachComponent(
     }
     const info = componentInfo(component);
     let noRecurse = false;
-
+    Object.defineProperty(component, 'path', {
+      enumerable: false,
+      writable: true,
+      value: componentPath(component, path)
+    });
     // Keep track of parent references.
     if (parent) {
       // Ensure we don't create infinite JSON structures.
       Object.defineProperty(component, 'parent', {
         enumerable: false,
         writable: true,
-        value: { ...parent }
+        value: JSON.parse(JSON.stringify(parent))
       });
+      component.parent.path = parent.path;
       delete component.parent.components;
       delete component.parent.componentMap;
       delete component.parent.columns;
       delete component.parent.rows;
     }
     if (includeAll || component.tree || !info.iterable) {
-      noRecurse = fn(component, componentPath(component, path), components, parent);
+      noRecurse = fn(component, component.path, components, parent);
     }
 
     if (!noRecurse) {

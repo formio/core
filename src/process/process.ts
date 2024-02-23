@@ -39,15 +39,15 @@ export async function process<ProcessScope>(context: ProcessContext<ProcessScope
 
 export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>): ProcessScope {
     const { instances, components, data, scope, flat, processors } = context;
-    eachComponentData(components, data, (component, data, row, path, components, index) => {
-        processOneSync<ProcessScope>({...context, ...{
+    eachComponentData(components, data, (component, _, row, path, components, index) => {
+        processOneSync<ProcessScope>({...context,
             component,
             components,
             path,
             row,
             index,
             instance: instances ? instances[path] : undefined
-        }});
+        });
         if (flat) {
             return true;
         }
