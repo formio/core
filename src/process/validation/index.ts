@@ -1,9 +1,10 @@
-import { ConditionsScope, ProcessorFn, ProcessorFnSync, ProcessorInfo, ValidationContext, ValidationProcessorFn, ValidationProcessorFnSync, ValidationRuleInfo, ValidationScope } from "types";
+import { ConditionsScope, ProcessorFn, ProcessorFnSync, ProcessorInfo, ValidationContext, ValidationProcessorFn, ValidationProcessorFnSync, ValidationRuleInfo, ValidationScope, SkipValidationFn, ConditionsContext } from "types";
 import { EvaluationRules, Rules, ServerRules } from "./rules";
 import { find, get, pick } from "lodash";
 import { getComponentPath } from "utils/formUtil";
 import { getErrorMessage } from "utils/error";
 import { FieldError } from "error";
+import { ConditionallyHidden, isConditionallyHidden, isCustomConditionallyHidden, isSimpleConditionallyHidden } from "processes/conditions";
 
 // Cleans up validation errors to remove unnessesary parts
 // and make them transferable to ivm.
@@ -34,17 +35,12 @@ const cleanupValidationError = (error: any) => ({
     ),
 });
 
-export function validationRules(context: ValidationContext, rules: ValidationRuleInfo[]): ValidationRuleInfo[] {
-    const { component, scope, path, config } = context;
-    if (component.hasOwnProperty('input') && !component.input) {
-        return [];
-    }
-    // Server validation is skipped if the value is not persistent on the server.
-    if (config?.server && (component.persistent === false || (component.persistent === 'client-only'))) {
-        return [];
-    }
-    // Do not perform validation on conditionally hidden components.
-    if (find((scope as ConditionsScope).conditionals, {path: getComponentPath(component, path), conditionallyHidden: true})) {
+export function validationRules(
+    context: ValidationContext, 
+    rules: ValidationRuleInfo[],
+    skipValidation?: SkipValidationFn
+): ValidationRuleInfo[] {
+    if (skipValidation && skipValidation(context)) {
         return [];
     }
     const validationRules: ValidationRuleInfo[] = [];
@@ -56,8 +52,76 @@ export function validationRules(context: ValidationContext, rules: ValidationRul
     }, validationRules);
 }
 
+export function isInputComponent(context: ValidationContext): boolean {
+    const { component } = context;
+    return !component.hasOwnProperty('input') || component.input;
+}
+
+export function isValueHidden(context: ValidationContext): boolean {
+    const { component, config } = context;
+    if (component.protected) {
+        return false;
+    }
+    if (
+        (component.hasOwnProperty('persistent') && !component.persistent) ||
+        (component.persistent === 'client-only')
+    ) {
+        return true;
+    }
+    return false;
+}
+
+export function isForcedHidden(context: ValidationContext, isConditionallyHidden: ConditionallyHidden): boolean {
+    const { component } = context;
+    if (isConditionallyHidden(context as ConditionsContext)) {
+        return true;
+    }
+    if (component.hasOwnProperty('hidden')) {
+        return !!component.hidden;
+    }
+    return false;
+}
+
+export const _shouldSkipValidation = (context: ValidationContext, isConditionallyHidden: ConditionallyHidden) => {
+    const { component, scope, path } = context;
+    if (
+        (scope as ConditionsScope)?.conditionals &&
+        find((scope as ConditionsScope).conditionals, {
+            path: getComponentPath(component, path), 
+            conditionallyHidden: true
+        })
+    ) {
+        return true;
+    }
+    const { validateWhenHidden = false } = component || {};
+    const rules = [
+      // Skip validation if component is readOnly
+      // () => this.options.readOnly,
+      // Do not check validations if component is not an input component.
+      () => !isInputComponent(context),
+      // Check to see if we are editing and if so, check component persistence.
+      () => isValueHidden(context),
+      // Force valid if component is hidden.
+      () => isForcedHidden(context, isConditionallyHidden) && !validateWhenHidden,
+    ];
+
+    return rules.some(pred => pred());
+};
+
+export const shouldSkipValidationCustom: SkipValidationFn = (context: ValidationContext) => {
+    return _shouldSkipValidation(context, isCustomConditionallyHidden);
+};
+
+export const shouldSkipValidationSimple: SkipValidationFn = (context: ValidationContext) => {
+    return _shouldSkipValidation(context, isSimpleConditionallyHidden);
+};
+
+export const shouldSkipValidation: SkipValidationFn = (context: ValidationContext) => {
+    return _shouldSkipValidation(context, isConditionallyHidden);
+};
+
 export function shouldValidateAll(context: ValidationContext): boolean {
-    return validationRules(context, Rules).length > 0;
+    return validationRules(context, Rules, shouldSkipValidation).length > 0;
 }
 
 export function shouldValidateCustom(context: ValidationContext): boolean {
@@ -65,12 +129,15 @@ export function shouldValidateCustom(context: ValidationContext): boolean {
     if (component.customConditional) {
         return true;
     }
-    return false;
+    return !shouldSkipValidationCustom(context);
 }
 
 export function shouldValidateServer(context: ValidationContext): boolean {
     const { component } = context;
-    if (shouldValidateCustom(context)) {
+    if (component.customConditional) {
+        return false;
+    }
+    if (shouldSkipValidationSimple(context)) {
         return false;
     }
     return shouldValidateAll(context);
@@ -90,7 +157,7 @@ function handleError(error: FieldError | null, context: ValidationContext) {
 }
 
 export const validateProcess: ValidationProcessorFn = async (context) => {
-    const { component, data, row, path, instance, scope, rules } = context;
+    const { component, data, row, path, instance, scope, rules, skipValidation } = context;
     let { value } = context;
     if (!scope.validated) scope.validated = [];
     if (!scope.errors) scope.errors = [];
@@ -106,7 +173,7 @@ export const validateProcess: ValidationProcessorFn = async (context) => {
             if (instance?.shouldSkipValidation(data)) {
                 return;
             }
-            const rulesToExecute: ValidationRuleInfo[] = validationRules(context, otherRules);
+            const rulesToExecute: ValidationRuleInfo[] = validationRules(context, otherRules, skipValidation);
             if (!rulesToExecute.length) {
                 return;
             }
@@ -137,7 +204,7 @@ export const validateProcess: ValidationProcessorFn = async (context) => {
     if (instance?.shouldSkipValidation(data, row)) {
         return;
     }
-    const rulesToExecute: ValidationRuleInfo[] = validationRules(context, rules);
+    const rulesToExecute: ValidationRuleInfo[] = validationRules(context, rules, skipValidation);
     if (!rulesToExecute.length) {
         return;
     }
@@ -158,7 +225,7 @@ export const validateProcess: ValidationProcessorFn = async (context) => {
 };
 
 export const validateProcessSync: ValidationProcessorFnSync = (context) => {
-    const { component, data, row, path, instance, scope, rules } = context;
+    const { component, data, row, path, instance, scope, rules, skipValidation } = context;
     let { value } = context;
     if (!scope.validated) scope.validated = [];
     if (!scope.errors) scope.errors = [];
@@ -174,7 +241,7 @@ export const validateProcessSync: ValidationProcessorFnSync = (context) => {
             if (instance?.shouldSkipValidation(data)) {
                 return;
             }
-            const rulesToExecute: ValidationRuleInfo[] = validationRules(context, otherRules);
+            const rulesToExecute: ValidationRuleInfo[] = validationRules(context, otherRules, skipValidation);
             if (!rulesToExecute.length) {
                 return;
             }
@@ -200,7 +267,7 @@ export const validateProcessSync: ValidationProcessorFnSync = (context) => {
     if (instance?.shouldSkipValidation(data, row)) {
         return;
     }
-    const rulesToExecute: ValidationRuleInfo[] = validationRules(context, rules);
+    const rulesToExecute: ValidationRuleInfo[] = validationRules(context, rules, skipValidation);
     if (!rulesToExecute.length) {
         return;
     }
@@ -222,31 +289,37 @@ export const validateProcessSync: ValidationProcessorFnSync = (context) => {
 
 export const validateCustomProcess: ValidationProcessorFn = async (context) => {
     context.rules = context.rules || EvaluationRules;
+    context.skipValidation = shouldSkipValidationCustom;
     return validateProcess(context);
 };
 
 export const validateCustomProcessSync: ProcessorFnSync<ValidationScope> = (context: ValidationContext) => {
     context.rules = context.rules || EvaluationRules;
+    context.skipValidation = shouldSkipValidationCustom;
     return validateProcessSync(context);
 };
 
 export const validateServerProcess: ValidationProcessorFn = async (context) => {
     context.rules = context.rules || ServerRules;
+    context.skipValidation = shouldSkipValidationSimple;
     return validateProcess(context);
 };
 
 export const validateServerProcessSync: ProcessorFnSync<ValidationScope> = (context: ValidationContext) => {
     context.rules = context.rules || ServerRules;
+    context.skipValidation = shouldSkipValidationSimple;
     return validateProcessSync(context);
 };
 
 export const validateAllProcess: ProcessorFn<ValidationScope> = async (context: ValidationContext) => {
     context.rules = context.rules || Rules;
+    context.skipValidation = shouldSkipValidation;
     return validateProcess(context);
 };
 
 export const validateAllProcessSync: ProcessorFnSync<ValidationScope> = (context: ValidationContext) => {
     context.rules = context.rules || Rules;
+    context.skipValidation = shouldSkipValidation;
     return validateProcessSync(context);
 };
 

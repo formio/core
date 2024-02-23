@@ -1,11 +1,13 @@
 import {
     DateTimeComponent,
     DayComponent,
+    HiddenComponent,
     NumberComponent,
     RadioComponent,
     SelectBoxesComponent,
     SelectComponentOptions,
     TextFieldComponent,
+    WellComponent,
 } from 'types';
 
 export const simpleTextField: TextFieldComponent = {
@@ -200,4 +202,36 @@ export const simpleRadioField: RadioComponent = {
     key: 'component',
     type: 'radio',
     input: true,
+};
+
+export const hiddenRequiredField: HiddenComponent = {
+    type: 'hidden',
+    key: 'someData',
+    input: true,
+    validate: {
+        required: true
+    }
+};
+
+export const conditionallyHiddenRequiredHiddenField: HiddenComponent = {
+    type: 'hidden',
+    key: 'someData',
+    input: true,
+    validate: {
+        required: true
+    },
+    conditional: {
+        show: false,
+        when: 'otherData',
+        eq: 'hideme'
+    }
+};
+
+export const requiredNonInputField: any = {
+    type: 'well',
+    key: 'someData',
+    input: false,
+    validate: {
+        required: true
+    }
 };
