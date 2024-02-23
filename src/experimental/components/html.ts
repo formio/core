@@ -1,4 +1,4 @@
-import { Component } from 'base';
+import { Component } from 'src/experimental/base';
 export const HTMLProperties = {
     type: 'html',
     schema: {

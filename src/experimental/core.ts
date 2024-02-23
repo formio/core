@@ -1,6 +1,6 @@
 import 'core-js/features/object/from-entries';
-import { Formio } from './sdk';
-import { Evaluator, Utils } from './utils';
+import { Formio } from '../sdk';
+import { Evaluator, Utils } from '../utils';
 import { Components, render } from './base';
 import { Template } from './template';
 (Formio as any).render = render;
@@ -109,6 +109,6 @@ export function use(...mods: any) {
 (Formio as any).use = use;
 import components from './components';
 (Formio as any).use(components);
-import modules from './modules';
+import modules from '../modules';
 (Formio as any).use(modules);
 export { Formio };

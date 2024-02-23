@@ -1,15 +1,13 @@
 {
   "name": "@formio/core",
-  "version": "2.0.0-dev.3",
+  "version": "2.0.0-dev.4",
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
   "exports": {
     ".": "./lib/index.js",
     "./utils": "./lib/utils/index.js",
     "./sdk": "./lib/sdk/index.js",
-    "./model": "./lib/model/index.js",
     "./process": "./lib/process/index.js",
-    "./template": "./lib/template/index.js",
     "./types": "./lib/types/index.js"
   },
   "scripts": {

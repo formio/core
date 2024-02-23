@@ -1,7 +1,0 @@
-{
-    "name": "@formio/sdk",
-    "version": "0.1.0",
-    "description": "An SDK to work with the Form.io APIs",
-    "main": "index.ts",
-    "dependencies": {}
-}

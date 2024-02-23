@@ -1,4 +1,4 @@
-import { NestedComponent } from 'base';
+import { NestedComponent } from 'src/experimental/base';
 import { HTML, HTMLProperties } from './html';
 
 /**
