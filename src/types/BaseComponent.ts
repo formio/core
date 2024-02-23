@@ -46,6 +46,7 @@ export type BaseComponent = {
     attributes?: Record<string, string>;
     logic?: AdvancedLogic[];
     validateOn?: string;
+    validateWhenHidden?: boolean;
     validate?: {
         required?: boolean;
         custom?: string;
