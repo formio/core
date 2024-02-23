@@ -94,8 +94,8 @@ export const validateRemoteSelectValue: RuleFn = async (context: ValidationConte
             : {};
 
         // Set form.io authentication
-        if ((component as SelectComponent).authenticate && config && config.token) {
-            headers['x-jwt-token'] = config.token;
+        if ((component as SelectComponent).authenticate && config && config.tokens) {
+            Object.assign(headers, config.tokens);
         }
 
         try {
