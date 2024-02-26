@@ -378,5 +378,30 @@ describe('validateMultiple', () => {
                 expect(validateMultipleSync(context)).to.be.null;
             });
         });
+
+        describe('values that should not be arrays', () => {
+            it('should return an error for a textfield component without multiple that is an array', () => {
+                const component: Component = {
+                    type: 'textfield',
+                    input: true,
+                    key: 'textfield',
+                };
+                const context: ValidationContext = {
+                    component,
+                    data: {
+                        textfield: ['foo'],
+                    },
+                    value: ['foo'],
+                    row: {
+                        textfield: ['foo']
+                    },
+                    scope: {
+                        errors: []
+                    },
+                    path: component.key
+                };
+                expect(validateMultipleSync(context)).to.be.instanceOf(FieldError);
+            });
+        });
     });
 });
