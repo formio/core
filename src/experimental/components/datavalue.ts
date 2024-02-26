@@ -1,4 +1,4 @@
-import { Component } from 'src/experimental/base';
+import { Component } from '../base';
 import { HTML } from './html';
 
 @Component({
