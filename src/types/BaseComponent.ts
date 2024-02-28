@@ -47,6 +47,8 @@ export type BaseComponent = {
     logic?: AdvancedLogic[];
     validateOn?: string;
     validateWhenHidden?: boolean;
+    modelType?: "array" | "value" | "object" | "dataObject" | "inherit" | "value";
+    parentPath?: string;
     validate?: {
         required?: boolean;
         custom?: string;
@@ -59,9 +61,9 @@ export type BaseComponent = {
         json?: any;
         row?: string;
     };
-    conditional?: 
+    conditional?:
         (
-            JSONConditional | 
+            JSONConditional |
             LegacyConditional |
             SimpleConditional
         );

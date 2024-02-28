@@ -1,3 +1,5 @@
+import get from "lodash/get";
+import set from "lodash/set";
 import { ProcessContext, ProcessTarget, ProcessorInfo, ProcessorScope } from "types";
 import { eachComponentData, eachComponentDataAsync } from "utils/formUtil";
 import { processOne, processOneSync } from './processOne';
@@ -8,6 +10,7 @@ import { logicProcessInfo } from "./logic";
 import { conditionProcessInfo, customConditionProcessInfo, simpleConditionProcessInfo } from "./conditions";
 import { validateCustomProcessInfo, validateProcessInfo, validateServerProcessInfo } from "./validation";
 import { filterProcessInfo } from "./filter";
+import { normalizeProcessInfo } from "./normalize";
 
 export async function process<ProcessScope>(context: ProcessContext<ProcessScope>): Promise<ProcessScope> {
     const { instances, components, data, scope, flat, processors } = context;
@@ -75,6 +78,7 @@ export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
     conditions: conditionProcessInfo,
     customConditions: customConditionProcessInfo,
     simpleConditions: simpleConditionProcessInfo,
+    normalize: normalizeProcessInfo,
     fetch: fetchProcessInfo,
     logic: logicProcessInfo,
     validate: validateProcessInfo,
@@ -86,6 +90,7 @@ export const ProcessTargets: ProcessTarget = {
     submission: [
         filterProcessInfo,
         serverDefaultValueProcessInfo,
+        normalizeProcessInfo,
         fetchProcessInfo,
         simpleConditionProcessInfo,
         validateServerProcessInfo
