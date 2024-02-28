@@ -1,6 +1,9 @@
 import { ConditionsScope, ProcessorFn, ProcessorFnSync, ProcessorInfo, ValidationContext, ValidationProcessorFn, ValidationProcessorFnSync, ValidationRuleInfo, ValidationScope, SkipValidationFn, ConditionsContext } from "types";
 import { EvaluationRules, Rules, ServerRules } from "./rules";
-import { find, get, pick } from "lodash";
+import find from "lodash/find";
+import get from "lodash/get";
+import set from "lodash/set";
+import pick from "lodash/pick";
 import { getComponentPath } from "utils/formUtil";
 import { getErrorMessage } from "utils/error";
 import { FieldError } from "error";
@@ -12,13 +15,13 @@ const cleanupValidationError = (error: any) => ({
     ...error,
     context: pick(error.context,
         [
-            'component', 
-            'path', 
-            'index', 
-            'value', 
-            'field', 
-            'hasLabel', 
-            'processor', 
+            'component',
+            'path',
+            'index',
+            'value',
+            'field',
+            'hasLabel',
+            'processor',
             'setting',
             'pattern',
             'length',
@@ -36,7 +39,7 @@ const cleanupValidationError = (error: any) => ({
 });
 
 export function validationRules(
-    context: ValidationContext, 
+    context: ValidationContext,
     rules: ValidationRuleInfo[],
     skipValidation?: SkipValidationFn
 ): ValidationRuleInfo[] {
@@ -87,7 +90,7 @@ export const _shouldSkipValidation = (context: ValidationContext, isConditionall
     if (
         (scope as ConditionsScope)?.conditionals &&
         find((scope as ConditionsScope).conditionals, {
-            path: getComponentPath(component, path), 
+            path: getComponentPath(component, path),
             conditionallyHidden: true
         })
     ) {
@@ -157,8 +160,7 @@ function handleError(error: FieldError | null, context: ValidationContext) {
 }
 
 export const validateProcess: ValidationProcessorFn = async (context) => {
-    const { component, data, row, path, instance, scope, rules, skipValidation } = context;
-    let { value } = context;
+    const { component, data, row, path, instance, scope, rules, skipValidation, value } = context;
     if (!scope.validated) scope.validated = [];
     if (!scope.errors) scope.errors = [];
     if (!rules || !rules.length) {
@@ -175,26 +177,26 @@ export const validateProcess: ValidationProcessorFn = async (context) => {
             }
             const rulesToExecute: ValidationRuleInfo[] = validationRules(context, otherRules, skipValidation);
             if (!rulesToExecute.length) {
-                return;
+                continue;
             }
             if (component.truncateMultipleSpaces && amendedValue && typeof amendedValue === 'string') {
                 amendedValue = amendedValue.trim().replace(/\s{2,}/g, ' ');
             }
             for (const rule of rulesToExecute) {
                 if (rule && rule.process) {
-                    handleError(await rule.process({ 
-                        ...context, 
-                        value: amendedValue, 
-                        index: i, 
-                        path: amendedPath 
+                    handleError(await rule.process({
+                        ...context,
+                        value: amendedValue,
+                        index: i,
+                        path: amendedPath
                     }), context);
                 }
             }
         }
         for (const rule of fullValueRules) {
             if (rule && rule.process) {
-                handleError(await rule.process({ 
-                    ...context, 
+                handleError(await rule.process({
+                    ...context,
                     value
                 }), context);
             }
@@ -209,7 +211,7 @@ export const validateProcess: ValidationProcessorFn = async (context) => {
         return;
     }
     if (component.truncateMultipleSpaces && value && typeof value === 'string') {
-        value = value.trim().replace(/\s{2,}/g, ' ');
+        set(data, path, value.trim().replace(/\s{2,}/g, ' '));
     }
     for (const rule of rulesToExecute) {
         try {
@@ -256,8 +258,8 @@ export const validateProcessSync: ValidationProcessorFnSync = (context) => {
         }
         for (const rule of fullValueRules) {
             if (rule && rule.processSync) {
-                handleError(rule.processSync({ 
-                    ...context, 
+                handleError(rule.processSync({
+                    ...context,
                     value
                 }), context);
             }

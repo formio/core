@@ -20,7 +20,7 @@ import { Evaluator } from "./Evaluator";
  * @returns {Object}
  *   The flattened components map.
  */
-export function flattenComponents(components: any, includeAll: boolean) {
+export function flattenComponents(components: Component[], includeAll: boolean) {
   const flattened: any = {};
   eachComponent(
     components,
@@ -102,7 +102,7 @@ export const MODEL_TYPES: Record<string, string[]> = {
   ],
 };
 
-export function getModelType(component: any) {
+export function getModelType(component: Component) {
   if (isComponentNestedDataType(component)) {
     if (isComponentModelType(component, 'dataObject')) {
       return 'dataObject';
@@ -135,30 +135,30 @@ export function getComponentPath(component: Component, path: string) {
   return (getModelType(component) === 'inherit') ? `${path}.${key}` : path;
 }
 
-export function isComponentModelType(component: any, modelType: string) {
+export function isComponentModelType(component: Component, modelType: string) {
   return component.modelType === modelType || MODEL_TYPES[modelType].includes(component.type);
 }
 
 export function isComponentNestedDataType(component: any) {
-  return component.tree || isComponentModelType(component, 'array') || 
+  return component.tree || isComponentModelType(component, 'array') ||
     isComponentModelType(component, 'dataObject') ||
-    isComponentModelType(component, 'object') || 
+    isComponentModelType(component, 'object') ||
     isComponentModelType(component, 'map');
 }
 
-export function componentPath(component: any, parentPath?: string) {
+export function componentPath(component: Component, parentPath?: string): string {
   parentPath = component.parentPath || parentPath;
   const key = getComponentKey(component);
   if (!key) {
     // If the component does not have a key, then just always return the parent path.
-    return parentPath;
+    return parentPath || '';
   }
 
   // If the component has a path property, then use it.
   if (component.path) {
     return component.path;
   }
-  
+
   return parentPath ? `${parentPath}.${key}` : key;
 }
 
@@ -270,7 +270,7 @@ export const eachComponentData = (
 
 export function getComponentKey(component: Component) {
   if (
-    component.type === 'checkbox' && 
+    component.type === 'checkbox' &&
     component.inputType === 'radio' &&
     (component as CheckboxComponent).name
   ) {

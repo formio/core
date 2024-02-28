@@ -304,7 +304,7 @@ export type ListComponent = BaseComponent & {
     authenticate?: boolean;
     ignoreCache?: boolean;
     template?: string;
-    dataType?: string;
+    dataType?: 'auto' | 'boolean' | 'string' | 'object' | 'number';
     validate?: {
         onlyAvailableItems?: boolean;
     };

@@ -70,7 +70,7 @@ export function setActionStringProperty(context: LogicContext, action: LogicActi
 
 export function setActionProperty(context: LogicContext, action: LogicActionProperty): boolean {
     switch (action.property.type) {
-      case 'boolean': 
+      case 'boolean':
         return setActionBooleanProperty(context, action as LogicActionPropertyBoolean);
       case 'string':
         return setActionStringProperty(context, action as LogicActionPropertyString);
@@ -79,25 +79,24 @@ export function setActionProperty(context: LogicContext, action: LogicActionProp
 }
 
 export function setValueProperty(context: LogicContext, action: LogicActionValue) {
-    const { component, row, value } = context;
-    const oldValue = get(row, getComponentKey(component));
-    const newValue = evaluate({...context, value}, action.value, 'value', (evalContext: any) => {
+    const { component, data, value, path} = context;
+    const oldValue = get(data, path);
+    const newValue = evaluate(context, action.value, 'value', (evalContext: any) => {
         evalContext.value = clone(oldValue);
     });
     if (
-        !isEqual(oldValue, newValue) && 
+        !isEqual(oldValue, newValue) &&
         !(component.clearOnHide && conditionallyHidden(context as ProcessorContext<ConditionsScope>))
     ) {
-        context.value = newValue;
-        set(row, getComponentKey(component), newValue);
+        set(data, path, newValue);
         return true;
     }
     return false;
 }
 
 export function setMergeComponentSchema(context: LogicContext, action: LogicActionMergeComponentSchema) {
-    const { component, row } = context;
-    const oldValue = get(row, getComponentKey(component));
+    const { component, data, path } = context;
+    const oldValue = get(data, path);
     const schema = evaluate({...context, value: {}}, action.schemaDefinition, 'schema', (evalContext: any) => {
         evalContext.value = clone(oldValue);
     });

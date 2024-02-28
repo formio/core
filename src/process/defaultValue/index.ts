@@ -30,7 +30,7 @@ export const customDefaultValueProcess: ProcessorFn<ConditionsScope> = async (co
 };
 
 export const customDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (context: DefaultValueContext) => {
-    const { component, row, scope, evalContext, path } = context;
+    const { component, row, data, scope, evalContext, path } = context;
     if (!hasCustomDefaultValue(context)) {
         return;
     }
@@ -52,7 +52,7 @@ export const customDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
         });
     }
     if (defaultValue !== null && defaultValue !== undefined) {
-        set(row, getComponentKey(component), defaultValue);
+        set(data, path, defaultValue);
     }
 };
 
@@ -61,7 +61,7 @@ export const serverDefaultValueProcess: ProcessorFn<ConditionsScope> = async (co
 };
 
 export const serverDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (context: DefaultValueContext) => {
-    const { component, row, scope, path } = context;
+    const { component, row, data, scope, path } = context;
     if (!hasServerDefaultValue(context)) {
         return;
     }
@@ -84,8 +84,7 @@ export const serverDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
         });
     }
     if (defaultValue !== null && defaultValue !== undefined) {
-        set(row, getComponentKey(component), defaultValue);
-        context.value = defaultValue;
+        set(data, path, defaultValue);
     }
 };
 

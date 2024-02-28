@@ -1,6 +1,6 @@
 import { isNil } from 'lodash';
 import { FieldError } from 'error';
-import { Component, TextAreaComponent, RuleFn, TagsComponent, RuleFnSync, ValidationContext, DataObject } from 'types';
+import { Component, TextAreaComponent, RuleFn, TagsComponent, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 export const isEligible = (component: Component) => {
@@ -85,6 +85,7 @@ export const validateMultipleSync: RuleFnSync = (context: ValidationContext) => 
 export const validateMultipleInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
     name: 'validateMultiple',
     process: validateMultiple,
+    fullValue: true,
     processSync: validateMultipleSync,
     shouldProcess: shouldValidate,
 };

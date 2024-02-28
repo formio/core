@@ -1,13 +1,12 @@
 import JSONLogic from 'modules/jsonlogic';
 import { ProcessorFn, ProcessorFnSync, CalculationScope, CalculationContext, ProcessorInfo, FilterScope } from 'types';
 import _set from 'lodash/set';
-import { getComponentKey } from 'utils/formUtil';
 const Evaluator = JSONLogic.evaluator;
 
 export const shouldCalculate = (context: CalculationContext): boolean => {
     const { component, config } = context;
     if (
-        !component.calculateValue || 
+        !component.calculateValue ||
         (config?.server && !component.calculateServer)
     ) {
         return false;
@@ -16,7 +15,7 @@ export const shouldCalculate = (context: CalculationContext): boolean => {
 };
 
 export const calculateProcessSync: ProcessorFnSync<CalculationScope> = (context: CalculationContext) => {
-    const { component, row, evalContext, scope, path, value } = context;
+    const { component, data, evalContext, scope, path } = context;
     if (!shouldCalculate(context)) {
         return;
     }
@@ -31,8 +30,7 @@ export const calculateProcessSync: ProcessorFnSync<CalculationScope> = (context:
             path,
             value: newValue
         });
-        _set(row, getComponentKey(component), newValue);
-        context.value = newValue;
+        _set(data, path, newValue);
     }
     return;
 };

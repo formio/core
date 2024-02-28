@@ -8,3 +8,4 @@ export * from './logic';
 export * from './populate';
 export * from './processOne';
 export * from './process';
+export * from './normalize';

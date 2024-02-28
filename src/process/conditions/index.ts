@@ -2,10 +2,10 @@ import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, Condition
 import { Utils } from 'utils';
 import unset from 'lodash/unset';
 import { componentInfo, getComponentKey, getComponentPath } from 'utils/formUtil';
-import { 
-    checkCustomConditional, 
-    checkJsonConditional, 
-    checkLegacyConditional, 
+import {
+    checkCustomConditional,
+    checkJsonConditional,
+    checkLegacyConditional,
     checkSimpleConditional,
     isLegacyConditional,
     isSimpleConditional,
@@ -98,7 +98,7 @@ export const isConditionallyHidden = (context: ConditionsContext): boolean => {
 
 export type ConditionallyHidden = (context: ConditionsContext) => boolean;
 export const conditionalProcess = (context: ConditionsContext, isHidden: ConditionallyHidden) => {
-    const { component, row, scope, path } = context;
+    const { component, data, row, scope, path } = context;
     const conditionallyHidden = isHidden(context);
     if (!scope.conditionals) scope.conditionals = [];
     if (conditionallyHidden) {
@@ -115,8 +115,7 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
         else {
             scope.conditionals.push({ path, conditionallyHidden: true });
             if (!component.hasOwnProperty('clearOnHide') || component.clearOnHide) {
-                unset(row, getComponentKey(component));
-                context.value = undefined;
+                unset(data, path);
             }
         }
     }
