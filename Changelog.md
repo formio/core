@@ -1,4 +1,4 @@
-## [Unreleased: 2.0.0-rc.13]
+## 2.0.0-rc.13
  - FIO-7958: add normalize processor fn and derive context.value rather than mutate it directly
    
 ## 2.0.0-rc.11
