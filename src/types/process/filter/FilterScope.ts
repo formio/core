@@ -1,4 +1,4 @@
 import { ProcessorScope } from "..";
 export type FilterScope = {
-    filter: any;
+    filter: Record<string, any>;
 } & ProcessorScope;

@@ -1,11 +1,11 @@
 import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, ConditionsContext, SimpleConditional, JSONConditional, LegacyConditional, SimpleConditionalConditions, Component, NestedComponent, FilterScope } from 'types';
 import { Utils } from 'utils';
 import unset from 'lodash/unset';
-import { componentInfo, getComponentPath } from 'utils/formUtil';
-import { 
-    checkCustomConditional, 
-    checkJsonConditional, 
-    checkLegacyConditional, 
+import { componentInfo, getComponentKey, getComponentPath } from 'utils/formUtil';
+import {
+    checkCustomConditional,
+    checkJsonConditional,
+    checkLegacyConditional,
     checkSimpleConditional,
     isLegacyConditional,
     isSimpleConditional,
@@ -98,7 +98,7 @@ export const isConditionallyHidden = (context: ConditionsContext): boolean => {
 
 export type ConditionallyHidden = (context: ConditionsContext) => boolean;
 export const conditionalProcess = (context: ConditionsContext, isHidden: ConditionallyHidden) => {
-    const { component, row, scope, path } = context;
+    const { component, data, row, scope, path } = context;
     const conditionallyHidden = isHidden(context);
     if (!scope.conditionals) scope.conditionals = [];
     if (conditionallyHidden) {
@@ -108,14 +108,14 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
             Utils.eachComponentData([component], row, (comp: Component, data: any, compRow: any, compPath: string) => {
                 scope.conditionals?.push({ path: getComponentPath(comp, compPath), conditionallyHidden: true });
                 if (!comp.hasOwnProperty('clearOnHide') || comp.clearOnHide) {
-                    unset(compRow, comp.key);
+                    unset(compRow, getComponentKey(comp));
                 }
             });
         }
         else {
             scope.conditionals.push({ path, conditionallyHidden: true });
             if (!component.hasOwnProperty('clearOnHide') || component.clearOnHide) {
-                unset(row, component.key);
+                unset(data, path);
             }
         }
     }

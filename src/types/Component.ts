@@ -14,6 +14,7 @@ export type Component =
     | NestedArrayComponent
     | DataGridComponent
     | DataMapComponent
+    | DataSourceComponent
     | DateTimeComponent
     | DayComponent
     | EditGridComponent
@@ -148,6 +149,18 @@ export type DataMapComponent = DataGridComponent & {
     disableAddingRemovingRows: boolean;
     keyBeforeValue: boolean;
     valueComponent: BaseComponent;
+};
+
+export type DataSourceComponent = BaseComponent & {
+    fetch?: {
+        url: string;
+        method: string;
+        headers: { key: string; value: string }[];
+        authenticate: boolean;
+        forwardHeaders: boolean;
+        specifyBody: string;
+        mapFunction: string;
+    };
 };
 
 export type DateTimeComponent = BaseComponent & {
@@ -291,7 +304,7 @@ export type ListComponent = BaseComponent & {
     authenticate?: boolean;
     ignoreCache?: boolean;
     template?: string;
-    dataType?: string;
+    dataType?: 'auto' | 'boolean' | 'string' | 'object' | 'number';
     validate?: {
         onlyAvailableItems?: boolean;
     };

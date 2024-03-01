@@ -3,32 +3,34 @@ import { FieldError } from 'error';
 import { Component, TextAreaComponent, RuleFn, TagsComponent, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
-const isEligible = (component: Component) => {
+export const isEligible = (component: Component) => {
     // TODO: would be nice if this was type safe
     switch (component.type) {
         case 'hidden':
-        case 'select':
-            return false;
         case 'address':
             if (!component.multiple) {
                 return false;
             }
-            break;
+            return true;
         case 'textArea':
             if (!(component as TextAreaComponent).as || (component as TextAreaComponent).as !== 'json') {
                 return false;
             }
-            break;
+            return true;
         default:
             return true;
     }
 }
 
-const emptyValueIsArray = (component: Component) => {
-    // TODO: yikes, this could be better
+export const emptyValueIsArray = (component: Component) => {
+    // TODO: How do we infer the data model of the compoennt given only its JSON? For now, we have to hardcode component types
     switch (component.type) {
         case 'datagrid':
         case 'editgrid':
+        case 'tagpad':
+        case 'sketchpad':
+        case 'datatable':
+        case 'dynamicWizard':
         case 'file':
             return true;
         case 'select':
@@ -60,18 +62,19 @@ export const validateMultipleSync: RuleFnSync = (context: ValidationContext) => 
     }
 
     const shouldBeArray = !!component.multiple;
-    const canBeArray = emptyValueIsArray(component);
-    const isArray = Array.isArray(value);
     const isRequired = !!component.validate?.required;
+    const isArray = Array.isArray(value);
 
     if (shouldBeArray) {
         if (isArray) {
             return isRequired ? value.length > 0 ? null : new FieldError('array_nonempty', {...context, setting: true}): null;
         } else {
+            const error = new FieldError('array', {...context, setting: true});
             // Null/undefined is ok if this value isn't required; anything else should fail
-            return isNil(value) ? isRequired ? new FieldError('array', {...context, setting: true}) : null : null;
+            return isNil(value) ? isRequired ? error : null : error;
         }
     } else {
+        const canBeArray = emptyValueIsArray(component);
         if (!canBeArray && isArray) {
             return new FieldError('nonarray', {...context, setting: false});
         }
@@ -82,6 +85,7 @@ export const validateMultipleSync: RuleFnSync = (context: ValidationContext) => 
 export const validateMultipleInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
     name: 'validateMultiple',
     process: validateMultiple,
+    fullValue: true,
     processSync: validateMultipleSync,
     shouldProcess: shouldValidate,
 };

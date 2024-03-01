@@ -11,6 +11,7 @@ export type BaseComponent = {
     type: string;
     key: string;
     path?: string;
+    parent?: BaseComponent;
     tableView?: boolean;
     placeholder?: string;
     prefix?: string;
@@ -45,6 +46,9 @@ export type BaseComponent = {
     attributes?: Record<string, string>;
     logic?: AdvancedLogic[];
     validateOn?: string;
+    validateWhenHidden?: boolean;
+    modelType?: "array" | "value" | "object" | "dataObject" | "inherit" | "value";
+    parentPath?: string;
     validate?: {
         required?: boolean;
         custom?: string;
@@ -57,9 +61,9 @@ export type BaseComponent = {
         json?: any;
         row?: string;
     };
-    conditional?: 
+    conditional?:
         (
-            JSONConditional | 
+            JSONConditional |
             LegacyConditional |
             SimpleConditional
         );
@@ -79,6 +83,7 @@ export type BaseComponent = {
     allowMultipleMasks?: boolean;
     addons?: any[]; // TODO: this should go away
     inputType?: string;
+    conflictId?: string;
     errors?: Record<string, string>;
     truncateMultipleSpaces?: boolean;
 };

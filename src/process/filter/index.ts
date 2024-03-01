@@ -3,7 +3,8 @@ import set from 'lodash/set';
 import { Utils } from "utils";
 import { get, isObject } from "lodash";
 export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterContext) => {
-    const { scope, value, path, component, data } = context;
+    const { scope, path, component, data } = context;
+    let { value } = context;
     if (!scope.filter) scope.filter = {};
     if (value !== undefined) {
         const modelType = Utils.getModelType(component);
@@ -19,10 +20,6 @@ export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterC
                 }
                 break;
             default:
-                // Make sure to set the value as an array if the component is a multi-value component.
-                if (component.multiple && value && !Array.isArray(value)) {
-                    set(data, path, [value]);
-                }
                 scope.filter[path] = true;
                 break;
         }

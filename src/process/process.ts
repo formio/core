@@ -1,3 +1,5 @@
+import get from "lodash/get";
+import set from "lodash/set";
 import { ProcessContext, ProcessTarget, ProcessorInfo, ProcessorScope } from "types";
 import { eachComponentData, eachComponentDataAsync } from "utils/formUtil";
 import { processOne, processOneSync } from './processOne';
@@ -8,10 +10,15 @@ import { logicProcessInfo } from "./logic";
 import { conditionProcessInfo, customConditionProcessInfo, simpleConditionProcessInfo } from "./conditions";
 import { validateCustomProcessInfo, validateProcessInfo, validateServerProcessInfo } from "./validation";
 import { filterProcessInfo } from "./filter";
+import { normalizeProcessInfo } from "./normalize";
 
 export async function process<ProcessScope>(context: ProcessContext<ProcessScope>): Promise<ProcessScope> {
     const { instances, components, data, scope, flat, processors } = context;
-    await eachComponentDataAsync(components, data, async (component, data, row, path, components, index) => {
+    await eachComponentDataAsync(components, data, async (component, _, row, path, components, index) => {
+        // Skip processing if row is null or undefined
+        if (!row) {
+            return;
+        }
         await processOne<ProcessScope>({...context, ...{
             component,
             components,
@@ -39,15 +46,19 @@ export async function process<ProcessScope>(context: ProcessContext<ProcessScope
 
 export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>): ProcessScope {
     const { instances, components, data, scope, flat, processors } = context;
-    eachComponentData(components, data, (component, data, row, path, components, index) => {
-        processOneSync<ProcessScope>({...context, ...{
+    eachComponentData(components, data, (component, _, row, path, components, index) => {
+        // Skip processing if row is null or undefined
+        if (!row) {
+            return;
+        }
+        processOneSync<ProcessScope>({...context,
             component,
             components,
             path,
             row,
             index,
             instance: instances ? instances[path] : undefined
-        }});
+        });
         if (flat) {
             return true;
         }
@@ -75,6 +86,7 @@ export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
     conditions: conditionProcessInfo,
     customConditions: customConditionProcessInfo,
     simpleConditions: simpleConditionProcessInfo,
+    normalize: normalizeProcessInfo,
     fetch: fetchProcessInfo,
     logic: logicProcessInfo,
     validate: validateProcessInfo,
@@ -83,9 +95,10 @@ export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
 };
 
 export const ProcessTargets: ProcessTarget = {
-    server: [
+    submission: [
         filterProcessInfo,
         serverDefaultValueProcessInfo,
+        normalizeProcessInfo,
         fetchProcessInfo,
         simpleConditionProcessInfo,
         validateServerProcessInfo

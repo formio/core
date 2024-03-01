@@ -1,5 +1,5 @@
-import { Components } from 'base';
-import { Template } from 'template';
+import { Components } from 'src/experimental/base';
+import { Template } from 'src/experimental/template';
 import module from './index';
 for (let name in module.components) {
     if (module.components.hasOwnProperty(name)) {

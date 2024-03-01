@@ -1,16 +1,6 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
-exports.simpleRadioField =
-    exports.simpleSelectOptions =
-    exports.simpleUrlField =
-    exports.simpleNumberField =
-    exports.simpleSelectBoxes =
-    exports.simpleEmailField =
-    exports.calendarTextField =
-    exports.simpleDayField =
-    exports.simpleDateTimeField =
-    exports.simpleTextField =
-        void 0;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.requiredNonInputField = exports.conditionallyHiddenRequiredHiddenField = exports.hiddenRequiredField = exports.simpleRadioField = exports.simpleSelectOptions = exports.simpleUrlField = exports.simpleNumberField = exports.simpleSelectBoxes = exports.simpleEmailField = exports.calendarTextField = exports.simpleDayField = exports.simpleDateTimeField = exports.simpleTextField = void 0;
 exports.simpleTextField = {
     type: 'textField',
     label: 'Simple Text Field',
@@ -165,6 +155,7 @@ exports.simpleSelectOptions = {
 };
 exports.simpleRadioField = {
     label: 'Radio',
+    dataSrc: 'values',
     optionsLabelPosition: 'right',
     inline: false,
     tableView: false,
@@ -192,6 +183,34 @@ exports.simpleRadioField = {
     ],
     key: 'component',
     type: 'radio',
-    dataSrc: 'values',
     input: true,
+};
+exports.hiddenRequiredField = {
+    type: 'hidden',
+    key: 'someData',
+    input: true,
+    validate: {
+        required: true
+    }
+};
+exports.conditionallyHiddenRequiredHiddenField = {
+    type: 'hidden',
+    key: 'someData',
+    input: true,
+    validate: {
+        required: true
+    },
+    conditional: {
+        show: false,
+        when: 'otherData',
+        eq: 'hideme'
+    }
+};
+exports.requiredNonInputField = {
+    type: 'well',
+    key: 'someData',
+    input: false,
+    validate: {
+        required: true
+    }
 };

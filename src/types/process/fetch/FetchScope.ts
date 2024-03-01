@@ -1,7 +1,4 @@
 import { ProcessorScope } from "..";
 export type FetchScope = {
-  fetched?: Array<{
-    path: string;
-    value: any;
-  }>;
+  fetched?:  Record<string, boolean>;
 } & ProcessorScope;

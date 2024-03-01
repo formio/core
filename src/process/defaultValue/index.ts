@@ -1,7 +1,8 @@
 import JSONLogic from 'modules/jsonlogic';
-import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, DefaultValueContext } from 'types';
+import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, DefaultValueContext, FilterScope } from 'types';
 import has from 'lodash/has';
 import set from 'lodash/set';
+import { getComponentKey } from 'utils/formUtil';
 const Evaluator = JSONLogic.evaluator;
 
 export const hasCustomDefaultValue = (context: DefaultValueContext): boolean => {
@@ -29,12 +30,12 @@ export const customDefaultValueProcess: ProcessorFn<ConditionsScope> = async (co
 };
 
 export const customDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (context: DefaultValueContext) => {
-    const { component, row, scope, evalContext, path } = context;
+    const { component, row, data, scope, evalContext, path } = context;
     if (!hasCustomDefaultValue(context)) {
         return;
     }
     if (!scope.defaultValues) scope.defaultValues = [];
-    if (has(row, component.key)) {
+    if (has(row, getComponentKey(component))) {
         return;
     }
     let defaultValue = null;
@@ -51,7 +52,7 @@ export const customDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
         });
     }
     if (defaultValue !== null && defaultValue !== undefined) {
-        set(row, component.key, defaultValue);
+        set(data, path, defaultValue);
     }
 };
 
@@ -60,12 +61,12 @@ export const serverDefaultValueProcess: ProcessorFn<ConditionsScope> = async (co
 };
 
 export const serverDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (context: DefaultValueContext) => {
-    const { component, row, scope, path } = context;
+    const { component, row, data, scope, path } = context;
     if (!hasServerDefaultValue(context)) {
         return;
     }
     if (!scope.defaultValues) scope.defaultValues = [];
-    if (has(row, component.key)) {
+    if (has(row, getComponentKey(component))) {
         return;
     }
     let defaultValue = null;
@@ -83,7 +84,7 @@ export const serverDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
         });
     }
     if (defaultValue !== null && defaultValue !== undefined) {
-        set(row, component.key, defaultValue);
+        set(data, path, defaultValue);
     }
 };
 

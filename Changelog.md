@@ -1,4 +1,19 @@
-## [Unreleased: 2.0.0]
+## 2.0.0-rc.13
+ - FIO-7958: add normalize processor fn and derive context.value rather than mutate it directly
+   
+## 2.0.0-rc.11
+ - FIO-7883: include premium components in 'multiple' validation conditional
+ - FIO-7885: Make the core validator run the skipValidation checks similar to renderer checks
+ - fix calculation for nested forms
+ - FIO-7938: Fixing the fetch process to evaluate properly on the server
+ - FIO-7874: Fixed issues with 'Invalid Time' when submitting a time component
+ - FIO-7733: move unused 'experimental' features to a new folder and remove them f
+ - Processor changes to work with other forms and validation processes
+ - scopes updated and other little updates
+ - Adding processors for server-side data processing
+ - Ensure we do not 'append' jwt tokens but set them
+   
+## 2.0.0-rc.10
 ### Breaking Changes
  - This version of the renderer will now produce different "binary" build files. The following are created.
    - dist/formio.core.js => The complete core binary. This used to be "dist/index.js".

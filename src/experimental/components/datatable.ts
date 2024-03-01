@@ -1,4 +1,4 @@
-import { ArrayComponent } from 'base';
+import { ArrayComponent } from 'src/experimental/base';
 
 /**
  * A base class for a data table.

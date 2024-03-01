@@ -3,6 +3,7 @@ import { checkCustomConditional, checkJsonConditional, checkLegacyConditional, c
 import { LogicActionCustomAction, LogicActionMergeComponentSchema, LogicActionProperty, LogicActionPropertyBoolean, LogicActionPropertyString, LogicActionValue } from "types/AdvancedLogic";
 import { get, set, clone, isEqual, assign } from 'lodash';
 import { evaluate, interpolate } from 'modules/jsonlogic';
+import { getComponentKey } from "./formUtil";
 
 export const hasLogic = (context: LogicContext): boolean => {
     const { component } = context;
@@ -69,7 +70,7 @@ export function setActionStringProperty(context: LogicContext, action: LogicActi
 
 export function setActionProperty(context: LogicContext, action: LogicActionProperty): boolean {
     switch (action.property.type) {
-      case 'boolean': 
+      case 'boolean':
         return setActionBooleanProperty(context, action as LogicActionPropertyBoolean);
       case 'string':
         return setActionStringProperty(context, action as LogicActionPropertyString);
@@ -78,25 +79,24 @@ export function setActionProperty(context: LogicContext, action: LogicActionProp
 }
 
 export function setValueProperty(context: LogicContext, action: LogicActionValue) {
-    const { component, row, value } = context;
-    const oldValue = get(row, component.key);
-    const newValue = evaluate({...context, value}, action.value, 'value', (evalContext: any) => {
+    const { component, data, value, path} = context;
+    const oldValue = get(data, path);
+    const newValue = evaluate(context, action.value, 'value', (evalContext: any) => {
         evalContext.value = clone(oldValue);
     });
     if (
-        !isEqual(oldValue, newValue) && 
+        !isEqual(oldValue, newValue) &&
         !(component.clearOnHide && conditionallyHidden(context as ProcessorContext<ConditionsScope>))
     ) {
-        context.value = newValue;
-        set(row, component.key, newValue);
+        set(data, path, newValue);
         return true;
     }
     return false;
 }
 
 export function setMergeComponentSchema(context: LogicContext, action: LogicActionMergeComponentSchema) {
-    const { component, row } = context;
-    const oldValue = get(row, component.key);
+    const { component, data, path } = context;
+    const oldValue = get(data, path);
     const schema = evaluate({...context, value: {}}, action.schemaDefinition, 'schema', (evalContext: any) => {
         evalContext.value = clone(oldValue);
     });
