@@ -2,7 +2,7 @@ import { Component, ComponentInstances, DataObject, ValidationRuleInfo, Validati
 import { process, processSync } from "../process";
 import { FieldError } from "error";
 import { validateProcessInfo } from ".";
-import { Rules } from "./rules";
+import { rules } from "./rules";
 
 export type ProcessValidateContext = ProcessContext<ValidationScope> & {
     rules: ValidationRuleInfo[];
@@ -22,7 +22,7 @@ export const validator = (rules: ValidationRuleInfo[]): ValidationFn => {
             components,
             data,
             instances,
-            scope: {errors: []}, 
+            scope: {errors: []},
             processors: [validateProcessInfo],
             rules,
         });
@@ -34,9 +34,9 @@ export const validatorSync = (rules: ValidationRuleInfo[]): ValidationFnSync => 
     return (components: Component[], data: DataObject, instances?: ComponentInstances): FieldError[] => {
         return processValidateSync({
             components,
-            data, 
-            instances, 
-            scope: {errors: []}, 
+            data,
+            instances,
+            scope: {errors: []},
             processors: [validateProcessInfo],
             rules,
         }).errors;
@@ -45,10 +45,10 @@ export const validatorSync = (rules: ValidationRuleInfo[]): ValidationFnSync => 
 
 // Perform a validation on a form asynchonously.
 export async function validate(components: Component[], data: DataObject, instances?: ComponentInstances): Promise<FieldError[]> {
-    return validator(Rules)(components, data, instances);
+    return validator(rules)(components, data, instances);
 }
 
 // Perform a validation on a form synchronously.
 export function validateSync(components: Component[], data: DataObject, instances?: ComponentInstances): FieldError[] {
-    return validatorSync(Rules)(components, data, instances);
+    return validatorSync(rules)(components, data, instances);
 }
