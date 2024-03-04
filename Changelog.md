@@ -1,3 +1,6 @@
+## 2.0.0-rc.13
+ - FIO-7958: add normalize processor fn and derive context.value rather than mutate it directly
+   
 ## 2.0.0-rc.11
  - FIO-7883: include premium components in 'multiple' validation conditional
  - FIO-7885: Make the core validator run the skipValidation checks similar to renderer checks
