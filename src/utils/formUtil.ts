@@ -153,12 +153,6 @@ export function componentPath(component: Component, parentPath?: string): string
     // If the component does not have a key, then just always return the parent path.
     return parentPath || '';
   }
-
-  // If the component has a path property, then use it.
-  if (component.path) {
-    return component.path;
-  }
-
   return parentPath ? `${parentPath}.${key}` : key;
 }
 
