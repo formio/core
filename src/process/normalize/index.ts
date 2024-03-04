@@ -34,7 +34,7 @@ const isTagsComponent = (component: any): component is TagsComponent => componen
 const isTextFieldComponent = (component: any): component is TextFieldComponent => component.type === "textfield";
 
 const normalizeAddressComponentValue = (component: AddressComponent, value: any) => {
-    if (!component.multiple && Boolean(component.enableManualMode) && value && value.mode) {
+    if (!component.multiple && Boolean(component.enableManualMode) && value && !value.mode) {
         return {
           mode: 'autocomplete',
           address: value,
