@@ -18,13 +18,16 @@ export const shouldValidate = (context: ValidationContext) => {
 };
 
 export const validateTimeSync: RuleFnSync = (context: ValidationContext) => {
-    const { component, value } = context;
+    const { component, value, config } = context;
     if (!shouldValidate(context)) {
         return null;
     }
     try {
         if (!value || isEmpty(component, value)) return null;
-        const format = (component as TimeComponent).format || 'HH:mm';
+        // Server side evaluations of validity should use the "dataFormat" vs the "format" which is used on the client.
+        const format = config?.server ?
+            ((component as TimeComponent).dataFormat || 'HH:mm:ss') :
+            ((component as TimeComponent).format || 'HH:mm');
         const isValid = dayjs(String(value), format).isValid();
         return isValid ? null : new FieldError('time', context);
     }
