@@ -1,3 +1,12 @@
+## [Unreleased: 2.0.0-rc.14]
+ - FIO-7884: Fixed an issue with nested form data where it would not set correctly
+ - FIO-7938: Fixing issues where components within Array components (like datagrid) would get the path of the first index assigned and would never update again
+ - FIO-7958: add asynchronous rule set
+ - FIO-7958: fix typo in normalize processor fn
+ - FIO-7998: add validate captcha rule
+ - FIO-7991: Fixing the time validation to use the dataFormat for validation, which is what the client passes along to the server
+ - skip processing if row is null or undefined
+
 ## 2.0.0-rc.13
  - FIO-7958: add normalize processor fn and derive context.value rather than mutate it directly
    
