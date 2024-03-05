@@ -1,4 +1,4 @@
-import { last, get, isEmpty, isNil, isObject } from "lodash";
+import { last, get, set, isEmpty, isNil, isObject } from "lodash";
 
 import {
   AsyncComponentDataCallback,
@@ -162,7 +162,7 @@ export function componentPath(component: Component, parentPath?: string): string
   return parentPath ? `${parentPath}.${key}` : key;
 }
 
-export const componentChildPath = (component: any, parentPath?: string, path?: string) => {
+export const componentChildPath = (component: any, parentPath?: string, path?: string): string => {
   parentPath = component.parentPath || parentPath;
   path = path || componentPath(component, parentPath);
   // See if we are a nested component.
@@ -173,7 +173,7 @@ export const componentChildPath = (component: any, parentPath?: string, path?: s
     if (isComponentNestedDataType(component)) {
       return path;
     }
-    return parentPath;
+    return parentPath || path;
   }
   return path;
 }
@@ -215,7 +215,16 @@ export const eachComponentDataAsync = async (
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
-        await eachComponentDataAsync(component.components, data, fn, componentChildPath(component, path, compPath), index, component);
+        if (isComponentModelType(component, 'dataObject')) {
+          // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
+          const childPath: string = componentChildPath(component, path, compPath);
+          const childData: any = get(data, childPath, {});
+          await eachComponentDataAsync(component.components, childData, fn, '', index, component);
+          set(data, childPath, childData);
+        }
+        else {
+          await eachComponentDataAsync(component.components, data, fn, componentChildPath(component, path, compPath), index, component);
+        }
         return true;
       } else {
         return false;
@@ -256,7 +265,16 @@ export const eachComponentData = (
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
-        eachComponentData(component.components, data, fn, componentChildPath(component, path, compPath), index, component);
+        if (isComponentModelType(component, 'dataObject')) {
+          // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
+          const childPath: string = componentChildPath(component, path, compPath);
+          const childData: any = get(data, childPath, {});
+          eachComponentData(component.components, childData, fn, '', index, component);
+          set(data, childPath, childData);
+        }
+        else {
+          eachComponentData(component.components, data, fn, componentChildPath(component, path, compPath), index, component);
+        }
         return true;
       } else {
         return false;
