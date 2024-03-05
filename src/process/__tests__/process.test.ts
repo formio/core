@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { process } from "processes/process";
+import { processSync, ProcessTargets } from "../index";
 const form1 = require('./fixtures/form1.json');
 const data1a = require('./fixtures/data1a.json');
 const subs = require('./fixtures/subs.json');
@@ -64,3 +64,257 @@ describe('Process Tests', () => {
     });
 });
 */
+
+describe('Process Tests', () => {
+    it('Should process nested form data correctly', async () => {
+        const submission = {
+            data: {
+                submit: true,
+                child: {
+                    data: {
+                        input: "4",
+                        output: 200,
+                    },
+                },
+            },
+            owner: "65df88d8a98df60a25008300",
+            access: [
+            ],
+            metadata: {
+                headers: {
+                    "accept-language": "en-US,en",
+                    "cache-control": "no-cache",
+                    connection: "keep-alive",
+                    origin: "http://localhost:3000",
+                    pragma: "no-cache",
+                    referer: "http://localhost:3000/",
+                    "sec-fetch-dest": "empty",
+                    "sec-fetch-mode": "cors",
+                    "sec-fetch-site": "same-origin",
+                    "sec-gpc": "1",
+                    "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                    accept: "application/json",
+                    "content-type": "application/json",
+                    "sec-ch-ua": "\"Chromium\";v=\"122\", \"Not(A:Brand\";v=\"24\", \"Brave\";v=\"122\"",
+                    "sec-ch-ua-mobile": "?0",
+                    "sec-ch-ua-platform": "\"macOS\"",
+                    host: "localhost:3000",
+                    "accept-encoding": "gzip, deflate, br",
+                    "content-length": "172",
+                },
+            },
+            form: "65e74c65ef4451c9ede341e3",
+        };
+        const form = {
+            title: "Parent Form",
+            name: "parentForm",
+            path: "parentform",
+            type: "form",
+            display: "form",
+            tags: [
+            ],
+            deleted: null,
+            access: [
+                {
+                    type: "create_own",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "create_all",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "read_own",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "read_all",
+                    roles: [
+                        {
+                        },
+                        {
+                        },
+                        {
+                        },
+                    ],
+                },
+                {
+                    type: "update_own",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "update_all",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "delete_own",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "delete_all",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "team_read",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "team_write",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "team_admin",
+                    roles: [
+                    ],
+                },
+            ],
+            submissionAccess: [
+                {
+                    type: "create_own",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "create_all",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "read_own",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "read_all",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "update_own",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "update_all",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "delete_own",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "delete_all",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "team_read",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "team_write",
+                    roles: [
+                    ],
+                },
+                {
+                    type: "team_admin",
+                    roles: [
+                    ],
+                },
+            ],
+            owner: {
+            },
+            components: [
+                {
+                    label: "Child",
+                    tableView: true,
+                    form: "65e74c2aef4451c9ede34105",
+                    useOriginalRevision: false,
+                    reference: false,
+                    key: "child",
+                    type: "form",
+                    input: true,
+                    components: [
+                        {
+                            label: "Input",
+                            applyMaskOn: "change",
+                            tableView: true,
+                            key: "input",
+                            type: "textfield",
+                            input: true,
+                        },
+                        {
+                            label: "Output",
+                            applyMaskOn: "change",
+                            disabled: true,
+                            tableView: true,
+                            calculateValue: "value = parseInt(data.input) * 5;",
+                            calculateServer: true,
+                            key: "output",
+                            type: "textfield",
+                            input: true,
+                        },
+                        {
+                            type: "button",
+                            label: "Submit",
+                            key: "submit",
+                            disableOnInvalid: true,
+                            input: true,
+                            tableView: false,
+                        },
+                    ],
+                },
+                {
+                    type: "button",
+                    label: "Submit",
+                    key: "submit",
+                    disableOnInvalid: true,
+                    input: true,
+                    tableView: false,
+                },
+            ],
+            settings: {
+            },
+            properties: {
+            },
+            project: {
+            },
+            controller: "",
+            revisions: "",
+            submissionRevisions: "",
+            _vid: 0,
+            created: "2024-03-05T16:46:29.859Z",
+            modified: "2024-03-05T18:50:08.638Z",
+            machineName: "tzcuqutdtlpgicr:parentForm",
+            __v: 1,
+            config: {
+                appUrl: "http://localhost:3000/tzcuqutdtlpgicr",
+            },
+        };
+        const context = {
+            form,
+            submission,
+            data: submission.data,
+            components: form.components,
+            processors: ProcessTargets.evaluator,
+            scope: {},
+            config: {
+                server: true
+            }
+        };
+        processSync(context);
+        expect(context.data.child.data.output).to.equal(20);
+    });
+});
