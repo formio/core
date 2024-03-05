@@ -215,7 +215,8 @@ const normalizeTagsComponentValue = (component: TagsComponent, value: any) => {
 const normalizeMaskValue = (
     component: TextFieldComponent,
     defaultValues: DefaultValueScope['defaultValues'],
-    value: any
+    value: any,
+    path: string
 ) => {
     if (component.inputMasks && component.inputMasks.length > 0) {
         if (!value || typeof value !== 'object') {
@@ -225,7 +226,7 @@ const normalizeMaskValue = (
             }
         }
         if (!value.value) {
-            const defaultValue = defaultValues?.find((defaultValue) => defaultValue.path === component.path);
+            const defaultValue = defaultValues?.find((defaultValue) => defaultValue.path === path);
             value.value = Array.isArray(defaultValue) && defaultValue.length > 0 ? defaultValue[0] : defaultValue;
         }
     }
@@ -235,13 +236,14 @@ const normalizeMaskValue = (
 const normalizeTextFieldComponentValue = (
     component: TextFieldComponent,
     defaultValues: DefaultValueScope['defaultValues'],
-    value: any
+    value: any,
+    path: string
 ) => {
     if (component.allowMultipleMasks && component.inputMasks && component.inputMasks.length > 0) {
         if (Array.isArray(value)) {
-            return value.map((val) => normalizeMaskValue(component, defaultValues, val));
+            return value.map((val) => normalizeMaskValue(component, defaultValues, val, path));
         } else {
-            return normalizeMaskValue(component, defaultValues, value);
+            return normalizeMaskValue(component, defaultValues, value, path);
         }
     }
     return value;
@@ -272,7 +274,7 @@ export const normalizeProcessSync: ProcessorFnSync<NormalizeScope> = (context) =
     } else if (isTagsComponent(component)) {
         set(data, path, normalizeTagsComponentValue(component, value));
     } else if (isTextFieldComponent(component)) {
-       set(data, path, normalizeTextFieldComponentValue(component, defaultValues, value));
+       set(data, path, normalizeTextFieldComponentValue(component, defaultValues, value, path));
     }
 
     // Next perform component-type-agnostic transformations (i.e. super())

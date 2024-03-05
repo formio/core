@@ -342,11 +342,6 @@ export function eachComponent(
     }
     const info = componentInfo(component);
     let noRecurse = false;
-    Object.defineProperty(component, 'path', {
-      enumerable: false,
-      writable: true,
-      value: componentPath(component, path)
-    });
     // Keep track of parent references.
     if (parent) {
       // Ensure we don't create infinite JSON structures.
@@ -362,7 +357,7 @@ export function eachComponent(
       delete component.parent.rows;
     }
     if (includeAll || component.tree || !info.iterable) {
-      noRecurse = fn(component, component.path, components, parent);
+      noRecurse = fn(component, componentPath(component, path), components, parent);
     }
 
     if (!noRecurse) {

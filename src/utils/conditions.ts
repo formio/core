@@ -18,10 +18,10 @@ export const isSimpleConditional = (conditional: any): conditional is SimpleCond
 }
 
 export function conditionallyHidden(context: ConditionsContext) {
-    const { scope, component } = context;
-    if (scope.conditionals && component.path) {
+    const { scope, component, path } = context;
+    if (scope.conditionals && path) {
         const hidden = find(scope.conditionals, (conditional) => {
-            return conditional.path === component.path;
+            return conditional.path === path;
         });
         return hidden?.conditionallyHidden;
     }
