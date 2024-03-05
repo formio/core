@@ -1,4 +1,5 @@
-## [Unreleased: 2.0.0-rc.14]
+## 2.0.0-rc.14
+### Changed
  - FIO-7884: Fixed an issue with nested form data where it would not set correctly
  - FIO-7938: Fixing issues where components within Array components (like datagrid) would get the path of the first index assigned and would never update again
  - FIO-7958: add asynchronous rule set
