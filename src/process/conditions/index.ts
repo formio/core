@@ -11,7 +11,6 @@ import {
     isSimpleConditional,
     isJSONConditional
 } from 'utils/conditions';
-import { has } from 'lodash';
 
 const skipOnServer = (context: ConditionsContext): boolean => {
     const { component, config } = context;
