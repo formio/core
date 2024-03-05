@@ -44,12 +44,9 @@ export function processOneSync<ProcessorScope>(context: ProcessorsContext<Proces
             }
         });
     }
-    // Check if the component is in a nested form
-    let parent: any = component?.parent;
-    while (parent?.type !== "form" && parent !== undefined && parent !== null) {
-        parent = parent?.parent;
+    if (!context.row) {
+        return;
     }
-    
     context.processor = ProcessorType.Custom;
     processors.forEach((processor) => {
         if (processor?.processSync) {
