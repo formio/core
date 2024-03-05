@@ -3,7 +3,7 @@ import { validateUniqueInfo } from "./validateUnique";
 import { validateCaptchaInfo } from "./validateCaptcha";
 
 // These are the validations that require a database connection.
-export const DatabaseRules: ValidationRuleInfo[] = [
+export const databaseRules: ValidationRuleInfo[] = [
     validateUniqueInfo,
     validateCaptchaInfo
 ];

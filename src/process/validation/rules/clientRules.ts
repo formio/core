@@ -18,7 +18,6 @@ import { validateMinimumWordsInfo } from "./validateMinimumWords";
 import { validateMinimumYearInfo } from "./validateMinimumYear";
 import { validateMultipleInfo } from "./validateMultiple";
 import { validateRegexPatternInfo } from "./validateRegexPattern";
-import { validateRemoteSelectValueInfo } from "./validateRemoteSelectValue";
 import { validateRequiredInfo } from "./validateRequired";
 import { validateRequiredDayInfo } from "./validateRequiredDay";
 import { validateTimeInfo } from "./validateTime";
@@ -26,7 +25,7 @@ import { validateUrlInfo } from "./validateUrl";
 import { validateValuePropertyInfo } from "./validateValueProperty";
 
 // These are the validations that are performed in the client.
-export const ClientRules: ValidationRuleInfo[] = [
+export const clientRules: ValidationRuleInfo[] = [
     validateDateInfo,
     validateDayInfo,
     validateEmailInfo,
@@ -46,7 +45,6 @@ export const ClientRules: ValidationRuleInfo[] = [
     validateMinimumYearInfo,
     validateMultipleInfo,
     validateRegexPatternInfo,
-    validateRemoteSelectValueInfo,
     validateRequiredInfo,
     validateRequiredDayInfo,
     validateTimeInfo,
