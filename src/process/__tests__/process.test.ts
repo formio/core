@@ -317,4 +317,48 @@ describe('Process Tests', () => {
         processSync(context);
         expect(context.data.child.data.output).to.equal(20);
     });
+
+    it('Should process data within a fieldset properly.', async () => {
+        const submission = {
+            data: {
+                firstName: 'Joe',
+                lastName: 'Smith'
+            }
+        };
+        const form = {
+            components: [
+                {
+                    type: 'fieldset',
+                    key: 'name',
+                    input: false,
+                    components: [
+                        {
+                            type: 'textfield',
+                            key: 'firstName',
+                            input: true
+                        },
+                        {
+                            type: 'textfield',
+                            key: 'lastName',
+                            input: true
+                        }
+                    ]
+                }
+            ]
+        };
+        const context = {
+            form,
+            submission,
+            data: submission.data,
+            components: form.components,
+            processors: ProcessTargets.submission,
+            scope: {},
+            config: {
+                server: true
+            }
+        };
+        processSync(context);
+        expect(context.data.firstName).to.equal('Joe');
+        expect(context.data.lastName).to.equal('Smith');
+    });
 });

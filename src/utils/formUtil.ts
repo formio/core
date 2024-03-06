@@ -167,7 +167,7 @@ export const componentChildPath = (component: any, parentPath?: string, path?: s
     if (isComponentNestedDataType(component)) {
       return path;
     }
-    return parentPath || path;
+    return parentPath === undefined ? path : parentPath;
   }
   return path;
 }
