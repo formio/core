@@ -4,7 +4,7 @@ import find from "lodash/find";
 import get from "lodash/get";
 import set from "lodash/set";
 import pick from "lodash/pick";
-import { getComponentPath } from "utils/formUtil";
+import { getComponentAbsolutePath, getComponentPath } from "utils/formUtil";
 import { getErrorMessage } from "utils/error";
 import { FieldError } from "error";
 import { ConditionallyHidden, isConditionallyHidden, isCustomConditionallyHidden, isSimpleConditionallyHidden } from "processes/conditions";
@@ -147,14 +147,18 @@ export function shouldValidateServer(context: ValidationContext): boolean {
 }
 
 function handleError(error: FieldError | null, context: ValidationContext) {
-    const { path, scope } = context;
+    const { scope, component } = context;
+    const absolutePath = getComponentAbsolutePath(component);
     if (error) {
         const cleanedError = cleanupValidationError(error);
-        if (!find(scope.errors, { errorKeyOrMessage: cleanedError.errorKeyOrMessage, context: {path} })) {
+        cleanedError.context.path = absolutePath;
+        if (!find(scope.errors, { errorKeyOrMessage: cleanedError.errorKeyOrMessage, context: {
+            path: absolutePath
+        }})) {
             if (!scope.validated) scope.validated = [];
             if (!scope.errors) scope.errors = [];
             scope.errors.push(cleanedError);
-            scope.validated.push({ path, error: cleanedError });
+            scope.validated.push({ path: absolutePath, error: cleanedError });
         }
     }
 }
