@@ -1,4 +1,4 @@
-import { last, get, set, isEmpty, isNil, isObject } from "lodash";
+import { last, get, set, isEmpty, isNil, isObject, has } from "lodash";
 
 import {
   AsyncComponentDataCallback,
@@ -223,11 +223,14 @@ export const eachComponentDataAsync = async (
           return true;
         }
         if (isComponentModelType(component, 'dataObject')) {
-          // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
-          const childPath: string = componentChildPath(component, path, compPath);
-          const childData: any = get(data, childPath, {});
-          await eachComponentDataAsync(component.components, childData, fn, '', index, component);
-          set(data, childPath, childData);
+          // No need to bother processing all the children data if there is no data for this form.
+          if (has(data, component.path)) {
+            // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
+            const childPath: string = componentChildPath(component, path, compPath);
+            const childData: any = get(data, childPath, null);
+            await eachComponentDataAsync(component.components, childData, fn, '', index, component);
+            set(data, childPath, childData);
+          }
         }
         else {
           await eachComponentDataAsync(component.components, data, fn, componentChildPath(component, path, compPath), index, component);
@@ -273,11 +276,14 @@ export const eachComponentData = (
           return true;
         }
         if (isComponentModelType(component, 'dataObject')) {
-          // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
-          const childPath: string = componentChildPath(component, path, compPath);
-          const childData: any = get(data, childPath, {});
-          eachComponentData(component.components, childData, fn, '', index, component);
-          set(data, childPath, childData);
+          // No need to bother processing all the children data if there is no data for this form.
+          if (has(data, component.path)) {
+            // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
+            const childPath: string = componentChildPath(component, path, compPath);
+            const childData: any = get(data, childPath, {});
+            eachComponentData(component.components, childData, fn, '', index, component);
+            set(data, childPath, childData);
+          }
         }
         else {
           eachComponentData(component.components, data, fn, componentChildPath(component, path, compPath), index, component);
@@ -433,8 +439,27 @@ export async function eachComponentAsync(
     }
     let component = components[i];
     const info = componentInfo(component);
+    // Keep track of parent references.
+    if (parent) {
+      // Ensure we don't create infinite JSON structures.
+      Object.defineProperty(component, 'parent', {
+        enumerable: false,
+        writable: true,
+        value: JSON.parse(JSON.stringify(parent))
+      });
+      component.parent.path = parent.path;
+      delete component.parent.components;
+      delete component.parent.componentMap;
+      delete component.parent.columns;
+      delete component.parent.rows;
+    }
+    Object.defineProperty(component, 'path', {
+      enumerable: false,
+      writable: true,
+      value: componentPath(component, path)
+    });
     if (includeAll || component.tree || !info.iterable) {
-      if (await fn(component, componentPath(component, path), components, parent)) {
+      if (await fn(component, component.path, components, parent)) {
         continue;
       }
     }

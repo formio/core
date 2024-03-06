@@ -533,6 +533,211 @@ describe('Process Tests', () => {
         });
     });
 
+    it('Should allow the submission to go through if the subform is conditionally hidden', async () => {
+        const form = {
+            _id: {
+            },
+            title: "parent",
+            name: "parent",
+            path: "parent",
+            type: "form",
+            display: "form",
+            tags: [
+            ],
+            deleted: null,
+            access: [
+                {
+                    type: "read_all",
+                    roles: [
+                        {
+                        },
+                        {
+                        },
+                        {
+                        },
+                    ],
+                },
+            ],
+            submissionAccess: [
+            ],
+            owner: {
+            },
+            components: [
+                {
+                    type: "checkbox",
+                    label: "Show A",
+                    key: "showA",
+                    input: true,
+                },
+                {
+                    type: "checkbox",
+                    label: "Show B",
+                    key: "showB",
+                    input: true,
+                },
+                {
+                    type: "checkbox",
+                    label: "Show C",
+                    key: "showC",
+                    input: true,
+                },
+                {
+                    type: "form",
+                    form: "65e8786fc5dacf667eef12d2",
+                    label: "Child A",
+                    key: "childA",
+                    input: true,
+                    conditional: {
+                        show: true,
+                        when: "showA",
+                        eq: true,
+                    },
+                    components: [
+                        {
+                            type: "textfield",
+                            label: "A",
+                            key: "a",
+                            validate: {
+                                required: true,
+                            },
+                            input: true,
+                        },
+                        {
+                            type: "textfield",
+                            label: "B",
+                            key: "b",
+                            input: true,
+                        },
+                    ],
+                },
+                {
+                    type: "form",
+                    form: "65e8786fc5dacf667eef12e0",
+                    label: "Child B",
+                    key: "childB",
+                    input: true,
+                    conditional: {
+                        show: true,
+                        when: "showB",
+                        eq: true,
+                    },
+                    components: [
+                        {
+                            type: "textfield",
+                            label: "C",
+                            key: "c",
+                            input: true,
+                            validate: {
+                                required: true,
+                            },
+                        },
+                        {
+                            type: "textfield",
+                            label: "D",
+                            key: "d",
+                            input: true,
+                        },
+                    ],
+                },
+                {
+                    type: "form",
+                    form: "65e8786fc5dacf667eef12ee",
+                    label: "Child C",
+                    key: "childC",
+                    conditional: {
+                        show: true,
+                        when: "showC",
+                        eq: true,
+                    },
+                    input: true,
+                    components: [
+                        {
+                            type: "textfield",
+                            label: "E",
+                            key: "e",
+                            input: true,
+                            validate: {
+                                required: true,
+                            },
+                        },
+                        {
+                            type: "textfield",
+                            label: "F",
+                            key: "f",
+                            input: true,
+                        },
+                    ],
+                },
+            ],
+            created: "2024-03-06T14:06:39.724Z",
+            modified: "2024-03-06T14:06:39.726Z",
+            machineName: "parent",
+            __v: 0,
+        };
+        const submission = {
+            data: {
+                showA: false,
+                showB: true,
+                showC: true,
+                childB: {
+                    data: {
+                        c: 'Three',
+                        d: 'Four'
+                    }
+                },
+                childC: {
+                    data: {
+                        e: 'Five',
+                        f: 'Six'
+                    }
+                }
+            },
+            owner: "65e87843c5dacf667eeeecc1",
+            access: [
+            ],
+            metadata: {
+                headers: {
+                    host: "127.0.0.1:64851",
+                    "accept-encoding": "gzip, deflate",
+                    "content-type": "application/json",
+                    "content-length": "173",
+                    connection: "close",
+                },
+            },
+            form: "65e8786fc5dacf667eef12fc",
+        };
+
+        const errors: any = [];
+        const context = {
+            form,
+            submission,
+            data: submission.data,
+            components: form.components,
+            processors: ProcessTargets.submission,
+            scope: { errors },
+            config: {
+                server: true
+            }
+        };
+        processSync(context);
+        submission.data = context.data;
+        context.processors = ProcessTargets.evaluator;
+        processSync(context);
+        assert.equal(context.scope.errors.length, 0);
+        assert.equal(context.data.showA, false);
+        assert.equal(context.data.showB, true);
+        assert.equal(context.data.showC, true);
+        assert(!context.data.hasOwnProperty('childA'), 'The childA form should not be present.');
+        assert.deepEqual(context.data.childB.data, {
+            c: 'Three',
+            d: 'Four'
+        });
+        assert.deepEqual(context.data.childC.data, {
+            e: 'Five',
+            f: 'Six'
+        });
+    });
+
     it('Should process data within a fieldset properly.', async () => {
         const submission = {
             data: {
