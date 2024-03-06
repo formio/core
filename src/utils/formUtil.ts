@@ -121,6 +121,19 @@ export function getModelType(component: Component) {
   return 'inherit';
 }
 
+export function getComponentAbsolutePath(component: Component) {
+  let paths = [component.path];
+  while (component.parent) {
+    component = component.parent;
+    // We only need to do this for nested forms because they reset the data contexts for the children.
+    if (isComponentModelType(component, 'dataObject')) {
+      paths[paths.length - 1] = `data.${paths[paths.length - 1]}`;
+      paths.push(component.path);
+    }
+  }
+  return paths.reverse().join('.');
+}
+
 export function getComponentPath(component: Component, path: string) {
   const key = getComponentKey(component);
   if (!key) {
@@ -356,8 +369,15 @@ export function eachComponent(
       delete component.parent.columns;
       delete component.parent.rows;
     }
+
+    Object.defineProperty(component, 'path', {
+      enumerable: false,
+      writable: true,
+      value: componentPath(component, path)
+    });
+
     if (includeAll || component.tree || !info.iterable) {
-      noRecurse = fn(component, componentPath(component, path), components, parent);
+      noRecurse = fn(component, component.path, components, parent);
     }
 
     if (!noRecurse) {
