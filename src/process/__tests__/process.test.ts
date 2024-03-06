@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { processSync, ProcessTargets } from "../index";
+const assert = require('assert');
 const form1 = require('./fixtures/form1.json');
 const data1a = require('./fixtures/data1a.json');
 const subs = require('./fixtures/subs.json');
@@ -361,4 +362,946 @@ describe('Process Tests', () => {
         expect(context.data.firstName).to.equal('Joe');
         expect(context.data.lastName).to.equal('Smith');
     });
+
+    it('Requires a conditionally visible field', async () => {
+        const form = {
+            components: [
+                {
+                  "input": true,
+                  "tableView": true,
+                  "inputType": "radio",
+                  "label": "Selector",
+                  "key": "selector",
+                  "values": [
+                    {
+                      "value": "one",
+                      "label": "One"
+                    },
+                    {
+                      "value": "two",
+                      "label": "Two"
+                    }
+                  ],
+                  "defaultValue": "",
+                  "protected": false,
+                  "persistent": true,
+                  "validate": {
+                    "required": false,
+                    "custom": "",
+                    "customPrivate": false
+                  },
+                  "type": "radio",
+                  "conditional": {
+                    "show": "",
+                    "when": null,
+                    "eq": ""
+                  }
+                },
+                {
+                  "input": true,
+                  "tableView": true,
+                  "inputType": "text",
+                  "inputMask": "",
+                  "label": "Required Field",
+                  "key": "requiredField",
+                  "placeholder": "",
+                  "prefix": "",
+                  "suffix": "",
+                  "multiple": false,
+                  "defaultValue": "",
+                  "protected": false,
+                  "unique": false,
+                  "persistent": true,
+                  "validate": {
+                    "required": true,
+                    "minLength": "",
+                    "maxLength": "",
+                    "pattern": "",
+                    "custom": "",
+                    "customPrivate": false
+                  },
+                  "conditional": {
+                    "show": "true",
+                    "when": "selector",
+                    "eq": "two"
+                  },
+                  "type": "textfield"
+                }
+              ]
+        }
+
+        const submission = {data: {selector: 'two'}}
+        const errors: any = [];
+        const context = {
+            form,
+            submission,
+            data: submission.data,
+            components: form.components,
+            processors: ProcessTargets.evaluator,
+            scope: {errors},
+            config: {
+                server: true
+            }
+        };
+        processSync(context);
+        assert.equal(context.scope.errors.length, 1);
+        assert.equal(context.scope.errors[0].errorKeyOrMessage, 'required');
+        assert.equal(context.scope.errors[0].context.path, 'requiredField');
+      });
+
+      it('Doesn\'t require a conditionally hidden field', async () => {
+        const form = {components: [
+          {
+            "input": true,
+            "tableView": true,
+            "inputType": "radio",
+            "label": "Selector",
+            "key": "selector",
+            "values": [
+              {
+                "value": "one",
+                "label": "One"
+              },
+              {
+                "value": "two",
+                "label": "Two"
+              }
+            ],
+            "defaultValue": "",
+            "protected": false,
+            "persistent": true,
+            "validate": {
+              "required": false,
+              "custom": "",
+              "customPrivate": false
+            },
+            "type": "radio",
+            "conditional": {
+              "show": "",
+              "when": null,
+              "eq": ""
+            }
+          },
+          {
+            "input": true,
+            "tableView": true,
+            "inputType": "text",
+            "inputMask": "",
+            "label": "Required Field",
+            "key": "requiredField",
+            "placeholder": "",
+            "prefix": "",
+            "suffix": "",
+            "multiple": false,
+            "defaultValue": "",
+            "protected": false,
+            "unique": false,
+            "persistent": true,
+            "validate": {
+              "required": true,
+              "minLength": "",
+              "maxLength": "",
+              "pattern": "",
+              "custom": "",
+              "customPrivate": false
+            },
+            "conditional": {
+              "show": "true",
+              "when": "selector",
+              "eq": "two"
+            },
+            "type": "textfield"
+          }
+        ]};
+
+        const submission ={data: {
+          selector: 'one'
+        }};
+
+        const errors: any = [];
+        const context = {
+            form,
+            submission,
+            data: submission.data,
+            components: form.components,
+            processors: ProcessTargets.evaluator,
+            scope: {errors},
+            config: {
+                server: true
+            }
+        };
+        processSync(context);
+        assert.equal(context.scope.errors.length, 0);
+      });
+
+      it('Allows a conditionally required field', async () => {
+        const form = {components: [
+          {
+            "input": true,
+            "tableView": true,
+            "inputType": "radio",
+            "label": "Selector",
+            "key": "selector",
+            "values": [
+              {
+                "value": "one",
+                "label": "One"
+              },
+              {
+                "value": "two",
+                "label": "Two"
+              }
+            ],
+            "defaultValue": "",
+            "protected": false,
+            "persistent": true,
+            "validate": {
+              "required": false,
+              "custom": "",
+              "customPrivate": false
+            },
+            "type": "radio",
+            "conditional": {
+              "show": "",
+              "when": null,
+              "eq": ""
+            }
+          },
+          {
+            "input": true,
+            "tableView": true,
+            "inputType": "text",
+            "inputMask": "",
+            "label": "Required Field",
+            "key": "requiredField",
+            "placeholder": "",
+            "prefix": "",
+            "suffix": "",
+            "multiple": false,
+            "defaultValue": "",
+            "protected": false,
+            "unique": false,
+            "persistent": true,
+            "validate": {
+              "required": true,
+              "minLength": "",
+              "maxLength": "",
+              "pattern": "",
+              "custom": "",
+              "customPrivate": false
+            },
+            "conditional": {
+              "show": "true",
+              "when": "selector",
+              "eq": "two"
+            },
+            "type": "textfield"
+          }
+        ]};
+
+        const submission ={data: {
+          selector: 'two',
+          requiredField: 'Has a value'
+        }};
+
+        const errors: any = [];
+        const context = {
+            form,
+            submission,
+            data: submission.data,
+            components: form.components,
+            processors: ProcessTargets.evaluator,
+            scope: {errors},
+            config: {
+                server: true
+            }
+        };
+        processSync(context);
+        assert.equal(context.scope.errors.length, 0);
+      });
+
+      it('Ignores conditionally hidden fields', async () => {
+        const form = {components: [
+          {
+            "input": true,
+            "tableView": true,
+            "inputType": "radio",
+            "label": "Selector",
+            "key": "selector",
+            "values": [
+              {
+                "value": "one",
+                "label": "One"
+              },
+              {
+                "value": "two",
+                "label": "Two"
+              }
+            ],
+            "defaultValue": "",
+            "protected": false,
+            "persistent": true,
+            "validate": {
+              "required": false,
+              "custom": "",
+              "customPrivate": false
+            },
+            "type": "radio",
+            "conditional": {
+              "show": "",
+              "when": null,
+              "eq": ""
+            }
+          },
+          {
+            "input": true,
+            "tableView": true,
+            "inputType": "text",
+            "inputMask": "",
+            "label": "Required Field",
+            "key": "requiredField",
+            "placeholder": "",
+            "prefix": "",
+            "suffix": "",
+            "multiple": false,
+            "defaultValue": "",
+            "protected": false,
+            "unique": false,
+            "persistent": true,
+            "validate": {
+              "required": true,
+              "minLength": "",
+              "maxLength": "",
+              "pattern": "",
+              "custom": "",
+              "customPrivate": false
+            },
+            "conditional": {
+              "show": "true",
+              "when": "selector",
+              "eq": "two"
+            },
+            "type": "textfield"
+          }
+        ]};
+
+        const submission = {data: {
+          selector: 'one',
+          requiredField: 'Has a value'
+        }};
+
+        const errors: any = [];
+        const context = {
+            form,
+            submission,
+            data: submission.data,
+            components: form.components,
+            processors: ProcessTargets.evaluator,
+            scope: {errors},
+            config: {
+                server: true
+            }
+        };
+        processSync(context);
+        assert.deepEqual(context.data, {selector: 'one'});
+        assert.equal(context.scope.errors.length, 0);
+      });
+
+      it('Requires a conditionally visible field in a panel', async () => {
+        const form = {components: [
+          {
+            "input": true,
+            "tableView": true,
+            "inputType": "radio",
+            "label": "Selector",
+            "key": "selector",
+            "values": [
+              {
+                "value": "one",
+                "label": "One"
+              },
+              {
+                "value": "two",
+                "label": "Two"
+              }
+            ],
+            "defaultValue": "",
+            "protected": false,
+            "persistent": true,
+            "validate": {
+              "required": false,
+              "custom": "",
+              "customPrivate": false
+            },
+            "type": "radio",
+            "conditional": {
+              "show": "",
+              "when": null,
+              "eq": ""
+            }
+          },
+          {
+            "input": false,
+            "title": "Panel",
+            "theme": "default",
+            "components": [
+              {
+                "input": true,
+                "tableView": true,
+                "inputType": "text",
+                "inputMask": "",
+                "label": "Required Field",
+                "key": "requiredField",
+                "placeholder": "",
+                "prefix": "",
+                "suffix": "",
+                "multiple": false,
+                "defaultValue": "",
+                "protected": false,
+                "unique": false,
+                "persistent": true,
+                "validate": {
+                  "required": true,
+                  "minLength": "",
+                  "maxLength": "",
+                  "pattern": "",
+                  "custom": "",
+                  "customPrivate": false
+                },
+                "conditional": {
+                  "show": null,
+                  "when": null,
+                  "eq": ""
+                },
+                "type": "textfield"
+              }
+            ],
+            "type": "panel",
+            "key": "panel",
+            "conditional": {
+              "show": "true",
+              "when": "selector",
+              "eq": "two"
+            }
+          }
+        ]};
+
+        const submission = {data: {
+          selector: 'two'
+        }};
+
+        const errors: any = [];
+        const context = {
+            form,
+            submission,
+            data: submission.data,
+            components: form.components,
+            processors: ProcessTargets.evaluator,
+            scope: {errors},
+            config: {
+                server: true
+            }
+        };
+        processSync(context);
+        assert.equal(context.scope.errors.length, 1);
+        assert.equal(context.scope.errors[0].errorKeyOrMessage, 'required');
+        assert.equal(context.scope.errors[0].context.path, 'requiredField');
+      });
+
+      it('Doesn\'t require a conditionally hidden field in a panel', async () => {
+        const form = {components: [
+          {
+            "input": true,
+            "tableView": true,
+            "inputType": "radio",
+            "label": "Selector",
+            "key": "selector",
+            "values": [
+              {
+                "value": "one",
+                "label": "One"
+              },
+              {
+                "value": "two",
+                "label": "Two"
+              }
+            ],
+            "defaultValue": "",
+            "protected": false,
+            "persistent": true,
+            "validate": {
+              "required": false,
+              "custom": "",
+              "customPrivate": false
+            },
+            "type": "radio",
+            "conditional": {
+              "show": "",
+              "when": null,
+              "eq": ""
+            }
+          },
+          {
+            "input": false,
+            "title": "Panel",
+            "theme": "default",
+            "components": [
+              {
+                "input": true,
+                "tableView": true,
+                "inputType": "text",
+                "inputMask": "",
+                "label": "Required Field",
+                "key": "requiredField",
+                "placeholder": "",
+                "prefix": "",
+                "suffix": "",
+                "multiple": false,
+                "defaultValue": "",
+                "protected": false,
+                "unique": false,
+                "persistent": true,
+                "validate": {
+                  "required": true,
+                  "minLength": "",
+                  "maxLength": "",
+                  "pattern": "",
+                  "custom": "",
+                  "customPrivate": false
+                },
+                "conditional": {
+                  "show": null,
+                  "when": null,
+                  "eq": ""
+                },
+                "type": "textfield"
+              }
+            ],
+            "type": "panel",
+            "key": "panel",
+            "conditional": {
+              "show": "true",
+              "when": "selector",
+              "eq": "two"
+            }
+          }
+        ]};
+
+        const submission = {data: {
+          selector: 'one'
+        }};
+
+        const errors: any = [];
+        const context = {
+            form,
+            submission,
+            data: submission.data,
+            components: form.components,
+            processors: ProcessTargets.evaluator,
+            scope: {errors},
+            config: {
+                server: true
+            }
+        };
+        processSync(context);
+        assert.equal(context.scope.errors.length, 0);
+
+      });
+
+      it('Allows a conditionally required field in a panel', async () => {
+        const form = {components: [
+          {
+            "input": true,
+            "tableView": true,
+            "inputType": "radio",
+            "label": "Selector",
+            "key": "selector",
+            "values": [
+              {
+                "value": "one",
+                "label": "One"
+              },
+              {
+                "value": "two",
+                "label": "Two"
+              }
+            ],
+            "defaultValue": "",
+            "protected": false,
+            "persistent": true,
+            "validate": {
+              "required": false,
+              "custom": "",
+              "customPrivate": false
+            },
+            "type": "radio",
+            "conditional": {
+              "show": "",
+              "when": null,
+              "eq": ""
+            }
+          },
+          {
+            "input": false,
+            "title": "Panel",
+            "theme": "default",
+            "components": [
+              {
+                "input": true,
+                "tableView": true,
+                "inputType": "text",
+                "inputMask": "",
+                "label": "Required Field",
+                "key": "requiredField",
+                "placeholder": "",
+                "prefix": "",
+                "suffix": "",
+                "multiple": false,
+                "defaultValue": "",
+                "protected": false,
+                "unique": false,
+                "persistent": true,
+                "validate": {
+                  "required": true,
+                  "minLength": "",
+                  "maxLength": "",
+                  "pattern": "",
+                  "custom": "",
+                  "customPrivate": false
+                },
+                "conditional": {
+                  "show": null,
+                  "when": null,
+                  "eq": ""
+                },
+                "type": "textfield"
+              }
+            ],
+            "type": "panel",
+            "key": "panel",
+            "conditional": {
+              "show": "true",
+              "when": "selector",
+              "eq": "two"
+            }
+          }
+        ]};
+
+        const submission = {data: {
+          selector: 'two',
+          requiredField: 'Has a value'
+        }};
+
+        const errors: any = [];
+        const context = {
+            form,
+            submission,
+            data: submission.data,
+            components: form.components,
+            processors: ProcessTargets.evaluator,
+            scope: {errors},
+            config: {
+                server: true
+            }
+        };
+        processSync(context);
+        assert.equal(context.scope.errors.length, 0);
+
+      });
+
+      it('Ignores conditionally hidden fields in a panel', async () => {
+        const form = {components: [
+          {
+            "input": true,
+            "tableView": true,
+            "inputType": "radio",
+            "label": "Selector",
+            "key": "selector",
+            "values": [
+              {
+                "value": "one",
+                "label": "One"
+              },
+              {
+                "value": "two",
+                "label": "Two"
+              }
+            ],
+            "defaultValue": "",
+            "protected": false,
+            "persistent": true,
+            "validate": {
+              "required": false,
+              "custom": "",
+              "customPrivate": false
+            },
+            "type": "radio",
+            "conditional": {
+              "show": "",
+              "when": null,
+              "eq": ""
+            }
+          },
+          {
+            "input": false,
+            "title": "Panel",
+            "theme": "default",
+            "components": [
+              {
+                "input": true,
+                "tableView": true,
+                "inputType": "text",
+                "inputMask": "",
+                "label": "Required Field",
+                "key": "requiredField",
+                "placeholder": "",
+                "prefix": "",
+                "suffix": "",
+                "multiple": false,
+                "defaultValue": "",
+                "protected": false,
+                "unique": false,
+                "persistent": true,
+                "validate": {
+                  "required": true,
+                  "minLength": "",
+                  "maxLength": "",
+                  "pattern": "",
+                  "custom": "",
+                  "customPrivate": false
+                },
+                "conditional": {
+                  "show": null,
+                  "when": null,
+                  "eq": ""
+                },
+                "type": "textfield"
+              }
+            ],
+            "type": "panel",
+            "key": "panel",
+            "conditional": {
+              "show": "true",
+              "when": "selector",
+              "eq": "two"
+            }
+          }
+        ]};
+
+        const submission = {data: {
+          selector: 'one',
+          requiredField: 'Has a value'
+        }};
+
+        const errors: any = [];
+        const context = {
+            form,
+            submission,
+            data: submission.data,
+            components: form.components,
+            processors: ProcessTargets.evaluator,
+            scope: {errors},
+            config: {
+                server: true
+            }
+        };
+        processSync(context);
+        assert.deepEqual(context.data, {selector: 'one'});
+        assert.equal(context.scope.errors.length, 0);
+      });
+/*
+      it('Should not clearOnHide when set to false', async () => {
+        var components = [
+          {
+            "input": true,
+            "tableView": true,
+            "inputType": "radio",
+            "label": "Selector",
+            "key": "selector",
+            "values": [
+              {
+                "value": "one",
+                "label": "One"
+              },
+              {
+                "value": "two",
+                "label": "Two"
+              }
+            ],
+            "defaultValue": "",
+            "protected": false,
+            "persistent": true,
+            "validate": {
+              "required": false,
+              "custom": "",
+              "customPrivate": false
+            },
+            "type": "radio",
+            "conditional": {
+              "show": "",
+              "when": null,
+              "eq": ""
+            }
+          },
+          {
+            "input": false,
+            "title": "Panel",
+            "theme": "default",
+            "components": [
+              {
+                "input": true,
+                "tableView": true,
+                "inputType": "text",
+                "inputMask": "",
+                "label": "No Clear Field",
+                "key": "noClear",
+                "placeholder": "",
+                "prefix": "",
+                "suffix": "",
+                "multiple": false,
+                "defaultValue": "",
+                "protected": false,
+                "unique": false,
+                "persistent": true,
+                "clearOnHide": false,
+                "validate": {
+                  "required": false,
+                  "minLength": "",
+                  "maxLength": "",
+                  "pattern": "",
+                  "custom": "",
+                  "customPrivate": false
+                },
+                "conditional": {
+                  "show": null,
+                  "when": null,
+                  "eq": ""
+                },
+                "type": "textfield"
+              }
+            ],
+            "type": "panel",
+            "key": "panel",
+            "conditional": {
+              "show": "true",
+              "when": "selector",
+              "eq": "two"
+            }
+          }
+        ];
+
+        helper
+          .form('test', components)
+          .submission({
+            selector: 'one',
+            noClear: 'testing'
+          })
+          .execute(function(err) {
+            if (err) {
+              return done(err);
+            }
+
+            var submission = helper.getLastSubmission();
+            assert.deepEqual({selector: 'one', noClear: 'testing'}, submission.data);
+            done();
+          });
+      });
+
+      it('Should clearOnHide when set to true', async () => {
+        var components = [
+          {
+            "input": true,
+            "tableView": true,
+            "inputType": "radio",
+            "label": "Selector",
+            "key": "selector",
+            "values": [
+              {
+                "value": "one",
+                "label": "One"
+              },
+              {
+                "value": "two",
+                "label": "Two"
+              }
+            ],
+            "defaultValue": "",
+            "protected": false,
+            "persistent": true,
+            "validate": {
+              "required": false,
+              "custom": "",
+              "customPrivate": false
+            },
+            "type": "radio",
+            "conditional": {
+              "show": "",
+              "when": null,
+              "eq": ""
+            }
+          },
+          {
+            "input": false,
+            "title": "Panel",
+            "theme": "default",
+            "components": [
+              {
+                "input": true,
+                "tableView": true,
+                "inputType": "text",
+                "inputMask": "",
+                "label": "Clear Me",
+                "key": "clearMe",
+                "placeholder": "",
+                "prefix": "",
+                "suffix": "",
+                "multiple": false,
+                "defaultValue": "",
+                "protected": false,
+                "unique": false,
+                "persistent": true,
+                "clearOnHide": true,
+                "validate": {
+                  "required": false,
+                  "minLength": "",
+                  "maxLength": "",
+                  "pattern": "",
+                  "custom": "",
+                  "customPrivate": false
+                },
+                "conditional": {
+                  "show": null,
+                  "when": null,
+                  "eq": ""
+                },
+                "type": "textfield"
+              }
+            ],
+            "type": "panel",
+            "key": "panel",
+            "conditional": {
+              "show": "true",
+              "when": "selector",
+              "eq": "two"
+            }
+          }
+        ];
+
+        helper
+          .form('test', components)
+          .submission({
+            selector: 'one',
+            clearMe: 'Clear Me!!!!'
+          })
+          .execute(function(err) {
+            if (err) {
+              return done(err);
+            }
+
+            var submission = helper.getLastSubmission();
+            assert.deepEqual({selector: 'one'}, submission.data);
+            done();
+          });
+      });
+*/
 });
