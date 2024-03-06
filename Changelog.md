@@ -1,3 +1,6 @@
+## [Unreleased: 2.0.0-rc.16]
+ - FIO-7884: Fixed issues with processing data within nested form data structures
+
 ## 2.0.0-rc.14
 ### Changed
  - FIO-7884: Fixed an issue with nested form data where it would not set correctly
