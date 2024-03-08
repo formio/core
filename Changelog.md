@@ -1,3 +1,7 @@
+## [Unreleased: 2.0.0-rc.17]
+### Changed
+ - FIO-8023: Fixing issues with the parent traversal on deeply nested components within nested forms
+   
 ## 2.0.0-rc.16
  - FIO-7884: Fixed issues with processing data within nested form data structures
 
