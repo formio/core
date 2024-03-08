@@ -1,4 +1,4 @@
-## [Unreleased: 2.0.0-rc.17]
+## 2.0.0-rc.17
 ### Changed
  - FIO-8023: Fixing issues with the parent traversal on deeply nested components within nested forms
    
