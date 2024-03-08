@@ -369,7 +369,16 @@ export function eachComponent(
         writable: true,
         value: JSON.parse(JSON.stringify(parent))
       });
-      component.parent.path = parent.path;
+      Object.defineProperty(component.parent, 'parent', {
+        enumerable: false,
+        writable: true,
+        value: parent.parent
+      });
+      Object.defineProperty(component.parent, 'path', {
+        enumerable: false,
+        writable: true,
+        value: parent.path
+      });
       delete component.parent.components;
       delete component.parent.componentMap;
       delete component.parent.columns;
@@ -447,7 +456,16 @@ export async function eachComponentAsync(
         writable: true,
         value: JSON.parse(JSON.stringify(parent))
       });
-      component.parent.path = parent.path;
+      Object.defineProperty(component.parent, 'parent', {
+        enumerable: false,
+        writable: true,
+        value: parent.parent
+      });
+      Object.defineProperty(component.parent, 'path', {
+        enumerable: false,
+        writable: true,
+        value: parent.path
+      });
       delete component.parent.components;
       delete component.parent.componentMap;
       delete component.parent.columns;
