@@ -36,3 +36,19 @@ it('A custom validation that includes data will correctly be interpolated', asyn
     const result = await validateCustom(context);
     expect(result).to.equal(null);
 });
+
+it('A custom validation of empty component data will still validate', async () => {
+    const component: TextFieldComponent = {
+        ...simpleTextField,
+        validate: {
+            custom: 'valid = data.simpleComponent === "any thing" ? true : "Invalid entry"',
+        },
+    };
+    const data = {
+        simpleComponent: '',
+    };
+    const context = generateProcessContext(component, data);
+    const result = await validateCustom(context);
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result && result.errorKeyOrMessage).to.equal('Invalid entry');
+});
