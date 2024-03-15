@@ -1,4 +1,4 @@
-## [Unreleased: 2.0.0-rc.18]
+## 2.0.0-rc.18
 ### Changed
  - FIO-8055: validate components that include custom validations, even when their data is empty
  - FIO-8049: fix value prop in evaluations
