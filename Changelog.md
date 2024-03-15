@@ -1,3 +1,10 @@
+## [Unreleased: 2.0.0-rc.18]
+### Changed
+ - FIO-8055: validate components that include custom validations, even when their data is empty
+ - FIO-8049: fix value prop in evaluations
+ - FIO-8040: add functions from formiojs
+ - restructure conditional processor to fix conditional components in emails
+
 ## 2.0.0-rc.17
 ### Changed
  - FIO-8023: Fixing issues with the parent traversal on deeply nested components within nested forms
