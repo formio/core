@@ -36,15 +36,49 @@ describe('Calculation processor', () => {
                 }
             ]
         };
-    
+
         const submission = {
             data: {
                 a: 1,
                 b: 2
             }
         };
-    
+
         const context: ProcessContext<CalculationScope> = await processForm(form, submission);
         expect(context.data.c).to.equal(3);
+    });
+
+    it('Calculation processor will perform a simple calculation that overwrites the value prop', async () => {
+        const form = {
+            components: [
+                {
+                    type: 'number',
+                    key: 'a',
+                    input: true
+                },
+                {
+                    type: 'number',
+                    key: 'b',
+                    input: true
+                },
+                {
+                    type: 'number',
+                    key: 'c',
+                    input: true,
+                    calculateValue: 'value = value + data.a + data.b'
+                }
+            ]
+        };
+
+        const submission = {
+            data: {
+                a: 1,
+                b: 2,
+                c: 3,
+            }
+        };
+
+        const context: ProcessContext<CalculationScope> = await processForm(form, submission);
+        expect(context.data.c).to.equal(6);
     });
 });
