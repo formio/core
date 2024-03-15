@@ -113,7 +113,7 @@ export class BaseEvaluator {
         const componentKey = component.key;
         if (typeof func === 'string') {
             if (ret) {
-                func = `var ${ret};${func};return ${ret}`;
+                func = args[ret] ? `${func};return ${ret}` : `var ${ret};${func};return ${ret}`;
             }
 
             if (interpolate) {
