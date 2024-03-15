@@ -12,7 +12,7 @@ export const validateCustom: RuleFn = async (context: ValidationContext) => {
 export const shouldValidate = (context: ValidationContext) => {
     const { component, value } = context;
     const customValidation = component.validate?.custom;
-    if (!customValidation || !value || ((typeof value === 'string' || typeof value === 'object') && isEmpty(value))) {
+    if (!customValidation) {
         return false;
     }
     return true;
