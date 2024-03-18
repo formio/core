@@ -7,6 +7,7 @@ import {
     Component,
     DataTableComponent
 } from "types";
+import { fastCloneDeep } from "utils";
 
 type DereferenceScope = ProcessorScope & {
     dereference: {
@@ -41,10 +42,11 @@ export const dereferenceProcess: ProcessorFn<DereferenceScope> = async (context)
 
     try {
         const components = await config.database?.dereferenceDataTableComponent(component);
-        scope.dereference[path] = components;
+        const vmCompatibleComponents = fastCloneDeep(components);
+        scope.dereference[path] = vmCompatibleComponents;
         // Modify the components in place; we have to do this now as opposed to a "post-processor" step because
         // eachComponentDataAsync will immediately turn around and introspect these components in the case of Data Table
-        component.components = components;
+        component.components = vmCompatibleComponents;
     }
     catch (err: any) {
         throw new DereferenceError(err.message || err);
