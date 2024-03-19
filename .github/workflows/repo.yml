@@ -97,15 +97,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Branch name
-        run: echo running on branch ${GITHUB_REF##*/}
-      
-      - name: Set outputs
+      - name: Set short git commit SHA
         id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-
-      - name: Check outputs
-        run: echo ${{ steps.vars.outputs.sha_short }}
+        run: |
+          calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+      
+      - name: Confirm git commit SHA output
+        run: echo ${{ env.COMMIT_SHORT_SHA }}
 
       - name: Prepare version for publish
         id: prep
