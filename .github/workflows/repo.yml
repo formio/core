@@ -98,7 +98,7 @@ jobs:
             ${{ runner.os }}-node-
       
       - name: Confirm git commit SHA output
-        run: echo ${{ github.sha }}
+        run: echo ${{ github.event.pull_request.head.sha }}
 
       - name: Prepare version for publish
         id: prep
