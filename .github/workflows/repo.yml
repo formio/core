@@ -108,3 +108,4 @@ jobs:
       - name: Echo version for testing
         run: |
           echo "Version to publish: $NEW_VERSION"
+          echo "Adds a commit to test increment"
