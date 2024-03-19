@@ -37,7 +37,7 @@ export const dereferenceProcess: ProcessorFn<DereferenceScope> = async (context)
         return;
     }
     if (!config?.database) {
-        throw new ProcessorError('Cannot dereference resource value without a database config object');
+        throw new ProcessorError('Cannot dereference resource value without a database config object', context, 'dereference');
     }
 
     try {
@@ -49,7 +49,7 @@ export const dereferenceProcess: ProcessorFn<DereferenceScope> = async (context)
         component.components = vmCompatibleComponents;
     }
     catch (err: any) {
-        throw new ProcessorError(err.message || err);
+        throw new ProcessorError(err.message || err, context, 'dereference');
     }
 }
 
