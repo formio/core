@@ -1,6 +1,6 @@
 import { FieldError } from '../../../error/FieldError';
 import { RuleFn, ValidationContext } from '../../../types/index';
-import { ValidatorError } from 'error';
+import { ProcessorError } from 'error';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 export const shouldValidate = (context: ValidationContext) => {
@@ -18,7 +18,7 @@ export const validateCaptcha: RuleFn = async (context: ValidationContext) => {
     }
 
     if (!config || !config.database) {
-        throw new ValidatorError("Can't test for recaptcha success without a database config object");
+        throw new ProcessorError("Can't test for recaptcha success without a database config object", context, 'validate:validateCaptcha');
     }
     try {
         if (!value || !value.token) {
@@ -31,7 +31,7 @@ export const validateCaptcha: RuleFn = async (context: ValidationContext) => {
         return (captchaResult === true) ? null : new FieldError('captchaFailure', context);
     }
     catch (err: any) {
-        throw new ValidatorError(err.message || err);
+        throw new ProcessorError(err.message || err, context, 'validate:validateCaptcha');
     }
 };
 
