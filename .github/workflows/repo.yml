@@ -102,15 +102,11 @@ jobs:
         run: |
           PR_NUMBER=$(echo ${{ github.event.number }})
           CURRENT_VERSION=$(node -p "require('./package.json').version")
-          # Fetch all history for the main branch (or your base branch)
-          git fetch --depth=1 origin +refs/heads/main:refs/remotes/origin/main
-          # Find the common ancestor of HEAD and the main branch
-          COMMON_ANCESTOR=$(git merge-base HEAD origin/main)
-          # Count the number of commits on the current branch since it diverged from main
-          COMMIT_INDEX=$(git rev-list --count $COMMON_ANCESTOR..HEAD)
-          # Since we want the first commit to be 0, subtract 1 to get the index
-          COMMIT_INDEX=$((COMMIT_INDEX - 1))
-          NEW_VERSION="${CURRENT_VERSION}-dev.${PR_NUMBER}.${COMMIT_INDEX}"
+          # Fetch all history for all tags and branches to ensure we're counting accurately
+          git fetch --prune --unshallow
+          # Count the number of commits on the current branch and subtract 1 to start the index at 0
+          COMMIT_COUNT=$(($(git log master..HEAD --oneline | wc -l) - 1))
+          NEW_VERSION="${CURRENT_VERSION}-dev.${PR_NUMBER}.${COMMIT_COUNT}"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
       - name: Echo version for testing
