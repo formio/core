@@ -102,7 +102,11 @@ jobs:
         run: |
           PR_NUMBER=$(echo ${{ github.event.number }})
           CURRENT_VERSION=$(node -p "require('./package.json').version")
-          NEW_VERSION="${CURRENT_VERSION}-dev.${PR_NUMBER}.0"
+          # Fetch all history for all tags and branches to ensure we're counting accurately
+          git fetch --prune --unshallow
+          # Count the number of commits on the current branch and subtract 1 to start the index at 0
+          COMMIT_COUNT=$(($(git rev-list --count HEAD) - 1))
+          NEW_VERSION="${CURRENT_VERSION}-dev.${PR_NUMBER}.${COMMIT_COUNT}"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
       - name: Echo version for testing
