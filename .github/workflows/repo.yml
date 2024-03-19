@@ -104,20 +104,22 @@ jobs:
           PR_NUMBER=$(echo ${{ github.event.number }})
           CURRENT_VERSION=$(node -p "require('./package.json').version")
           
-          # Check if repository is shallow and fetch history if necessary
-          if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
-            git fetch --prune --unshallow
+          # Explicitly fetch the master branch with its history
+          git fetch origin master:refs/remotes/origin/master
+          
+          # Verify if master branch was fetched
+          if git rev-parse --verify origin/master; then
+            echo "Master branch fetched successfully."
+            
+            # Use git log to count commits if git rev-list does not work as expected
+            COMMIT_COUNT=$(git log origin/master..HEAD --oneline | wc -l)
+            NEW_VERSION="${CURRENT_VERSION}-dev.${PR_NUMBER}.${COMMIT_COUNT}"
+            echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
           else
-            echo "Repository is already unshallow."
+            echo "Failed to fetch master branch."
+            # Handle error or fallback scenario
           fi
-
-          # Ensure the master branch is fetched
-          git fetch --depth=1 origin master:refs/remotes/origin/master
-
-          # Use git log to count commits if git rev-list does not work as expected
-          COMMIT_COUNT=$(git log master..HEAD --oneline | wc -l)
-          NEW_VERSION="${CURRENT_VERSION}-dev.${PR_NUMBER}.${COMMIT_COUNT}"
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+        
   
       - name: Echo version for testing
         run: |
