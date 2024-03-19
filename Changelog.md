@@ -1,3 +1,7 @@
+## [Unreleased: 2.0.0-rc.19]
+### Changed
+ - FIO-8047: add dereferencing processor for datatable comp
+   
 ## 2.0.0-rc.18
 ### Changed
  - FIO-8055: validate components that include custom validations, even when their data is empty
