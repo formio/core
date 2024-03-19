@@ -1,4 +1,4 @@
-name: Build & Test
+name: Build / Test / Publish
 
 on:
   pull_request:
@@ -77,6 +77,7 @@ jobs:
           cmd: test
 
   publish:
+    needs: [setup, test]
     if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
     runs-on: ubuntu-latest
     steps:
@@ -96,9 +97,6 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      
-      - name: Confirm git commit SHA output
-        run: echo ${{ github.event.pull_request.head.sha }}
 
       - name: Prepare version for publish
         id: prep
@@ -112,4 +110,8 @@ jobs:
       - name: Echo version for testing
         run: |
           echo "Version to publish: $NEW_VERSION"
-          echo "Adds a commit to test increment"
+
+      - name: Publish to npm
+        run: |
+          npm version $NEW_VERSION
+          npm publish --tag dev
