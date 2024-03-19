@@ -112,7 +112,7 @@ jobs:
             echo "Master branch fetched successfully."
             
             # Use git log to count commits if git rev-list does not work as expected
-            COMMIT_COUNT=$(git log origin/master..HEAD --oneline | wc -l)
+            COMMIT_COUNT=$(($(git log master..HEAD --oneline | wc -l) - 1))
             NEW_VERSION="${CURRENT_VERSION}-dev.${PR_NUMBER}.${COMMIT_COUNT}"
             echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
           else
@@ -122,5 +122,5 @@ jobs:
   
       - name: Echo version for testing
         run: |
-          echo "Current branch: $(git branch --show-current)"
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
           echo "Version to publish: $NEW_VERSION"
