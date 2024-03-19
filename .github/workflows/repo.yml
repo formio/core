@@ -103,10 +103,19 @@ jobs:
         run: |
           PR_NUMBER=$(echo ${{ github.event.number }})
           CURRENT_VERSION=$(node -p "require('./package.json').version")
-          # Ensure we have the full history to accurately count commits
-          git fetch --prune --unshallow || git fetch --depth=1 origin master:refs/remotes/origin/master
-          # Count the number of commits on the current branch
-          COMMIT_COUNT=$(($(git log master..HEAD --oneline | wc -l) - 1))
+          
+          # Check if repository is shallow and fetch history if necessary
+          if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
+            git fetch --prune --unshallow
+          else
+            echo "Repository is already unshallow."
+          fi
+
+          # Ensure the master branch is fetched
+          git fetch --depth=1 origin master:refs/remotes/origin/master
+
+          # Use git log to count commits if git rev-list does not work as expected
+          COMMIT_COUNT=$(git log master..HEAD --oneline | wc -l)
           NEW_VERSION="${CURRENT_VERSION}-dev.${PR_NUMBER}.${COMMIT_COUNT}"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
   
