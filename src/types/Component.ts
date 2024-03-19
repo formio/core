@@ -163,6 +163,17 @@ export type DataSourceComponent = BaseComponent & {
     };
 };
 
+export type DataTableComponent = EditGridComponent & {
+    fetch?: {
+        enableFetch: boolean;
+        dataSrc: 'resource' | 'url';
+        sort?: { defaultQuery?: string };
+        resource?: string;
+        headers?: { key: string; value: string }[];
+        components?: { key: string; path: string }[] | Component[];
+    }
+}
+
 export type DateTimeComponent = BaseComponent & {
     format?: string;
     useLocaleSettings?: boolean;

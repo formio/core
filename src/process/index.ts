@@ -9,3 +9,4 @@ export * from './populate';
 export * from './processOne';
 export * from './process';
 export * from './normalize';
+export * from './dereference';
