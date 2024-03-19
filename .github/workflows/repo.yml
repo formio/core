@@ -80,15 +80,26 @@ jobs:
     needs: [setup, test]
     if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
     runs-on: ubuntu-latest
+    env:
+      NPM_USERNAME: 
+      NPM_EMAIL:
     steps:
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
         uses: actions/checkout@v3
+
+      - name: Configure npm with username and password
+        run: |
+          echo "_auth = $(echo -n '${{ secrets.NPM_USERNAME }}:${{ secrets.NPM_PASSWORD }}' | base64)" > .npmrc
+          echo "email = ${{ secrets.NPM_EMAIL }}" >> .npmrc
+          echo "always-auth = true" >> .npmrc
+          npm whoami
 
       - name: Set up Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+          registry-url: 'https://registry.npmjs.org/'
 
       - name: Restore node modules from cache
         uses: actions/cache@v3
