@@ -1,7 +1,6 @@
 name: Build & Test
 
 on:
-  push:
   pull_request:
     types: [opened, synchronize]
 
@@ -96,15 +95,9 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-
-
-      - name: Set short git commit SHA
-        id: vars
-        run: |
-          calculatedSha=$(git rev-parse --short ${{ github.sha }})
-          echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
       
       - name: Confirm git commit SHA output
-        run: echo ${{ env.COMMIT_SHORT_SHA }}
+        run: echo ${{ github.sha }}
 
       - name: Prepare version for publish
         id: prep
