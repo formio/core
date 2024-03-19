@@ -1,4 +1,4 @@
-## [Unreleased: 2.0.0-rc.19]
+## 2.0.0-rc.19
 ### Changed
  - FIO-8047: add dereferencing processor for datatable comp
    
