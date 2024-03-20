@@ -80,9 +80,6 @@ jobs:
     needs: [setup, test]
     if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
     runs-on: ubuntu-latest
-    env:
-      NPM_USERNAME: 
-      NPM_EMAIL:
     steps:
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
         uses: actions/checkout@v3
@@ -108,6 +105,10 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-
+
+      - name: Add npm token to .npmrc
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
 
       - name: Prepare version for publish
         id: prep
