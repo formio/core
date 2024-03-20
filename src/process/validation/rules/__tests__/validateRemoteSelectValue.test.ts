@@ -3,7 +3,7 @@ import { get } from 'lodash';
 import { DataObject, SelectComponent } from 'types';
 import { FieldError } from 'error';
 import { simpleSelectOptions, simpleTextField } from './fixtures/components';
-import { generateProcessContext } from './fixtures/util';
+import { generateProcessorContext } from './fixtures/util';
 import { validateRemoteSelectValue, generateUrl } from '../validateRemoteSelectValue';
 
 it('Validating a component without the remote value validation parameter will return null', async () => {
@@ -11,7 +11,7 @@ it('Validating a component without the remote value validation parameter will re
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateRemoteSelectValue(context);
     expect(result).to.equal(null);
 });
@@ -31,7 +31,7 @@ it('Validating a select component without the remote value validation parameter 
             value: 2,
         },
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateRemoteSelectValue(context);
     expect(result).to.equal(null);
 });
@@ -83,7 +83,7 @@ it('Validating a select component with the remote validation parameter will retu
             value: 2,
         },
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateRemoteSelectValue(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('select');
@@ -107,7 +107,7 @@ it('Validating a select component with the remote validation parameter will retu
             value: 2,
         },
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateRemoteSelectValue(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('select');
@@ -132,7 +132,7 @@ it('Validating a select component with the remote validation parameter will retu
         },
     };
 
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     context.fetch = (url: string, options?: RequestInit | undefined) => {
         return Promise.resolve({
             ok: true,

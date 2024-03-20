@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 import { FieldError } from 'error';
 import { simpleNumberField, simpleTextField } from './fixtures/components';
-import { generateProcessContext } from './fixtures/util';
+import { generateProcessorContext } from './fixtures/util';
 import { validateMinimumValue } from '../validateMinimumValue';
 
 it('Validating a component without the min property will return null', async () => {
@@ -10,7 +10,7 @@ it('Validating a component without the min property will return null', async () 
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMinimumValue(context);
     expect(result).to.equal(null);
 });
@@ -20,7 +20,7 @@ it('Validating a number component without the min property will return null', as
     const data = {
         component: 3,
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMinimumValue(context);
     expect(result).to.equal(null);
 });
@@ -30,7 +30,7 @@ it('Validating a number component that contains the min property will return nul
     const data = {
         component: 55,
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMinimumValue(context);
     expect(result).to.equal(null);
 });
@@ -40,7 +40,7 @@ it('Validating a number component that contains the min property will return a F
     const data = {
         component: 35,
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMinimumValue(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.contain('min');
@@ -51,7 +51,7 @@ it('Validating a number component that contains the min property will return nul
     const data = {
         component: 50,
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMinimumValue(context);
     expect(result).to.equal(null);
 });

@@ -33,5 +33,6 @@ export const EN_ERRORS = {
     valueIsNotAvailable: '{{ field }} is an invalid value.',
     captchaTokenValidation: 'ReCAPTCHA: Token validation error',
     captchaTokenNotSpecified: 'ReCAPTCHA: Token is not specified in submission',
-    captchaFailure: 'ReCaptcha: Response token not found'
+    captchaFailure: 'ReCaptcha: Response token not found',
+    time: '{{field}} is not a valid time.',
 };

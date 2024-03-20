@@ -4,6 +4,9 @@ import { isEmpty } from "../util";
 import { FieldError, ValidatorError } from 'error';
 import { dayjs } from 'utils/date';
 import { ProcessorInfo } from "types/process/ProcessorInfo";
+import customParsers from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParsers);
 
 const isValidatableTimeComponent = (comp: any): comp is TimeComponent => {
     return comp && comp.type === 'time';
@@ -28,7 +31,7 @@ export const validateTimeSync: RuleFnSync = (context: ValidationContext) => {
         const format = config?.server ?
             ((component as TimeComponent).dataFormat || 'HH:mm:ss') :
             ((component as TimeComponent).format || 'HH:mm');
-        const isValid = dayjs(String(value), format).isValid();
+        const isValid = dayjs(String(value), format, true).isValid();
         return isValid ? null : new FieldError('time', context);
     }
     catch (err) {

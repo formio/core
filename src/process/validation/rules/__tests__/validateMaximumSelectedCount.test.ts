@@ -3,14 +3,14 @@ import { expect } from 'chai';
 import { FieldError } from 'error';
 import { simpleSelectBoxes, simpleTextField } from './fixtures/components';
 import { validateMaximumSelectedCount } from '../validateMaximumSelectedCount';
-import { generateProcessContext } from './fixtures/util';
+import { generateProcessorContext } from './fixtures/util';
 
 it('Validting a non-select boxes component will return null', async () => {
     const component = simpleTextField;
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMaximumSelectedCount(context);
     expect(result).to.equal(null);
 });
@@ -25,7 +25,7 @@ it('Validating a select boxes component without maxSelectedCount will return nul
             biz: false,
         },
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMaximumSelectedCount(context);
     expect(result).to.equal(null);
 });
@@ -40,7 +40,7 @@ it('Validating a select boxes component where the number of selected fields is g
             biz: false,
         },
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMaximumSelectedCount(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.contain('maxSelectedCount');
@@ -56,7 +56,7 @@ it('Validating a select boxes component where the number of selected fields is e
             biz: false,
         },
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMaximumSelectedCount(context);
     expect(result).to.equal(null);
 });
@@ -71,7 +71,7 @@ it('Validating a select boxes component where the number of selected fields is l
             biz: false,
         },
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMaximumSelectedCount(context);
     expect(result).to.equal(null);
 });
