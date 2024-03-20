@@ -84,12 +84,9 @@ jobs:
       - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
         uses: actions/checkout@v3
 
-      - name: Configure npm with username and password
+      - name: Add npm token to .npmrc
         run: |
-          echo "_auth = $(echo -n '${{ secrets.NPM_USERNAME }}:${{ secrets.NPM_PASSWORD }}' | base64)" > .npmrc
-          echo "email = ${{ secrets.NPM_EMAIL }}" >> .npmrc
-          echo "always-auth = true" >> .npmrc
-          npm whoami
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
 
       - name: Set up Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
@@ -105,10 +102,6 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-
-
-      - name: Add npm token to .npmrc
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
 
       - name: Prepare version for publish
         id: prep
