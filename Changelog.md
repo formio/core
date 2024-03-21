@@ -1,3 +1,36 @@
+## 2.0.0-rc.20
+### Changed
+ - FIO-8086: don't multiple validate select components
+ - FIO-8079: add stricter time validation
+   
+## 2.0.0-rc.19
+### Changed
+ - FIO-8047: add dereferencing processor for datatable comp
+   
+## 2.0.0-rc.18
+### Changed
+ - FIO-8055: validate components that include custom validations, even when their data is empty
+ - FIO-8049: fix value prop in evaluations
+ - FIO-8040: add functions from formiojs
+ - restructure conditional processor to fix conditional components in emails
+
+## 2.0.0-rc.17
+### Changed
+ - FIO-8023: Fixing issues with the parent traversal on deeply nested components within nested forms
+   
+## 2.0.0-rc.16
+ - FIO-7884: Fixed issues with processing data within nested form data structures
+
+## 2.0.0-rc.14
+### Changed
+ - FIO-7884: Fixed an issue with nested form data where it would not set correctly
+ - FIO-7938: Fixing issues where components within Array components (like datagrid) would get the path of the first index assigned and would never update again
+ - FIO-7958: add asynchronous rule set
+ - FIO-7958: fix typo in normalize processor fn
+ - FIO-7998: add validate captcha rule
+ - FIO-7991: Fixing the time validation to use the dataFormat for validation, which is what the client passes along to the server
+ - skip processing if row is null or undefined
+
 ## 2.0.0-rc.13
  - FIO-7958: add normalize processor fn and derive context.value rather than mutate it directly
    

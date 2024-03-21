@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 import { FieldError } from 'error';
 import { simpleTextField } from './fixtures/components';
-import { generateProcessContext } from './fixtures/util';
+import { generateProcessorContext } from './fixtures/util';
 import { validateMinimumWords } from '../validateMinimumWords';
 
 it('Validating a component without the maxWords property will return null', async () => {
@@ -10,7 +10,7 @@ it('Validating a component without the maxWords property will return null', asyn
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMinimumWords(context);
     expect(result).to.equal(null);
 });
@@ -20,7 +20,7 @@ it('Validating a component with the minWords property will return a FieldError i
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMinimumWords(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('minWords');
@@ -31,7 +31,7 @@ it('Validating a component with the minWords property will return null if the nu
     const data = {
         component: 'Hello, world, again!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMinimumWords(context);
     expect(result).to.equal(null);
 });
@@ -41,7 +41,7 @@ it('Validating a component with the minWords property will return null if the nu
     const data = {
         component: 'Hello, world, it is I!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMinimumWords(context);
     expect(result).to.equal(null);
 });

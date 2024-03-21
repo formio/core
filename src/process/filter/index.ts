@@ -2,25 +2,27 @@ import { FilterContext, FilterScope, ProcessorFn, ProcessorFnSync, ProcessorInfo
 import set from 'lodash/set';
 import { Utils } from "utils";
 import { get, isObject } from "lodash";
+import { getComponentAbsolutePath } from "utils/formUtil";
 export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterContext) => {
-    const { scope, path, component, data } = context;
+    const { scope, component } = context;
     let { value } = context;
+    const absolutePath = getComponentAbsolutePath(component);
     if (!scope.filter) scope.filter = {};
     if (value !== undefined) {
         const modelType = Utils.getModelType(component);
         switch (modelType) {
             case 'dataObject':
-                scope.filter[path] = {data: {}};
+                scope.filter[absolutePath] = {data: {}};
                 break;
             case 'array':
                 break;
             case 'object':
                 if (component.type !== 'container') {
-                    scope.filter[path] = true;
+                    scope.filter[absolutePath] = true;
                 }
                 break;
             default:
-                scope.filter[path] = true;
+                scope.filter[absolutePath] = true;
                 break;
         }
     }
@@ -31,11 +33,11 @@ export const filterProcess: ProcessorFn<FilterScope> = async (context: FilterCon
 };
 
 export const filterPostProcess: ProcessorFnSync<FilterScope> = (context: FilterContext) => {
-    const { scope, data } = context;
+    const { scope, submission } = context;
     const filtered = {};
     for (const path in scope.filter) {
         if (scope.filter[path]) {
-            let value = get(data, path);
+            let value = get(submission?.data, path);
             if (isObject(value) && isObject(scope.filter[path])) {
                 value = {...value, ...scope.filter[path]}
             }

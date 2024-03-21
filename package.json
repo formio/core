@@ -1,6 +1,6 @@
 {
   "name": "@formio/core",
-  "version": "2.0.0-rc.13",
+  "version": "2.0.0-rc.20",
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
   "exports": {
@@ -8,7 +8,8 @@
     "./utils": "./lib/utils/index.js",
     "./sdk": "./lib/sdk/index.js",
     "./process": "./lib/process/index.js",
-    "./types": "./lib/types/index.js"
+    "./types": "./lib/types/index.js",
+    "./experimental": "./lib/experimental/index.js"
   },
   "scripts": {
     "test": "TEST=1 mocha -r ts-node/register -r tsconfig-paths/register -r mock-local-storage -r jsdom-global/register -b -t 0 'src/**/__tests__/*.test.ts'",
@@ -89,6 +90,7 @@
     "dayjs": "^1.11.10",
     "dompurify": "^3.0.6",
     "eventemitter3": "^5.0.0",
+    "fast-json-patch": "^3.1.1",
     "fetch-ponyfill": "^7.1.0",
     "inputmask": "^5.0.9-beta.45",
     "json-logic-js": "^2.0.2",

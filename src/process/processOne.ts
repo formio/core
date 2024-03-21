@@ -12,6 +12,7 @@ export async function processOne<ProcessorScope>(context: ProcessorsContext<Proc
     // Create a getter for `value` that is always derived from the current data object
     if (typeof context.value === 'undefined') {
         Object.defineProperty(context, 'value', {
+            enumerable: true,
             get() {
                 return get(context.data, context.path);
             },
@@ -36,6 +37,7 @@ export function processOneSync<ProcessorScope>(context: ProcessorsContext<Proces
     // Create a getter for `value` that is always derived from the current data object
     if (typeof context.value === 'undefined') {
         Object.defineProperty(context, 'value', {
+            enumerable: true,
             get() {
                 return get(context.data, context.path);
             },
@@ -44,16 +46,13 @@ export function processOneSync<ProcessorScope>(context: ProcessorsContext<Proces
             }
         });
     }
-    // Check if the component is in a nested form
-    let parent: any = component?.parent;
-    while (parent?.type !== "form" && parent !== undefined && parent !== null) {
-        parent = parent?.parent;
+    if (!context.row) {
+        return;
     }
-    
     context.processor = ProcessorType.Custom;
-    processors.forEach((processor) => {
+    for (const processor of processors) {
         if (processor?.processSync) {
             processor.processSync(context)
         }
-    });
+    }
 }

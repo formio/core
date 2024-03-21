@@ -11,15 +11,17 @@ import { conditionProcessInfo, customConditionProcessInfo, simpleConditionProces
 import { validateCustomProcessInfo, validateProcessInfo, validateServerProcessInfo } from "./validation";
 import { filterProcessInfo } from "./filter";
 import { normalizeProcessInfo } from "./normalize";
+import { dereferenceProcessInfo } from "./dereference";
 
 export async function process<ProcessScope>(context: ProcessContext<ProcessScope>): Promise<ProcessScope> {
     const { instances, components, data, scope, flat, processors } = context;
-    await eachComponentDataAsync(components, data, async (component, _, row, path, components, index) => {
+    await eachComponentDataAsync(components, data, async (component, compData, row, path, components, index) => {
         // Skip processing if row is null or undefined
         if (!row) {
             return;
         }
         await processOne<ProcessScope>({...context, ...{
+            data: compData,
             component,
             components,
             path,
@@ -46,12 +48,13 @@ export async function process<ProcessScope>(context: ProcessContext<ProcessScope
 
 export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>): ProcessScope {
     const { instances, components, data, scope, flat, processors } = context;
-    eachComponentData(components, data, (component, _, row, path, components, index) => {
+    eachComponentData(components, data, (component, compData, row, path, components, index) => {
         // Skip processing if row is null or undefined
         if (!row) {
             return;
         }
         processOneSync<ProcessScope>({...context,
+            data: compData,
             component,
             components,
             path,
@@ -87,6 +90,7 @@ export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
     customConditions: customConditionProcessInfo,
     simpleConditions: simpleConditionProcessInfo,
     normalize: normalizeProcessInfo,
+    dereference: dereferenceProcessInfo,
     fetch: fetchProcessInfo,
     logic: logicProcessInfo,
     validate: validateProcessInfo,
@@ -99,6 +103,7 @@ export const ProcessTargets: ProcessTarget = {
         filterProcessInfo,
         serverDefaultValueProcessInfo,
         normalizeProcessInfo,
+        dereferenceProcessInfo,
         fetchProcessInfo,
         simpleConditionProcessInfo,
         validateServerProcessInfo

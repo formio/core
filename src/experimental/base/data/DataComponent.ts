@@ -1,5 +1,5 @@
 import { Components } from '../Components';
-import { NestedDataModel, ModelDecoratorInterface,  ModelInterface } from 'src/experimental/model';
+import { NestedDataModel, ModelDecoratorInterface,  ModelInterface } from '../../model';
 import { NestedComponent } from '../nested/NestedComponent';
 
 /**

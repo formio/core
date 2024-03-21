@@ -1,10 +1,10 @@
 import { get } from "lodash";
 import { Component, DataObject, ProcessorType, ValidationContext } from "types";
 
-export const generateProcessContext = (component: Component, data: DataObject): ValidationContext => {
+export const generateProcessorContext = (component: Component, data: DataObject): ValidationContext => {
     const path = component.key;
     const value = get(data, path);
-    return { 
+    return {
         component,
         data,
         scope: {errors: []},

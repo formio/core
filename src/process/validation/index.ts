@@ -1,10 +1,10 @@
 import { ConditionsScope, ProcessorFn, ProcessorFnSync, ProcessorInfo, ValidationContext, ValidationProcessorFn, ValidationProcessorFnSync, ValidationRuleInfo, ValidationScope, SkipValidationFn, ConditionsContext } from "types";
-import { EvaluationRules, Rules, ServerRules } from "./rules";
+import { evaluationRules, rules, serverRules } from "./rules";
 import find from "lodash/find";
 import get from "lodash/get";
 import set from "lodash/set";
 import pick from "lodash/pick";
-import { getComponentPath } from "utils/formUtil";
+import { getComponentAbsolutePath, getComponentPath } from "utils/formUtil";
 import { getErrorMessage } from "utils/error";
 import { FieldError } from "error";
 import { ConditionallyHidden, isConditionallyHidden, isCustomConditionallyHidden, isSimpleConditionallyHidden } from "processes/conditions";
@@ -124,7 +124,7 @@ export const shouldSkipValidation: SkipValidationFn = (context: ValidationContex
 };
 
 export function shouldValidateAll(context: ValidationContext): boolean {
-    return validationRules(context, Rules, shouldSkipValidation).length > 0;
+    return validationRules(context, rules, shouldSkipValidation).length > 0;
 }
 
 export function shouldValidateCustom(context: ValidationContext): boolean {
@@ -147,14 +147,18 @@ export function shouldValidateServer(context: ValidationContext): boolean {
 }
 
 function handleError(error: FieldError | null, context: ValidationContext) {
-    const { path, scope } = context;
+    const { scope, component } = context;
+    const absolutePath = getComponentAbsolutePath(component);
     if (error) {
         const cleanedError = cleanupValidationError(error);
-        if (!find(scope.errors, { errorKeyOrMessage: cleanedError.errorKeyOrMessage, context: {path} })) {
+        cleanedError.context.path = absolutePath;
+        if (!find(scope.errors, { errorKeyOrMessage: cleanedError.errorKeyOrMessage, context: {
+            path: absolutePath
+        }})) {
             if (!scope.validated) scope.validated = [];
             if (!scope.errors) scope.errors = [];
             scope.errors.push(cleanedError);
-            scope.validated.push({ path, error: cleanedError });
+            scope.validated.push({ path: absolutePath, error: cleanedError });
         }
     }
 }
@@ -245,7 +249,7 @@ export const validateProcessSync: ValidationProcessorFnSync = (context) => {
             }
             const rulesToExecute: ValidationRuleInfo[] = validationRules(context, otherRules, skipValidation);
             if (!rulesToExecute.length) {
-                return;
+                continue;
             }
             if (component.truncateMultipleSpaces && amendedValue && typeof amendedValue === 'string') {
                 amendedValue = amendedValue.trim().replace(/\s{2,}/g, ' ');
@@ -290,37 +294,37 @@ export const validateProcessSync: ValidationProcessorFnSync = (context) => {
 };
 
 export const validateCustomProcess: ValidationProcessorFn = async (context) => {
-    context.rules = context.rules || EvaluationRules;
+    context.rules = context.rules || evaluationRules;
     context.skipValidation = shouldSkipValidationCustom;
     return validateProcess(context);
 };
 
 export const validateCustomProcessSync: ProcessorFnSync<ValidationScope> = (context: ValidationContext) => {
-    context.rules = context.rules || EvaluationRules;
+    context.rules = context.rules || evaluationRules;
     context.skipValidation = shouldSkipValidationCustom;
     return validateProcessSync(context);
 };
 
 export const validateServerProcess: ValidationProcessorFn = async (context) => {
-    context.rules = context.rules || ServerRules;
+    context.rules = context.rules || serverRules;
     context.skipValidation = shouldSkipValidationSimple;
     return validateProcess(context);
 };
 
 export const validateServerProcessSync: ProcessorFnSync<ValidationScope> = (context: ValidationContext) => {
-    context.rules = context.rules || ServerRules;
+    context.rules = context.rules || serverRules;
     context.skipValidation = shouldSkipValidationSimple;
     return validateProcessSync(context);
 };
 
 export const validateAllProcess: ProcessorFn<ValidationScope> = async (context: ValidationContext) => {
-    context.rules = context.rules || Rules;
+    context.rules = context.rules || rules;
     context.skipValidation = shouldSkipValidation;
     return validateProcess(context);
 };
 
 export const validateAllProcessSync: ProcessorFnSync<ValidationScope> = (context: ValidationContext) => {
-    context.rules = context.rules || Rules;
+    context.rules = context.rules || rules;
     context.skipValidation = shouldSkipValidation;
     return validateProcessSync(context);
 };
