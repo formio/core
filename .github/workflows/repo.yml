@@ -56,14 +56,6 @@ jobs:
         with:
           cmd: build
 
-      - name: Cache build directory
-        uses: actions/cache@v3
-        with:
-          path: .
-          key: ${{ runner.os }}-build-${{ hashFiles('build.tgz') }}
-          restore-keys: |
-            ${{ runner.os }}-build-
-
   test:
     needs: setup
     runs-on: ubuntu-latest
@@ -89,7 +81,9 @@ jobs:
     if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
     runs-on: ubuntu-latest
     steps:
-      
+      - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
+        uses: actions/checkout@v3
+
       - name: Configure Git user
         run: |
           git config --global user.email "pkgbot@form.io"
@@ -106,14 +100,18 @@ jobs:
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org/'
 
-      # Restore Build cache
-      - name: Restore build cache
+      - name: Restore node modules from cache
         uses: actions/cache@v3
         with:
-          path: .
-          key: ${{ runner.os }}-build-${{ hashFiles('build.tgz') }}
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-build-
+            ${{ runner.os }}-node-
+
+      - name: Build
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
 
       - name: Show workspace contents
         run: |
@@ -143,7 +141,7 @@ jobs:
         run: |
           echo "Version to publish: $NEW_VERSION"
 
-      # - name: Publish to npm
-      #   run: |
-      #     npm version $NEW_VERSION
-      #     npm publish --tag dev
+      - name: Publish to npm
+        run: |
+          npm version $NEW_VERSION
+          npm publish --tag dev
