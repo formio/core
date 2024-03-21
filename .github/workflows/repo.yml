@@ -89,9 +89,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize') }}
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository code ${{ github.repository }} on ${{ github.ref }}
-        uses: actions/checkout@v3
-
+      
       - name: Configure Git user
         run: |
           git config --global user.email "pkgbot@form.io"
