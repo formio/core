@@ -494,7 +494,7 @@ export type TextAreaComponent = TextFieldComponent & {
 };
 
 export type TimeComponent = TextFieldComponent & {
-    format: string;
+    format?: string;
     dataFormat: string;
 };
 

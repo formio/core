@@ -4,6 +4,8 @@ import isString from 'lodash/isString';
 import toString from 'lodash/toString';
 import isNil from 'lodash/isNil';
 import isObject from 'lodash/isObject';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import {
     AddressComponent,
     DayComponent,
@@ -18,10 +20,13 @@ import {
     TextFieldComponent,
     DefaultValueScope,
     ProcessorInfo,
-    ProcessorContext
+    ProcessorContext,
+    TimeComponent
 } from "types";
 
 type NormalizeScope = DefaultValueScope;
+
+dayjs.extend(customParseFormat)
 
 const isAddressComponent = (component: any): component is AddressComponent => component.type === "address";
 const isDayComponent = (component: any): component is DayComponent => component.type === "day";
@@ -32,6 +37,7 @@ const isSelectComponent = (component: any): component is SelectComponent => comp
 const isSelectBoxesComponent = (component: any): component is SelectBoxesComponent => component.type === "selectboxes";
 const isTagsComponent = (component: any): component is TagsComponent => component.type === "tags";
 const isTextFieldComponent = (component: any): component is TextFieldComponent => component.type === "textfield";
+const isTimeComponent = (component: any): component is TimeComponent => component.type === "time";
 
 const normalizeAddressComponentValue = (component: AddressComponent, value: any) => {
     if (!component.multiple && Boolean(component.enableManualMode) && value && !value.mode) {
@@ -249,6 +255,17 @@ const normalizeTextFieldComponentValue = (
     return value;
 }
 
+// Allow submissions of time components in their visual "format" property by coercing them to the "dataFormat" property
+// i.e. "HH:mm" -> "HH:mm:ss"
+const normalizeTimeComponentValue = (component: TimeComponent, value: string) => {
+    const defaultDataFormat = 'HH:mm:ss';
+    const defaultFormat = 'HH:mm';
+    if (dayjs(value, component.format || defaultFormat, true).isValid()) {
+        return dayjs(value, component.format || defaultFormat, true).format(component.dataFormat || defaultDataFormat);
+    }
+    return value;
+};
+
 export const normalizeProcess: ProcessorFn<NormalizeScope> = async (context) => {
     return normalizeProcessSync(context);
 }
@@ -275,6 +292,8 @@ export const normalizeProcessSync: ProcessorFnSync<NormalizeScope> = (context) =
         set(data, path, normalizeTagsComponentValue(component, value));
     } else if (isTextFieldComponent(component)) {
        set(data, path, normalizeTextFieldComponentValue(component, defaultValues, value, path));
+    } else if (isTimeComponent(component)) {
+        set(data, path, normalizeTimeComponentValue(component, value));
     }
 
     // Next perform component-type-agnostic transformations (i.e. super())

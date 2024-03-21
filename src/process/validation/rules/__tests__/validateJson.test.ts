@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 import { FieldError } from 'error/FieldError';
 import { simpleTextField } from './fixtures/components';
-import { generateProcessContext } from './fixtures/util';
+import { generateProcessorContext } from './fixtures/util';
 import { validateJson } from '../validateJson';
 
 it('A simple component without JSON logic validation will return null', async () => {
@@ -10,7 +10,7 @@ it('A simple component without JSON logic validation will return null', async ()
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateJson(context);
     expect(result).to.equal(null);
 });
@@ -38,7 +38,7 @@ it('A simple component with JSON logic evaluation will return a FieldError if th
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateJson(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.contain('Input must be \'foo\'');
@@ -67,7 +67,7 @@ it('A simple component with JSON logic evaluation will return null if the JSON l
     const data = {
         component: 'foo',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateJson(context);
     expect(result).to.equal(null);
 });
