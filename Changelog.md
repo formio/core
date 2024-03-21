@@ -1,3 +1,8 @@
+## [Unreleased: 2.0.0-rc.20]
+### Changed
+ - FIO-8086: don't multiple validate select components
+ - FIO-8079: add stricter time validation
+   
 ## 2.0.0-rc.19
 ### Changed
  - FIO-8047: add dereferencing processor for datatable comp
