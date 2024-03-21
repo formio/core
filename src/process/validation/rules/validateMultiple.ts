@@ -17,6 +17,10 @@ export const isEligible = (component: Component) => {
                 return false;
             }
             return true;
+        // TODO: For backwards compatibility, skip multiple validation for select components until we can investigate
+        // how this validation might break existing forms
+        case 'select':
+            return false;
         default:
             return true;
     }
