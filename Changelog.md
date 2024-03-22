@@ -1,3 +1,7 @@
+## [Unreleased: 2.0.0-rc.21]
+### Changed
+ - FIO-8092: update isEmpty to isComponentDataEmpty and account for differing component data types
+
 ## 2.0.0-rc.20
 ### Changed
  - FIO-8086: don't multiple validate select components
