@@ -1,8 +1,9 @@
 import { FieldError } from 'error';
-import { isArray, isEqual } from 'lodash';
-import { Component, ValidationContext } from 'types';
+import { isArray, isEqual, get } from 'lodash';
+import { CheckboxComponent, Component, DataGridComponent, DataTableComponent, DateTimeComponent, EditGridComponent, HasChildComponents, SelectBoxesComponent, TextAreaComponent, TextFieldComponent, ValidationContext } from 'types';
 import { Evaluator, unescapeHTML } from 'utils';
 import { VALIDATION_ERRORS } from './i18n';
+import { eachComponentData } from 'utils/formUtil.js';
 
 export function isComponentPersistent(component: Component) {
     return component.persistent ? component.persistent : true;
@@ -51,28 +52,6 @@ export function isObject(obj: any): obj is Object {
     return typeof obj != null && (typeof obj === 'object' || typeof obj === 'function');
 }
 
-export function getEmptyValue(component: Component) {
-    switch (component.type) {
-        case 'textarea':
-        case 'textfield':
-        case 'time':
-        case 'datetime':
-        case 'day':
-            return '';
-        case 'datagrid':
-        case 'editgrid':
-            return [];
-
-        default:
-            return null;
-    }
-}
-
-export function isEmpty(component: Component, value: unknown) {
-    const isEmptyArray = (isArray(value) && value.length === 1) ? isEqual(value[0], getEmptyValue(component)) : false;
-    return value == null || (isArray(value) && value.length === 0) || isEmptyArray;
-}
-
 /**
  * Interpolates @formio/core errors so that they are compatible with the renderer
  * @param {FieldError[]} errors
@@ -95,7 +74,7 @@ export const interpolateErrors = (errors: FieldError[], lang: string = 'en') => 
                 paths.push(part);
             }
         });
-        return { 
+        return {
             message: unescapeHTML(Evaluator.interpolateString(toInterpolate, context)),
             level: error.level,
             path: paths,

@@ -1,8 +1,32 @@
-import { last, get, set, isEmpty, isNil, isObject, has, isString, forOwn, round, chunk, pad, isPlainObject } from "lodash";
+import {
+  last,
+  get,
+  set,
+  isEmpty,
+  isNil,
+  isObject,
+  has,
+  isString,
+  forOwn,
+  round,
+  chunk,
+  pad,
+  isPlainObject,
+  isArray,
+  isEqual
+} from "lodash";
 import { compare, applyPatch } from 'fast-json-patch';
 import {
   AsyncComponentDataCallback,
   CheckboxComponent,
+  DataGridComponent,
+  EditGridComponent,
+  DataTableComponent,
+  DateTimeComponent,
+  TextAreaComponent,
+  TextFieldComponent,
+  HasChildComponents,
+  SelectBoxesComponent,
   Component,
   ComponentDataCallback,
   DataObject,
@@ -1025,4 +1049,93 @@ export function findComponent(components: any, key: any, path: any, fn: any) {
       fn(component, newPath, components);
     }
   });
+}
+
+const isCheckboxComponent = (component: Component): component is CheckboxComponent => component.type === 'checkbox';
+const isDataGridComponent = (component: Component): component is DataGridComponent => component.type === 'datagrid';
+const isEditGridComponent = (component: Component): component is EditGridComponent => component.type === 'editgrid';
+const isDataTableComponent = (component: Component): component is DataTableComponent => component.type === 'datatable';
+const hasChildComponents = (component: any): component is HasChildComponents => component.components != null;
+const isDateTimeComponent = (component: Component): component is DateTimeComponent => component.type === 'datetime';
+const isSelectBoxesComponent = (component: Component): component is SelectBoxesComponent => component.type === 'selectboxes';
+const isTextAreaComponent = (component: Component): component is TextAreaComponent => component.type === 'textarea';
+const isTextFieldComponent = (component: Component): component is TextFieldComponent => component.type === 'textfield';
+
+export function getEmptyValue(component: Component) {
+    switch (component.type) {
+        case 'textarea':
+        case 'textfield':
+        case 'time':
+        case 'datetime':
+        case 'day':
+            return '';
+        case 'datagrid':
+        case 'editgrid':
+            return [];
+
+        default:
+            return null;
+    }
+}
+
+const replaceBlanks = (value: unknown) => {
+  const nbsp = '<p>&nbsp;</p>';
+  const br = '<p><br></p>';
+  const brNbsp = '<p><br>&nbsp;</p>';
+  const regExp = new RegExp(`^${nbsp}|${nbsp}$|^${br}|${br}$|^${brNbsp}|${brNbsp}$`, 'g');
+  return typeof value === 'string' ? value.replace(regExp, '') : value;
+};
+
+function trimBlanks(value: unknown) {
+    if (!value) {
+      return value;
+    }
+
+    if (Array.isArray(value)) {
+      value = value.map((val: any) => replaceBlanks(val));
+    }
+    else {
+      value = replaceBlanks(value);
+    }
+    return value;
+  }
+
+export function isComponentDataEmpty(component: Component, data: any, path: string, value?: any): boolean {
+    const thisValue = value || get(data, path);
+    const compValueIsEmptyArray = (isArray(value) && value.length === 1) ? isEqual(value[0], getEmptyValue(component)) : false;
+    const compValueIsEmpty = value == null || (isArray(value) && value.length === 0) || compValueIsEmptyArray;
+    if (isCheckboxComponent(component)) {
+        return compValueIsEmpty || value === false;
+    } else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {
+        if (component.components?.length) {
+            let childrenEmpty = false;
+            eachComponentData(component.components, data, (component, data, row, path) => {
+                if (isComponentDataEmpty(component, data, path)) {
+                    childrenEmpty = true;
+                }
+            });
+            return compValueIsEmpty || childrenEmpty;
+        }
+        return compValueIsEmpty;
+    } else if (isDateTimeComponent(component)) {
+        return compValueIsEmpty || value.toString() === 'Invalid date';
+    } else if (isSelectBoxesComponent(component)) {
+        let selectBoxEmpty = true;
+        for (const key in value) {
+            if (value[key]) {
+                selectBoxEmpty = false;
+                break;
+            }
+        }
+        return compValueIsEmpty || selectBoxEmpty;
+    } else if (isTextAreaComponent(component)) {
+        const isPlain = !component.wysiwyg && !component.editor;
+        return isPlain ? compValueIsEmpty : trimBlanks(value) === '';
+    } else if (isTextFieldComponent(component)) {
+        if (component.allowMultipleMasks && !!component.inputMasks && !!component.inputMasks.length) {
+            return compValueIsEmpty || value?.toString().trim();
+        }
+        return compValueIsEmpty || (component.multiple ? value.length === 0 : (!value.maskName || !value.value));
+    }
+    return compValueIsEmpty;
 }
