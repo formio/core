@@ -1083,7 +1083,7 @@ const replaceBlanks = (value: unknown) => {
   const br = '<p><br></p>';
   const brNbsp = '<p><br>&nbsp;</p>';
   const regExp = new RegExp(`^${nbsp}|${nbsp}$|^${br}|${br}$|^${brNbsp}|${brNbsp}$`, 'g');
-  return typeof value === 'string' ? value.replace(regExp, '') : value;
+  return typeof value === 'string' ? value.replace(regExp, '').trim() : value;
 };
 
 function trimBlanks(value: unknown) {
@@ -1098,27 +1098,31 @@ function trimBlanks(value: unknown) {
       value = replaceBlanks(value);
     }
     return value;
-  }
+}
 
-export function isComponentDataEmpty(component: Component, data: any, path: string, value?: any): boolean {
-    const thisValue = value || get(data, path);
-    const compValueIsEmptyArray = (isArray(value) && value.length === 1) ? isEqual(value[0], getEmptyValue(component)) : false;
-    const compValueIsEmpty = value == null || (isArray(value) && value.length === 0) || compValueIsEmptyArray;
+function isValueEmpty(component: Component, value: any) {
+  const compValueIsEmptyArray = (isArray(value) && value.length === 1) ? isEqual(value[0], getEmptyValue(component)) : false;
+  return value == null || value === '' || (isArray(value) && value.length === 0) || compValueIsEmptyArray;
+}
+
+export function isComponentDataEmpty(component: Component, data: any, path: string): boolean {
+    const value = get(data, path);
     if (isCheckboxComponent(component)) {
-        return compValueIsEmpty || value === false;
+        return isValueEmpty(component, value) || value === false;
     } else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {
         if (component.components?.length) {
-            let childrenEmpty = false;
-            eachComponentData(component.components, data, (component, data, row, path) => {
-                if (isComponentDataEmpty(component, data, path)) {
-                    childrenEmpty = true;
+            let childrenEmpty = true;
+            eachComponentData([component], data, (thisComponent, data, row, path, components, index) => {
+                if (component.key === thisComponent.key) return;
+                if (!isComponentDataEmpty(thisComponent, data, path)) {
+                    childrenEmpty = false;
                 }
             });
-            return compValueIsEmpty || childrenEmpty;
+            return isValueEmpty(component, value) || childrenEmpty;
         }
-        return compValueIsEmpty;
+        return isValueEmpty(component, value);
     } else if (isDateTimeComponent(component)) {
-        return compValueIsEmpty || value.toString() === 'Invalid date';
+        return isValueEmpty(component, value) || value.toString() === 'Invalid date';
     } else if (isSelectBoxesComponent(component)) {
         let selectBoxEmpty = true;
         for (const key in value) {
@@ -1127,15 +1131,15 @@ export function isComponentDataEmpty(component: Component, data: any, path: stri
                 break;
             }
         }
-        return compValueIsEmpty || selectBoxEmpty;
+        return isValueEmpty(component, value) || selectBoxEmpty;
     } else if (isTextAreaComponent(component)) {
         const isPlain = !component.wysiwyg && !component.editor;
-        return isPlain ? compValueIsEmpty : trimBlanks(value) === '';
+        return isPlain ? typeof value === 'string' ? isValueEmpty(component, value.trim()) : isValueEmpty(component, value) : isValueEmpty(component, trimBlanks(value));
     } else if (isTextFieldComponent(component)) {
         if (component.allowMultipleMasks && !!component.inputMasks && !!component.inputMasks.length) {
-            return compValueIsEmpty || value?.toString().trim();
+          return isValueEmpty(component, value) || (component.multiple ? value.length === 0 : (!value.maskName || !value.value));
         }
-        return compValueIsEmpty || (component.multiple ? value.length === 0 : (!value.maskName || !value.value));
+        return isValueEmpty(component, value?.toString().trim());
     }
-    return compValueIsEmpty;
+    return isValueEmpty(component, value);
 }
