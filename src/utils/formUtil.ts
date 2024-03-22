@@ -1112,6 +1112,8 @@ export function isComponentDataEmpty(component: Component, data: any, path: stri
     } else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {
         if (component.components?.length) {
             let childrenEmpty = true;
+            // TODO: eachComponentData currently can't handle passing child components directly because it won't get the path right;
+            // wrapping component in an array and skipping it's callback is a workaround to start with the correct path, but it is not ideal
             eachComponentData([component], data, (thisComponent, data, row, path, components, index) => {
                 if (component.key === thisComponent.key) return;
                 if (!isComponentDataEmpty(thisComponent, data, path)) {
