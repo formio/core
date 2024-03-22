@@ -81,7 +81,7 @@ export function formatDate(value: any, format: any, timezone: any): string {
  * @param date
  * @return {(null|Date)}
  */
- export function getDateSetting(date: any) {
+export function getDateSetting(date: any) {
     if (isNil(date) || isNaN(date) || date === '') {
       return null;
     }
@@ -125,9 +125,9 @@ export function formatDate(value: any, format: any, timezone: any): string {
     }
 
     return dateSetting.toDate();
-  }
+}
 
-  export const getDateValidationFormat = (component: DayComponent) => {
+export const getDateValidationFormat = (component: DayComponent) => {
     return component.dayFirst ? 'DD-MM-YYYY' : 'MM-DD-YYYY';
 };
 
