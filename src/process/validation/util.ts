@@ -1,9 +1,7 @@
 import { FieldError } from 'error';
-import { isArray, isEqual, get } from 'lodash';
-import { CheckboxComponent, Component, DataGridComponent, DataTableComponent, DateTimeComponent, EditGridComponent, HasChildComponents, SelectBoxesComponent, TextAreaComponent, TextFieldComponent, ValidationContext } from 'types';
+import { Component, ValidationContext } from 'types';
 import { Evaluator, unescapeHTML } from 'utils';
 import { VALIDATION_ERRORS } from './i18n';
-import { eachComponentData } from 'utils/formUtil.js';
 
 export function isComponentPersistent(component: Component) {
     return component.persistent ? component.persistent : true;

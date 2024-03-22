@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { getContextualRowData, eachComponentDataAsync, isComponentDataEmpty } from "../formUtil";
 
-xdescribe('getContextualRowData', () => {
+describe('getContextualRowData', () => {
     it('Should return the data at path without the last element given nested containers', () => {
         const data = {
             a: {
@@ -233,7 +233,7 @@ xdescribe('getContextualRowData', () => {
     });
 });
 
-xdescribe('eachComponentDataAsync', () => {
+describe('eachComponentDataAsync', () => {
     describe('Flattened form components (for evaluation)', () => {
         it('Should return the correct contextual row data for each component', async () => {
             const components = [
