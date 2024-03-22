@@ -1,6 +1,6 @@
 
 import { RuleFn, RuleFnSync, TimeComponent, ValidationContext } from "types";
-import { isEmpty } from "../util";
+import { isComponentDataEmpty } from 'utils/formUtil';
 import { FieldError, ValidatorError } from 'error';
 import { dayjs } from 'utils/date';
 import { ProcessorInfo } from "types/process/ProcessorInfo";
@@ -21,12 +21,12 @@ export const shouldValidate = (context: ValidationContext) => {
 };
 
 export const validateTimeSync: RuleFnSync = (context: ValidationContext) => {
-    const { component, value, config } = context;
+    const { component, data, path, value, config } = context;
     if (!shouldValidate(context)) {
         return null;
     }
     try {
-        if (!value || isEmpty(component, value)) return null;
+        if (!value || isComponentDataEmpty(component, data, path)) return null;
         // Server side evaluations of validity should use the "dataFormat" vs the "format" which is used on the client.
         const format = config?.server ?
             ((component as TimeComponent).dataFormat || 'HH:mm:ss') :
