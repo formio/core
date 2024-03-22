@@ -1,4 +1,4 @@
-## [Unreleased: 2.0.0-rc.21]
+## 2.0.0-rc.21
 ### Changed
  - FIO-8092: update isEmpty to isComponentDataEmpty and account for differing component data types
 
