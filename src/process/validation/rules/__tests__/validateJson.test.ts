@@ -71,3 +71,32 @@ it('A simple component with JSON logic evaluation will return null if the JSON l
     const result = await validateJson(context);
     expect(result).to.equal(null);
 });
+
+it('A simple component with JSON logic evaluation will validate even if the value is falsy', async () => {
+    const component = {
+        ...simpleTextField,
+        validate: {
+            json: {
+                if: [
+                    {
+                        '===': [
+                            {
+                                var: 'input',
+                            },
+                            'foo',
+                        ],
+                    },
+                    true,
+                    "Input must be 'foo'",
+                ],
+            },
+        },
+    };
+    const data = {
+        component: '',
+    };
+    const context = generateProcessorContext(component, data);
+    const result = await validateJson(context);
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.errorKeyOrMessage).to.contain("Input must be 'foo'");
+});
