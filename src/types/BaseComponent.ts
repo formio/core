@@ -3,7 +3,7 @@ import { AdvancedLogic } from "./AdvancedLogic";
 
 export type JSONConditional = { json: RulesLogic; };
 export type LegacyConditional = { show: boolean | string | null; when: string | null; eq: boolean | string };
-export type SimpleConditionalConditions = { component: string; operator: string; value: any}[];
+export type SimpleConditionalConditions = { component: string; operator: string; value?: any}[];
 export type SimpleConditional = { show: boolean | null; conjunction: string; conditions: SimpleConditionalConditions};
 
 export type BaseComponent = {
