@@ -6,7 +6,7 @@ import { isObject } from 'lodash';
 
 export const shouldValidate = (context: ValidationContext) => {
     const { component, value } = context;
-    if (!value || !component.validate?.json || !isObject(component.validate.json)) {
+    if (!component.validate?.json || !isObject(component.validate.json)) {
         return false;
     }
     return true;
