@@ -4,14 +4,14 @@ import { FieldError } from 'error';
 import { validateRequired } from '../validateRequired';
 import { conditionallyHiddenRequiredHiddenField, hiddenRequiredField, requiredNonInputField, simpleTextField } from './fixtures/components';
 import { processOne } from 'processes/processOne';
-import { generateProcessContext } from './fixtures/util';
+import { generateProcessorContext } from './fixtures/util';
 import { ProcessorsContext, ValidationScope } from 'types';
 import { validateAllProcess, validateProcessInfo } from 'processes/validation';
 
 it('Validating a simple component that is required and not present in the data will return a field error', async () => {
     const component = { ...simpleTextField, validate: { required: true } };
     const data = {};
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateRequired(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result && result.errorKeyOrMessage).to.equal('required');
@@ -20,7 +20,7 @@ it('Validating a simple component that is required and not present in the data w
 it('Validating a simple component that is required and present in the data will return null', async () => {
     const component = { ...simpleTextField, validate: { required: true } };
     const data = { component: 'a simple value' };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateRequired(context);
     expect(result).to.equal(null);
 });
@@ -28,7 +28,7 @@ it('Validating a simple component that is required and present in the data will 
 it('Validating a simple component that is not required and present in the data will return null', async () => {
     const component = simpleTextField;
     const data = { component: 'a simple value' };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateRequired(context);
     expect(result).to.equal(null);
 });
@@ -36,7 +36,7 @@ it('Validating a simple component that is not required and present in the data w
 it('Validating a simple component that is not required and not present in the data will return null', async () => {
     const component = simpleTextField;
     const data = {};
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateRequired(context);
     expect(result).to.equal(null);
 });
@@ -44,7 +44,7 @@ it('Validating a simple component that is not required and not present in the da
 it('Should validate a hidden component that does not contain data', async () => {
     const component = hiddenRequiredField;
     const data = {otherData: 'hideme'};
-    const context = generateProcessContext(component, data) as ProcessorsContext<ValidationScope>;
+    const context = generateProcessorContext(component, data) as ProcessorsContext<ValidationScope>;
     context.processors = [validateProcessInfo];
     await processOne(context);
     expect(context.scope.errors.length).to.equal(1);
@@ -54,7 +54,7 @@ it('Should validate a hidden component that does not contain data', async () => 
 it('Should not validate a hidden component that is conditionally hidden', async () => {
     const component = conditionallyHiddenRequiredHiddenField;
     const data = {otherData: 'hideme'};
-    const context = generateProcessContext(component, data) as ProcessorsContext<ValidationScope>;
+    const context = generateProcessorContext(component, data) as ProcessorsContext<ValidationScope>;
     context.processors = [validateProcessInfo];
     await processOne(context);
     expect(context.scope.errors.length).to.equal(0);
@@ -64,7 +64,7 @@ it('Should not validate a hidden component that has the hidden property set to t
     const component = hiddenRequiredField;
     component.hidden = true;
     const data = {};
-    const context = generateProcessContext(component, data) as ProcessorsContext<ValidationScope>;
+    const context = generateProcessorContext(component, data) as ProcessorsContext<ValidationScope>;
     context.processors = [validateProcessInfo];
     await processOne(context);
     expect(context.scope.errors.length).to.equal(0);
@@ -79,7 +79,7 @@ it('Validating a simple component that is required but conditionally hidden', as
         eq: 'hideme'
     };
     const data = {otherData: 'hideme'};
-    const context = generateProcessContext(component, data) as ProcessorsContext<ValidationScope>;
+    const context = generateProcessorContext(component, data) as ProcessorsContext<ValidationScope>;
     context.processors = [validateProcessInfo];
     await processOne(context);
     expect(context.scope.errors.length).to.equal(0);
@@ -90,7 +90,7 @@ it('Validating a simple component that is required but not persistent', async ()
     component.validate = { required: true };
     component.persistent = false;
     const data = {otherData: 'hideme'};
-    const context = generateProcessContext(component, data) as ProcessorsContext<ValidationScope>;
+    const context = generateProcessorContext(component, data) as ProcessorsContext<ValidationScope>;
     context.processors = [validateProcessInfo];
     await processOne(context);
     expect(context.scope.errors.length).to.equal(0);
@@ -101,7 +101,7 @@ it('Validating a simple component that is required but persistent set to client-
     component.validate = { required: true };
     component.persistent = 'client-only';
     const data = {otherData: 'hideme'};
-    const context = generateProcessContext(component, data) as ProcessorsContext<ValidationScope>;
+    const context = generateProcessorContext(component, data) as ProcessorsContext<ValidationScope>;
     context.processors = [validateProcessInfo];
     await processOne(context);
     expect(context.scope.errors.length).to.equal(0);
@@ -110,7 +110,7 @@ it('Validating a simple component that is required but persistent set to client-
 it('Should not validate a non input comonent', async () => {
     const component = requiredNonInputField;
     const data = {};
-    const context = generateProcessContext(component, data) as ProcessorsContext<ValidationScope>;
+    const context = generateProcessorContext(component, data) as ProcessorsContext<ValidationScope>;
     context.processors = [validateProcessInfo];
     await processOne(context);
     expect(context.scope.errors.length).to.equal(0);
@@ -126,7 +126,7 @@ it('Should validate a conditionally hidden compoentn with validateWhenHidden fla
         eq: 'hideme'
     };
     const data = {otherData: 'hideme'};
-    const context = generateProcessContext(component, data) as ProcessorsContext<ValidationScope>;
+    const context = generateProcessorContext(component, data) as ProcessorsContext<ValidationScope>;
     context.processors = [validateProcessInfo];
     await processOne(context);
     expect(context.scope.errors.length).to.equal(1);

@@ -1,3 +1,16 @@
+## 2.0.0-rc.21
+### Changed
+ - FIO-8092: update isEmpty to isComponentDataEmpty and account for differing component data types
+
+## 2.0.0-rc.20
+### Changed
+ - FIO-8086: don't multiple validate select components
+ - FIO-8079: add stricter time validation
+   
+## 2.0.0-rc.19
+### Changed
+ - FIO-8047: add dereferencing processor for datatable comp
+   
 ## 2.0.0-rc.18
 ### Changed
  - FIO-8055: validate components that include custom validations, even when their data is empty
