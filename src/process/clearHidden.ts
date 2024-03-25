@@ -17,6 +17,9 @@ type ClearHiddenScope = ProcessorScope & {
  */
 export const clearHiddenProcess: ProcessorFnSync<ClearHiddenScope> = (context) => {
     const { component, data, path, value, scope } = context;
+    if (!scope.clearHidden) {
+        scope.clearHidden = {};
+    }
     if (component.hidden && value !== undefined && (!component.hasOwnProperty('clearOnHide') || component.clearOnHide)) {
         unset(data, path);
         scope.clearHidden[path] = true;
