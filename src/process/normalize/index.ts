@@ -234,7 +234,7 @@ const normalizeMaskValue = (
     if (component.inputMasks && component.inputMasks.length > 0) {
         if (!value || typeof value !== 'object') {
             return {
-                val: value,
+                value: value,
                 maskName: component.inputMasks[0].label
             }
         }
