@@ -1,12 +1,13 @@
 import { get } from "lodash";
-import { Component, DataObject, ProcessorType, ValidationContext } from "types";
+import { Component, DataObject, Form, ProcessorType, ValidationContext } from "types";
 
-export const generateProcessorContext = (component: Component, data: DataObject): ValidationContext => {
+export const generateProcessorContext = (component: Component, data: DataObject, form?: any): ValidationContext => {
     const path = component.key;
     const value = get(data, path);
     return {
         component,
         data,
+        form,
         scope: {errors: []},
         row: data,
         path: component.key,
