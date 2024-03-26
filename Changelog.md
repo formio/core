@@ -1,4 +1,4 @@
-## [Unreleased: 2.0.0-rc.22]
+## 2.0.0-rc.22
 ### Changed
  - FIO-7146: gh actions for repository
  - FIO-8100: add clearhidden processor to cover logic, conditions, and custom
