@@ -1,5 +1,5 @@
 import isEmpty from 'lodash/isEmpty';
-import { FieldError, ValidatorError } from 'error';
+import { FieldError, ProcessorError } from 'error';
 import { Evaluator } from 'utils';
 import { RadioComponent, SelectComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { isObject, isPromise } from '../util';
@@ -42,7 +42,7 @@ async function getAvailableSelectValues(component: SelectComponent) {
             if (Array.isArray(component.data.values)) {
                 return mapStaticValues(component.data.values);
             }
-            throw new ValidatorError(
+            throw new Error(
                 `Failed to validate available values in static values select component '${component.key}': the values are not an array`,
             );
         case 'json': {
@@ -50,7 +50,7 @@ async function getAvailableSelectValues(component: SelectComponent) {
                 try {
                     return mapDynamicValues(component, JSON.parse(component.data.json));
                 } catch (err) {
-                    throw new ValidatorError(
+                    throw new Error(
                         `Failed to validate available values in JSON select component '${component.key}': ${err}`
                     );
                 }
@@ -58,7 +58,7 @@ async function getAvailableSelectValues(component: SelectComponent) {
                 // TODO: need to retype this
                 return mapDynamicValues(component, component.data.json as Record<string, any>[]);
             } else {
-                throw new ValidatorError(
+                throw new Error(
                     `Failed to validate available values in JSON select component '${component.key}': the values are not an array`
                 );
             }
@@ -76,19 +76,19 @@ async function getAvailableSelectValues(component: SelectComponent) {
                 if (Array.isArray(resolvedCustomItems)) {
                     return resolvedCustomItems;
                 }
-                throw new ValidatorError(
+                throw new Error(
                     `Failed to validate available values in JSON select component '${component.key}': the values are not an array`
                 );
             }
             if (Array.isArray(customItems)) {
                 return customItems;
             } else {
-                throw new ValidatorError(
+                throw new Error(
                     `Failed to validate available values in JSON select component '${component.key}': the values are not an array`
                 );
             }
         default:
-            throw new ValidatorError(
+            throw new Error(
                 `Failed to validate available values in select component '${component.key}': data source ${component.dataSrc} is not valid}`
             );
     }
@@ -100,7 +100,7 @@ function getAvailableSelectValuesSync(component: SelectComponent) {
             if (Array.isArray(component.data?.values)) {
                 return mapStaticValues(component.data.values);
             }
-            throw new ValidatorError(
+            throw new Error(
                 `Failed to validate available values in static values select component '${component.key}': the values are not an array`
             );
         case 'json': {
@@ -108,7 +108,7 @@ function getAvailableSelectValuesSync(component: SelectComponent) {
                 try {
                     return mapDynamicValues(component, JSON.parse(component.data.json));
                 } catch (err) {
-                    throw new ValidatorError(
+                    throw new Error(
                         `Failed to validate available values in JSON select component '${component.key}': ${err}`
                     );
                 }
@@ -116,7 +116,7 @@ function getAvailableSelectValuesSync(component: SelectComponent) {
                 // TODO: need to retype this
                 return mapDynamicValues(component, component.data.json as Record<string, any>[]);
             } else {
-                throw new ValidatorError(
+                throw new Error(
                     `Failed to validate available values in JSON select component '${component.key}': the values are not an array`
                 );
             }
@@ -132,12 +132,12 @@ function getAvailableSelectValuesSync(component: SelectComponent) {
             if (Array.isArray(customItems)) {
                 return customItems;
             } else {
-                throw new ValidatorError(
+                throw new Error(
                     `Failed to validate available values in JSON select component '${component.key}': the values are not an array`
                 );
             }
         default:
-            throw new ValidatorError(
+            throw new Error(
                 `Failed to validate available values in select component '${component.key}': data source ${component.dataSrc} is not valid}`
             );
     }
@@ -153,41 +153,45 @@ function compareComplexValues(valueA: unknown, valueB: unknown) {
         // this won't work
         return JSON.stringify(valueA) === JSON.stringify(valueB);
     } catch (err) {
-        throw new ValidatorError(`Error while comparing available values: ${err}`);
+        throw new Error(`Error while comparing available values: ${err}`);
     }
 }
 
 export const validateAvailableItems: RuleFn = async (context: ValidationContext) => {
     const { component, value } = context;
     const error = new FieldError('invalidOption', context);
-    if (isValidatableRadioComponent(component)) {
-        if (value == null || isEmpty(value)) {
-            return null;
-        }
+    try {
+        if (isValidatableRadioComponent(component)) {
+            if (value == null || isEmpty(value)) {
+                return null;
+            }
 
-        const values = component.values;
-        if (values) {
-            return values.findIndex(({ value: optionValue }) => optionValue === value) !== -1
-                ? null
-                : error;
-        }
-
-        return null;
-    } else if (isValidateableSelectComponent(component)) {
-        if (value == null || isEmpty(value)) {
-            return null;
-        }
-        const values = await getAvailableSelectValues(component);
-        if (values) {
-            if (isObject(value)) {
-                return values.find((optionValue) => compareComplexValues(optionValue, value)) !==
-                    undefined
+            const values = component.values;
+            if (values) {
+                return values.findIndex(({ value: optionValue }) => optionValue === value) !== -1
                     ? null
                     : error;
             }
 
-            return values.find((optionValue) => optionValue === value) !== undefined ? null : error;
+            return null;
+        } else if (isValidateableSelectComponent(component)) {
+            if (value == null || isEmpty(value)) {
+                return null;
+            }
+            const values = await getAvailableSelectValues(component);
+            if (values) {
+                if (isObject(value)) {
+                    return values.find((optionValue) => compareComplexValues(optionValue, value)) !==
+                        undefined
+                        ? null
+                        : error;
+                }
+
+                return values.find((optionValue) => optionValue === value) !== undefined ? null : error;
+            }
         }
+    } catch (err: any) {
+        throw new ProcessorError(err.message || err, context, 'validate:validateAvailableItems');
     }
     return null;
 };
@@ -209,28 +213,33 @@ export const shouldValidate = (context: any) => {
 export const validateAvailableItemsSync: RuleFnSync = (context: ValidationContext) => {
     const { component, value } = context;
     const error = new FieldError('invalidOption', context);
-    if (!shouldValidate(context)) {
-        return null;
-    }
-    if (isValidatableRadioComponent(component)) {
-        const values = component.values;
-        if (values) {
-            return values.findIndex(({ value: optionValue }) => optionValue === value) !== -1
-                ? null
-                : error;
+    try {
+
+        if (!shouldValidate(context)) {
+            return null;
         }
-        return null;
-    } else if (isValidateableSelectComponent(component)) {
-        const values = getAvailableSelectValuesSync(component);
-        if (values) {
-            if (isObject(value)) {
-                return values.find((optionValue) => compareComplexValues(optionValue, value)) !==
-                    undefined
+        if (isValidatableRadioComponent(component)) {
+            const values = component.values;
+            if (values) {
+                return values.findIndex(({ value: optionValue }) => optionValue === value) !== -1
                     ? null
                     : error;
             }
-            return values.find((optionValue) => optionValue === value) !== undefined ? null : error;
+            return null;
+        } else if (isValidateableSelectComponent(component)) {
+            const values = getAvailableSelectValuesSync(component);
+            if (values) {
+                if (isObject(value)) {
+                    return values.find((optionValue) => compareComplexValues(optionValue, value)) !==
+                        undefined
+                        ? null
+                        : error;
+                }
+                return values.find((optionValue) => optionValue === value) !== undefined ? null : error;
+            }
         }
+    } catch (err: any) {
+        throw new ProcessorError(err.message || err, context, 'validate:validateAvailableItems');
     }
     return null;
 };

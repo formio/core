@@ -1,4 +1,4 @@
-import { FieldError, ValidatorError } from 'error';
+import { FieldError, ProcessorError } from 'error';
 import { NumberComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
@@ -43,8 +43,10 @@ export const validateMinimumValueSync: RuleFnSync = (context: ValidationContext)
     }
     const parsedValue = typeof value === 'string' ? parseFloat(value) : Number(value);
     if (Number.isNaN(parsedValue)) {
-        throw new ValidatorError(
+        throw new ProcessorError(
             `Cannot validate value ${parsedValue} because it is invalid`,
+            context,
+            'validate:validateMinimumValue'
         );
     }
 

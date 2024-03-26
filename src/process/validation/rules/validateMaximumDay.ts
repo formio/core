@@ -1,4 +1,4 @@
-import { ValidatorError, FieldError } from 'error';
+import { ProcessorError, FieldError } from 'error';
 import { DayComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { dayjs, isPartialDay, getDateValidationFormat, getDateSetting } from 'utils/date';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
@@ -31,7 +31,7 @@ export const validateMaximumDaySync: RuleFnSync = (context: ValidationContext) =
         return null;
     }
     if (typeof value !== 'string') {
-        throw new ValidatorError(`Cannot validate day value ${value} because it is not a string`);
+        throw new ProcessorError(`Cannot validate day value ${value} because it is not a string`, context, 'validate:validateMaximumDay');
     }
     // TODO: this validation probably goes for dates and days
     const format = getDateValidationFormat(component as DayComponent);

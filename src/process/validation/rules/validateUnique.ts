@@ -1,7 +1,7 @@
 import { FieldError } from '../../../error/FieldError';
 import { RuleFn, ValidationContext } from '../../../types/index';
 import { isEmptyObject } from '../util';
-import { ValidatorError } from 'error';
+import { ProcessorError} from 'error';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 export const shouldValidate = (context: ValidationContext) => {
@@ -23,7 +23,7 @@ export const validateUnique: RuleFn = async (context: ValidationContext) => {
     }
 
     if (!config || !config.database) {
-        throw new ValidatorError("Can't test for unique value without a database config object");
+        throw new ProcessorError("Can't test for unique value without a database config object", context, 'validate:validateUnique');
     }
     try {
         const isUnique = await config.database?.isUnique(context, value);
@@ -36,7 +36,7 @@ export const validateUnique: RuleFn = async (context: ValidationContext) => {
         return (isUnique === true) ? null : new FieldError('unique', context);
     }
     catch (err: any) {
-        throw new ValidatorError(err.message || err);
+        throw new ProcessorError(err.message || err, context, 'validate:validateUnique');
     }
 };
 

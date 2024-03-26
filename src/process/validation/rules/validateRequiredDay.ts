@@ -1,4 +1,4 @@
-import { FieldError, ValidatorError } from 'error';
+import { FieldError, ProcessorError } from 'error';
 import { DayComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
@@ -32,8 +32,10 @@ export const validateRequiredDaySync: RuleFnSync = (context: ValidationContext) 
         return new FieldError('requiredDayEmpty', context);
     }
     if (typeof value !== 'string') {
-        throw new ValidatorError(
+        throw new ProcessorError(
             `Cannot validate required day field of ${value} because it is not a string`,
+            context,
+            'validate:validateRequiredDay'
         );
     }
     const [DAY, MONTH, YEAR] = (component as DayComponent).dayFirst ? [0, 1, 2] : [1, 0, 2];
