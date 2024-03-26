@@ -1,4 +1,4 @@
-## [Unreleased: 2.0.0-rc.23]
+## 2.0.0-rc.23
 ### Changed
  - Fix: JSONLogic validations should get same context as calculations
    
