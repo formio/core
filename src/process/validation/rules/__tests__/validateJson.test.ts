@@ -100,3 +100,35 @@ it('A simple component with JSON logic evaluation will validate even if the valu
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.contain("Input must be 'foo'");
 });
+
+it('Should have access to form JSON in its validation context', async () => {
+    const component = {
+        ...simpleTextField,
+        validate: {
+            json: {
+                if: [
+                    {
+                        '>': [
+                            {
+                                var: 'form.components',
+                            },
+                            5,
+                        ],
+                    },
+                    true,
+                    'Form must have greater than 5 components',
+                ],
+            },
+        },
+    };
+    const form = {
+        components: [component],
+    }
+    const data = {
+        component: 'foo',
+    };
+    const context = generateProcessorContext(component, data, form);
+    const result = await validateJson(context);
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.errorKeyOrMessage).to.contain("Form must have greater than 5 components");
+})

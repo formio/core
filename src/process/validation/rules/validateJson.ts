@@ -27,7 +27,10 @@ export const validateJsonSync: RuleFnSync = (context: ValidationContext) => {
     evalContextValue.value = value || null;
     const valid: true | string = jsonLogic.evaluator.evaluate(
         func,
-        evalContextValue,
+        {
+            ...evalContextValue,
+            input: value,
+        },
         'valid'
     );
     if (valid === null) {
