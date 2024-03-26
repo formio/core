@@ -1,3 +1,10 @@
+## [Unreleased: 2.0.0-rc.22]
+### Changed
+ - FIO-7146: gh actions for repository
+ - FIO-8100: add clearhidden processor to cover logic, conditions, and custom
+ - FIO-8101: always process json validation even if value is falsy
+ - FIO-8107: correct small error in normalize processor
+   
 ## 2.0.0-rc.21
 ### Changed
  - FIO-8092: update isEmpty to isComponentDataEmpty and account for differing component data types
