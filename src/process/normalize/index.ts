@@ -216,7 +216,7 @@ const normalizeSelectBoxesComponentValue = (value: any) => {
 
 const normalizeTagsComponentValue = (component: TagsComponent, value: any) => {
     const delimiter = component.delimeter || ',';
-    if (component.storeas === 'string' && Array.isArray(value)) {
+    if ((!component.hasOwnProperty('storeas') || component.storeas === 'string') && Array.isArray(value)) {
         return value.join(delimiter);
     }
     else if (component.storeas === 'array' && typeof value === 'string') {
