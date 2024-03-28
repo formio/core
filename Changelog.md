@@ -1,4 +1,4 @@
-## [Unreleased: 2.0.0-rc.24]
+## 2.0.0-rc.24
 ### Changed
  - FIO-8106: add default storeas value to tags
  - FIO-8106: add invalidDate error translation
