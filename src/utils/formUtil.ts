@@ -201,6 +201,9 @@ export const componentChildPath = (component: any, parentPath?: string, path?: s
     if (isComponentModelType(component, 'dataObject')) {
       return `${path}.data`;
     }
+    if (isComponentModelType(component, 'array')) {
+      return `${path}[0]`;
+    }
     if (isComponentNestedDataType(component)) {
       return path;
     }
@@ -1112,8 +1115,8 @@ export function isComponentDataEmpty(component: Component, data: any, path: stri
     } else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {
         if (component.components?.length) {
             let childrenEmpty = true;
-            // TODO: eachComponentData currently can't handle passing child components directly because it won't get the path right;
-            // wrapping component in an array and skipping it's callback is a workaround to start with the correct path, but it is not ideal
+            // wrap component in an array to let eachComponentData handle introspection to child components (e.g. this will be different
+            // for data grids versus nested forms, etc.)
             eachComponentData([component], data, (thisComponent, data, row, path, components, index) => {
                 if (component.key === thisComponent.key) return;
                 if (!isComponentDataEmpty(thisComponent, data, path)) {
