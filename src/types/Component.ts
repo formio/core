@@ -86,6 +86,10 @@ export type ContainerComponent = NestedComponent & {
     components: Component[];
 };
 
+export type HasChildComponents = BaseComponent & {
+    components: Component[];
+}
+
 export type AddressComponent = ContainerComponent & {
     switchToManualModeLabel: string;
     provider: string;
@@ -140,6 +144,7 @@ export type NumberComponent = BaseComponent & {
 
 export type NestedArrayComponent = NestedComponent & {
     disableAddingRemovingRows: boolean;
+    components: Component[];
 };
 
 export type DataGridComponent = NestedArrayComponent;

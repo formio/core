@@ -2541,6 +2541,128 @@ describe('Process Tests', () => {
         assert.deepEqual(context.data, { selector: 'one' });
         assert.equal(context.scope.errors.length, 0);
     });
+
+    it('Should not include submission data for conditionally hidden fields', async () => {
+        const form = {
+            display: 'form',
+            components: [
+                {
+                    type: 'textfield',
+                    key: 'textField',
+                    label: 'Text Field',
+                    input: true,
+                },
+                {
+                    type: 'textarea',
+                    key: 'textArea',
+                    label: 'Text Area',
+                    input: true,
+                    conditional: {
+                        show: false,
+                        conjunction: 'all',
+                        conditions: [
+                            {
+                                component: 'textField',
+                                operator: 'isEmpty'
+                            }
+                        ]
+                    },
+                }
+            ]
+        };
+
+        const submission = {
+            data: {
+                textField: '',
+                textArea: 'should not be in submission'
+            }
+        };
+
+        const context = {
+            form,
+            submission,
+            data: submission.data,
+            components: form.components,
+            processors: ProcessTargets.evaluator,
+            scope: {},
+            config: {
+                server: true
+            }
+        };
+        processSync(context);
+        expect(context.data).to.deep.equal({ textField: '' });
+    });
+
+    it('Should not include submission data for logically hidden fields', async () => {
+        const form = {
+            display: 'form',
+            components: [
+                {
+                    type: 'textfield',
+                    key: 'textField',
+                    label: 'Text Field',
+                    input: true,
+                },
+                {
+                    type: 'textarea',
+                    key: 'textArea',
+                    label: 'Text Area',
+                    input: true,
+                    logic: [
+                        {
+                            name: 'Hide When Empty',
+                            trigger: {
+                                type: 'simple' as const,
+                                simple: {
+                                    show: true,
+                                    conjunction: 'all',
+                                    conditions: [
+                                        {
+                                            component: 'textField',
+                                            operator: 'isEmpty',
+                                        },
+                                    ],
+                                },
+                            },
+                            actions: [
+                                {
+                                    name: 'Hide',
+                                    type: 'property' as const,
+                                    property: {
+                                        label: 'Hidden',
+                                        value: 'hidden',
+                                        type: 'boolean' as const,
+                                    },
+                                    state: true,
+                                },
+                            ],
+                        },
+                    ]
+                }
+            ]
+        };
+
+        const submission = {
+            data: {
+                textField: '',
+                textArea: 'should not be in submission'
+            }
+        };
+
+        const context = {
+            form,
+            submission,
+            data: submission.data,
+            components: form.components,
+            processors: ProcessTargets.evaluator,
+            scope: {},
+            config: {
+                server: true
+            }
+        };
+        processSync(context);
+        expect(context.data).to.deep.equal({ textField: '' });
+    });
     /*
           it('Should not clearOnHide when set to false', async () => {
             var components = [
@@ -2621,7 +2743,7 @@ describe('Process Tests', () => {
                 }
               }
             ];
-    
+
             helper
               .form('test', components)
               .submission({
@@ -2632,13 +2754,13 @@ describe('Process Tests', () => {
                 if (err) {
                   return done(err);
                 }
-    
+
                 var submission = helper.getLastSubmission();
                 assert.deepEqual({selector: 'one', noClear: 'testing'}, submission.data);
                 done();
               });
           });
-    
+
           it('Should clearOnHide when set to true', async () => {
             var components = [
               {
@@ -2718,7 +2840,7 @@ describe('Process Tests', () => {
                 }
               }
             ];
-    
+
             helper
               .form('test', components)
               .submission({
@@ -2729,7 +2851,7 @@ describe('Process Tests', () => {
                 if (err) {
                   return done(err);
                 }
-    
+
                 var submission = helper.getLastSubmission();
                 assert.deepEqual({selector: 'one'}, submission.data);
                 done();

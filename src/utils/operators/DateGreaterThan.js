@@ -1,5 +1,6 @@
 import ConditionOperator from './ConditionOperator';
 import moment from 'moment';
+import { isPartialDay, getDateValidationFormat } from '../../utils/date';
 export default class DateGeaterThan extends ConditionOperator {
     static get operatorKey() {
         return 'dateGreaterThan';
@@ -10,7 +11,7 @@ export default class DateGeaterThan extends ConditionOperator {
     }
 
     getFormattedDates({ value, comparedValue, conditionTriggerComponent }) {
-        const hasValidationFormat = conditionTriggerComponent ? conditionTriggerComponent.getValidationFormat : null;
+        const hasValidationFormat = conditionTriggerComponent && conditionTriggerComponent.component.type === 'day' ? getDateValidationFormat(conditionTriggerComponent.component) : null;
         const date = hasValidationFormat ? moment(value, conditionTriggerComponent.getValidationFormat()) : moment(value);
         const comparedDate = hasValidationFormat ? moment(comparedValue, conditionTriggerComponent.getValidationFormat()) : moment(comparedValue);
 
@@ -30,7 +31,7 @@ export default class DateGeaterThan extends ConditionOperator {
             conditionTriggerComponent = instance.root.getComponent(conditionComponentPath);
         }
 
-        if ( conditionTriggerComponent && conditionTriggerComponent.isPartialDay && conditionTriggerComponent.isPartialDay(value)) {
+        if (conditionTriggerComponent && conditionTriggerComponent.component.type === 'day' && isPartialDay(conditionTriggerComponent.component, value)) {
             return false;
         }
 
