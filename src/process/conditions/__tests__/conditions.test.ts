@@ -1,44 +1,54 @@
 import { expect } from 'chai';
-import { process } from '../../process'
+import { processSync } from '../../process'
 import { conditionProcessInfo } from '../index';
 import { ConditionsScope, ProcessContext } from 'types';
 
-const processForm = async (form: any, submission: any) => {
+const processForm = (form: any, submission: any) => {
     const context: ProcessContext<ConditionsScope> = {
         processors: [conditionProcessInfo],
         components: form.components,
         data: submission.data,
         scope: {}
     };
-    await process(context);
+    processSync(context);
     return context;
 };
 
 describe('Condition processor', () => {
-    it('Perform conditional data with "clearOnHide" enabled.', async () => {
+    it('Should modify component\'s "hidden" property when conditionally visible is false', async () => {
         const form = {
             components: [
                 {
-                    type: 'number',
+                    type: 'textfield',
                     key: 'a',
                     input: true
                 },
                 {
-                    type: 'number',
+                    type: 'textfield',
                     key: 'b',
-                    input: true
+                    input: true,
+                    conditional: {
+                        show: false,
+                        conjunction: 'all',
+                        conditions: [
+                          {
+                            component: 'a',
+                            operator: 'isEmpty'
+                          }
+                        ]
+                      },
                 }
             ]
         };
-    
+
         const submission = {
             data: {
-                a: 1,
-                b: 2
+                a: '',
             }
         };
-    
-        const context: ProcessContext<ConditionsScope> = await processForm(form, submission);
-        console.log(context);
+
+        const context: ProcessContext<ConditionsScope> = processForm(form, submission);
+        expect(context.components[1]).to.haveOwnProperty('hidden');
+        expect(context.components[1].hidden).to.be.true;
     });
 });

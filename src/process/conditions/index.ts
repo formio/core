@@ -1,6 +1,6 @@
 import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, ConditionsContext, SimpleConditional, JSONConditional, LegacyConditional, SimpleConditionalConditions, Component, NestedComponent, FilterScope } from 'types';
 import { Utils } from 'utils';
-import unset from 'lodash/unset';
+import set from 'lodash/set';
 import { componentInfo, getComponentKey, getComponentPath } from 'utils/formUtil';
 import {
     checkCustomConditional,
@@ -112,16 +112,12 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
             Utils.eachComponentData([component], row, (comp: Component, data: any, compRow: any, compPath: string) => {
                 if (comp !== component) {
                     scope.conditionals?.push({ path: getComponentPath(comp, compPath), conditionallyHidden: true });
-                } 
-                if (!comp.hasOwnProperty('clearOnHide') || comp.clearOnHide) {
-                    unset(compRow, getComponentKey(comp));
                 }
+                set(comp, 'hidden', true);
             });
         }
         else {
-            if (!component.hasOwnProperty('clearOnHide') || component.clearOnHide) {
-                unset(data, path);
-            }
+            set(component, 'hidden', true);
         }
     } else {
         conditionalComp.conditionallyHidden = false;
