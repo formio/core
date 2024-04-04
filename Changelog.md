@@ -1,3 +1,7 @@
+## 2.0.0-rc.25
+### Changed
+ - FIO-8143: update eachComponent to be able to return proper pathing
+
 ## 2.0.0-rc.24
 ### Changed
  - FIO-8106: add default storeas value to tags
