@@ -1,3 +1,7 @@
+## 2.0.0-rc.26
+### Changed
+ - FIO-8128: allow export of dist minified js
+
 ## 2.0.0-rc.25
 ### Changed
  - FIO-8143: update eachComponent to be able to return proper pathing
