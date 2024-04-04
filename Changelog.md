@@ -1,3 +1,6 @@
+## [Unreleased: 2.0.0-rc.27]
+ - FIO-8128: allow export of dist minified js
+   
 ## 2.0.0-rc.26
 ### Changed
  - FIO-8128: allow export of dist minified js
