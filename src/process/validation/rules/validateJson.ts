@@ -38,7 +38,10 @@ export const validateJsonSync: RuleFnSync = (context: ValidationContext) => {
     }
     return valid === true
         ? null
-        : new FieldError(valid || 'jsonLogic', context);
+        : new FieldError(valid || 'jsonLogic', {
+            ...context,
+            setting: func,
+        });
 };
 
 export const validateJsonInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
