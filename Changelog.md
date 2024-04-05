@@ -1,3 +1,7 @@
+## 2.0.0-rc.28
+### Changed
+ - Fix json and custom validation errors response
+
 ## 2.0.0-rc.27
  - FIO-8128: allow export of dist minified js
    
