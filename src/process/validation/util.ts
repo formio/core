@@ -77,7 +77,7 @@ export const interpolateErrors = (errors: FieldError[], lang: string = 'en') => 
             level: error.level,
             path: paths,
             context: {
-                validator: errorKeyOrMessage || context.processor,
+                validator: context.processor,
                 hasLabel: context.hasLabel,
                 key: context.component.key,
                 label: context.component.label || context.component.placeholder || context.component.key,
