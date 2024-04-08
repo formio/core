@@ -5,8 +5,8 @@ import { ProcessorInfo } from 'types/process/ProcessorInfo';
 import { isObject } from 'lodash';
 
 export const shouldValidate = (context: ValidationContext) => {
-    const { component, value } = context;
-    if (!value || !component.validate?.json || !isObject(component.validate.json)) {
+    const { component } = context;
+    if (!component.validate?.json || !isObject(component.validate.json)) {
         return false;
     }
     return true;
@@ -17,16 +17,18 @@ export const validateJson: RuleFn = async (context: ValidationContext) => {
 };
 
 export const validateJsonSync: RuleFnSync = (context: ValidationContext) => {
-    const { component, data, value } = context;
+    const { component, data, value, evalContext } = context;
     if (!shouldValidate(context)) {
         return null;
     }
 
     const func = component?.validate?.json;
+    const evalContextValue = evalContext ? evalContext(context) : context;
+    evalContextValue.value = value || null;
     const valid: true | string = jsonLogic.evaluator.evaluate(
         func,
         {
-            data,
+            ...evalContextValue,
             input: value,
         },
         'valid'
@@ -36,7 +38,10 @@ export const validateJsonSync: RuleFnSync = (context: ValidationContext) => {
     }
     return valid === true
         ? null
-        : new FieldError(valid || 'jsonLogic', context);
+        : new FieldError(valid || 'jsonLogic', {
+            ...context,
+            setting: func,
+        });
 };
 
 export const validateJsonInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
