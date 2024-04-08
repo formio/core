@@ -53,7 +53,7 @@ export const validateCustomSync: RuleFnSync = (context: ValidationContext) => {
         ...context,
         hasLabel: false,
         setting: customValidation,
-    });
+    }, 'custom');
 };
 
 

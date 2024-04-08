@@ -4,6 +4,7 @@ import { rules } from "../rules";
 import { simpleForm } from './fixtures/forms';
 import { ProcessorType, ValidationScope } from 'types';
 import get from 'lodash/get';
+
 it('Validator will throw the correct errors given a flat components array', async () => {
     let errors: string[] = [];
     const data = {
@@ -27,11 +28,36 @@ it('Validator will throw the correct errors given a flat components array', asyn
             path,
             value: get(data, component.key),
             processor: ProcessorType.Validate,
-            rules: rules
+            rules
         });
         if (scope.errors) {
             errors = [...errors, ...scope.errors.map((error) => error.errorKeyOrMessage)];
         }
     }
     expect(errors).to.have.length(6);
+});
+
+it('Validation errors (FieldErrors) should include the rule name mapping in the "validator" param', async () => {
+    let errors: string[] = [];
+    const data = {
+        requiredField: ''
+    };
+    for (let component of simpleForm.components) {
+        const path = component.key;
+        const scope: ValidationScope = { errors: [] };
+        await validateProcess({
+            component,
+            scope,
+            data,
+            row: data,
+            path,
+            value: get(data, component.key),
+            processor: ProcessorType.Validate,
+            rules
+        });
+        if (scope.errors) {
+            errors = [...errors, ...scope.errors.map((error) => error.errorKeyOrMessage)];
+        }
+    }
+    console.log(errors);
 });

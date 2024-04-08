@@ -22,7 +22,7 @@ export const validateEmail: RuleFn = async (context: ValidationContext) => {
 };
 
 export const validateEmailSync: RuleFnSync = (context: ValidationContext) => {
-    const error = new FieldError('invalid_email', context);
+    const error = new FieldError('invalid_email', context, 'email');
     const { value } = context;
     if (!shouldValidate(context)) {
         return null;
