@@ -42,24 +42,30 @@ async function getAvailableSelectValues(component: SelectComponent, context: Val
             if (Array.isArray(component.data.values)) {
                 return mapStaticValues(component.data.values);
             }
-            throw new Error(
+            throw new ProcessorError(
                 `Failed to validate available values in static values select component '${component.key}': the values are not an array`,
+                context,
+                'validate:validateAvailableItems'
             );
         case 'json': {
             if (typeof component.data.json === 'string') {
                 try {
                     return mapDynamicValues(component, JSON.parse(component.data.json));
                 } catch (err) {
-                    throw new Error(
-                        `Failed to validate available values in JSON select component '${component.key}': ${err}`
+                    throw new ProcessorError(
+                        `Failed to validate available values in JSON select component '${component.key}': ${err}`,
+                        context,
+                        'validate:validateAvailableItems'
                     );
                 }
             } else if (Array.isArray(component.data.json)) {
                 // TODO: need to retype this
                 return mapDynamicValues(component, component.data.json as Record<string, any>[]);
             } else {
-                throw new Error(
-                    `Failed to validate available values in JSON select component '${component.key}': the values are not an array`
+                throw new ProcessorError(
+                    `Failed to validate available values in JSON select component '${component.key}': the values are not an array`,
+                    context,
+                    'validate:validateAvailableItems'
                 );
             }
         }
@@ -85,13 +91,17 @@ async function getAvailableSelectValues(component: SelectComponent, context: Val
             if (Array.isArray(customItems)) {
                 return customItems;
             } else {
-                throw new Error(
-                    `Failed to validate available values in JSON select component '${component.key}': the values are not an array`
+                throw new ProcessorError(
+                    `Failed to validate available values in JSON select component '${component.key}': the values are not an array`,
+                    context,
+                    'validate:validateAvailableItems'
                 );
             }
         default:
-            throw new Error(
-                `Failed to validate available values in select component '${component.key}': data source ${component.dataSrc} is not valid}`
+            throw new ProcessorError(
+                `Failed to validate available values in select component '${component.key}': data source ${component.dataSrc} is not valid}`,
+                context,
+                'validate:validateAvailableItems'
             );
     }
 }
@@ -102,8 +112,10 @@ function getAvailableSelectValuesSync(component: SelectComponent, context: Valid
             if (Array.isArray(component.data?.values)) {
                 return mapStaticValues(component.data.values);
             }
-            throw new Error(
-                `Failed to validate available values in static values select component '${component.key}': the values are not an array`
+            throw new ProcessorError(
+                `Failed to validate available values in static values select component '${component.key}': the values are not an array`,
+                context,
+                'validate:validateAvailableItems'
             );
         case 'json': {
             if (typeof component.data.json === 'string') {
@@ -138,18 +150,22 @@ function getAvailableSelectValuesSync(component: SelectComponent, context: Valid
             if (Array.isArray(customItems)) {
                 return customItems;
             } else {
-                throw new Error(
-                    `Failed to validate available values in JSON select component '${component.key}': the values are not an array`
+                throw new ProcessorError(
+                    `Failed to validate available values in JSON select component '${component.key}': the values are not an array`,
+                    context,
+                    'validate:validateAvailableItems'
                 );
             }
         default:
-            throw new Error(
-                `Failed to validate available values in select component '${component.key}': data source ${component.dataSrc} is not valid}`
+            throw new ProcessorError(
+                `Failed to validate available values in select component '${component.key}': data source ${component.dataSrc} is not valid}`,
+                context,
+                'validate:validateAvailableItems'
             );
     }
 }
 
-function compareComplexValues(valueA: unknown, valueB: unknown) {
+function compareComplexValues(valueA: unknown, valueB: unknown, context: ValidationContext) {
     if (!isObject(valueA) || !isObject(valueB)) {
         return false;
     }
@@ -159,7 +175,7 @@ function compareComplexValues(valueA: unknown, valueB: unknown) {
         // this won't work
         return JSON.stringify(valueA) === JSON.stringify(valueB);
     } catch (err) {
-        throw new Error(`Error while comparing available values: ${err}`);
+        throw new ProcessorError(`Error while comparing available values: ${err}`, context, 'validate:validateAvailableItems');
     }
 }
 
@@ -187,7 +203,7 @@ export const validateAvailableItems: RuleFn = async (context: ValidationContext)
             const values = await getAvailableSelectValues(component, context);
             if (values) {
                 if (isObject(value)) {
-                    return values.find((optionValue) => compareComplexValues(optionValue, value)) !==
+                    return values.find((optionValue) => compareComplexValues(optionValue, value, context)) !==
                         undefined
                         ? null
                         : error;
@@ -236,7 +252,7 @@ export const validateAvailableItemsSync: RuleFnSync = (context: ValidationContex
             const values = getAvailableSelectValuesSync(component, context);
             if (values) {
                 if (isObject(value)) {
-                    return values.find((optionValue) => compareComplexValues(optionValue, value)) !==
+                    return values.find((optionValue) => compareComplexValues(optionValue, value, context)) !==
                         undefined
                         ? null
                         : error;
