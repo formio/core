@@ -1,3 +1,7 @@
+## 2.0.0-rc.29
+### Changed
+ - FIO-8178: correctly add "validator" param to interpolated error object
+
 ## 2.0.0-rc.28
 ### Changed
  - Fix json and custom validation errors response
