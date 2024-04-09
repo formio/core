@@ -25,9 +25,11 @@ type FieldErrorContext = ValidationContext & {
 export class FieldError {
     context: FieldErrorContext
     errorKeyOrMessage: string;
+    ruleName: string;
     level?: string;
-    constructor(errorKeyOrMessage: string, context: FieldErrorContext) {
+    constructor(errorKeyOrMessage: string, context: FieldErrorContext, ruleName: string = errorKeyOrMessage) {
         const { component, hasLabel = true, field = getComponentErrorField(component, context), level = 'error' } = context;
+        this.ruleName = ruleName;
         if (context.component.validate?.customMessage) {
             this.errorKeyOrMessage = context.component.validate.customMessage;
             this.context = { ...context, hasLabel: false, field, level };

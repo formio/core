@@ -53,7 +53,7 @@ export const validateDaySync: RuleFnSync = (context: ValidationContext) => {
     if (!shouldValidate(context)) {
         return null;
     }
-    const error = new FieldError('invalidDay', context);
+    const error = new FieldError('invalidDay', context, 'day');
     if (typeof value !== 'string') {
         return error;
     }

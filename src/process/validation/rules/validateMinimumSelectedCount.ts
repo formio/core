@@ -63,11 +63,11 @@ export const validateMinimumSelectedCountSync: RuleFnSync = (context: Validation
         return null;
     }
     return count < min
-        ? new FieldError((component as SelectBoxesComponent).minSelectedCountMessage || 'minSelectedCount', { 
+        ? new FieldError((component as SelectBoxesComponent).minSelectedCountMessage || 'minSelectedCount', {
             ...context,
             minCount: String(min),
             setting: String(min),
-        })
+        }, 'minSelectedCount')
         : null;
 };
 

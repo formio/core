@@ -159,7 +159,7 @@ function compareComplexValues(valueA: unknown, valueB: unknown) {
 
 export const validateAvailableItems: RuleFn = async (context: ValidationContext) => {
     const { component, value } = context;
-    const error = new FieldError('invalidOption', context);
+    const error = new FieldError('invalidOption', context, 'onlyAvailableItems');
     if (isValidatableRadioComponent(component)) {
         if (value == null || isEmpty(value)) {
             return null;
@@ -208,7 +208,7 @@ export const shouldValidate = (context: any) => {
 
 export const validateAvailableItemsSync: RuleFnSync = (context: ValidationContext) => {
     const { component, value } = context;
-    const error = new FieldError('invalidOption', context);
+    const error = new FieldError('invalidOption', context, 'onlyAvailableItems');
     if (!shouldValidate(context)) {
         return null;
     }

@@ -39,7 +39,7 @@ export const validateRequiredSurveySync: RuleFnSync = (context: ValidationContex
     }
     for (const question of (component as SurveyComponent).questions) {
         if (!value[question.value]) {
-            const error = new FieldError('requiredSurvey', context);
+            const error = new FieldError('requiredSurvey', context, 'required');
             return error;
         }
     }
