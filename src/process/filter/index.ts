@@ -15,6 +15,7 @@ export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterC
                 scope.filter[absolutePath] = {data: {}};
                 break;
             case 'array':
+                scope.filter[absolutePath] = true;
                 break;
             case 'object':
                 if (component.type !== 'container') {
