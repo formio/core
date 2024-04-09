@@ -96,16 +96,18 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
     if (!scope.conditionals) {
         scope.conditionals = [];
     }
-    scope.conditionals.push({ path, conditionallyHidden: true });
-    const conditionalComp = scope.conditionals[scope.conditionals.length - 1];
+    let conditionalComp = scope.conditionals.find((cond) => (cond.path === path));
+    if (!conditionalComp) {
+        conditionalComp = {path, conditionallyHidden: false};
+        scope.conditionals.push(conditionalComp);
+    }
 
     if (skipOnServer(context)) {
         return false;
     }
 
-    const conditionallyHidden = isHidden(context);
-    if (conditionallyHidden) {
-        conditionalComp.conditionallyHidden = conditionallyHidden;
+    conditionalComp.conditionallyHidden = conditionalComp.conditionallyHidden || isHidden(context);
+    if (conditionalComp.conditionallyHidden) {
         const info = componentInfo(component);
         if (info.hasColumns || info.hasComps || info.hasRows) {
             // If this is a container component, we need to add all the child components as conditionally hidden as well.
@@ -119,8 +121,6 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
         else {
             set(component, 'hidden', true);
         }
-    } else {
-        conditionalComp.conditionallyHidden = false;
     }
 };
 
