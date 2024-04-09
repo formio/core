@@ -58,11 +58,11 @@ export function checkCustomConditional(condition: string, context: ConditionsCon
  * @returns 
  */
 export function checkLegacyConditional(conditional: LegacyConditional, context: ConditionsContext): boolean | null {
-    const { row, data } = context;
+    const { row, data, component } = context;
     if (!conditional || !isLegacyConditional(conditional) || !conditional.when) {
         return null;
     }
-    const value: any = getComponentActualValue(conditional.when, data, row);
+    const value: any = getComponentActualValue(component, conditional.when, data, row);
     const eq = String(conditional.eq);
     const show = String(conditional.show);
     if (isObject(value) && has(value, eq)) {
@@ -111,7 +111,7 @@ export function checkSimpleConditional(conditional: SimpleConditional, context: 
             // Ignore conditions if there is no component path.
             return null;
         }
-        const value = getComponentActualValue(conditionComponentPath, data, row);
+        const value = getComponentActualValue(component, conditionComponentPath, data, row);
         const ConditionOperator = ConditionOperators[operator];
         return ConditionOperator
             ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })

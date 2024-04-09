@@ -13,7 +13,8 @@ import {
   pad,
   isPlainObject,
   isArray,
-  isEqual
+  isEqual,
+  trim
 } from "lodash";
 import { compare, applyPatch } from 'fast-json-patch';
 import {
@@ -557,7 +558,22 @@ export function getComponentData(components: Component[], data: DataObject, path
   return compData;
 }
 
-export function getComponentActualValue(compPath: string, data: any, row: any) {
+export function getComponentActualValue(component: Component, compPath: string, data: any, row: any) {
+  // The compPath here will NOT contain the indexes for DataGrids and EditGrids. 
+  //
+  //   a[0].b[2].c[3].d
+  //
+  // Because of this, we will need to determine our parent component path (not data path), 
+  // and find the "row" based comp path.
+  //
+  //   a[0].b[2].c[3].d => a.b.c.d
+  //
+  if (component.parent?.path) {
+    const parentCompPath = component.parent?.path.replace(/\[[0-9]+\]/g, '');
+    compPath = compPath.replace(parentCompPath, '');
+    compPath = trim(compPath, '. ');
+  }
+
   let value = null;
   if (row) {
       value = get(row, compPath);

@@ -42,12 +42,36 @@ export const checkTrigger = (context: LogicContext, trigger: any): boolean => {
 };
 
 export function setActionBooleanProperty(context: LogicContext, action: LogicActionPropertyBoolean): boolean {
-    const { component } = context;
+    const { component, scope, path } = context;
     const property = action.property.value;
     const currentValue = get(component, property, false).toString();
     const newValue = action.state.toString();
     if (currentValue !== newValue) {
         set(component, property, newValue === 'true');
+
+        // If this is "logic" forcing a component to be hidden, then we will set the "conditionallyHidden"
+        // flag which will trigger the clearOnHide functionality.
+        if (
+            property === 'hidden' &&
+            component.hidden &&
+            path
+        ) {
+            if (!(scope as any).conditionals) {
+                (scope as any).conditionals = [];
+            }
+            const conditionalyHidden = (scope as any).conditionals.find((cond: any) => {
+                return cond.path === path
+            });
+            if (conditionalyHidden) {
+                conditionalyHidden.conditionallyHidden = true;
+            }
+            else {
+                (scope as any).conditionals.push({
+                    path,
+                    conditionallyHidden: true
+                });
+            }
+        }
         return true;
     }
     return false;
