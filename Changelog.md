@@ -1,3 +1,8 @@
+## 2.0.0-rc.30
+### Changed
+ - FIO-8177: fix unsetting empty array values
+ - FIO-8185: Fixing issues with EditGrid and DataGrid clearOnHide with Conditionally visible elements.
+
 ## 2.0.0-rc.29
 ### Changed
  - FIO-8178: correctly add "validator" param to interpolated error object
