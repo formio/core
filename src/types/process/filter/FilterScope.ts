@@ -1,8 +1,4 @@
 import { ProcessorScope } from "..";
 export type FilterScope = {
-    filter: Record<string, {
-        compModelType: string;
-        include: boolean;
-        value?: any;
-    }>;
+    filter: Record<string, any>;
 } & ProcessorScope;
