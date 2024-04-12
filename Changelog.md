@@ -1,3 +1,8 @@
+## 2.0.0-rc.31
+### Changed
+ - FIO-8210: fix nested form validation
+ - change filter processor to be more verbose and have compModelType in …
+
 ## 2.0.0-rc.30
 ### Changed
  - FIO-8177: fix unsetting empty array values
