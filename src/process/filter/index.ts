@@ -40,7 +40,7 @@ export const filterPostProcess: ProcessorFnSync<FilterScope> = (context: FilterC
         if (scope.filter[path]) {
             let value = get(submission?.data, path);
             if (isObject(value) && isObject(scope.filter[path])) {
-                if (Utils.getModelType(context.component) === 'dataObject') {
+                if ((value as any).data) {
                     value = {...value, ...scope.filter[path], data: (value as any)?.data}
                 } else {
                     value = {...value, ...scope.filter[path]}
