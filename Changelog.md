@@ -1,3 +1,7 @@
+## 2.0.0
+### Changed
+ - Official Release
+
 ## 2.0.0-rc.32
 ### Changed
  - revert: change filter processor to be more verbose and have compModelType in …
