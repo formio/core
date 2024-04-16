@@ -27,7 +27,7 @@ export const validateRegexPattern: RuleFn = async (context: ValidationContext) =
 
 export const validateRegexPatternSync: RuleFnSync = (context: ValidationContext) => {
     const { component, value } = context;
-    if (!shouldValidate(context)) {
+    if (!shouldValidate(context) || !isValidatableTextFieldComponent(component)) {
         return null;
     }
 
@@ -35,7 +35,7 @@ export const validateRegexPatternSync: RuleFnSync = (context: ValidationContext)
     const regex = new RegExp(`^${pattern}$`);
     return typeof value === 'string' && regex.test(value)
         ? null
-        : new FieldError('pattern', { ...context, regex: pattern, pattern: pattern, setting: pattern });
+        : new FieldError(component.validate?.pattern || 'pattern', { ...context, regex: pattern, pattern: pattern, setting: pattern }, 'pattern');
 };
 
 export const validateRegexPatternInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
