@@ -1,9 +1,10 @@
+import get from 'lodash/get';
 import { expect } from 'chai';
 import { validateProcess } from '../index';
 import { rules } from "../rules";
 import { simpleForm } from './fixtures/forms';
 import { ProcessorType, ValidationScope } from 'types';
-import get from 'lodash/get';
+
 it('Validator will throw the correct errors given a flat components array', async () => {
     let errors: string[] = [];
     const data = {
@@ -27,7 +28,7 @@ it('Validator will throw the correct errors given a flat components array', asyn
             path,
             value: get(data, component.key),
             processor: ProcessorType.Validate,
-            rules: rules
+            rules
         });
         if (scope.errors) {
             errors = [...errors, ...scope.errors.map((error) => error.errorKeyOrMessage)];

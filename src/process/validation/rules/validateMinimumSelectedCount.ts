@@ -69,7 +69,7 @@ export const validateMinimumSelectedCountSync: RuleFnSync = (context: Validation
                 ...context,
                 minCount: String(min),
                 setting: String(min),
-            })
+            }, 'minSelectedCount')
             : null;
     } catch (err: any) {
         throw new ProcessorError(err.message || err, context, 'validate:validateMinimumSelectedCount');

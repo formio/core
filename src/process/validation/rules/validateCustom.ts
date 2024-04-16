@@ -52,7 +52,7 @@ export const validateCustomSync: RuleFnSync = (context: ValidationContext) => {
             ...context,
             hasLabel: false,
             setting: customValidation
-        });
+        }, 'custom');
     } catch (err: any) {
         throw new ProcessorError(err.message || err, context, 'validate:validateCustom');
     }

@@ -12,17 +12,31 @@ export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterC
         const modelType = Utils.getModelType(component);
         switch (modelType) {
             case 'dataObject':
-                scope.filter[absolutePath] = {data: {}};
+                scope.filter[absolutePath] = {
+                    compModelType: modelType,
+                    include: true,
+                    value: {data: {}}
+                };
                 break;
             case 'array':
+                scope.filter[absolutePath] = {
+                    compModelType: modelType,
+                    include: true,
+                };
                 break;
             case 'object':
                 if (component.type !== 'container') {
-                    scope.filter[absolutePath] = true;
+                    scope.filter[absolutePath] = {
+                        compModelType: modelType,
+                        include: true,
+                    };
                 }
                 break;
             default:
-                scope.filter[absolutePath] = true;
+                scope.filter[absolutePath] = {
+                    compModelType: modelType,
+                    include: true,
+                };
                 break;
         }
     }
@@ -36,10 +50,14 @@ export const filterPostProcess: ProcessorFnSync<FilterScope> = (context: FilterC
     const { scope, submission } = context;
     const filtered = {};
     for (const path in scope.filter) {
-        if (scope.filter[path]) {
+        if (scope.filter[path].include) {
             let value = get(submission?.data, path);
             if (isObject(value) && isObject(scope.filter[path])) {
-                value = {...value, ...scope.filter[path]}
+                if (scope.filter[path].compModelType === 'dataObject') {
+                    value = {...value, ...scope.filter[path].value, data: (value as any)?.data}
+                } else {
+                    value = {...value, ...scope.filter[path].value}
+                }
             }
             set(filtered, path, value);
         }

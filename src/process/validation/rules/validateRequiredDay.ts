@@ -29,7 +29,7 @@ export const validateRequiredDaySync: RuleFnSync = (context: ValidationContext) 
         return null;
     }
     if (!value) {
-        return new FieldError('requiredDayEmpty', context);
+        return new FieldError('requiredDayEmpty', context, 'day');
     }
     if (typeof value !== 'string') {
         throw new ProcessorError(
@@ -45,13 +45,13 @@ export const validateRequiredDaySync: RuleFnSync = (context: ValidationContext) 
         year = values[YEAR];
 
     if (!day && (component as DayComponent).fields.day.required === true) {
-        return new FieldError('requiredDayField', context);
+        return new FieldError('requiredDayField', context, 'day');
     }
     if (!month && (component as DayComponent).fields.month.required === true) {
-        return new FieldError('requiredMonthField', context);
+        return new FieldError('requiredMonthField', context, 'day');
     }
     if (!year && (component as DayComponent).fields.year.required === true) {
-        return new FieldError('requiredYearField', context);
+        return new FieldError('requiredYearField', context, 'day');
     }
     return null;
 };
