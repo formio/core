@@ -22,13 +22,13 @@ export const validateCaptcha: RuleFn = async (context: ValidationContext) => {
     }
     try {
         if (!value || !value.token) {
-            return new FieldError('captchaTokenNotSpecified', context);
+            return new FieldError('captchaTokenNotSpecified', context, 'catpcha');
         }
         if (!value.success) {
-            return new FieldError('captchaTokenValidation', context);
+            return new FieldError('captchaTokenValidation', context, 'captcha');
         }
         const captchaResult: boolean = await config.database?.validateCaptcha(value.token);
-        return (captchaResult === true) ? null : new FieldError('captchaFailure', context);
+        return (captchaResult === true) ? null : new FieldError('captchaFailure', context, 'captcha');
     }
     catch (err: any) {
         throw new ValidatorError(err.message || err);

@@ -49,7 +49,11 @@ export const validateCustomSync: RuleFnSync = (context: ValidationContext) => {
         return null;
     }
 
-    return new FieldError(typeof isValid === 'string' ? isValid : 'custom', {...context, hasLabel: false });
+    return new FieldError(typeof isValid === 'string' ? isValid : 'custom', {
+        ...context,
+        hasLabel: false,
+        setting: customValidation,
+    }, 'custom');
 };
 
 

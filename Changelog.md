@@ -1,3 +1,13 @@
+## [Unreleased: 2.1.0-rc.1]
+### Changed
+ - FIO-8177: fix unsetting empty array values
+ - FIO-8185: Fixing issues with EditGrid and DataGrid clearOnHide with Conditionally visible elements
+ - FIO-8178: correctly add "validator" param to interpolated error object
+ - FIO-8121: Fix json and custom validation errors response
+ - FIO-8128: allow export of dist minified js
+ - FIO-8143: update eachComponent to be able to return proper pathing
+
+
 ## 2.0.0-rc.24
 ### Changed
  - FIO-8106: add default storeas value to tags

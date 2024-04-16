@@ -8,6 +8,7 @@ import { getComponentAbsolutePath, getComponentPath } from "utils/formUtil";
 import { getErrorMessage } from "utils/error";
 import { FieldError } from "error";
 import { ConditionallyHidden, isConditionallyHidden, isCustomConditionallyHidden, isSimpleConditionallyHidden } from "processes/conditions";
+import { validate } from 'fast-json-patch';
 
 // Cleans up validation errors to remove unnessesary parts
 // and make them transferable to ivm.
@@ -278,7 +279,7 @@ export const validateProcessSync: ValidationProcessorFnSync = (context) => {
         return;
     }
     if (component.truncateMultipleSpaces && value && typeof value === 'string') {
-        value = value.trim().replace(/\s{2,}/g, ' ');
+        set(data, path, value.trim().replace(/\s{2,}/g, ' '));
     }
     for (const rule of rulesToExecute) {
         try {
