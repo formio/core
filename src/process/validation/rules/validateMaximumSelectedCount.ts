@@ -28,16 +28,20 @@ export const shouldValidate = (context: ValidationContext) => {
     return true;
 };
 
-function validateValue(value: DataObject[any]): asserts value is Record<string, boolean> {
+function validateValue(value: DataObject[any], context: ValidationContext): asserts value is Record<string, boolean> {
     if (value == null || typeof value !== 'object') {
-        throw new Error(
-            `Cannot validate maximum selected count for value ${value} as it is not an object`
+        throw new ProcessorError(
+            `Cannot validate maximum selected count for value ${value} as it is not an object`,
+            context,
+            'validate:validateMaximumSelectedCount'
         );
     }
     const subValues = Object.values(value);
     if (!subValues.every((value) => typeof value === 'boolean')) {
-        throw new Error(
-            `Cannot validate maximum selected count for value ${value} because it has non-boolean members`
+        throw new ProcessorError(
+            `Cannot validate maximum selected count for value ${value} because it has non-boolean members`,
+            context,
+            'validate:validateMaximumSelectedCount'
         );
     }
 }
@@ -53,7 +57,7 @@ export const validateMaximumSelectedCountSync: RuleFnSync = (context: Validation
         if (!shouldValidate(context)) {
             return null;
         }
-        validateValue(value);
+        validateValue(value, context);
         const max = getValidationSetting(component as SelectBoxesComponent);
         if (!max) {
             return null;
