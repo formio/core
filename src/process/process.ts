@@ -80,7 +80,6 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
     return scope;
 }
 
-// Export a record of all the supported processors.
 export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
     filter: filterProcessInfo,
     defaultValue: defaultValueProcessInfo,
