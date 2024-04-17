@@ -242,6 +242,292 @@ describe('getContextualRowData', () => {
 });
 
 describe('eachComponentDataAsync', () => {
+    it('Should iterate over each component and data given a flat components array', async () => {
+        const components = [
+            {
+                type: 'textfield',
+                key: 'textField',
+                label: 'Text Field',
+                input: true,
+            },
+            {
+                type: 'textarea',
+                key: 'textArea',
+                label: 'Text Area',
+                input: true,
+            }
+        ];
+        const data = {
+            textField: 'hello',
+            textArea: 'world',
+        };
+        const rowResults: Map<string, any> = new Map();
+        await eachComponentDataAsync(components, data, async (component, data, row, path) => {
+            const value = get(data, path);
+            rowResults.set(path, [component, value]);
+        });
+        expect(rowResults.size).to.equal(2);
+        expect(rowResults.get('textField')).to.deep.equal([
+            {
+                type: 'textfield',
+                key: 'textField',
+                label: 'Text Field',
+                input: true,
+            },
+            'hello'
+        ]);
+        expect(rowResults.get('textArea')).to.deep.equal([
+            {
+                type: 'textarea',
+                key: 'textArea',
+                label: 'Text Area',
+                input: true,
+            },
+            'world'
+        ]);
+    });
+
+    it('Should iterate over each component and data given a container component and a nested components array', async () => {
+        const components = [
+            {
+                type: 'textfield',
+                key: 'textField',
+                label: 'Text Field',
+                input: true,
+            },
+            {
+                type: 'container',
+                key: 'container',
+                label: 'Container',
+                input: true,
+                components: [
+                    {
+                        type: 'textfield',
+                        key: 'nestedTextField',
+                        label: 'Nested Text Field',
+                        input: true,
+                    },
+                    {
+                        type: 'textarea',
+                        key: 'nestedTextArea',
+                        label: 'Nested Text Area',
+                        input: true,
+                    }
+                ]
+            }
+        ];
+        const data = {
+            textField: 'hello',
+            container: {
+                nestedTextField: 'world',
+                nestedTextArea: 'foo',
+            },
+        };
+        const rowResults: Map<string, any> = new Map();
+        await eachComponentDataAsync(components, data, async (component, data, row, path) => {
+            const value = get(data, path);
+            rowResults.set(path, [component, value]);
+        });
+        expect(rowResults.size).to.equal(4);
+        expect(rowResults.get('textField')).to.deep.equal([
+            {
+                type: 'textfield',
+                key: 'textField',
+                label: 'Text Field',
+                input: true,
+            },
+            'hello'
+        ]);
+        expect(rowResults.get('container')).to.deep.equal([
+            {
+                type: 'container',
+                key: 'container',
+                label: 'Container',
+                input: true,
+                components: [
+                    {
+                        type: 'textfield',
+                        key: 'nestedTextField',
+                        label: 'Nested Text Field',
+                        input: true,
+                    },
+                    {
+                        type: 'textarea',
+                        key: 'nestedTextArea',
+                        label: 'Nested Text Area',
+                        input: true,
+                    }
+                ]
+            },
+            {
+                nestedTextField: 'world',
+                nestedTextArea: 'foo',
+            }
+        ]);
+        expect(rowResults.get('container.nestedTextField')).to.deep.equal([
+            {
+                type: 'textfield',
+                key: 'nestedTextField',
+                label: 'Nested Text Field',
+                input: true,
+            },
+            'world'
+        ]);
+        expect(rowResults.get('container.nestedTextArea')).to.deep.equal([
+            {
+                type: 'textarea',
+                key: 'nestedTextArea',
+                label: 'Nested Text Area',
+                input: true,
+            },
+            'foo'
+        ]);
+    });
+
+    it('Should iterate over each component and data given a datagrid component and a nested components array', async () => {
+        const components = [
+            {
+                type: 'textfield',
+                key: 'textField',
+                label: 'Text Field',
+                input: true,
+            },
+            {
+                type: 'datagrid',
+                key: 'dataGrid',
+                label: 'Data Grid',
+                input: true,
+                components: [
+                    {
+                        type: 'textfield',
+                        key: 'nestedTextField',
+                        label: 'Nested Text Field',
+                        input: true,
+                    },
+                    {
+                        type: 'textarea',
+                        key: 'nestedTextArea',
+                        label: 'Nested Text Area',
+                        input: true,
+                    }
+                ]
+            }
+        ];
+        const data = {
+            textField: 'hello',
+            dataGrid: [
+                {
+                    nestedTextField: 'world',
+                    nestedTextArea: 'foo',
+                },
+                {
+                    nestedTextField: 'bar',
+                    nestedTextArea: 'baz',
+                }
+            ],
+        };
+        const rowResults: Map<string, any> = new Map();
+        await eachComponentDataAsync(components, data, async (component, data, row, path) => {
+            const value = get(data, path);
+            rowResults.set(path, [component, value]);
+        });
+        expect(rowResults.size).to.equal(6);
+        expect(rowResults.get('textField')).to.deep.equal([
+            {
+                type: 'textfield',
+                key: 'textField',
+                label: 'Text Field',
+                input: true,
+            },
+            'hello'
+        ]);
+        expect(rowResults.get('dataGrid')).to.deep.equal([
+            {
+                type: 'datagrid',
+                key: 'dataGrid',
+                label: 'Data Grid',
+                input: true,
+                components: [
+                    {
+                        type: 'textfield',
+                        key: 'nestedTextField',
+                        label: 'Nested Text Field',
+                        input: true,
+                    },
+                    {
+                        type: 'textarea',
+                        key: 'nestedTextArea',
+                        label: 'Nested Text Area',
+                        input: true,
+                    }
+                ]
+            },
+            [
+                {
+                    nestedTextField: 'world',
+                    nestedTextArea: 'foo',
+                },
+                {
+                    nestedTextField: 'bar',
+                    nestedTextArea: 'baz',
+                }
+            ]
+        ]);
+        expect(rowResults.get('dataGrid[0].nestedTextField')).to.deep.equal([
+            {
+                type: 'textfield',
+                key: 'nestedTextField',
+                label: 'Nested Text Field',
+                input: true,
+            },
+            'world'
+        ]);
+    });
+
+    it('Should iterate over a components array and include components that are not in the data object if the includeAll flag is set to true', async () => {
+        const components = [
+            {
+                type: 'textfield',
+                key: 'textField',
+                label: 'Text Field',
+                input: true,
+            },
+            {
+                type: 'textarea',
+                key: 'textArea',
+                label: 'Text Area',
+                input: true,
+            }
+        ];
+        const data = {
+            textField: 'hello',
+        };
+        const rowResults: Map<string, [Component, unknown]> = new Map();
+        await eachComponentDataAsync(components, data, async (component, data, row, path) => {
+            const value = get(data, path);
+            rowResults.set(path, [component, value]);
+        }, undefined, undefined, undefined, true);
+        expect(rowResults.size).to.equal(2);
+        expect(rowResults.get('textField')).to.deep.equal([
+            {
+                type: 'textfield',
+                key: 'textField',
+                label: 'Text Field',
+                input: true,
+            },
+            'hello'
+        ]);
+        expect(rowResults.get('textArea')).to.deep.equal([
+            {
+                type: 'textarea',
+                key: 'textArea',
+                label: 'Text Area',
+                input: true,
+            },
+            undefined
+        ]);
+    });
+
     describe('Flattened form components (for evaluation)', () => {
         it('Should return the correct contextual row data for each component', async () => {
             const components = [
