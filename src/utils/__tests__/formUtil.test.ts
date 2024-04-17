@@ -1153,4 +1153,48 @@ describe('eachComponentData', () => {
             'world'
         ]);
     });
+
+    it('Should iterate over a components array and include components that are not in the data object if the includeAll flag is set to true', () => {
+        const components = [
+            {
+                type: 'textfield',
+                key: 'textField',
+                label: 'Text Field',
+                input: true,
+            },
+            {
+                type: 'textarea',
+                key: 'textArea',
+                label: 'Text Area',
+                input: true,
+            }
+        ];
+        const data = {
+            textField: 'hello',
+        };
+        const rowResults: Map<string, [Component, unknown]> = new Map();
+        eachComponentData(components, data, (component, data, row, path) => {
+            const value = get(data, path);
+            rowResults.set(path, [component, value]);
+        }, undefined, undefined, undefined, true);
+        expect(rowResults.size).to.equal(2);
+        expect(rowResults.get('textField')).to.deep.equal([
+            {
+                type: 'textfield',
+                key: 'textField',
+                label: 'Text Field',
+                input: true,
+            },
+            'hello'
+        ]);
+        expect(rowResults.get('textArea')).to.deep.equal([
+            {
+                type: 'textarea',
+                key: 'textArea',
+                label: 'Text Area',
+                input: true,
+            },
+            undefined
+        ]);
+    });
 });
