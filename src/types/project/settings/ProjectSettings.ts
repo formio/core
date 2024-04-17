@@ -9,7 +9,7 @@ import {
     ProjectFileStorageConfig,
     ProjectGoogleDriveConfig,
     ProjectKickboxConfig,
-    ProjectReCaptchaConfig,
+    ProjectCaptchaConfig,
     ProjectSQLConnectorConfig,
 } from './integrations';
 
@@ -39,7 +39,8 @@ export type ProjectSettings = {
 
     // Integrations
     email?: ProjectEmailConfig;
-    recaptcha?: ProjectReCaptchaConfig;
+    captcha?: ProjectCaptchaConfig;
+    recaptcha?: ProjectCaptchaConfig;
     esign?: ProjectESignConfig;
     google?: ProjectGoogleDriveConfig;
     kickbox?: ProjectKickboxConfig;
