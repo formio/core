@@ -26,7 +26,7 @@ export const validateRequiredSync: RuleFnSync = (context: ValidationContext) => 
         return null;
     }
     if (
-        (value === null || value === undefined || isEmptyObject(value) || (!!value === false && value !== 0 && value !==false )) &&
+        (value === null || value === undefined || isEmptyObject(value) || (!!value === false && value !== 0 && value !== false )) &&
         !component.hidden
     ) {
         return error;

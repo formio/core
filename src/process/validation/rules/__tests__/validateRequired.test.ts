@@ -27,7 +27,7 @@ it('Validating a simple component that is required and present in the data will 
 });
 
 
-it('Validating a simple radio component that is required and present in the data with value=false will return null', async () => {
+it('Validating a simple radio component that is required and present in the data with value set to false will return null', async () => {
     const component = { ...simpleRadioField, validate: { required: true }, values: [
         {
             label: 'Yes',
@@ -38,13 +38,13 @@ it('Validating a simple radio component that is required and present in the data
             value: 'false',
         }] };
     const data = { component: false };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateRequired(context);
     expect(result).to.equal(null);
 });
 
 
-it('Validating a simple selectbox that is required and present in the data with value=0 will return null', async () => {
+it('Validating a simple selectbox that is required and present in the data with value set to zero will return null', async () => {
     const component = { ...simpleSelectBoxes, validate: { required: true }, values: [
         {
             label: 'true',
@@ -55,12 +55,12 @@ it('Validating a simple selectbox that is required and present in the data with 
             value: '0',
         }] };
     const data = { component: 0 };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateRequired(context);
     expect(result).to.equal(null);
 });
 
-it('Validating a simple selectbox that is required and present in the data with value=false will return null', async () => {
+it('Validating a simple selectbox that is required and present in the data with value set to false will return null', async () => {
     const component = { ...simpleSelectBoxes, validate: { required: true }, values: [
         {
             label: 'true',
@@ -71,7 +71,7 @@ it('Validating a simple selectbox that is required and present in the data with 
             value: 'false',
         }] };
     const data = { component: false };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateRequired(context);
     expect(result).to.equal(null);
 });
