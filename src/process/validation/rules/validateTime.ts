@@ -1,7 +1,8 @@
 
 import { RuleFn, RuleFnSync, TimeComponent, ValidationContext } from "types";
 import { isComponentDataEmpty } from 'utils/formUtil';
-import { FieldError, ValidatorError } from 'error';
+import { FieldError, ProcessorError } from 'error';
+
 import { dayjs } from 'utils/date';
 import { ProcessorInfo } from "types/process/ProcessorInfo";
 import customParsers from 'dayjs/plugin/customParseFormat';
@@ -35,7 +36,7 @@ export const validateTimeSync: RuleFnSync = (context: ValidationContext) => {
         return isValid ? null : new FieldError('time', context);
     }
     catch (err) {
-        throw new ValidatorError(`Could not validate time component ${component.key} with value ${value}`);
+        throw new ProcessorError(`Could not validate time component ${component.key} with value ${value}`, context, 'validate:validateTime');
     }
 }
 
