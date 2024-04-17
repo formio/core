@@ -1,4 +1,4 @@
-import { FieldError, ValidatorError } from 'error';
+import { FieldError, ProcessorError } from 'error';
 import { DayComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
@@ -31,7 +31,7 @@ export const validateMinimumYearSync: RuleFnSync = (context: ValidationContext) 
         return null;
     }
     if (typeof value !== 'string' && typeof value !== 'number') {
-        throw new ValidatorError(`Cannot validate minimum year for value ${value}`);
+        throw new ProcessorError(`Cannot validate minimum year for value ${value}`, context, 'validate:validateMinimumYear');
     }
     const testValue = typeof value === 'string' ? value : String(value);
     const testArr = /\d{4}$/.exec(testValue);
@@ -41,8 +41,10 @@ export const validateMinimumYearSync: RuleFnSync = (context: ValidationContext) 
         (component as DayComponent).fields?.year?.minYear &&
         (component as DayComponent).minYear !== (component as DayComponent).fields.year.minYear
     ) {
-        throw new ValidatorError(
+        throw new ProcessorError(
             'Cannot validate minimum year, component.minYear and component.fields.year.minYear are not equal',
+            context,
+            'validate:validateMinimumYear'
         );
     }
     const minYear = (component as DayComponent).minYear;

@@ -28,9 +28,9 @@ export type EvaluatorContext = {
 export type EvaluatorFn = (context: EvaluatorContext) => any;
 
 export function evaluate(
-    context: EvaluatorContext, 
-    evaluation: string, 
-    ret: string = 'result', 
+    context: EvaluatorContext,
+    evaluation: string,
+    ret: string = 'result',
     evalContextFn?: EvaluatorFn,
     fnName?: string,
     options: any = {}
@@ -49,8 +49,8 @@ export function evaluate(
 }
 
 export function interpolate(
-    context: EvaluatorContext, 
-    evaluation: string, 
+    context: EvaluatorContext,
+    evaluation: string,
     evalContextFn?: EvaluatorFn
 ) : string {
     return evaluate(context, evaluation, undefined, evalContextFn, 'interpolate', {

@@ -1,3 +1,2 @@
 export * from './FieldError';
-export * from './ValidatorError';
-export * from './DereferenceError';
+export * from './ProcessorError';

@@ -1,4 +1,4 @@
-import { ValidatorError, FieldError } from 'error';
+import { ProcessorError, FieldError } from 'error';
 import { DayComponent } from 'types/Component';
 import { RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
@@ -32,7 +32,7 @@ export const validateMaximumYearSync: RuleFnSync = (context: ValidationContext) 
         return null;
     }
     if (typeof value !== 'string' && typeof value !== 'number') {
-        throw new ValidatorError(`Cannot validate maximum year for value ${value}`);
+        throw new ProcessorError(`Cannot validate maximum year for value ${value}`, context, 'validate:validateMaximumYear');
     }
     const testValue = typeof value === 'string' ? value : String(value);
     const testArr = /\d{4}$/.exec(testValue);
@@ -42,8 +42,10 @@ export const validateMaximumYearSync: RuleFnSync = (context: ValidationContext) 
         (component as DayComponent).fields?.year?.maxYear &&
         (component as DayComponent).maxYear !== (component as DayComponent).fields.year.maxYear
     ) {
-        throw new ValidatorError(
+        throw new ProcessorError(
             'Cannot validate maximum year, component.maxYear and component.fields.year.maxYear are not equal',
+            context,
+            'validate:validateMaximumYear'
         );
     }
     const maxYear = (component as DayComponent).maxYear || (component as DayComponent).fields.year.maxYear;
