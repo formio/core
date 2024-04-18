@@ -2663,6 +2663,110 @@ describe('Process Tests', () => {
         processSync(context);
         expect(context.data).to.deep.equal({ textField: '' });
     });
+
+    it('Should allow conditionally hidden text fields within DataGrid and EditGrids', async () => {
+        const form = {
+            display: 'form',
+            components: [
+                {
+                    "label": "Edit Grid",
+                    "tableView": false,
+                    "rowDrafts": false,
+                    "key": "editGrid",
+                    "type": "editgrid",
+                    "displayAsTable": false,
+                    "input": true,
+                    "components": [
+                        {
+                            "label": "Select",
+                            "widget": "choicesjs",
+                            "tableView": true,
+                            "data": {
+                                "values": [
+                                    {
+                                        "label": "Action1",
+                                        "value": "action1"
+                                    },
+                                    {
+                                        "label": "Custom",
+                                        "value": "custom"
+                                    }
+                                ]
+                            },
+                            "key": "select",
+                            "type": "select",
+                            "input": true
+                        },
+                        {
+                            "label": "Text Field",
+                            "applyMaskOn": "change",
+                            "tableView": true,
+                            "key": "textField",
+                            "conditional": {
+                                "show": true,
+                                "conjunction": "all",
+                                "conditions": [
+                                    {
+                                        "component": "editGrid.select",
+                                        "operator": "isEqual",
+                                        "value": "custom"
+                                    }
+                                ]
+                            },
+                            "type": "textfield",
+                            "input": true
+                        }
+                    ]
+                },
+                {
+                    "type": "button",
+                    "label": "Submit",
+                    "key": "submit",
+                    "disableOnInvalid": true,
+                    "input": true,
+                    "tableView": false
+                }
+            ]
+        };
+
+        const submission = {
+            data: {
+                editGrid: [
+                    {
+                        "select": "action1"
+                    },
+                    {
+                        "select": "custom",
+                        "textField": "TEST"
+                    }
+                ]
+            }
+        };
+
+        const context = {
+            form,
+            submission,
+            data: submission.data,
+            components: form.components,
+            processors: ProcessTargets.evaluator,
+            scope: {},
+            config: {
+                server: true
+            }
+        };
+        processSync(context);
+        expect(context.data).to.deep.equal({
+            "editGrid": [
+                {
+                    "select": "action1"
+                },
+                {
+                    "select": "custom",
+                    "textField": "TEST"
+                }
+            ]
+        });
+    });
     /*
           it('Should not clearOnHide when set to false', async () => {
             var components = [

@@ -13,7 +13,8 @@ import {
   pad,
   isPlainObject,
   isArray,
-  isEqual
+  isEqual,
+  trim
 } from "lodash";
 import { compare, applyPatch } from 'fast-json-patch';
 import {
@@ -200,6 +201,9 @@ export const componentChildPath = (component: any, parentPath?: string, path?: s
   if (component.components && Array.isArray(component.components)) {
     if (isComponentModelType(component, 'dataObject')) {
       return `${path}.data`;
+    }
+    if (isComponentModelType(component, 'array')) {
+      return `${path}[0]`;
     }
     if (isComponentNestedDataType(component)) {
       return path;
@@ -554,7 +558,22 @@ export function getComponentData(components: Component[], data: DataObject, path
   return compData;
 }
 
-export function getComponentActualValue(compPath: string, data: any, row: any) {
+export function getComponentActualValue(component: Component, compPath: string, data: any, row: any) {
+  // The compPath here will NOT contain the indexes for DataGrids and EditGrids. 
+  //
+  //   a[0].b[2].c[3].d
+  //
+  // Because of this, we will need to determine our parent component path (not data path), 
+  // and find the "row" based comp path.
+  //
+  //   a[0].b[2].c[3].d => a.b.c.d
+  //
+  if (component.parent?.path) {
+    const parentCompPath = component.parent?.path.replace(/\[[0-9]+\]/g, '');
+    compPath = compPath.replace(parentCompPath, '');
+    compPath = trim(compPath, '. ');
+  }
+
   let value = null;
   if (row) {
       value = get(row, compPath);
@@ -1112,8 +1131,8 @@ export function isComponentDataEmpty(component: Component, data: any, path: stri
     } else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {
         if (component.components?.length) {
             let childrenEmpty = true;
-            // TODO: eachComponentData currently can't handle passing child components directly because it won't get the path right;
-            // wrapping component in an array and skipping it's callback is a workaround to start with the correct path, but it is not ideal
+            // wrap component in an array to let eachComponentData handle introspection to child components (e.g. this will be different
+            // for data grids versus nested forms, etc.)
             eachComponentData([component], data, (thisComponent, data, row, path, components, index) => {
                 if (component.key === thisComponent.key) return;
                 if (!isComponentDataEmpty(thisComponent, data, path)) {

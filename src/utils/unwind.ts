@@ -141,7 +141,7 @@ export function unwind(form: any, submission: any) {
         var paths = filter(path.replace(new RegExp(".?" + component.key + "$"), '').split('.'));
         /* eslint-enable no-useless-escape */
         if (!hasDataPath && paths.length && !component.isInsideNestedForm) {
-            key = paths.map(function (subpath: any) { return subpath + "[0]"; }).join('.') + "." + component.key;
+            key = paths.join('.') + "." + component.key;
         }
         if (component.multiple) {
             paths.push(component.key);

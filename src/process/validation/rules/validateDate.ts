@@ -27,7 +27,7 @@ export const validateDate: RuleFn = async (context: ValidationContext) => {
 };
 
 export const validateDateSync: RuleFnSync = (context: ValidationContext) => {
-    const error = new FieldError('invalidDate', context);
+    const error = new FieldError('invalidDate', context, 'date');
     const { component, value} = context;
     if (!shouldValidate(context)) {
         return null;
