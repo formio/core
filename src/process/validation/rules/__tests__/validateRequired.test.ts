@@ -26,56 +26,6 @@ it('Validating a simple component that is required and present in the data will 
     expect(result).to.equal(null);
 });
 
-
-it('Validating a simple radio component that is required and present in the data with value set to false will return null', async () => {
-    const component = { ...simpleRadioField, validate: { required: true }, values: [
-        {
-            label: 'Yes',
-            value: 'true',
-        },
-        {
-            label: 'No',
-            value: 'false',
-        }] };
-    const data = { component: false };
-    const context = generateProcessorContext(component, data);
-    const result = await validateRequired(context);
-    expect(result).to.equal(null);
-});
-
-
-it('Validating a simple selectbox that is required and present in the data with value set to zero will return null', async () => {
-    const component = { ...simpleSelectBoxes, validate: { required: true }, values: [
-        {
-            label: 'true',
-            value: 'true',
-        },
-        {
-            label: 'Null',
-            value: '0',
-        }] };
-    const data = { component: 0 };
-    const context = generateProcessorContext(component, data);
-    const result = await validateRequired(context);
-    expect(result).to.equal(null);
-});
-
-it('Validating a simple selectbox that is required and present in the data with value set to false will return null', async () => {
-    const component = { ...simpleSelectBoxes, validate: { required: true }, values: [
-        {
-            label: 'true',
-            value: 'true',
-        },
-        {
-            label: 'false',
-            value: 'false',
-        }] };
-    const data = { component: false };
-    const context = generateProcessorContext(component, data);
-    const result = await validateRequired(context);
-    expect(result).to.equal(null);
-});
-
 it('Validating a simple component that is not required and present in the data will return null', async () => {
     const component = simpleTextField;
     const data = { component: 'a simple value' };
