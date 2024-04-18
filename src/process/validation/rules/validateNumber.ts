@@ -24,10 +24,7 @@ export const validateNumber: RuleFn = async (context: ValidationContext) => {
 export const validateNumberSync: RuleFnSync = (context: ValidationContext) => {
     const error = new FieldError('number', context);
     const { value } = context;
-    if (!shouldValidate(context)) {
-        return null;
-    }
-
+    
     if (typeof value !== 'number')  {
         return error;
     }
