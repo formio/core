@@ -284,7 +284,6 @@ export const eachComponentData = (
   index?: number,
   parent?: Component,
   includeAll: boolean = false
-  // pass flag to include components that do not have associated data
 ) => {
   if (!components || !data) {
     return;
