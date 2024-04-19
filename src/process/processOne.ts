@@ -12,6 +12,7 @@ export async function processOne<ProcessorScope>(context: ProcessorsContext<Proc
     // Create a getter for `value` that is always derived from the current data object
     if (typeof context.value === 'undefined') {
         Object.defineProperty(context, 'value', {
+            enumerable: true,
             get() {
                 return get(context.data, context.path);
             },
@@ -36,6 +37,7 @@ export function processOneSync<ProcessorScope>(context: ProcessorsContext<Proces
     // Create a getter for `value` that is always derived from the current data object
     if (typeof context.value === 'undefined') {
         Object.defineProperty(context, 'value', {
+            enumerable: true,
             get() {
                 return get(context.data, context.path);
             },

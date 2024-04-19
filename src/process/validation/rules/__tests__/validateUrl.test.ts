@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 import { FieldError } from 'error';
 import { simpleUrlField } from './fixtures/components';
-import { generateProcessContext } from './fixtures/util';
+import { generateProcessorContext } from './fixtures/util';
 import { validateUrl } from '../validateUrl';
 
 it('Validating a URL component whose data contains an invalid URL returns a FieldError', async () => {
@@ -10,7 +10,7 @@ it('Validating a URL component whose data contains an invalid URL returns a Fiel
     const data = {
         component: 'htp:/ww.google',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateUrl(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.contain('invalid_url');
@@ -21,7 +21,7 @@ it('Validating a URL component whose data contains an invalid URL returns a Fiel
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateUrl(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.contain('invalid_url');
@@ -54,7 +54,7 @@ it('Validating a URL component whose data contains a valid HTTPS URL returns nul
     const data = {
         component: 'https://www.google.com',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateUrl(context);
     expect(result).to.equal(null);
 });
@@ -64,7 +64,7 @@ it('Validating a URL component whose data contains a valid HTTP URL returns null
     const data = {
         component: 'http://www.google.com',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateUrl(context);
     expect(result).to.equal(null);
 });
@@ -84,7 +84,7 @@ it('Validating a URL component whose data contains a strange but valid URL retur
     const data = {
         component: 'www.hhh.by',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateUrl(context);
     expect(result).to.equal(null);
 })

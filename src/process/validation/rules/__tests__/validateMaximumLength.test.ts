@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 import { FieldError } from 'error';
 import { simpleTextField } from './fixtures/components';
-import { generateProcessContext } from './fixtures/util';
+import { generateProcessorContext } from './fixtures/util';
 import { validateMaximumLength } from '../validateMaximumLength';
 
 it('Validating a component without a maxLength property will return null', async () => {
@@ -10,7 +10,7 @@ it('Validating a component without a maxLength property will return null', async
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMaximumLength(context);
     expect(result).to.equal(null);
 });
@@ -20,7 +20,7 @@ it('Validating a component with a maxLength property and a length greater than m
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMaximumLength(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('maxLength');
@@ -31,7 +31,7 @@ it('Validating a component with a maxLength property and a length less than maxL
     const data = {
         component: 'foo',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMaximumLength(context);
     expect(result).to.equal(null);
 });
@@ -41,7 +41,7 @@ it('Validating a component with a maxLength property that is an empty string wil
     const data = {
         component: '',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateMaximumLength(context);
     expect(result).to.equal(null);
 })

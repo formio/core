@@ -22,7 +22,7 @@ export const validateUrlSync: RuleFnSync = (context: ValidationContext) => {
     if (!shouldValidate(context)) {
         return null;
     }
-    const error = new FieldError('invalid_url', context);
+    const error = new FieldError('invalid_url', context, 'url');
     if (typeof value !== 'string') {
         return error;
     }

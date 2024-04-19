@@ -5940,3 +5940,37 @@ export const simpleNestedForm = {
         },
     ],
 };
+
+export const simpleCustomValidationForm = {
+    display: 'form',
+    components: [
+        {
+            type: 'textfield',
+            key: 'customValidation',
+            validate: {
+                custom: 'valid = (input === "123") ? true : "Must be 123.";',
+            },
+            input: true
+        }
+    ]
+}
+
+export const simpleJsonLogicValidationForm = {
+    display: 'form',
+    components: [
+        {
+            type: 'textfield',
+            key: 'jsonLogic',
+            input: true,
+            validate: {
+                json: {
+                    if: [
+                        { '===': [{ var: 'input' }, '123'] },
+                        true,
+                        'Must be 123.export '
+                    ]
+                }
+            }
+        }
+    ]
+}

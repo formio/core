@@ -1,9 +1,13 @@
 
 import { RuleFn, RuleFnSync, TimeComponent, ValidationContext } from "types";
-import { isEmpty } from "../util";
-import { FieldError, ValidatorError } from 'error';
+import { isComponentDataEmpty } from 'utils/formUtil';
+import { FieldError, ProcessorError } from 'error';
+
 import { dayjs } from 'utils/date';
 import { ProcessorInfo } from "types/process/ProcessorInfo";
+import customParsers from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParsers);
 
 const isValidatableTimeComponent = (comp: any): comp is TimeComponent => {
     return comp && comp.type === 'time';
@@ -18,21 +22,21 @@ export const shouldValidate = (context: ValidationContext) => {
 };
 
 export const validateTimeSync: RuleFnSync = (context: ValidationContext) => {
-    const { component, value, config } = context;
+    const { component, data, path, value, config } = context;
     if (!shouldValidate(context)) {
         return null;
     }
     try {
-        if (!value || isEmpty(component, value)) return null;
+        if (!value || isComponentDataEmpty(component, data, path)) return null;
         // Server side evaluations of validity should use the "dataFormat" vs the "format" which is used on the client.
         const format = config?.server ?
             ((component as TimeComponent).dataFormat || 'HH:mm:ss') :
             ((component as TimeComponent).format || 'HH:mm');
-        const isValid = dayjs(String(value), format).isValid();
+        const isValid = dayjs(String(value), format, true).isValid();
         return isValid ? null : new FieldError('time', context);
     }
     catch (err) {
-        throw new ValidatorError(`Could not validate time component ${component.key} with value ${value}`);
+        throw new ProcessorError(`Could not validate time component ${component.key} with value ${value}`, context, 'validate:validateTime');
     }
 }
 

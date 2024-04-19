@@ -1,3 +1,56 @@
+## [Unreleased: 2.1.0-rc.1]
+### Changed
+ - FIO-8177: fix unsetting empty array values
+ - FIO-8185: Fixing issues with EditGrid and DataGrid clearOnHide with Conditionally visible elements
+ - FIO-8178: correctly add "validator" param to interpolated error object
+ - FIO-8121: Fix json and custom validation errors response
+ - FIO-8128: allow export of dist minified js
+ - FIO-8143: update eachComponent to be able to return proper pathing
+
+
+## 2.0.0-rc.24
+### Changed
+ - FIO-8106: add default storeas value to tags
+ - FIO-8106: add invalidDate error translation
+
+## 2.0.0-rc.23
+### Changed
+ - Fix: JSONLogic validations should get same context as calculations
+   
+## 2.0.0-rc.22
+### Changed
+ - FIO-7146: gh actions for repository
+ - FIO-8100: add clearhidden processor to cover logic, conditions, and custom
+ - FIO-8101: always process json validation even if value is falsy
+ - FIO-8107: correct small error in normalize processor
+   
+## 2.0.0-rc.21
+### Changed
+ - FIO-8092: update isEmpty to isComponentDataEmpty and account for differing component data types
+
+## 2.0.0-rc.20
+### Changed
+ - FIO-8086: don't multiple validate select components
+ - FIO-8079: add stricter time validation
+   
+## 2.0.0-rc.19
+### Changed
+ - FIO-8047: add dereferencing processor for datatable comp
+   
+## 2.0.0-rc.18
+### Changed
+ - FIO-8055: validate components that include custom validations, even when their data is empty
+ - FIO-8049: fix value prop in evaluations
+ - FIO-8040: add functions from formiojs
+ - restructure conditional processor to fix conditional components in emails
+
+## 2.0.0-rc.17
+### Changed
+ - FIO-8023: Fixing issues with the parent traversal on deeply nested components within nested forms
+   
+## 2.0.0-rc.16
+ - FIO-7884: Fixed issues with processing data within nested form data structures
+
 ## 2.0.0-rc.14
 ### Changed
  - FIO-7884: Fixed an issue with nested form data where it would not set correctly

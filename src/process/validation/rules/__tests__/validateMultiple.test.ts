@@ -192,7 +192,8 @@ describe('validateMultiple', () => {
 
     describe('validateMultipleSync', () => {
         describe('values that should be arrays', () => {
-            it('should return an error for a select component with multiple that is not an array', () => {
+            // TODO: skipping the following tests until we can resolve whether or not we want to validateMultiple on select components
+            xit('should return an error for a select component with multiple that is not an array', () => {
                 const component: Component = {
                     type: 'select',
                     input: true,
@@ -216,7 +217,7 @@ describe('validateMultiple', () => {
                 expect(validateMultipleSync(context)).to.be.instanceOf(FieldError);
             });
 
-            it('should return null for a select component with multiple that is an array', () => {
+            xit('should return null for a select component with multiple that is an array', () => {
                 const component: Component = {
                     type: 'select',
                     input: true,
@@ -240,7 +241,7 @@ describe('validateMultiple', () => {
                 expect(validateMultipleSync(context)).to.be.null;
             });
 
-            it('should return an error for a select component without multiple that is an array', () => {
+            xit('should return an error for a select component without multiple that is an array', () => {
                 const component: Component = {
                     type: 'select',
                     input: true,
@@ -263,7 +264,7 @@ describe('validateMultiple', () => {
                 expect(validateMultipleSync(context)).to.be.instanceOf(FieldError);
             });
 
-            it('should return null for a select component without multiple that is not an array', () => {
+            xit('should return null for a select component without multiple that is not an array', () => {
                 const component: Component = {
                     type: 'select',
                     input: true,
@@ -277,6 +278,30 @@ describe('validateMultiple', () => {
                     value: 'foo',
                     row: {
                         select: 'foo'
+                    },
+                    scope: {
+                        errors: []
+                    },
+                    path: component.key
+                };
+                expect(validateMultipleSync(context)).to.be.null;
+            });
+
+            it('should not validate a select component with multiple', () => {
+                const component: Component = {
+                    type: 'select',
+                    input: true,
+                    key: 'select',
+                    multiple: true,
+                };
+                const context: ValidationContext = {
+                    component,
+                    data: {
+                        select: ['foo', 'bar'],
+                    },
+                    value: ['foo', 'bar'],
+                    row: {
+                        select: ['foo', 'bar'],
                     },
                     scope: {
                         errors: []

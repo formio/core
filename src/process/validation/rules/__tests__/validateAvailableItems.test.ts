@@ -8,7 +8,7 @@ import {
     simpleTextField,
     simpleSelectOptions,
 } from './fixtures/components';
-import { generateProcessContext } from './fixtures/util';
+import { generateProcessorContext } from './fixtures/util';
 import { validateAvailableItems } from '../validateAvailableItems';
 
 it('Validating a component without the available items validation parameter will return null', async () => {
@@ -16,7 +16,7 @@ it('Validating a component without the available items validation parameter will
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
@@ -31,7 +31,7 @@ it('Validating a simple select boxes component without the available items valid
             biz: false,
         },
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
@@ -41,7 +41,7 @@ it('Validating a simple radio component without the available items validation p
     const data = {
         component: 'bar',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
@@ -54,7 +54,7 @@ it('Validating a simple radio component with the available items validation para
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('invalidOption');
@@ -76,7 +76,7 @@ it('Validating a simple static values select component without the available ite
     const data = {
         component: 'foo',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
@@ -98,7 +98,7 @@ it('Validating a simple static values select component with the available items 
     const data = {
         component: 'foo',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
@@ -115,7 +115,7 @@ it('Validating a simple URL select component without the available items validat
     const data = {
         component: 'foo',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
@@ -131,7 +131,7 @@ it('Validating a simple JSON select component (string JSON) without the availabl
     const data = {
         component: 'foo',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
@@ -148,7 +148,7 @@ it('Validating a simple JSON select component (string JSON) with the available i
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('invalidOption');
@@ -166,7 +166,7 @@ it('Validating a simple JSON select component (string JSON) with the available i
     const data = {
         component: 'foo',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
@@ -183,7 +183,7 @@ it('Validating a simple JSON select component (nested string JSON) with the avai
     const data = {
         component: { foo: 'foo', bar: 'bar' },
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
@@ -200,7 +200,7 @@ it('Validating a simple JSON select component (nested string JSON) with the avai
     const data = {
         component: { foo: 'bar', bar: 'baz' },
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('invalidOption');
@@ -219,7 +219,7 @@ it('Validating a simple JSON select component (nested string JSON with valueProp
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('invalidOption');
@@ -238,7 +238,7 @@ it('Validating a simple JSON select component (nested string JSON with valueProp
     const data = {
         component: 'foo',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
@@ -254,7 +254,7 @@ it('Validating a simple JSON select component (actual JSON) without the availabl
     const data = {
         component: 'foo',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
@@ -271,7 +271,7 @@ it('Validating a simple JSON select component (actual JSON) with the available i
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('invalidOption');
@@ -289,7 +289,7 @@ it('Validating a simple JSON select component (actual JSON) with the available i
     const data = {
         component: 'foo',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
@@ -309,7 +309,7 @@ it('Validating a simple JSON select component (nested actual JSON) with the avai
     const data = {
         component: { foo: 'baz', bar: 'biz' },
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('invalidOption');
@@ -330,7 +330,7 @@ it('Validating a simple JSON select component (nested actual JSON) with the avai
     const data = {
         component: { foo: 'foo', bar: 'bar' },
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
@@ -351,7 +351,7 @@ it('Validating a simple JSON select component (nested actual JSON with valueProp
     const data = {
         component: 'Hello, world!',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('invalidOption');
@@ -373,7 +373,7 @@ it('Validating a simple JSON select component (nested actual JSON with valueProp
     const data = {
         component: 'foo',
     };
-    const context = generateProcessContext(component, data);
+    const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });

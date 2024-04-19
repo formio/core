@@ -1,4 +1,4 @@
-import { FieldError, ValidatorError } from 'error';
+import { FieldError, ProcessorError } from 'error';
 import { SelectComponent, RuleFn, ValidationContext, RuleFnSync, FetchFn } from 'types';
 import { Evaluator } from 'utils';
 import { isEmptyObject, toBoolean } from '../util';
@@ -110,12 +110,16 @@ export const validateUrlSelectValue: RuleFn = async (context: ValidationContext)
                 return data ? (isEmptyObject(data) ? error : null) : error;
             }
             const data = await response.text();
-            throw new ValidatorError(
+            throw new ProcessorError(
                 `Component with path ${component.key} returned an error while validating remote value: ${data}`,
+                context,
+                'validate:validateRemoteSelectValue'
             );
         } catch (err) {
-            throw new ValidatorError(
+            throw new ProcessorError(
                 `Component with path ${component.key} returned an error while validating remote value: ${err}`,
+                context,
+                'validate:validateRemoteSelectValue'
             );
         }
     }

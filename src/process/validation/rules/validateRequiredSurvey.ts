@@ -1,4 +1,4 @@
-import { FieldError, ValidatorError } from 'error';
+import { FieldError, ProcessorError } from 'error';
 import { SurveyComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
@@ -35,11 +35,11 @@ export const validateRequiredSurveySync: RuleFnSync = (context: ValidationContex
         return null;
     }
     if (!isValidatableSurveyDataObject(value)) {
-        throw new ValidatorError(`Cannot validate survey component because ${value} is not valid`);
+        throw new ProcessorError(`Cannot validate survey component because ${value} is not valid`, context, 'validate:validateRequiredSurvey');
     }
     for (const question of (component as SurveyComponent).questions) {
         if (!value[question.value]) {
-            const error = new FieldError('requiredSurvey', context);
+            const error = new FieldError('requiredSurvey', context, 'required');
             return error;
         }
     }

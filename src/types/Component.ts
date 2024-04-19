@@ -86,6 +86,10 @@ export type ContainerComponent = NestedComponent & {
     components: Component[];
 };
 
+export type HasChildComponents = BaseComponent & {
+    components: Component[];
+}
+
 export type AddressComponent = ContainerComponent & {
     switchToManualModeLabel: string;
     provider: string;
@@ -140,6 +144,7 @@ export type NumberComponent = BaseComponent & {
 
 export type NestedArrayComponent = NestedComponent & {
     disableAddingRemovingRows: boolean;
+    components: Component[];
 };
 
 export type DataGridComponent = NestedArrayComponent;
@@ -162,6 +167,17 @@ export type DataSourceComponent = BaseComponent & {
         mapFunction: string;
     };
 };
+
+export type DataTableComponent = EditGridComponent & {
+    fetch?: {
+        enableFetch: boolean;
+        dataSrc: 'resource' | 'url';
+        sort?: { defaultQuery?: string };
+        resource?: string;
+        headers?: { key: string; value: string }[];
+        components?: { key: string; path: string }[] | Component[];
+    }
+}
 
 export type DateTimeComponent = BaseComponent & {
     format?: string;
@@ -483,7 +499,7 @@ export type TextAreaComponent = TextFieldComponent & {
 };
 
 export type TimeComponent = TextFieldComponent & {
-    format: string;
+    format?: string;
     dataFormat: string;
 };
 

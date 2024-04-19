@@ -11,6 +11,8 @@ import { conditionProcessInfo, customConditionProcessInfo, simpleConditionProces
 import { validateCustomProcessInfo, validateProcessInfo, validateServerProcessInfo } from "./validation";
 import { filterProcessInfo } from "./filter";
 import { normalizeProcessInfo } from "./normalize";
+import { dereferenceProcessInfo } from "./dereference";
+import { clearHiddenProcessInfo } from "./clearHidden";
 
 export async function process<ProcessScope>(context: ProcessContext<ProcessScope>): Promise<ProcessScope> {
     const { instances, components, data, scope, flat, processors } = context;
@@ -89,6 +91,8 @@ export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
     customConditions: customConditionProcessInfo,
     simpleConditions: simpleConditionProcessInfo,
     normalize: normalizeProcessInfo,
+    dereference: dereferenceProcessInfo,
+    clearHidden: clearHiddenProcessInfo,
     fetch: fetchProcessInfo,
     logic: logicProcessInfo,
     validate: validateProcessInfo,
@@ -101,6 +105,7 @@ export const ProcessTargets: ProcessTarget = {
         filterProcessInfo,
         serverDefaultValueProcessInfo,
         normalizeProcessInfo,
+        dereferenceProcessInfo,
         fetchProcessInfo,
         simpleConditionProcessInfo,
         validateServerProcessInfo
@@ -110,6 +115,7 @@ export const ProcessTargets: ProcessTarget = {
         calculateProcessInfo,
         logicProcessInfo,
         conditionProcessInfo,
+        clearHiddenProcessInfo,
         validateProcessInfo
     ]
 };

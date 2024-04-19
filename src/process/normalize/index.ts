@@ -4,6 +4,8 @@ import isString from 'lodash/isString';
 import toString from 'lodash/toString';
 import isNil from 'lodash/isNil';
 import isObject from 'lodash/isObject';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import {
     AddressComponent,
     DayComponent,
@@ -18,10 +20,17 @@ import {
     TextFieldComponent,
     DefaultValueScope,
     ProcessorInfo,
-    ProcessorContext
+    ProcessorContext,
+    TimeComponent
 } from "types";
 
-type NormalizeScope = DefaultValueScope;
+type NormalizeScope = DefaultValueScope & {
+    normalize?: {
+        [path: string]: any;
+    }
+}
+
+dayjs.extend(customParseFormat)
 
 const isAddressComponent = (component: any): component is AddressComponent => component.type === "address";
 const isDayComponent = (component: any): component is DayComponent => component.type === "day";
@@ -32,6 +41,7 @@ const isSelectComponent = (component: any): component is SelectComponent => comp
 const isSelectBoxesComponent = (component: any): component is SelectBoxesComponent => component.type === "selectboxes";
 const isTagsComponent = (component: any): component is TagsComponent => component.type === "tags";
 const isTextFieldComponent = (component: any): component is TextFieldComponent => component.type === "textfield";
+const isTimeComponent = (component: any): component is TimeComponent => component.type === "time";
 
 const normalizeAddressComponentValue = (component: AddressComponent, value: any) => {
     if (!component.multiple && Boolean(component.enableManualMode) && value && !value.mode) {
@@ -182,6 +192,9 @@ const normalizeSelectComponentValue = (component: SelectComponent, value: any) =
 };
 
 const normalizeSelectBoxesComponentValue = (value: any) => {
+    if (!value) {
+        value = {};
+    }
     if (typeof value !== 'object') {
         if (typeof value === 'string') {
             return {
@@ -203,7 +216,7 @@ const normalizeSelectBoxesComponentValue = (value: any) => {
 
 const normalizeTagsComponentValue = (component: TagsComponent, value: any) => {
     const delimiter = component.delimeter || ',';
-    if (component.storeas === 'string' && Array.isArray(value)) {
+    if ((!component.hasOwnProperty('storeas') || component.storeas === 'string') && Array.isArray(value)) {
         return value.join(delimiter);
     }
     else if (component.storeas === 'array' && typeof value === 'string') {
@@ -221,7 +234,7 @@ const normalizeMaskValue = (
     if (component.inputMasks && component.inputMasks.length > 0) {
         if (!value || typeof value !== 'object') {
             return {
-                val: value,
+                value: value,
                 maskName: component.inputMasks[0].label
             }
         }
@@ -249,37 +262,67 @@ const normalizeTextFieldComponentValue = (
     return value;
 }
 
+// Allow submissions of time components in their visual "format" property by coercing them to the "dataFormat" property
+// i.e. "HH:mm" -> "HH:mm:ss"
+const normalizeTimeComponentValue = (component: TimeComponent, value: string) => {
+    const defaultDataFormat = 'HH:mm:ss';
+    const defaultFormat = 'HH:mm';
+    if (dayjs(value, component.format || defaultFormat, true).isValid()) {
+        return dayjs(value, component.format || defaultFormat, true).format(component.dataFormat || defaultDataFormat);
+    }
+    return value;
+};
+
 export const normalizeProcess: ProcessorFn<NormalizeScope> = async (context) => {
     return normalizeProcessSync(context);
 }
 
 export const normalizeProcessSync: ProcessorFnSync<NormalizeScope> = (context) => {
     const { component, form, scope, path, data, value } = context;
+    if (!scope.normalize) {
+        scope.normalize = {};
+    }
     let { defaultValues } = scope;
+    scope.normalize[path] = {
+        type: component.type,
+        normalized: false
+    };
     // First check for component-type-specific transformations
     if (isAddressComponent(component)) {
         set(data, path, normalizeAddressComponentValue(component, value));
+        scope.normalize[path].normalized = true;
     } else if (isDayComponent(component)) {
         set(data, path, normalizeDayComponentValue(component, form, value));
+        scope.normalize[path].normalized = true;
     } else if (isEmailComponent(component)) {
         if (value && typeof value === 'string') {
             set(data, path, value.toLowerCase());
+            scope.normalize[path].normalized = true;
         }
     } else if (isRadioComponent(component)) {
         set(data, path, normalizeRadioComponentValue(value));
+        scope.normalize[path].normalized = true;
     } else if (isSelectComponent(component)) {
         set(data, path, normalizeSelectComponentValue(component, value));
+        scope.normalize[path].normalized = true;
     } else if (isSelectBoxesComponent(component)) {
         set(data, path, normalizeSelectBoxesComponentValue(value));
+        scope.normalize[path].normalized = true;
     } else if (isTagsComponent(component)) {
         set(data, path, normalizeTagsComponentValue(component, value));
+        scope.normalize[path].normalized = true;
     } else if (isTextFieldComponent(component)) {
        set(data, path, normalizeTextFieldComponentValue(component, defaultValues, value, path));
+       scope.normalize[path].normalized = true;
+    } else if (isTimeComponent(component)) {
+        set(data, path, normalizeTimeComponentValue(component, value));
+        scope.normalize[path].normalized = true;
     }
 
     // Next perform component-type-agnostic transformations (i.e. super())
     if (component.multiple && !Array.isArray(value)) {
         set(data, path, value ? [value] : []);
+        scope.normalize[path].normalized = true;
     }
 };
 
