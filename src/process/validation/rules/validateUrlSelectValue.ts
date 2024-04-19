@@ -64,7 +64,7 @@ export const shouldValidate = (context: ValidationContext) => {
     return true;
 };
 
-export const validateRemoteSelectValue: RuleFn = async (context: ValidationContext) => {
+export const validateUrlSelectValue: RuleFn = async (context: ValidationContext) => {
     const { component, value, data, config } = context;
     let _fetch: FetchFn | null = null;
     try {
@@ -129,8 +129,8 @@ export const validateRemoteSelectValue: RuleFn = async (context: ValidationConte
     }
 };
 
-export const validateRemoteSelectValueInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
-    name: 'validateRemoteSelectValue',
-    process: validateRemoteSelectValue,
+export const validateUrlSelectValueInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
+    name: 'validateUrlSelectValue',
+    process: validateUrlSelectValue,
     shouldProcess: shouldValidate,
 }
