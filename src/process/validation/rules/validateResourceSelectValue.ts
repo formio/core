@@ -1,4 +1,4 @@
-import { FieldError, ValidatorError } from 'error';
+import { FieldError, ProcessorError } from 'error';
 import { SelectComponent, RuleFn, ValidationContext } from 'types';
 import { Evaluator } from 'utils';
 import { isEmptyObject, toBoolean } from '../util';
@@ -71,14 +71,14 @@ export const validateResourceSelectValue: RuleFn = async (context: ValidationCon
     }
 
     if (!config || !config.database) {
-        throw new ValidatorError("Can't validate for resource value without a database config object");
+        throw new ProcessorError("Can't validate for resource value without a database config object", context, 'validate:validateResourceSelectValue');
     }
     try {
         const resourceSelectValueResult: boolean = await config.database?.validateResourceSelectValue(context, value);
         return (resourceSelectValueResult === true) ? null : new FieldError('select', context);
     }
     catch (err: any) {
-        throw new ValidatorError(err.message || err);
+        throw new ProcessorError(err.message || err, context, 'validate:validateResourceSelectValue');
     }
 };
 
