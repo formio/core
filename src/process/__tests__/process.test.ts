@@ -1,5 +1,7 @@
 import { expect } from "chai";
 import { processSync, ProcessTargets } from "../index";
+import { validate } from 'fast-json-patch';
+import { ValidationScope } from 'types';
 const assert = require('assert');
 const form1 = require('./fixtures/form1.json');
 const data1a = require('./fixtures/data1a.json');
@@ -2767,6 +2769,171 @@ describe('Process Tests', () => {
             ]
         });
     });
+
+    describe('Required component validation in nested form in DataGrid/EditGrid', () => {
+        const nestedForm = [
+            {
+                key: 'form',
+                type: 'form',
+                input: true,
+                components: [
+                    {
+                        key: 'textField',
+                        type: 'textfield',
+                        validate: {
+                            required: true
+                        },
+                        input: true
+                    }
+                ]
+            },
+        ]
+
+        describe('For DataGrid:', () => {
+            const components = [
+                {
+                    key: 'dataGrid',
+                    type: 'datagrid',
+                    input: true,
+                    components: nestedForm,
+                }
+            ];
+            it('Should validate required component when it is filled out', async () => {
+                const submission = {
+                    data: {
+                        dataGrid: [
+                            {
+                                form: {
+                                    data: {
+                                        textField: 'test'
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                };
+
+                const context = {
+                    form: { components },
+                    submission,
+                    data: submission.data,
+                    components,
+                    processors: ProcessTargets.submission,
+                    scope: {},
+                    config: {
+                        server: true
+                    }
+                };
+                processSync(context);
+                context.processors = ProcessTargets.evaluator;
+                processSync(context);
+                expect((context.scope as ValidationScope).errors).to.have.length(0);
+            });
+            it('Should not validate required component when it is not filled out', async () => {
+                const submission = {
+                    data: {
+                        dataGrid: [
+                            {
+                                form: {
+                                    data: {
+                                        textField: ''
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                };
+
+                const context = {
+                    form: { components },
+                    submission,
+                    data: submission.data,
+                    components,
+                    processors: ProcessTargets.submission,
+                    scope: {},
+                    config: {
+                        server: true
+                    }
+                };
+                processSync(context);
+                context.processors = ProcessTargets.evaluator;
+                processSync(context);
+                expect((context.scope as ValidationScope).errors).to.have.length(1);
+            });
+        });
+        describe('For EditGrid:', () => {
+            const components = [
+                {
+                    key: 'editGrid',
+                    type: 'editgrid',
+                    input: true,
+                    components: nestedForm,
+                }
+            ];
+            it('Should validate required component when it is filled out', async () => {
+                const submission = {
+                    data: {
+                        editGrid: [
+                            {
+                                form: {
+                                    data: {
+                                        textField: 'test'
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                };
+
+                const context = {
+                    form: { components },
+                    submission,
+                    data: submission.data,
+                    components,
+                    processors: ProcessTargets.submission,
+                    scope: {},
+                    config: {
+                        server: true
+                    }
+                };
+                processSync(context);
+                context.processors = ProcessTargets.evaluator;
+                processSync(context);
+                expect((context.scope as ValidationScope).errors).to.have.length(0);
+            });
+            it('Should not validate required component when it is not filled out', async () => {
+                const submission = {
+                    data: {
+                        editGrid: [
+                            {
+                                form: {
+                                    data: {
+                                        textField: ''
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                };
+
+                const context = {
+                    form: { components },
+                    submission,
+                    data: submission.data,
+                    components,
+                    processors: ProcessTargets.submission,
+                    scope: {},
+                    config: {
+                        server: true
+                    }
+                };
+                processSync(context);
+                context.processors = ProcessTargets.evaluator;
+                processSync(context);
+                expect((context.scope as ValidationScope).errors).to.have.length(1);
+            });
+        });
+    })
     /*
           it('Should not clearOnHide when set to false', async () => {
             var components = [
