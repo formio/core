@@ -23,6 +23,7 @@ import { validateRequiredDayInfo } from "./validateRequiredDay";
 import { validateTimeInfo } from "./validateTime";
 import { validateUrlInfo } from "./validateUrl";
 import { validateValuePropertyInfo } from "./validateValueProperty";
+import { validateNumberInfo } from "./validateNumber";
 
 // These are the validations that are performed in the client.
 export const clientRules: ValidationRuleInfo[] = [
@@ -49,5 +50,6 @@ export const clientRules: ValidationRuleInfo[] = [
     validateRequiredDayInfo,
     validateTimeInfo,
     validateUrlInfo,
-    validateValuePropertyInfo
+    validateValuePropertyInfo,
+    validateNumberInfo
 ];
