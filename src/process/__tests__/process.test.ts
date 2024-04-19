@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import { processSync, ProcessTargets } from "../index";
-import { validate } from 'fast-json-patch';
 import { ValidationScope } from 'types';
 const assert = require('assert');
 const form1 = require('./fixtures/form1.json');
