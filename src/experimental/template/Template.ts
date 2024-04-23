@@ -4,7 +4,7 @@ import { merge } from 'lodash';
  * Manages all the available templates which can be rendered.
  */
 export class Template {
-    public static templates: any = [];
+    public static templates: any = {};
     public static _current: any = {};
     public static _framework: string = 'bootstrap';
 

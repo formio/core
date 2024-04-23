@@ -44,7 +44,9 @@
     "dist",
     "lib",
     "types.js",
-    "types.d.ts"
+    "types.d.ts",
+    "experimental.js",
+    "experimental.d.ts"
   ],
   "homepage": "https://github.com/formio/core#readme",
   "devDependencies": {

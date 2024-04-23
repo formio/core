@@ -15,6 +15,9 @@ export function NestedDataModel(props: any = {}) : ModelDecoratorInterface {
              * Get the component data.
              */
             componentData() {
+                if (!this.component.key) {
+                    return this.data;
+                }
                 const compData: any = get(this.data, this.component.key, this.defaultValue);
                 if (!Object.keys(compData).length) {
                     set(this.data, this.component.key, compData);
@@ -23,7 +26,7 @@ export function NestedDataModel(props: any = {}) : ModelDecoratorInterface {
             }
 
             public get dataValue() {
-                return get(this.data, this.component.key);
+                return this.component.key ? get(this.data, this.component.key) : this.data;
             }
 
             public set dataValue(value: any) {
