@@ -220,7 +220,8 @@ export const eachComponentDataAsync = async (
   fn: AsyncComponentDataCallback,
   path = "",
   index?: number,
-  parent?: Component
+  parent?: Component,
+  includeAll: boolean = false
 ) => {
   if (!components || !data) {
     return;
@@ -242,11 +243,12 @@ export const eachComponentDataAsync = async (
               fn,
               `${compPath}[${i}]`,
               i,
-              component
+              component,
+              includeAll
             );
           }
           return true;
-        } else if (isEmpty(row)) {
+        } else if (isEmpty(row) && !includeAll) {
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
@@ -256,12 +258,12 @@ export const eachComponentDataAsync = async (
             // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
             const childPath: string = componentChildPath(component, path, compPath);
             const childData: any = get(data, childPath, null);
-            await eachComponentDataAsync(component.components, childData, fn, '', index, component);
+            await eachComponentDataAsync(component.components, childData, fn, '', index, component, includeAll);
             set(data, childPath, childData);
           }
         }
         else {
-          await eachComponentDataAsync(component.components, data, fn, componentChildPath(component, path, compPath), index, component);
+          await eachComponentDataAsync(component.components, data, fn, componentChildPath(component, path, compPath), index, component, includeAll);
         }
         return true;
       } else {
@@ -280,7 +282,8 @@ export const eachComponentData = (
   fn: ComponentDataCallback,
   path = "",
   index?: number,
-  parent?: Component
+  parent?: Component,
+  includeAll: boolean = false
 ) => {
   if (!components || !data) {
     return;
@@ -296,10 +299,10 @@ export const eachComponentData = (
         const value = get(data, compPath, data) as DataObject;
         if (Array.isArray(value)) {
           for (let i = 0; i < value.length; i++) {
-            eachComponentData(component.components, data, fn, `${compPath}[${i}]`, i, component);
+            eachComponentData(component.components, data, fn, `${compPath}[${i}]`, i, component, includeAll);
           }
           return true;
-        } else if (isEmpty(row)) {
+        } else if (isEmpty(row) && !includeAll) {
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
@@ -309,12 +312,12 @@ export const eachComponentData = (
             // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
             const childPath: string = componentChildPath(component, path, compPath);
             const childData: any = get(data, childPath, {});
-            eachComponentData(component.components, childData, fn, '', index, component);
+            eachComponentData(component.components, childData, fn, '', index, component, includeAll);
             set(data, childPath, childData);
           }
         }
         else {
-          eachComponentData(component.components, data, fn, componentChildPath(component, path, compPath), index, component);
+          eachComponentData(component.components, data, fn, componentChildPath(component, path, compPath), index, component, includeAll);
         }
         return true;
       } else {
@@ -559,11 +562,11 @@ export function getComponentData(components: Component[], data: DataObject, path
 }
 
 export function getComponentActualValue(component: Component, compPath: string, data: any, row: any) {
-  // The compPath here will NOT contain the indexes for DataGrids and EditGrids. 
+  // The compPath here will NOT contain the indexes for DataGrids and EditGrids.
   //
   //   a[0].b[2].c[3].d
   //
-  // Because of this, we will need to determine our parent component path (not data path), 
+  // Because of this, we will need to determine our parent component path (not data path),
   // and find the "row" based comp path.
   //
   //   a[0].b[2].c[3].d => a.b.c.d
