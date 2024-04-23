@@ -71,6 +71,7 @@ export type TextFieldComponent = BaseComponent & {
         minWords?: number | string;
         maxWords?: number | string;
         pattern?: string;
+        patternMessage?: string;
     };
 };
 
