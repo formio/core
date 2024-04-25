@@ -204,6 +204,14 @@ export const simpleRadioField: RadioComponent = {
     input: true,
 };
 
+export const simpleCheckBoxField = {
+    label: 'Checkbox',
+    tableView: true,
+    key: 'component',
+    type: 'checkbox',
+    input: true,
+};
+
 export const hiddenRequiredField: HiddenComponent = {
     type: 'hidden',
     key: 'someData',
