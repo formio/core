@@ -328,15 +328,29 @@ export type ListComponent = BaseComponent & {
     valueProperty?: string;
 };
 
-export type RadioComponent = ListComponent & {
+type StaticValuesRadioComponent = ListComponent & {
     values: { label: string; value: string; shortcut?: string }[];
-    data?: {
-        url?: string;
-    };
+    dataSrc?: "values";
     fieldSet?: boolean;
     optionsLabelPosition?: string;
     inline?: boolean;
 };
+
+type UrlValuesRadioComponent = ListComponent & {
+    data: {
+        url: string;
+        headers: {
+            key: string;
+            value: string;
+        }[];
+    };
+    dataSrc: 'url';
+    fieldSet?: boolean;
+    optionsLabelPosition?: string;
+    inline?: boolean;
+};
+
+export type RadioComponent = StaticValuesRadioComponent | UrlValuesRadioComponent;
 
 export type RecaptchaComponent = BaseComponent;
 

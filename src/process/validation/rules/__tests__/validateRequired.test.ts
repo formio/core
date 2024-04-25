@@ -2,10 +2,18 @@ import { expect } from 'chai';
 
 import { FieldError } from 'error';
 import { validateRequired } from '../validateRequired';
-import { conditionallyHiddenRequiredHiddenField, hiddenRequiredField, requiredNonInputField, simpleTextField } from './fixtures/components';
+import {
+    conditionallyHiddenRequiredHiddenField,
+    hiddenRequiredField,
+    requiredNonInputField,
+    simpleTextField,
+    simpleSelectBoxes,
+    simpleRadioField,
+    simpleCheckBoxField,
+} from './fixtures/components';
 import { processOne } from 'processes/processOne';
 import { generateProcessorContext } from './fixtures/util';
-import { ProcessorsContext, ValidationScope } from 'types';
+import { ProcessorsContext, SelectBoxesComponent, ValidationScope } from 'types';
 import { validateAllProcess, validateProcessInfo } from 'processes/validation';
 
 it('Validating a simple component that is required and not present in the data will return a field error', async () => {
@@ -116,7 +124,7 @@ it('Should not validate a non input comonent', async () => {
     expect(context.scope.errors.length).to.equal(0);
 });
 
-it('Should validate a conditionally hidden compoentn with validateWhenHidden flag set to true', async () => {
+it('Should validate a conditionally hidden component with validateWhenHidden flag set to true', async () => {
     const component = {...simpleTextField};
     component.validate = { required: true };
     component.validateWhenHidden = true;
@@ -131,4 +139,67 @@ it('Should validate a conditionally hidden compoentn with validateWhenHidden fla
     await processOne(context);
     expect(context.scope.errors.length).to.equal(1);
     expect(context.scope.errors[0] && context.scope.errors[0].errorKeyOrMessage).to.equal('required');
+});
+
+it('Validating a simple radio component that is required and present in the data with value set to false will return null', async () => {
+    const component = { ...simpleRadioField, validate: { required: true }, values: [
+        {
+            label: 'Yes',
+            value: 'true',
+        },
+        {
+            label: 'No',
+            value: 'false',
+        }] };
+    const data = { component: false };
+    const context = generateProcessorContext(component, data);
+    const result = await validateRequired(context);
+    expect(result).to.equal(null);
+});
+
+
+it('Validating a simple selectbox that is required and present in the data with value set to 0 will return null', async () => {
+    const component = { ...simpleSelectBoxes, validate: { required: true }, values: [
+        {
+            label: 'true',
+            value: 'true',
+        },
+        {
+            label: 'Null',
+            value: '0',
+        }] };
+    const data = { component: 0 };
+    const context = generateProcessorContext(component, data);
+    const result = await validateRequired(context);
+    expect(result).to.equal(null);
+});
+
+it('Validating a simple selectbox that is required and present in the data with value set to false will return a FieldError', async () => {
+    const component: SelectBoxesComponent = { ...simpleSelectBoxes, validate: { required: true }, values: [
+        {
+            label: 'true',
+            value: 'true',
+        },
+        {
+            label: 'false',
+            value: 'false',
+        }]
+    };
+    const data = {
+        component: {
+            true: false,
+            false: false
+        }
+    };
+    const context = generateProcessorContext(component, data);
+    const result = await validateRequired(context);
+    expect(result).to.be.instanceOf(FieldError);
+});
+
+it('Validating a simple checkbox that is required and present in the data with value set to false will return a FieldError', async () => {
+    const component = { ...simpleCheckBoxField, validate: { required: true } };
+    const data = { component: false };
+    const context = generateProcessorContext(component, data);
+    const result = await validateRequired(context);
+    expect(result).to.be.instanceOf(FieldError);
 });
