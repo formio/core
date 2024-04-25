@@ -1,15 +1,57 @@
 import { FieldError } from 'error';
-import { AddressComponentDataObject, RuleFn, RuleFnSync, ValidationContext } from 'types';
+import {
+    AddressComponentDataObject,
+    RuleFn,
+    RuleFnSync,
+    ValidationContext,
+    AddressComponent,
+    DayComponent
+} from 'types';
 import { isEmptyObject } from '../util';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
+
+const isAddressComponent = (component: any): component is AddressComponent => {
+    return component.type === 'address';
+}
+
+const isDayComponent = (component: any): component is DayComponent => {
+    return component.type === 'day';
+}
 
 const isAddressComponentDataObject = (value: any): value is AddressComponentDataObject => {
     return value !== null && typeof value === 'object' && value.mode && value.address && typeof value.address === 'object';
 }
 
+// Checkboxes and selectboxes consider false to be falsy, whereas other components with
+// settable values (e.g. radio, select, datamap, container, etc.) consider it truthy
+const isComponentThatCannotHaveFalseValue = (component: any): boolean => {
+    return component.type === 'checkbox' || component.type === 'selectboxes'
+}
+
+const valueIsPresent = (value: any, considerFalseTruthy: boolean): boolean => {
+    // Evaluate for 3 out of 6 falsy values ("", null, undefined), don't check for 0
+    // and only check for false under certain conditions
+    if (value === null || value === undefined || value === "" || (!considerFalseTruthy && value === false)) {
+        return false;
+    }
+    // Evaluate for empty object
+    else if (isEmptyObject(value)) {
+        return false;
+    }
+    // Evaluate for empty array
+    else if (Array.isArray(value) && value.length === 0) {
+        return false;
+    }
+    // Recursively evaluate
+    else if (typeof value === 'object') {
+        return Object.values(value).some((val) => valueIsPresent(val, considerFalseTruthy));
+    }
+    return true;
+}
+
 export const shouldValidate = (context: ValidationContext) => {
     const { component } = context;
-    if (component.validate?.required) {
+    if (component.validate?.required && !component.hidden) {
         return true;
     }
     return false;
@@ -25,23 +67,17 @@ export const validateRequiredSync: RuleFnSync = (context: ValidationContext) => 
     if (!shouldValidate(context)) {
         return null;
     }
-    if (
-        (value === null || value === undefined || isEmptyObject(value) || (!!value === false && value !== 0)) &&
-        !component.hidden
-    ) {
-        return error;
-    }
-    else if (Array.isArray(value) && value.length === 0) {
-        return error;
-    }
-    else if (component.type === 'address' && isAddressComponentDataObject(value)) {
+    if (isAddressComponent(component) && isAddressComponentDataObject(value)) {
         return isEmptyObject(value.address) ? error : Object.values(value.address).every((val) => !!val) ? null : error;
     }
-    else if (component.type === 'day' && value === '00/00/0000') {
+    else if (isDayComponent(component) && value === '00/00/0000') {
         return error;
     }
-    else if (typeof value === 'object' && value !== null) {
-        return Object.values(value).some((val) => !!val) ? null : error;
+    else if (isComponentThatCannotHaveFalseValue(component)) {
+        return !valueIsPresent(value, false) ? error : null;
+    }
+    else if (!valueIsPresent(value, true)) {
+        return error;
     }
     return null;
 };
