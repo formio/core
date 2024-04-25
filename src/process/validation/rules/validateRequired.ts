@@ -76,10 +76,7 @@ export const validateRequiredSync: RuleFnSync = (context: ValidationContext) => 
     else if (isComponentThatCannotHaveFalseValue(component)) {
         return !valueIsPresent(value, false) ? error : null;
     }
-    else if (!valueIsPresent(value, true)) {
-        return error;
-    }
-    return null;
+    return !valueIsPresent(value, true) ? error : null;
 };
 
 export const validateRequiredInfo: ProcessorInfo<ValidationContext, FieldError | null>  = {
