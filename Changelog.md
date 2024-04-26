@@ -1,3 +1,7 @@
+## 2.0.1
+### Changed
+ - Official Release
+
 ## 2.0.1-rc.1
 ### Changed
  - FIO-8264: update validate required
