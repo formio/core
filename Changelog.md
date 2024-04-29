@@ -6,6 +6,19 @@
  - FIO-8121: Fix json and custom validation errors response
  - FIO-8128: allow export of dist minified js
  - FIO-8143: update eachComponent to be able to return proper pathing
+ - FIO-8210: fix nested form validation
+ - change filter processor to be more verbose and have compModelType in scope (replaces pull #78)
+ - FIO 7488: improve error handling
+ - Fixed required validation considering false value falsy (pull #31)
+ - Revert "Merge pull request #31 from ralfeis/master"
+ - FIO-8037: fixed an issue where number component can be sent text through API
+ - FIO-7964: add resource-based select component validation
+ - FIO-8218: Fix tests for PR 79
+ - FIO-8218: add tests for FIO-8210
+ - Fix/implement pattern message
+ - FIO-8128: adds includeAll flag to eachComponentData and eachComponentDataAsync
+ - FIO-7507: publish-dev-tag-to-npm
+ - FIO-8264: update validate required
 
 
 ## 2.0.0-rc.24
