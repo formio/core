@@ -6,12 +6,8 @@ const isValidatableDateTimeComponent = (obj: any): obj is DateTimeComponent => {
     return !!obj && !!obj.type && obj.type === 'datetime';
 };
 
-const isValidatableTextFieldComponent = (obj: any): obj is TextFieldComponent => {
-    return !!obj && !!obj.type && obj.widget && obj.widget.type === 'calendar';
-};
-
 const isValidatable = (component: any) => {
-    return isValidatableDateTimeComponent(component) || isValidatableTextFieldComponent(component);
+    return isValidatableDateTimeComponent(component);
 };
 
 export const shouldValidate = (context: ValidationContext) => {
