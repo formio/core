@@ -73,44 +73,12 @@ it('Validating a textField calendar picker component with no data will return nu
     expect(result).to.equal(null);
 });
 
-it('Validating a textField calendar picker component with an invalid date string value will return a FieldError', async () => {
+it('Textfield calendar picker component date values should not be validated and return null', async () => {
     const component = calendarTextField;
     const data = {
         component: 'hello, world!',
     };
     const context = generateProcessorContext(component, data);
     const result = await validateDate(context);
-    expect(result).to.be.instanceOf(FieldError);
-    expect(result?.errorKeyOrMessage).to.equal('invalidDate');
-});
-
-it('Validating a textField calendar picker component with an valid date string value will return null', async () => {
-    const component = calendarTextField;
-    const data = {
-        component: '2023-03-09T12:00:00-06:00',
-    };
-    const context = generateProcessorContext(component, data);
-    const result = await validateDate(context);
-    expect(result).to.equal(null);
-});
-
-it('Validating a textField calendar picker component with an invalid Date object will return a FieldError', async () => {
-    const component = calendarTextField;
-    const data = {
-        component: new Date('Hello, world!'),
-    };
-    const context = generateProcessorContext(component, data);
-    const result = await validateDate(context);
-    expect(result).to.be.instanceOf(FieldError);
-    expect(result?.errorKeyOrMessage).to.equal('invalidDate');
-});
-
-it('Validating a textField calendar picker component with a valid Date object will return null', async () => {
-    const component = calendarTextField;
-    const data = {
-        component: new Date(),
-    };
-    const context = generateProcessorContext(component, data);
-    const result = await validateDate(context);
-    expect(result).to.equal(null);
+    expect(result).to.be.equal(null);
 });
