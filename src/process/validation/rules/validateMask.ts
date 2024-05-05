@@ -3,6 +3,8 @@ import _, { isEmpty } from 'lodash';
 import { FieldError } from 'error';
 import { TextFieldComponent, DataObject, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
+import mockBrowserContext from 'utils/mockBrowserContext';
+mockBrowserContext();
 import Inputmask from 'inputmask';
 
 const isMaskType = (obj: any): obj is DataObject & { maskName: string; value: string } => {
