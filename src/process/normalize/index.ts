@@ -1,9 +1,4 @@
-import get from 'lodash/get';
-import set from 'lodash/set';
-import isString from 'lodash/isString';
-import toString from 'lodash/toString';
-import isNil from 'lodash/isNil';
-import isObject from 'lodash/isObject';
+import { get, set, isString, toString, isNil, isObject } from 'lodash';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import {

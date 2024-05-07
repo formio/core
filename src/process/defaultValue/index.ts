@@ -1,7 +1,6 @@
 import JSONLogic from 'modules/jsonlogic';
 import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, DefaultValueContext, FilterScope } from 'types';
-import has from 'lodash/has';
-import set from 'lodash/set';
+import { set, has } from 'lodash';
 import { getComponentKey } from 'utils/formUtil';
 const Evaluator = JSONLogic.evaluator;
 

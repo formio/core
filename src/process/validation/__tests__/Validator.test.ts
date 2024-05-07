@@ -1,4 +1,4 @@
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { expect } from 'chai';
 import { validateProcess } from '../index';
 import { rules } from "../rules";

@@ -31,6 +31,11 @@ import {
   Component,
   ComponentDataCallback,
   DataObject,
+  ColumnsComponent,
+  TableComponent,
+  LegacyConditional,
+  JSONConditional,
+  SimpleConditional,
 } from "types";
 import { Evaluator } from "./Evaluator";
 
@@ -599,11 +604,11 @@ export function getComponentActualValue(component: Component, compPath: string, 
  * @returns {Boolean}
  *   Whether or not the component is a layout component.
  */
-export function isLayoutComponent(component: any) {
+export function isLayoutComponent(component: Component) {
   return Boolean(
-    (component.columns && Array.isArray(component.columns)) ||
-    (component.rows && Array.isArray(component.rows)) ||
-    (component.components && Array.isArray(component.components))
+    ((component as ColumnsComponent).columns && Array.isArray((component as ColumnsComponent).columns)) ||
+    ((component as TableComponent).rows && Array.isArray((component as TableComponent).rows)) ||
+    ((component as HasChildComponents).components && Array.isArray((component as HasChildComponents).components))
   );
 }
 
@@ -614,7 +619,7 @@ export function isLayoutComponent(component: any) {
  * @param query
  * @return {boolean}
  */
-export function matchComponent(component: any, query: any) {
+export function matchComponent(component: Component, query: any) {
   if (isString(query)) {
     return (component.key === query) || (component.path === query);
   }
@@ -633,17 +638,13 @@ export function matchComponent(component: any, query: any) {
 /**
  * Get a component by its key
  *
- * @param {Object} components
- *   The components to iterate.
- * @param {String|Object} key
- *   The key of the component to get, or a query of the component to search.
- *
- * @returns {Object}
- *   The component that matches the given key, or undefined if not found.
+ * @param {Object} components - The components to iterate.
+ * @param {String|Object} key - The key of the component to get, or a query of the component to search.
+ * @returns {Component} - The component that matches the given key, or undefined if not found.
  */
-export function getComponent(components: any, key: any, includeAll: any) {
+export function getComponent(components: Component[], key: any, includeAll: any): (Component | undefined) {
   let result;
-  eachComponent(components, (component: any, path: any) => {
+  eachComponent(components, (component: Component, path: any) => {
     if ((path === key) || (component.path === key)) {
       result = component;
       return true;
@@ -659,8 +660,8 @@ export function getComponent(components: any, key: any, includeAll: any) {
  * @param query
  * @return {*}
  */
-export function searchComponents(components: any, query: any) {
-  const results: any[] = [];
+export function searchComponents(components: Component[], query: any): Component[] {
+  const results: Component[] = [];
   eachComponent(components, (component: any) => {
     if (matchComponent(component, query)) {
       results.push(component);
@@ -676,7 +677,7 @@ export function searchComponents(components: any, query: any) {
  * @param components
  * @param path
  */
-export function removeComponent(components: any, path: string) {
+export function removeComponent(components: Component[], path: string) {
   // Using _.unset() leave a null value. Use Array splice instead.
   // @ts-ignore
   var index = path.pop();
@@ -693,13 +694,13 @@ export function removeComponent(components: any, path: string) {
  *
  * @returns {boolean} - TRUE - This component has a conditional, FALSE - No conditional provided.
  */
-export function hasCondition(component: any) {
+export function hasCondition(component: Component) {
   return Boolean(
     (component.customConditional) ||
     (component.conditional && (
-      component.conditional.when ||
-      component.conditional.json ||
-      component.conditional.condition
+      (component.conditional as LegacyConditional).when ||
+      (component.conditional as JSONConditional).json ||
+      (component.conditional as SimpleConditional).conjunction
     ))
   );
 }

@@ -1,14 +1,11 @@
 import jsonLogic from 'json-logic-js';
-import * as _ from 'lodash';
 import { dayjs } from 'utils/date';
-import { lodashOperators } from './operators';
+import { _ } from './operators';
 
 // Configure JsonLogic
-lodashOperators.forEach((name: string) => {
-    if ((_ as any)[name]) {
-        jsonLogic.add_operation(`_${name}`, (_ as any)[name]);
-    }
-});
+for (let operator in _) {
+  jsonLogic.add_operation(`_${operator}`, _[operator]);
+}
 
 // Retrieve Any Date
 jsonLogic.add_operation('getDate', (date: any) => {

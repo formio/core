@@ -1,8 +1,8 @@
-import _, { isEmpty } from 'lodash';
-
+import { isEmpty } from 'lodash';
 import { FieldError } from 'error';
 import { TextFieldComponent, DataObject, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
+import InputMask from 'inputmask';
 
 const isMaskType = (obj: any): obj is DataObject & { maskName: string; value: string } => {
     return (
@@ -134,15 +134,7 @@ export const validateMaskSync: RuleFnSync = (context: ValidationContext) => {
     if (!inputMask) {
         return null;
     }
-    if (
-        value && 
-        inputMask && 
-        typeof value === 'string' && 
-        component.type === 'textfield' &&
-        typeof window !== 'undefined' &&
-        typeof document !== 'undefined'
-    ) {
-        const InputMask = require('inputmask');
+    if (value && inputMask && typeof value === 'string' && component.type === 'textfield') {
         return InputMask.isValid(value, {mask: inputMask.toString()}) ? null : new FieldError('mask', context);
     }
     let inputMaskArr = getInputMask(inputMask);

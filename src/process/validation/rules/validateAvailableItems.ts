@@ -1,4 +1,4 @@
-import isEmpty from 'lodash/isEmpty';
+import { isEmpty } from 'lodash';
 import { FieldError, ProcessorError } from 'error';
 import { Evaluator } from 'utils';
 import { RadioComponent, SelectComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
