@@ -102,3 +102,37 @@ it('Should normalize a radio component value with a number', () => {
     normalizeProcessSync(context);
     expect(context.data).to.deep.equal({radio: 0});
 });
+
+it('Should normalize a number component value with a string value', () => {
+    const numberComp = {
+        type: 'number',
+        key: 'number',
+        input: true,
+        label: 'Number'
+    };
+    const data = {
+        number: '000123'
+    };
+    const context = generateProcessorContext(numberComp, data);
+    normalizeProcessSync(context);
+    expect(context.data).to.deep.equal({number: 123});
+});
+
+it('Should normalize a number component value with a multiple values allowed', () => {
+    const numberComp = {
+        type: 'number',
+        key: 'number',
+        input: true,
+        label: 'Number',
+        multiple: true
+    };
+    const data = {
+        number: [
+            '000.0123', 
+            '123'
+        ]
+    };
+    const context = generateProcessorContext(numberComp, data);
+    normalizeProcessSync(context);
+    expect(context.data).to.deep.equal({number: [0.0123, 123]});
+});
