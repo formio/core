@@ -15,7 +15,7 @@ export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterC
                 scope.filter[absolutePath] = {
                     compModelType: modelType,
                     include: true,
-                    value: {data: {}}
+                    value: { data: {} }
                 };
                 break;
             case 'array':
@@ -47,19 +47,33 @@ export const filterProcess: ProcessorFn<FilterScope> = async (context: FilterCon
 };
 
 export const filterPostProcess: ProcessorFnSync<FilterScope> = (context: FilterContext) => {
+
     const { scope, submission } = context;
+    console.log('filterPostProcess: context', Object.keys(context));
+    console.dir(context.components)
+
     const filtered = {};
     for (const path in scope.filter) {
-        if (scope.filter[path].include) {
-            let value = get(submission?.data, path);
-            if (isObject(value) && isObject(scope.filter[path].value)) {
-                if (scope.filter[path].compModelType === 'dataObject') {
-                    value = {...value, ...scope.filter[path].value, data: (value as any)?.data}
-                } else {
-                    value = {...value, ...scope.filter[path].value}
-                }
+        console.log('filterPostProcess path:', path);
+        const pathFilter = scope.filter[path];
+        if (pathFilter) {
+
+            let value = get(submission?.data, path) as any;
+            console.log('path filter:', scope.filter[path]);
+            console.log('path value:', value);
+
+
+            // if (isObject(value) && isObject(scope.filter[path])) {
+            //     if ((value as any).data) {
+            //         value = { ...value, ...scope.filter[path], data: (value as any)?.data }
+            //     } else {
+            //         value = { ...value, ...scope.filter[path] }
+            //     }
+            // }
+
+            if (pathFilter.compModelType !== 'dataObject') {
+                set(filtered, path, value);
             }
-            set(filtered, path, value);
         }
     }
     context.data = filtered;

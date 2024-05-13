@@ -51,6 +51,8 @@ export function processOneSync<ProcessorScope>(context: ProcessorsContext<Proces
     }
     context.processor = ProcessorType.Custom;
     for (const processor of processors) {
+        // console.log('processOneSync: processor', processor);
+
         if (processor?.processSync) {
             processor.processSync(context)
         }

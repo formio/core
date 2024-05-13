@@ -16,20 +16,24 @@ import { clearHiddenProcessInfo } from "./clearHidden";
 
 export async function process<ProcessScope>(context: ProcessContext<ProcessScope>): Promise<ProcessScope> {
     const { instances, components, data, scope, flat, processors } = context;
+    console.log('process: context', context);
+
     await eachComponentDataAsync(components, data, async (component, compData, row, path, components, index) => {
         // Skip processing if row is null or undefined
         if (!row) {
             return;
         }
-        await processOne<ProcessScope>({...context, ...{
-            data: compData,
-            component,
-            components,
-            path,
-            row,
-            index,
-            instance: instances ? instances[path] : undefined
-        }});
+        await processOne<ProcessScope>({
+            ...context, ...{
+                data: compData,
+                component,
+                components,
+                path,
+                row,
+                index,
+                instance: instances ? instances[path] : undefined
+            }
+        });
         if (flat) {
             return true;
         }
@@ -49,12 +53,16 @@ export async function process<ProcessScope>(context: ProcessContext<ProcessScope
 
 export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>): ProcessScope {
     const { instances, components, data, scope, flat, processors } = context;
+    console.dir(components)
+    console.log(data);
+
     eachComponentData(components, data, (component, compData, row, path, components, index) => {
         // Skip processing if row is null or undefined
         if (!row) {
             return;
         }
-        processOneSync<ProcessScope>({...context,
+        processOneSync<ProcessScope>({
+            ...context,
             data: compData,
             component,
             components,

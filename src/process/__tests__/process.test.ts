@@ -1052,7 +1052,74 @@ describe('Process Tests', () => {
         processSync(context);
         assert.equal(context.scope.errors.length, 0);
     });
+    it.only('should remove submission data not in a nested form definition', async function () {
+        const form = {
+            _id: {},
+            title: 'parent',
+            name: 'parent',
+            type: 'form',
+            components: [
+                {
+                    type: "checkbox",
+                    label: "A",
+                    key: "A",
+                    input: true,
+                },
+                {
+                    type: "checkbox",
+                    label: "B",
+                    key: "B",
+                    input: true,
+                },
+                {
+                    key: 'child',
+                    label: 'child',
+                    form: 'child form',
+                    type: 'form',
+                    input: true,
+                    reference: false,
+                    clearOnHide: false,
+                    components: [
+                        {
+                            label: "Input",
+                            key: 'input',
+                            type: 'textfield',
+                            input: true
+                        }
+                    ]
+                }
+            ]
+        }
+        const submission = {
+            data: {
+                A: true,
+                B: true,
+                child: {
+                    data: {
+                        input: 'test',
+                        invalid: 'invalid submission data'
+                    }
+                }
+            }
+        }
+        const context = {
+            form,
+            submission,
+            data: submission.data,
+            components: form.components,
+            processors: ProcessTargets.submission,
+            scope: {},
+            config: {
+                server: true
+            }
+        };
+        processSync(context);
+        console.log(context.data.child.data);
 
+        expect(context.data.child.data).to.not.have.property('invalid');
+
+
+    })
     it('Should process nested form data correctly', async () => {
         const submission = {
             data: {
