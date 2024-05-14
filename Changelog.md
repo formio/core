@@ -1,5 +1,7 @@
 ## 2.1.0-rc.1
-
+### Changed
+ - FIO 7488: improve error handling
+   
 ## 2.0.1
 ### Changed
  - Official Release
