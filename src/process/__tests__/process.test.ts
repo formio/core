@@ -1050,8 +1050,6 @@ describe('Process Tests', () => {
         submission.data = context.data;
         context.processors = ProcessTargets.evaluator;
         processSync(context);
-        console.log('errors:', context.scope.errors);
-
         assert.equal(context.scope.errors.length, 0);
     });
     it('should remove submission data not in a nested form definition', async function () {
@@ -1116,8 +1114,6 @@ describe('Process Tests', () => {
             }
         };
         processSync(context);
-
-
         expect(context.data.child.data).to.not.have.property('invalid');
 
 

@@ -49,25 +49,16 @@ export const filterProcess: ProcessorFn<FilterScope> = async (context: FilterCon
 export const filterPostProcess: ProcessorFnSync<FilterScope> = (context: FilterContext) => {
 
     const { scope, submission } = context;
-    console.log('filterPostProcess: context', Object.keys(context));
-    console.dir(context.components)
-
     const filtered = {};
     for (const path in scope.filter) {
-        console.log('filterPostProcess path:', path);
         const pathFilter = scope.filter[path];
         if (pathFilter) {
-
             let value = get(submission?.data, path) as any;
-            console.log('path filter:', scope.filter[path]);
-            console.log('path value:', value);
 
             // dataObject types (nested form) paths are recursively added to the scope.filter
             // excluding those from this and setting their components onto the submission directly
             if (pathFilter.compModelType !== 'dataObject') {
                 set(filtered, path, value);
-            } else {
-                console.log('skipping path:', path, 'value:', value)
             }
         }
     }
