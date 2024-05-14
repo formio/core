@@ -62,17 +62,12 @@ export const filterPostProcess: ProcessorFnSync<FilterScope> = (context: FilterC
             console.log('path filter:', scope.filter[path]);
             console.log('path value:', value);
 
-
-            // if (isObject(value) && isObject(scope.filter[path])) {
-            //     if ((value as any).data) {
-            //         value = { ...value, ...scope.filter[path], data: (value as any)?.data }
-            //     } else {
-            //         value = { ...value, ...scope.filter[path] }
-            //     }
-            // }
-
+            // dataObject types (nested form) paths are recursively added to the scope.filter
+            // excluding those from this and setting their components onto the submission directly
             if (pathFilter.compModelType !== 'dataObject') {
                 set(filtered, path, value);
+            } else {
+                console.log('skipping path:', path, 'value:', value)
             }
         }
     }
