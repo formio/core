@@ -49,6 +49,14 @@ export function validationRules(
     }
     const validationRules: ValidationRuleInfo[] = [];
     return rules.reduce((acc, rule: ValidationRuleInfo) => {
+        if (context.component.multiple &&
+            Array.isArray(context.value) &&
+            context.value?.length === 0 &&
+            rule.fullValue
+        ) {
+            return acc;
+        }
+
         if (rule.shouldProcess && rule.shouldProcess(context)) {
             acc.push(rule);
         }
