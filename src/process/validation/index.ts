@@ -52,7 +52,7 @@ export function validationRules(
         if (context.component.multiple &&
             Array.isArray(context.value) &&
             context.value?.length === 0 &&
-            rule.fullValue
+            !rule.fullValue
         ) {
             return acc;
         }
