@@ -36,7 +36,7 @@ describe('validateMultiple', () => {
 
         it('should return false for textArea component with as !== json', () => {
             const component: TextAreaComponent = {
-                type: 'textArea',
+                type: 'textarea',
                 as: 'text',
                 input: true,
                 key: 'textArea',
