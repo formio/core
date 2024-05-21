@@ -1,3 +1,10 @@
+## 2.1.0-rc.2
+### Changed
+ - FIO-8128: adds includeAll flag to eachComponentData and eachComponentDataAsync
+ - FIO-8288: do not validate dates in textfield components with calendar widgets
+ - FIO-8037: added number component normalization
+ - FIO-8037: fixed an issue where number component can be sent text through API
+
 ## 2.1.0-rc.1
 ### Changed
  - FIO 7488: improve error handling
