@@ -1,14 +1,277 @@
+import * as fs from 'fs';
 import get from "lodash/get";
 import { expect } from "chai";
-import { Component } from "types";
-
+import { Component, HasChildComponents, NestedComponent, TableComponent } from "types";
+const writtenNumber = require('written-number');
+const components = JSON.parse(fs.readFileSync(__dirname + '/fixtures/components.json').toString());
+const components2 = JSON.parse(fs.readFileSync(__dirname + '/fixtures/components2.json').toString());
+const components3 = JSON.parse(fs.readFileSync(__dirname + '/fixtures/components3.json').toString());
+const components4 = JSON.parse(fs.readFileSync(__dirname + '/fixtures/components4.json').toString());
+const components5 = JSON.parse(fs.readFileSync(__dirname + '/fixtures/components5.json').toString());
+const submission1 = JSON.parse(fs.readFileSync(__dirname + '/fixtures/submission1.json').toString());
 import {
     getContextualRowData,
     eachComponentDataAsync,
     isComponentDataEmpty,
     eachComponent,
-    eachComponentData
+    eachComponentData,
+    isLayoutComponent,
+    findComponent,
+    findComponents,
+    getComponent,
+    flattenComponents
 } from "../formUtil";
+import { fastCloneDeep } from 'utils/fastCloneDeep';
+
+describe('eachComponent', () => {
+    it('should iterate through nested components in the right order', () => {
+      let n = 1;
+      eachComponent(components, (component: Component) => {
+        expect((component as any).order).to.equal(n);
+        n += 1;
+      });
+    });
+
+    it('should include layouts components if provided', () => {
+      let numComps = 0;
+      let numLayout = 0;
+      eachComponent(components, (component: Component) => {
+        if (isLayoutComponent(component)) {
+          numLayout++;
+        }
+        else {
+          numComps++;
+        }
+      }, true);
+      expect(numLayout).to.be.equal(3);
+      expect(numComps).to.be.equal(8);
+    });
+
+    it('Should provide the paths to all of the components', () => {
+      const paths = [
+        'one',
+        'parent1',
+        'two',
+        'parent2',
+        'three',
+        '',
+        'four',
+        'five',
+        'six',
+        'seven',
+        'eight'
+      ];
+      const testPaths: string[] = [];
+      eachComponent(components, (component: Component, path: string) => {
+        testPaths.push(path);
+      }, true);
+      expect(paths).to.deep.equal(testPaths);
+    });
+
+    describe('findComponent', () => {
+      it('should find correct component in nested structure', () => {
+        findComponent(components4, 'four', null, (component: Component) => {
+          expect(component.label).to.equal('4');
+        });
+      });
+      it('should find correct component in flat structure', () => {
+        findComponent(components4, 'one', null, (component: Component) => {
+          expect(component.label).to.equal('1');
+        });
+      });
+    });
+
+    it('Should be able to find all textfield components', () => {
+      const comps = findComponents(components, { type: 'textfield' });
+      expect(comps.length).to.equal(6);
+    });
+
+    it('Should be able to find components with special properties.', () => {
+      const comps = findComponents(components3, { 'properties.path': 'a' });
+      expect(comps.length).to.equal(4);
+      expect(comps[0].key).to.equal('b');
+      expect(comps[1].key).to.equal('e');
+      expect(comps[2].key).to.equal('j');
+      expect(comps[3].key).to.equal('m');
+    });
+
+    it('Should be able to generate paths based on component types', () => {
+      const paths = [
+        'a',
+        'b',
+        'c',
+        'd',
+        'f',
+        'f.g',
+        'f.h',
+        'f.i',
+        'e',
+        'j',
+        'k',
+        'k.n',
+        'k.n.o',
+        'k.n.p',
+        'k.n.q',
+        'k.m',
+        'k.l',
+        'r',
+        'submit',
+        'tagpad',
+        'tagpad.a',
+      ];
+      const testPaths: string[] = [];
+      eachComponent(components2, (component: Component, path: string) => {
+        testPaths.push(path);
+      }, true);
+      expect(paths).to.deep.equal(testPaths);
+    });
+
+    it('Should still provide the correct paths when it is not recursive', () => {
+      const paths = [
+        'a',
+        'd',
+        'f',
+        'f.g',
+        'f.h',
+        'f.i',
+        'e',
+        'j',
+        'k',
+        'k.n',
+        'k.n.o',
+        'k.n.p',
+        'k.n.q',
+        'k.m',
+        'k.l',
+        'r',
+        'submit',
+        'tagpad',
+        'tagpad.a',
+      ];
+      const testPaths: string[] = [];
+      eachComponent(components2, (component: Component, path: string) => {
+        testPaths.push(path);
+      });
+      expect(paths).to.deep.equal(testPaths);
+    });
+
+    it('should be able to block recursion', () => {
+      let numComps = 0;
+      let numLayout = 0;
+      eachComponent(components, (component: Component) => {
+        if (isLayoutComponent(component)) {
+          numLayout++;
+        }
+        else {
+          numComps++;
+        }
+
+        if (component.type === 'table') {
+          let numInTable = 0;
+          const tableComponent: TableComponent = component as TableComponent;
+          tableComponent.rows.forEach((row: Component[]) => {
+            row.forEach((comp: Component) => {
+                eachComponent((comp as HasChildComponents).components, () => {
+                    numInTable++;
+                });
+            });
+          });
+          expect(numInTable).to.be.equal(4);
+          return true;
+        }
+      }, true);
+      expect(numLayout).to.be.equal(3);
+      expect(numComps).to.be.equal(4);
+    });
+
+    it('should not include `htmlelement` components when `includeAll` is not provided', () => {
+      let htmlComponentsAmount = 0;
+      eachComponent(components5, (component: Component) => {
+        if (component.type === 'htmlelement') {
+          htmlComponentsAmount++;
+        }
+      });
+      expect(htmlComponentsAmount).to.be.equal(0);
+    });
+
+    it('should include `htmlelement` components when `includeAll` is provided', () => {
+      let htmlComponentsAmount = 0;
+      eachComponent(components5, (component: Component) => {
+        if (component.type === 'htmlelement') {
+          htmlComponentsAmount++;
+        }
+      }, true);
+      expect(htmlComponentsAmount).to.be.equal(1);
+    });
+
+    it('should not include `content` components when `includeAll` is not provided', () => {
+      let contentComponentsAmount = 0;
+      eachComponent(components5, (component: Component) => {
+        if (component.type === 'content') {
+          contentComponentsAmount++;
+        }
+      });
+      expect(contentComponentsAmount).to.be.equal(0);
+    });
+
+    it('should include `content` components when `includeAll` is provided', () => {
+      let contentComponentsAmount = 0;
+      eachComponent(components5, (component: Component) => {
+        if (component.type === 'content') {
+          contentComponentsAmount++;
+        }
+      }, true);
+      expect(contentComponentsAmount).to.be.equal(1);
+    });
+  });
+
+  describe('getComponent', () => {
+    it('should return the correct components', () => {
+      for (let n = 1; n <= 8; n += 1) {
+        const component = getComponent(components, writtenNumber(n));
+        expect(component).not.to.be.null;
+        expect(component).not.to.be.undefined;
+        expect(component).to.be.an('object');
+        expect((component as any).order).to.equal(n);
+        expect(component?.key).to.equal(writtenNumber(n));
+      }
+    });
+
+    it('should work with a different this context', () => {
+      for (let n = 1; n <= 8; n += 1) {
+        const component = getComponent.call({}, components, writtenNumber(n));
+        expect(component).not.to.be.null;
+        expect(component).not.to.be.undefined;
+        expect(component).to.be.an('object');
+        expect((component as any).order).to.equal(n);
+        expect(component?.key).to.equal(writtenNumber(n));
+      }
+    });
+  });
+
+  describe('flattenComponents', () => {
+    it('should return an object of flattened components', () => {
+      const flattened = flattenComponents(components);
+      for (let n = 1; n <= 8; n += 1) {
+        const component = flattened[writtenNumber(n)];
+        expect(component).not.to.be.undefined;
+        expect(component).to.be.an('object');
+        expect((component as any).order).to.equal(n);
+        expect(component.key).to.equal(writtenNumber(n));
+      }
+    });
+
+    it('should work with a different this context', () => {
+      const flattened = flattenComponents.call({}, components);
+      for (let n = 1; n <= 8; n += 1) {
+        const component = flattened[writtenNumber(n)];
+        expect(component).not.to.be.undefined;
+        expect(component).to.be.an('object');
+        expect(component.order).to.equal(n);
+        expect(component.key).to.equal(writtenNumber(n));
+      }
+    });
+  });
 
 describe('getContextualRowData', () => {
     it('Should return the data at path without the last element given nested containers', () => {
@@ -1147,12 +1410,12 @@ describe('eachComponent', () => {
                 }
             ]
         });
-        expect(rowResults.get('dataGrid[0].nestedTextField')).to.deep.equal({
+        expect(rowResults.get('dataGrid.nestedTextField')).to.deep.equal({
             type: 'textfield',
             key: 'nestedTextField',
             input: true,
         });
-        expect(rowResults.get('dataGrid[0].nestedTextArea')).to.deep.equal({
+        expect(rowResults.get('dataGrid.nestedTextArea')).to.deep.equal({
             type: 'textarea',
             key: 'nestedTextArea',
             input: true,
@@ -1182,14 +1445,14 @@ describe('eachComponent', () => {
         const rowResults: Map<string, any> = new Map();
         eachComponent(components[0].components, (component: Component, path: string) => {
             rowResults.set(path, component);
-        }, true, 'dataGrid[0]');
+        }, true, 'dataGrid');
         expect(rowResults.size).to.equal(2);
-        expect(rowResults.get('dataGrid[0].nestedTextField')).to.deep.equal({
+        expect(rowResults.get('dataGrid.nestedTextField')).to.deep.equal({
             type: 'textfield',
             key: 'nestedTextField',
             input: true,
         });
-        expect(rowResults.get('dataGrid[0].nestedTextArea')).to.deep.equal({
+        expect(rowResults.get('dataGrid.nestedTextArea')).to.deep.equal({
             type: 'textarea',
             key: 'nestedTextArea',
             input: true,
