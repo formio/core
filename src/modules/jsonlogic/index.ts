@@ -1,6 +1,6 @@
 import { BaseEvaluator, EvaluatorOptions } from 'utils';
 import { jsonLogic } from './jsonLogic';
-class JSONLogicEvaluator extends BaseEvaluator {
+export class JSONLogicEvaluator extends BaseEvaluator {
     public static evaluate(
         func: any,
         args: any = {},
@@ -72,7 +72,7 @@ export function interpolate(
     });
 }
 
-export default {
+export * from './jsonLogic';
+export const JSONLogicModule = {
     evaluator: JSONLogicEvaluator,
-    jsonLogic: jsonLogic
-}
+};
