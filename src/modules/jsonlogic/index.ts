@@ -42,8 +42,7 @@ export function evaluate(
     }
     fnName = fnName || 'evaluate';
     if (instance && (instance as any)[fnName]) {
-        evaluation = `var ${ret}; ${ret} = ${evaluation}; return ${ret}`;
-        return (instance as any)[fnName](evaluation, evalContextValue, options);
+        return (instance as any)[fnName](evaluation, evalContextValue, ret, options);
     }
     return (JSONLogicEvaluator as any)[fnName](evaluation, evalContextValue, ret);
 }
