@@ -1,4 +1,4 @@
-## [Unreleased: 2.1.0-rc.1]
+## [Unreleased: 2.2.0-rc.1]
 ### Changed
  - FIO-8177: fix unsetting empty array values
  - FIO-8185: Fixing issues with EditGrid and DataGrid clearOnHide with Conditionally visible elements
@@ -19,6 +19,9 @@
  - FIO-8128: adds includeAll flag to eachComponentData and eachComponentDataAsync
  - FIO-7507: publish-dev-tag-to-npm
  - FIO-8264: update validate required
+ - FIO-8336 fix validation on multiple values
+ - FIO-8037: added number component normalization
+ - FIO-8288: do not validate dates in textfield components with calendar widgets
 
 
 ## 2.0.0-rc.24
