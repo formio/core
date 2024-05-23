@@ -156,6 +156,8 @@ function getAvailableSelectValuesSync(component: SelectComponent, context: Valid
                     'validate:validateAvailableItems'
                 );
             }
+        case 'url':
+            return null;
         default:
             throw new ProcessorError(
                 `Failed to validate available values in select component '${component.key}': data source ${component.dataSrc} is not valid}`,
