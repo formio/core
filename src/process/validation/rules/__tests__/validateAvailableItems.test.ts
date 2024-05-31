@@ -9,7 +9,7 @@ import {
     simpleSelectOptions,
 } from './fixtures/components';
 import { generateProcessorContext } from './fixtures/util';
-import { validateAvailableItems } from '../validateAvailableItems';
+import { validateAvailableItems, validateAvailableItemsSync } from '../validateAvailableItems';
 
 it('Validating a component without the available items validation parameter will return null', async () => {
     const component = simpleTextField;
@@ -103,6 +103,28 @@ it('Validating a simple static values select component with the available items 
     expect(result).to.equal(null);
 });
 
+it('Validating a simple static values select component with the available items validation parameter will return null if the selected item is valid and dataSrc is not specified', async () => {
+    const component: SelectComponent = {
+        ...simpleSelectOptions,
+        dataSrc: undefined,
+        data: {
+            values: [
+                { label: 'foo', value: 'foo' },
+                { label: 'bar', value: 'bar' },
+                { label: 'baz', value: 'baz' },
+                { label: 'baz', value: 'baz' },
+            ],
+        },
+        validate: { onlyAvailableItems: true },
+    };
+    const data = {
+        component: 'foo',
+    };
+    const context = generateProcessorContext(component, data);
+    const result = await validateAvailableItems(context);
+    expect(result).to.equal(null);
+});
+
 it('Validating a simple URL select component without the available items validation parameter will return null', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
@@ -117,6 +139,43 @@ it('Validating a simple URL select component without the available items validat
     };
     const context = generateProcessorContext(component, data);
     const result = await validateAvailableItems(context);
+    expect(result).to.equal(null);
+});
+
+it('Validating a simple URL select component synchronously will return null', async () => {
+    const component: SelectComponent = {
+        ...simpleSelectOptions,
+        dataSrc: 'url',
+        data: {
+            url: 'http://localhost:8080/numbers',
+            headers: [],
+        },
+        validate: { onlyAvailableItems: true },
+    };
+    const data = {
+        component: 'foo',
+    };
+    const context = generateProcessorContext(component, data);
+    const result = validateAvailableItemsSync(context);
+    expect(result).to.equal(null);
+});
+
+it('Validating a multiple URL select component synchronously will return null', async () => {
+    const component: SelectComponent = {
+        ...simpleSelectOptions,
+        dataSrc: 'url',
+        data: {
+            url: 'http://localhost:8080/numbers',
+            headers: [],
+        },
+        multiple: true,
+        validate: { onlyAvailableItems: true },
+    };
+    const data = {
+        component: ['foo'],
+    };
+    const context = generateProcessorContext(component, data);
+    const result = validateAvailableItemsSync(context);
     expect(result).to.equal(null);
 });
 

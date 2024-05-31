@@ -22,6 +22,8 @@
  - FIO-8336 fix validation on multiple values
  - FIO-8037: added number component normalization
  - FIO-8288: do not validate dates in textfield components with calendar widgets
+ - FIO-8254 fixed available values validation error for Select component
+ - FIO-8281: fixed sync validation error for select component with url data src
 
 
 ## 2.0.0-rc.24
