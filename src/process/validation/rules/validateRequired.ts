@@ -8,6 +8,7 @@ import {
     DayComponent
 } from 'types';
 import { isEmptyObject } from '../util';
+import { isComponentNestedDataType } from 'utils/formUtil';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isAddressComponent = (component: any): component is AddressComponent => {
@@ -28,7 +29,7 @@ const isComponentThatCannotHaveFalseValue = (component: any): boolean => {
     return component.type === 'checkbox' || component.type === 'selectboxes'
 }
 
-const valueIsPresent = (value: any, considerFalseTruthy: boolean): boolean => {
+const valueIsPresent = (value: any, considerFalseTruthy: boolean, isNestedDatatype?: boolean): boolean => {
     // Evaluate for 3 out of 6 falsy values ("", null, undefined), don't check for 0
     // and only check for false under certain conditions
     if (value === null || value === undefined || value === "" || (!considerFalseTruthy && value === false)) {
@@ -43,7 +44,7 @@ const valueIsPresent = (value: any, considerFalseTruthy: boolean): boolean => {
         return false;
     }
     // Recursively evaluate
-    else if (typeof value === 'object') {
+    else if (typeof value === 'object' && !isNestedDatatype) {
         return Object.values(value).some((val) => valueIsPresent(val, considerFalseTruthy));
     }
     return true;
@@ -74,9 +75,9 @@ export const validateRequiredSync: RuleFnSync = (context: ValidationContext) => 
         return error;
     }
     else if (isComponentThatCannotHaveFalseValue(component)) {
-        return !valueIsPresent(value, false) ? error : null;
+        return !valueIsPresent(value, false, isComponentNestedDataType(component)) ? error : null;
     }
-    return !valueIsPresent(value, true) ? error : null;
+    return !valueIsPresent(value, true, isComponentNestedDataType(component)) ? error : null;
 };
 
 export const validateRequiredInfo: ProcessorInfo<ValidationContext, FieldError | null>  = {
