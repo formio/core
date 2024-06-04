@@ -420,7 +420,7 @@ describe('Process Tests', () => {
                                             type: "address",
                                             providerOptions: {
                                                 params: {
-                                                    key: "AIzaSyBNL2e4MnmyPj9zN7SVAe428nCSLP1X144",
+                                                    key: "",
                                                     region: "",
                                                     autocompleteOptions: {
                                                     },
@@ -720,7 +720,7 @@ describe('Process Tests', () => {
                                                     type: "address",
                                                     providerOptions: {
                                                         params: {
-                                                            key: "AIzaSyBNL2e4MnmyPj9zN7SVAe428nCSLP1X144",
+                                                            key: "",
                                                             region: "",
                                                             autocompleteOptions: {
                                                             },
