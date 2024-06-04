@@ -173,7 +173,8 @@ function handleError(error: FieldError | null, context: ValidationContext) {
 }
 
 export const validateProcess: ValidationProcessorFn = async (context) => {
-    const { component, data, row, path, instance, scope, rules, skipValidation, value } = context;
+    const { component, data, row, path, instance, scope, rules, skipValidation } = context;
+    let { value } = context;
     if (!scope.validated) scope.validated = [];
     if (!scope.errors) scope.errors = [];
     if (!rules || !rules.length) {
@@ -224,7 +225,7 @@ export const validateProcess: ValidationProcessorFn = async (context) => {
         return;
     }
     if (component.truncateMultipleSpaces && value && typeof value === 'string') {
-        set(data, path, value.trim().replace(/\s{2,}/g, ' '));
+        value = value.trim().replace(/\s{2,}/g, ' ');
     }
     for (const rule of rulesToExecute) {
         try {
@@ -287,7 +288,7 @@ export const validateProcessSync: ValidationProcessorFnSync = (context) => {
         return;
     }
     if (component.truncateMultipleSpaces && value && typeof value === 'string') {
-        set(data, path, value.trim().replace(/\s{2,}/g, ' '));
+        value = value.trim().replace(/\s{2,}/g, ' ');
     }
     for (const rule of rulesToExecute) {
         try {
