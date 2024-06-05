@@ -1,3 +1,7 @@
+## 2.1.0-rc.3
+### Changed
+ - FIO-7675: Map Key From Core
+
 ## 2.1.0-rc.2
 ### Changed
  - FIO-8128: adds includeAll flag to eachComponentData and eachComponentDataAsync
