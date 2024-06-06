@@ -2173,4 +2173,60 @@ describe('Formio.js Tests', () => {
       assert.ok(plugin.wrapStaticRequestPromise.calledOnce, 'wrapStaticRequestPromise should be called once');
     });
   });
+  describe('Formio.request', () => {
+    it('should emit a formio.sessionExpired event when the response status is 440 and the response object should exist', (done) => {
+      let eventFired = false
+      let responseNotUndefined = false
+      setTimeout(()=>{
+        assert(eventFired, 'formio.sessionExpired event was not called');
+        assert(responseNotUndefined, 'a response was not passed into the event');
+        fetchMock.restore()
+        done()
+      },200)
+      Formio.events.on('formio.sessionExpired', (response: any) => {
+        eventFired = true
+        if (response){
+          responseNotUndefined = true
+        }
+      })
+      fetchMock.mock('http://localhost:8080/test', 440);
+      Formio.request('http://localhost:8080/test');
+    });
+    it('should emit a formio.unauthorized event when the response status is 401', (done) => {
+      let eventFired = false
+      let responseNotUndefined = false
+      setTimeout(()=>{
+        assert(eventFired, 'formio.unauthorized event was not called');
+        assert(responseNotUndefined, 'a response was not passed into the event');
+        fetchMock.restore()
+        done()
+      },200);
+      Formio.events.on('formio.unauthorized', (response: any) => {
+        eventFired = true;
+        if (response){
+          responseNotUndefined = true;
+        }
+      })
+      fetchMock.mock('http://localhost:8080/test', 401);
+      Formio.request('http://localhost:8080/test');
+    });
+    it('should emit a formio.rangeIsNotSatisfiable event when the response status is 416', (done) => {
+      let eventFired = false;
+      let responseNotUndefined = false;
+      setTimeout(()=>{
+        assert(eventFired, 'formio.rangeIsNotSatisfiable event was not called');
+        assert(responseNotUndefined, 'a response was not passed into the event');
+        fetchMock.restore()
+        done()
+      },200);
+      Formio.events.on('formio.rangeIsNotSatisfiable', (response) => {
+        eventFired = true;
+        if (response) {
+          responseNotUndefined = true;
+        }
+      })
+      fetchMock.mock('http://localhost:8080/test', 416);
+      Formio.request('http://localhost:8080/test');
+    });
+  });
 });
