@@ -7,7 +7,51 @@ import EventEmitter from 'eventemitter3';
 import cookies from 'browser-cookies';
 const { fetch, Headers } = fetchPonyfill();
 import Plugins from './Plugins';
-declare const OktaAuth: any;
+import { Form } from 'types'; declare const OktaAuth: any;
+
+export type JSON =
+	| string
+	| number
+	| boolean
+	| null
+	| undefined
+	| JSON[]
+	| { [key: string]: JSON };
+
+type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+
+export type PartialExcept<T, K extends keyof T> = Partial<Omit<T, K>> &
+	Required<Pick<T, K>>;
+
+type SubmissionState = "submitted" | "draft";
+
+type SubmissionResponse = {
+  _id: string;
+  form: string;
+  owner: string;
+  deleted: null | number,
+  roles: string[],
+  access: {type: string; roles: string[]}[],
+  metadata: Record<string, JSON>,
+  data: Record<string, JSON>
+  _fvid: number;
+  _frid?: string;
+  project: string;
+  state: SubmissionState;
+  externalIds?: {type: string; id:string}[];
+  externalTokens: {type: string; token: string; exp: string}[];
+  created: string;
+  modified: string;
+  __v: number;
+}
+
+type Submission = Partial<SubmissionResponse>;
+
+type FormioPaginationResponse<T>= T[] & { limit?: number; skip?: number; serverCount?: number | "*"};
+
+const isFormioPaginationResponse = <T>(obj: any): obj is FormioPaginationResponse<T> => {
+  return obj && obj.serverCount !== undefined && obj.limit !== undefined && obj.skip !== undefined;
+}
 
 /**
  * The Formio class options interface.
@@ -86,7 +130,7 @@ export class Formio {
   /**
    * The Form.io API Cache. This ensures that requests to the same API endpoint are cached.
    */
-  public static cache: any = {};
+  public static cache: Record<string, JSON> = {};
 
   /**
    * The namespace used to save the Form.io Token's and variables within an application.
@@ -101,12 +145,12 @@ export class Formio {
   /**
    * Stores all of the libraries lazy loaded with ```Formio.requireLibrary``` method.
    */
-  public static libraries: any = {};
+  public static libraries: any;
 
   /**
    * A direct interface to the Form.io fetch polyfill.
    */
-  public static fetch: any = fetch;
+  public static fetch = fetch;
 
   /**
    * A direct interface to the Form.io fetch Headers polyfill.
@@ -460,7 +504,7 @@ export class Formio {
    * @param {object} options - Options to pass to {@link Formio.request}
    * @return {Promise<Response>}
    */
-  index(type: string, query?: any, opts?: any) {
+  index<T>(type: string, query?: any, opts?: any): Promise<T[]> {
     const _url = `${type}Url`;
     query = query || '';
     if (query && isObject(query)) {
@@ -478,7 +522,7 @@ export class Formio {
    * @param {object} options - Options to pass to {@link Formio.request}
    * @return {Promise<object>}
    */
-  save(type: string, data?: any, opts?: any) {
+  save<T>(type: string, data?: any, opts?: any): Promise<T> {
     const _id = `${type}Id`;
     const _url = `${type}Url`;
     const method = ((this as any)[_id] || data._id) ? 'put' : 'post';
@@ -499,7 +543,7 @@ export class Formio {
    * @param {object} options - Options to pass to {@link Formio.request}
    * @return {Promise<object>}
    */
-  load(type: string, query?: any, opts?: any) {
+  load<T>(type: string, query?: any, opts?: any): Promise<T> {
     const _id = `${type}Id`;
     const _url = `${type}Url`;
     if (query && isObject(query)) {
@@ -719,11 +763,11 @@ export class Formio {
    * @param {object} options - Options to pass to {@link Formio.request}
    * @return {Promise<object>}
    */
-  loadForm(query?: any, opts?: any) {
+  loadForm(query?: any, opts?: any): Promise<Form> {
     return this.load('form', query, opts)
       .then((currentForm: any) => {
         // Check to see if there isn't a number in vId.
-        if (!currentForm.revisions || isNaN(parseInt(this.vId))) {
+        if (!currentForm.revisions || isNaN(parseInt(String(this.vId)))) {
           return currentForm;
         }
         // If a submission already exists but form is marked to load current version of form.
@@ -835,7 +879,7 @@ export class Formio {
    * @return {Promise<Response>}
    */
   loadForms(query?: any, opts?: any) {
-    return this.index('forms', query, opts);
+    return this.index<Form>('forms', query, opts);
   }
 
   /**
@@ -853,9 +897,9 @@ export class Formio {
    * @return {Promise<object>}
    */
   loadSubmission(query?: any, opts?: any) {
-    return this.load('submission', query, opts)
-      .then((submission: any) => {
-        this.vId = submission._frid || submission._fvid;
+    return this.load<SubmissionResponse>('submission', query, opts)
+      .then((submission) => {
+        this.vId = submission._frid || String(submission._fvid);
         this.vUrl = `${this.formUrl}/v/${this.vId}`;
         return submission;
       });
@@ -889,15 +933,15 @@ export class Formio {
    * });
    * ```
    *
-   * @param {object} data - The submission JSON object.
+   * @param {object} submission - The submission JSON object.
    * @param {object} options - Options to pass to {@link Formio.request}
    * @return {Promise<Object>}
    */
-  saveSubmission(data?: any, opts?: any) {
-    if (!isNaN(parseInt(this.vId)) && !data._fvid) {
-      data._fvid = this.vId;
+  saveSubmission(submission: Submission, opts?: any) {
+    if (!isNaN(parseInt(this.vId)) && !submission._fvid) {
+      submission._fvid = typeof this.vId === 'number' ? this.vId : Number(this.vId);
     }
-    return this.save('submission', data, opts);
+    return this.save<SubmissionResponse>('submission', submission, opts);
   }
 
   /**
@@ -931,7 +975,7 @@ export class Formio {
    * @return {Promise<Response>}
    */
   loadSubmissions(query?: any, opts?: any) {
-    return this.index('submissions', query, opts);
+    return this.index<Submission>('submissions', query, opts);
   }
 
   /**
@@ -1209,14 +1253,14 @@ export class Formio {
    * @param {object} [form] - The form JSON to fetch a download url for.
    * @return {Promise<string>} - The download url.
    */
-  getDownloadUrl(form: any) {
+  getDownloadUrl(form?: Form): Promise<string> {
     if (!this.submissionId) {
       return Promise.resolve('');
     }
 
     if (!form) {
       // Make sure to load the form first.
-      return this.loadForm().then((_form: any) => {
+      return this.loadForm().then((_form) => {
         if (!_form) {
           return '';
         }
@@ -1227,7 +1271,7 @@ export class Formio {
     let apiUrl = `/project/${form.project}`;
     apiUrl += `/form/${form._id}`;
     apiUrl += `/submission/${this.submissionId}`;
-    const postfix = form.submissionRevisions && form.settings.changeLog? '/download/changelog' : '/download';
+    const postfix = form.submissionRevisions && form.settings?.changeLog ? '/download/changelog' : '/download';
     apiUrl += postfix;
 
     let download = this.base + apiUrl;
@@ -1487,19 +1531,8 @@ export class Formio {
    * });
    * ```
    *
-   * @param {string} url - The URL to request.
-   * @param {string} method - The request method. GET, PUT, POST, DELETE, or PATCH
-   * @param {object} data - The data to pass to the request (for PUT, POST, and PATCH methods)
-   * @param {Headers} header - An object of headers to pass to the request.
-   * @param {object} options - An object of options to pass to the request method.
-   * @param {boolean} options.ignoreCache - To ignore internal caching of the request.
-   * @param {object} options.headers - An object of headers to pass along to the request.
-   * @param {boolean} options.noToken - If set to true, this will not include the Form.io x-jwt-token along with the request.
-   * @param {string} options.namespace - The Form.io namespace to prepend to all LocalStorage variables such as formioToken.
-   * @param {boolean} options.getHeaders - Set this if you wish to include the response headers with the return of this method.
-   * @return {Promise<Response>|*}
    */
-  static request(url: string, method?: any, data?: any, header?: any, opts?: any) {
+  static request(url: string, method?: string, data?: any, header?: any, opts?: any) {
     if (!url) {
       return Promise.reject('No url provided');
     }
@@ -1559,7 +1592,7 @@ export class Formio {
 
     const requestToken = options.headers['x-jwt-token'];
     const result = Plugins.pluginAlter('wrapFetchRequestPromise', Formio.fetch(url, options),
-      { url, method, data, opts }).then((response: any) => {
+      { url, method, data, opts }).then((response) => {
       // Allow plugins to respond.
       response = Plugins.pluginAlter('requestResponse', response, Formio, data);
 
@@ -1578,7 +1611,7 @@ export class Formio {
           return Promise.reject(new Error('Network request failed'));
         }
         // Parse and return the error as a rejected promise to reject this promise
-        return (response.headers.get('content-type').includes('application/json')
+        return (response.headers.get('content-type')?.includes('application/json')
           ? response.json()
           : response.text())
           .then((error: any) => {
@@ -1623,20 +1656,20 @@ export class Formio {
         return {};
       }
 
-      const getResult = response.headers.get('content-type').includes('application/json')
+      const getResult = response.headers.get('content-type')?.includes('application/json')
         ? response.json()
         : response.text();
-      return getResult.then((result: any) => {
+      return getResult.then((result: string | JSON) => {
         // Add some content-range metadata to the result here
         let range = response.headers.get('content-range');
-        if (range && isObject(result)) {
-          range = range.split('/');
-          if (range[0] !== '*') {
+        if (range && isObject(result) && isFormioPaginationResponse<JSON[] | Record<string, JSON>>(result)) {
+          const ranges = range.split('/');
+          if (ranges[0] !== '*') {
             const skipLimit = range[0].split('-');
-            (result as any).skip = Number(skipLimit[0]);
-            (result as any).limit = skipLimit[1] - skipLimit[0] + 1;
+            result.skip = Number(skipLimit[0]);
+            result.limit = Number(skipLimit[1]) - result.skip+ 1;
           }
-          (result as any).serverCount = range[1] === '*' ? range[1] : Number(range[1]);
+          result.serverCount = range[1] === '*' ? range[1] : Number(range[1]);
         }
 
         if (!opts.getHeaders) {
@@ -1655,7 +1688,7 @@ export class Formio {
         };
       });
     })
-    .then((result: any) => {
+    .then((result) => {
       if (opts.getHeaders) {
         return result;
       }

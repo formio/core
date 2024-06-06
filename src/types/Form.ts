@@ -5,7 +5,6 @@ export type FormId = string;
 export interface Form {
     _id: FormId;
     _vid: number;
-
     title: string;
     name: string;
     path: string;
@@ -27,7 +26,6 @@ export interface Form {
     controller?: string;
     builder?: boolean;
     page?: number;
-
     // Database timestamps
     created: Date | string;
     modified: Date | string;
@@ -55,4 +53,5 @@ export type FormSettings = {
         src: string;
         id: string;
     };
+    changeLog?: any;
 };

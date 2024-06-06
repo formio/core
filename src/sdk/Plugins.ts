@@ -154,7 +154,7 @@ export default class Plugins {
      * @param value
      * @param args
      */
-    static pluginAlter(pluginFn: any, value: any, ...args: any[]) {
+    static pluginAlter<T>(pluginFn: any, value: T, ...args: any[]) {
         return Plugins.plugins.reduce((value, plugin) =>
             ((plugin as any)[pluginFn] || Plugins.identity)(value, ...args), value);
     }
