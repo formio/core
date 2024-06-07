@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, isUndefined} from 'lodash';
 import { FieldError, ProcessorError } from 'error';
 import { Evaluator } from 'utils';
 import { RadioComponent, SelectComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
@@ -37,6 +37,9 @@ function mapStaticValues(values: { label: string; value: string }[]) {
 }
 
 async function getAvailableSelectValues(component: SelectComponent, context: ValidationContext) {
+    if (isUndefined(component.dataSrc) && component.data.hasOwnProperty('values')) {
+        component.dataSrc = 'values';
+    };
     switch (component.dataSrc) {
         case 'values':
             if (Array.isArray(component.data.values)) {
@@ -107,6 +110,9 @@ async function getAvailableSelectValues(component: SelectComponent, context: Val
 }
 
 function getAvailableSelectValuesSync(component: SelectComponent, context: ValidationContext) {
+    if (isUndefined(component.dataSrc) && component.data.hasOwnProperty('values')) {
+        component.dataSrc = 'values';
+    };
     switch (component.dataSrc) {
         case 'values':
             if (Array.isArray(component.data?.values)) {
@@ -156,6 +162,8 @@ function getAvailableSelectValuesSync(component: SelectComponent, context: Valid
                     'validate:validateAvailableItems'
                 );
             }
+        case 'url':
+            return null;
         default:
             throw new ProcessorError(
                 `Failed to validate available values in select component '${component.key}': data source ${component.dataSrc} is not valid}`,

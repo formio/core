@@ -371,7 +371,7 @@ type StaticValuesSelectData = {
     data: {
         values: { label: string; value: string }[];
     };
-    dataSrc: 'values';
+    dataSrc?: undefined | 'values';
 };
 
 type JsonValuesSelectData = {

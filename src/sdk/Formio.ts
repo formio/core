@@ -1566,13 +1566,13 @@ export class Formio {
       if (!response.ok) {
         if (response.status === 440) {
           Formio.setToken(null, opts);
-          Formio.events.emit('formio.sessionExpired', response.body);
+          Formio.events.emit('formio.sessionExpired', response.body || response);
         }
         else if (response.status === 401) {
-          Formio.events.emit('formio.unauthorized', response.body);
+          Formio.events.emit('formio.unauthorized', response.body || response);
         }
         else if (response.status === 416) {
-          Formio.events.emit('formio.rangeIsNotSatisfiable', response.body);
+          Formio.events.emit('formio.rangeIsNotSatisfiable', response.body || response);
         }
         else if (response.status === 504) {
           return Promise.reject(new Error('Network request failed'));

@@ -10,7 +10,8 @@
     "./process": "./lib/process/index.js",
     "./types": "./lib/types/index.js",
     "./experimental": "./lib/experimental/index.js",
-    "./dist/formio.core.min.js": "./dist/formio.core.min.js"
+    "./dist/formio.core.min.js": "./dist/formio.core.min.js",
+    "./error": "./lib/error/index.js"
   },
   "scripts": {
     "test": "TEST=1 mocha -r ts-node/register -r tsconfig-paths/register -r mock-local-storage -r jsdom-global/register -b -t 0 'src/**/__tests__/*.test.ts'",

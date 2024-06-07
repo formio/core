@@ -1,4 +1,4 @@
-export type ProjectReCaptchaConfig = {
+export type ProjectCaptchaConfig = {
     siteKey: string;
     secretKey: string;
 };

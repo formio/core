@@ -8,7 +8,11 @@ import {
     DayComponent
 } from 'types';
 import { isEmptyObject } from '../util';
+<<<<<<< HEAD
 import { isComponentNestedDataType } from 'utils/formUtil'
+=======
+import { isComponentNestedDataType } from 'utils/formUtil';
+>>>>>>> 73c7c1ec076f88b1d3ef940f41422f04a3aaaafa
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isAddressComponent = (component: any): component is AddressComponent => {
@@ -29,11 +33,7 @@ const isComponentThatCannotHaveFalseValue = (component: any): boolean => {
     return component.type === 'checkbox' || component.type === 'selectboxes'
 }
 
-const valueIsPresent = (
-    value: any,
-    considerFalseTruthy: boolean,
-    isNestedDataType?: boolean
-): boolean => {
+const valueIsPresent = (value: any, considerFalseTruthy: boolean, isNestedDatatype?: boolean): boolean => {
     // Evaluate for 3 out of 6 falsy values ("", null, undefined), don't check for 0
     // and only check for false under certain conditions
     if (value === null || value === undefined || value === "" || (!considerFalseTruthy && value === false)) {
@@ -48,8 +48,8 @@ const valueIsPresent = (
         return false;
     }
     // Recursively evaluate
-    else if (typeof value === 'object' && !isNestedDataType) {
-        return Object.values(value).some((val) => valueIsPresent(val, considerFalseTruthy, isNestedDataType));
+    else if (typeof value === 'object' && !isNestedDatatype) {
+        return Object.values(value).some((val) => valueIsPresent(val, considerFalseTruthy, isNestedDatatype));
     }
     return true;
 }
