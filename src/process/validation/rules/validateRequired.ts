@@ -8,11 +8,7 @@ import {
     DayComponent
 } from 'types';
 import { isEmptyObject } from '../util';
-<<<<<<< HEAD
-import { isComponentNestedDataType } from 'utils/formUtil'
-=======
 import { isComponentNestedDataType } from 'utils/formUtil';
->>>>>>> 73c7c1ec076f88b1d3ef940f41422f04a3aaaafa
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isAddressComponent = (component: any): component is AddressComponent => {
