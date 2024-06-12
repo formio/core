@@ -21,7 +21,8 @@ import {
     DefaultValueScope,
     ProcessorInfo,
     ProcessorContext,
-    TimeComponent
+    TimeComponent,
+    NumberComponent
 } from "types";
 
 type NormalizeScope = DefaultValueScope & {
@@ -42,6 +43,7 @@ const isSelectBoxesComponent = (component: any): component is SelectBoxesCompone
 const isTagsComponent = (component: any): component is TagsComponent => component.type === "tags";
 const isTextFieldComponent = (component: any): component is TextFieldComponent => component.type === "textfield";
 const isTimeComponent = (component: any): component is TimeComponent => component.type === "time";
+const isNumberComponent =  (component: any): component is NumberComponent => component.type === "number";
 
 const normalizeAddressComponentValue = (component: AddressComponent, value: any) => {
     if (!component.multiple && Boolean(component.enableManualMode) && value && !value.mode) {
@@ -252,6 +254,10 @@ const normalizeTextFieldComponentValue = (
     value: any,
     path: string
 ) => {
+    // If the component has truncate multiple spaces enabled, then normalize the value to remove extra spaces.
+    if (component.truncateMultipleSpaces && typeof value === 'string') {
+        value = value.trim().replace(/\s{2,}/g, ' ');
+    }
     if (component.allowMultipleMasks && component.inputMasks && component.inputMasks.length > 0) {
         if (Array.isArray(value)) {
             return value.map((val) => normalizeMaskValue(component, defaultValues, val, path));
@@ -271,6 +277,22 @@ const normalizeTimeComponentValue = (component: TimeComponent, value: string) =>
         return dayjs(value, component.format || defaultFormat, true).format(component.dataFormat || defaultDataFormat);
     }
     return value;
+};
+
+const normalizeSingleNumberComponentValue = (component: NumberComponent, value: any) => {
+    if (!isNaN(parseFloat(value)) && isFinite(value)) {
+        return +value;
+    }
+
+    return value;
+}
+
+const normalizeNumberComponentValue = (component: NumberComponent, value: any) => {
+    if (component.multiple && Array.isArray(value)) {
+        return value.map((singleValue) => normalizeSingleNumberComponentValue(component, singleValue));
+    }
+
+    return normalizeSingleNumberComponentValue(component, value);
 };
 
 export const normalizeProcess: ProcessorFn<NormalizeScope> = async (context) => {
@@ -316,6 +338,9 @@ export const normalizeProcessSync: ProcessorFnSync<NormalizeScope> = (context) =
        scope.normalize[path].normalized = true;
     } else if (isTimeComponent(component)) {
         set(data, path, normalizeTimeComponentValue(component, value));
+        scope.normalize[path].normalized = true;
+    } else if (isNumberComponent(component)) {
+        set(data, path, normalizeNumberComponentValue(component, value));
         scope.normalize[path].normalized = true;
     }
 

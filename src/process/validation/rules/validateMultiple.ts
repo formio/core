@@ -12,7 +12,7 @@ export const isEligible = (component: Component) => {
                 return false;
             }
             return true;
-        case 'textArea':
+        case 'textarea':
             if (!(component as TextAreaComponent).as || (component as TextAreaComponent).as !== 'json') {
                 return false;
             }
