@@ -47,6 +47,8 @@ export const emptyValueIsArray = (component: Component) => {
 }
 
 export const shouldValidate = (context: ValidationContext) => {
+
+
     const { component } = context;
     if (!isEligible(component)) {
         return false;
@@ -71,16 +73,16 @@ export const validateMultipleSync: RuleFnSync = (context: ValidationContext) => 
 
     if (shouldBeArray) {
         if (isArray) {
-            return isRequired ? value.length > 0 ? null : new FieldError('array_nonempty', {...context, setting: true}): null;
+            return isRequired ? value.length > 0 ? null : new FieldError('array_nonempty', { ...context, setting: true }) : null;
         } else {
-            const error = new FieldError('array', {...context, setting: true});
+            const error = new FieldError('array', { ...context, setting: true });
             // Null/undefined is ok if this value isn't required; anything else should fail
             return isNil(value) ? isRequired ? error : null : error;
         }
     } else {
         const canBeArray = emptyValueIsArray(component);
         if (!canBeArray && isArray) {
-            return new FieldError('nonarray', {...context, setting: false});
+            return new FieldError('nonarray', { ...context, setting: false });
         }
         return null;
     }

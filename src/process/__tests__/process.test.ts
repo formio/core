@@ -1095,6 +1095,7 @@ describe('Process Tests', () => {
                 A: true,
                 B: true,
                 child: {
+                    _id: 'submission id',
                     data: {
                         input: 'test',
                         invalid: 'invalid submission data'
@@ -1114,6 +1115,7 @@ describe('Process Tests', () => {
             }
         };
         processSync(context);
+        expect(context.data).to.deep.include({ child: { _id: 'submission id', data: { input: 'test' } } });
         expect(context.data.child.data).to.not.have.property('invalid');
 
 
@@ -2869,7 +2871,8 @@ describe('Process Tests', () => {
                             {
                                 form: {
                                     data: {
-                                        textField: 'test'
+                                        textField: 'test',
+                                        invalidField: 'bad'
                                     }
                                 }
                             }
@@ -2891,6 +2894,9 @@ describe('Process Tests', () => {
                 processSync(context);
                 context.processors = ProcessTargets.evaluator;
                 processSync(context);
+                const errors = (context.scope as ValidationScope).errors;
+                console.log('errors', errors);
+
                 expect((context.scope as ValidationScope).errors).to.have.length(0);
             });
             it('Should not validate required component when it is not filled out', async () => {

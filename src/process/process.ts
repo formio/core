@@ -17,7 +17,6 @@ import { clearHiddenProcessInfo } from "./clearHidden";
 export async function process<ProcessScope>(context: ProcessContext<ProcessScope>): Promise<ProcessScope> {
     const { instances, components, data, scope, flat, processors } = context;
 
-
     await eachComponentDataAsync(components, data, async (component, compData, row, path, components, index) => {
         // Skip processing if row is null or undefined
         if (!row) {

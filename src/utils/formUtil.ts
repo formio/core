@@ -579,13 +579,13 @@ export function getComponentActualValue(component: Component, compPath: string, 
 
   let value = null;
   if (row) {
-      value = get(row, compPath);
+    value = get(row, compPath);
   }
   if (data && isNil(value)) {
-      value = get(data, compPath);
+    value = get(data, compPath);
   }
   if (isNil(value) || (isObject(value) && isEmpty(value))) {
-      value = '';
+    value = '';
   }
   return value;
 }
@@ -945,20 +945,20 @@ export function generateFormChange(type: any, data: any) {
 
 export function applyFormChanges(form: any, changes: any) {
   const failed: any = [];
-  changes.forEach(function(change: any) {
+  changes.forEach(function (change: any) {
     var found = false;
     switch (change.op) {
       case 'add':
         var newComponent = change.component;
 
         // Find the container to set the component in.
-        findComponent(form.components, change.container, null, function(parent: any) {
+        findComponent(form.components, change.container, null, function (parent: any) {
           if (!change.container) {
             parent = form;
           }
 
           // A move will first run an add so remove any existing components with matching key before inserting.
-          findComponent(form.components, change.key, null, function(component: any, path: any) {
+          findComponent(form.components, change.key, null, function (component: any, path: any) {
             // If found, use the existing component. (If someone else edited it, the changes would be here)
             newComponent = component;
             removeComponent(form.components, path);
@@ -970,7 +970,7 @@ export function applyFormChanges(form: any, changes: any) {
         });
         break;
       case 'remove':
-        findComponent(form.components, change.key, null, function(component: any, path: any) {
+        findComponent(form.components, change.key, null, function (component: any, path: any) {
           found = true;
           const oldComponent = get(form.components, path);
           if (oldComponent.key !== component.key) {
@@ -980,7 +980,7 @@ export function applyFormChanges(form: any, changes: any) {
         });
         break;
       case 'edit':
-        findComponent(form.components, change.key, null, function(component: any, path: any) {
+        findComponent(form.components, change.key, null, function (component: any, path: any) {
           found = true;
           try {
             const oldComponent = get(form.components, path);
@@ -1011,18 +1011,18 @@ export function applyFormChanges(form: any, changes: any) {
   };
 }
 
-  /**
- * This function will find a component in a form and return the component AND THE PATH to the component in the form.
- * Path to the component is stored as an array of nested components and their indexes.The Path is being filled recursively
- * when you iterating through the nested structure.
- * If the component is not found the callback won't be called and function won't return anything.
- *
- * @param components
- * @param key
- * @param fn
- * @param path
- * @returns {*}
- */
+/**
+* This function will find a component in a form and return the component AND THE PATH to the component in the form.
+* Path to the component is stored as an array of nested components and their indexes.The Path is being filled recursively
+* when you iterating through the nested structure.
+* If the component is not found the callback won't be called and function won't return anything.
+*
+* @param components
+* @param key
+* @param fn
+* @param path
+* @returns {*}
+*/
 export function findComponent(components: any, key: any, path: any, fn: any) {
   if (!components) return;
   path = path || [];
@@ -1031,7 +1031,7 @@ export function findComponent(components: any, key: any, path: any, fn: any) {
     return fn(components);
   }
 
-  components.forEach(function(component: any, index: any) {
+  components.forEach(function (component: any, index: any) {
     var newPath = path.slice();
     // Add an index of the component it iterates through in nested structure
     newPath.push(index);
@@ -1039,7 +1039,7 @@ export function findComponent(components: any, key: any, path: any, fn: any) {
 
     if (component.hasOwnProperty('columns') && Array.isArray(component.columns)) {
       newPath.push('columns');
-      component.columns.forEach(function(column: any, index: any) {
+      component.columns.forEach(function (column: any, index: any) {
         var colPath = newPath.slice();
         colPath.push(index);
         colPath.push('components');
@@ -1049,10 +1049,10 @@ export function findComponent(components: any, key: any, path: any, fn: any) {
 
     if (component.hasOwnProperty('rows') && Array.isArray(component.rows)) {
       newPath.push('rows');
-      component.rows.forEach(function(row: any, index: any) {
+      component.rows.forEach(function (row: any, index: any) {
         var rowPath = newPath.slice();
         rowPath.push(index);
-        row.forEach(function(column: any, index: any) {
+        row.forEach(function (column: any, index: any) {
           var colPath = rowPath.slice();
           colPath.push(index);
           colPath.push('components');
@@ -1084,20 +1084,20 @@ const isTextAreaComponent = (component: Component): component is TextAreaCompone
 const isTextFieldComponent = (component: Component): component is TextFieldComponent => component.type === 'textfield';
 
 export function getEmptyValue(component: Component) {
-    switch (component.type) {
-        case 'textarea':
-        case 'textfield':
-        case 'time':
-        case 'datetime':
-        case 'day':
-            return '';
-        case 'datagrid':
-        case 'editgrid':
-            return [];
+  switch (component.type) {
+    case 'textarea':
+    case 'textfield':
+    case 'time':
+    case 'datetime':
+    case 'day':
+      return '';
+    case 'datagrid':
+    case 'editgrid':
+      return [];
 
-        default:
-            return null;
-    }
+    default:
+      return null;
+  }
 }
 
 const replaceBlanks = (value: unknown) => {
@@ -1109,17 +1109,17 @@ const replaceBlanks = (value: unknown) => {
 };
 
 function trimBlanks(value: unknown) {
-    if (!value) {
-      return value;
-    }
-
-    if (Array.isArray(value)) {
-      value = value.map((val: any) => replaceBlanks(val));
-    }
-    else {
-      value = replaceBlanks(value);
-    }
+  if (!value) {
     return value;
+  }
+
+  if (Array.isArray(value)) {
+    value = value.map((val: any) => replaceBlanks(val));
+  }
+  else {
+    value = replaceBlanks(value);
+  }
+  return value;
 }
 
 function isValueEmpty(component: Component, value: any) {
@@ -1128,42 +1128,42 @@ function isValueEmpty(component: Component, value: any) {
 }
 
 export function isComponentDataEmpty(component: Component, data: any, path: string): boolean {
-    const value = get(data, path);
-    if (isCheckboxComponent(component)) {
-        return isValueEmpty(component, value) || value === false;
-    } else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {
-        if (component.components?.length) {
-            let childrenEmpty = true;
-            // wrap component in an array to let eachComponentData handle introspection to child components (e.g. this will be different
-            // for data grids versus nested forms, etc.)
-            eachComponentData([component], data, (thisComponent, data, row, path, components, index) => {
-                if (component.key === thisComponent.key) return;
-                if (!isComponentDataEmpty(thisComponent, data, path)) {
-                    childrenEmpty = false;
-                }
-            });
-            return isValueEmpty(component, value) || childrenEmpty;
+  const value = get(data, path);
+  if (isCheckboxComponent(component)) {
+    return isValueEmpty(component, value) || value === false;
+  } else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {
+    if (component.components?.length) {
+      let childrenEmpty = true;
+      // wrap component in an array to let eachComponentData handle introspection to child components (e.g. this will be different
+      // for data grids versus nested forms, etc.)
+      eachComponentData([component], data, (thisComponent, data, row, path, components, index) => {
+        if (component.key === thisComponent.key) return;
+        if (!isComponentDataEmpty(thisComponent, data, path)) {
+          childrenEmpty = false;
         }
-        return isValueEmpty(component, value);
-    } else if (isDateTimeComponent(component)) {
-        return isValueEmpty(component, value) || value.toString() === 'Invalid date';
-    } else if (isSelectBoxesComponent(component)) {
-        let selectBoxEmpty = true;
-        for (const key in value) {
-            if (value[key]) {
-                selectBoxEmpty = false;
-                break;
-            }
-        }
-        return isValueEmpty(component, value) || selectBoxEmpty;
-    } else if (isTextAreaComponent(component)) {
-        const isPlain = !component.wysiwyg && !component.editor;
-        return isPlain ? typeof value === 'string' ? isValueEmpty(component, value.trim()) : isValueEmpty(component, value) : isValueEmpty(component, trimBlanks(value));
-    } else if (isTextFieldComponent(component)) {
-        if (component.allowMultipleMasks && !!component.inputMasks && !!component.inputMasks.length) {
-          return isValueEmpty(component, value) || (component.multiple ? value.length === 0 : (!value.maskName || !value.value));
-        }
-        return isValueEmpty(component, value?.toString().trim());
+      });
+      return isValueEmpty(component, value) || childrenEmpty;
     }
     return isValueEmpty(component, value);
+  } else if (isDateTimeComponent(component)) {
+    return isValueEmpty(component, value) || value.toString() === 'Invalid date';
+  } else if (isSelectBoxesComponent(component)) {
+    let selectBoxEmpty = true;
+    for (const key in value) {
+      if (value[key]) {
+        selectBoxEmpty = false;
+        break;
+      }
+    }
+    return isValueEmpty(component, value) || selectBoxEmpty;
+  } else if (isTextAreaComponent(component)) {
+    const isPlain = !component.wysiwyg && !component.editor;
+    return isPlain ? typeof value === 'string' ? isValueEmpty(component, value.trim()) : isValueEmpty(component, value) : isValueEmpty(component, trimBlanks(value));
+  } else if (isTextFieldComponent(component)) {
+    if (component.allowMultipleMasks && !!component.inputMasks && !!component.inputMasks.length) {
+      return isValueEmpty(component, value) || (component.multiple ? value.length === 0 : (!value.maskName || !value.value));
+    }
+    return isValueEmpty(component, value?.toString().trim());
+  }
+  return isValueEmpty(component, value);
 }
