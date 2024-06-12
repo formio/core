@@ -1,3 +1,7 @@
+## 2.0.2-rc.1
+### Changed
+ - FIO-8354: fallback to passing response in argument if response.body is undefined
+
 ## 2.0.1
 ### Changed
  - Official Release
