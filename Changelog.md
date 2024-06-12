@@ -1,3 +1,7 @@
+## 2.1.0-rc.4
+### Changed
+ - FIO-8354: fallback to passing response in argument if response.body is undefined
+
 ## 2.1.0-rc.3
 ### Changed
  - FIO-7675: Map Key From Core
