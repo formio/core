@@ -2,6 +2,9 @@ import { FieldError } from 'error';
 import { Component, ValidationContext } from 'types';
 import { Evaluator, unescapeHTML } from 'utils';
 import { VALIDATION_ERRORS } from './i18n';
+import _isEmpty from 'lodash/isEmpty';
+import _isObject from 'lodash/isObject';
+import _isPlainObject from 'lodash/isPlainObject';
 
 export function isComponentPersistent(component: Component) {
     return component.persistent ? component.persistent : true;
@@ -89,3 +92,29 @@ export const interpolateErrors = (errors: FieldError[], lang: string = 'en') => 
         };
      });
    };
+
+export const hasValue = (value: any) => {
+    if (_isObject(value)) {
+        return !_isEmpty(value);
+    }
+
+    return (typeof value === 'number' && !Number.isNaN(value)) || !!value;
+}
+
+export const doesArrayDataHaveValue = (dataValue: any[] = []): boolean => {
+  if (!Array.isArray(dataValue)) {
+    return !!dataValue;
+  }
+
+  if (!dataValue.length) {
+    return false;
+  }
+
+  const isArrayDataComponent = dataValue.every(_isPlainObject);
+
+  if (isArrayDataComponent) {
+    return dataValue.some(value => Object.values(value).some(hasValue));
+  }
+
+  return dataValue.some(hasValue);
+};
