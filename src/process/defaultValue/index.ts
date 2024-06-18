@@ -1,9 +1,7 @@
-import JSONLogic from 'modules/jsonlogic';
-import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, DefaultValueContext, FilterScope } from 'types';
-import has from 'lodash/has';
-import set from 'lodash/set';
+import { JSONLogicEvaluator } from 'modules/jsonlogic';
+import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, DefaultValueContext } from 'types';
+import { set, has } from 'lodash';
 import { getComponentKey } from 'utils/formUtil';
-const Evaluator = JSONLogic.evaluator;
 
 export const hasCustomDefaultValue = (context: DefaultValueContext): boolean => {
     const { component } = context;
@@ -42,7 +40,7 @@ export const customDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
     if (component.customDefaultValue) {
         const evalContextValue = evalContext ? evalContext(context) : context;
         evalContextValue.value = null;
-        defaultValue = Evaluator.evaluate(component.customDefaultValue, evalContextValue, 'value');
+        defaultValue = JSONLogicEvaluator.evaluate(component.customDefaultValue, evalContextValue, 'value');
         if (component.multiple && !Array.isArray(defaultValue)) {
             defaultValue = defaultValue ? [defaultValue] : [];
         }

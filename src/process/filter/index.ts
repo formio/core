@@ -1,5 +1,5 @@
 import { FilterContext, FilterScope, ProcessorFn, ProcessorFnSync, ProcessorInfo } from "types";
-import set from 'lodash/set';
+import { set } from 'lodash';
 import { Utils } from "utils";
 import { get, isObject } from "lodash";
 import { getComponentAbsolutePath } from "utils/formUtil";

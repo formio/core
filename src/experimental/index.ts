@@ -1,2 +1,7 @@
+import FormioCore from './core';
+export * from './base';
+export * from './model';
+export * from './components';
 export * from './template';
-export * from './core';
+export { FormioCore as Formio };
+export default FormioCore;
