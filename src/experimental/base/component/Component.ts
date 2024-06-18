@@ -1,7 +1,7 @@
 import { merge } from 'lodash';
 import { Components } from '../Components';
 import { Template } from '../../template';
-import { Evaluator } from 'utils';
+import { Evaluator } from 'utils/Evaluator';
 import * as dom from 'utils/dom';
 import { sanitize } from 'utils/sanitize';
 import { Model, ModelDecoratorInterface,  ModelInterface } from '../../model';

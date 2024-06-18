@@ -9,6 +9,7 @@ export type Component =
     | ButtonComponent
     | CheckboxComponent
     | ColumnsComponent
+    | TableComponent
     | ContentComponent
     | NumberComponent
     | NestedArrayComponent
@@ -35,7 +36,6 @@ export type Component =
     | SelectBoxesComponent
     | SignatureComponent
     | SurveyComponent
-    | RowComponent
     | TabsComponent
     | TagsComponent
     | TextAreaComponent
@@ -124,6 +124,19 @@ export type ColumnsComponent = NestedComponent & {
         size: BootstrapSizing;
     }[];
     autoAdjust: boolean;
+};
+
+export type TableComponent = NestedComponent & {
+    rows: Component[][];
+    numRows: number;
+    numCols: number;
+    header: [];
+    caption: string;
+    cloneRows: boolean;
+    striped: boolean;
+    bordered: boolean;
+    hover: boolean;
+    condensed: boolean;
 };
 
 export type ContentComponent = BaseComponent & {
@@ -471,21 +484,6 @@ export type SurveyComponent = BaseComponent & {
         value: string;
         tooltip: string;
     }[];
-};
-
-export type RowComponent = NestedComponent & {
-    numRows: number;
-    numCols: number;
-    rows: {
-        components: [];
-    }[][];
-    header: []; // TODO: not sure what this is
-    caption: string;
-    cloneRows: boolean;
-    striped: boolean;
-    bordered: boolean;
-    hover: boolean;
-    condensed: boolean;
 };
 
 export type TabsComponent = NestedComponent & {

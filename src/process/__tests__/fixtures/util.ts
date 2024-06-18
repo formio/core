@@ -1,4 +1,4 @@
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { ProcessorContext, ProcessorScope, Component } from 'types';
 export const generateProcessorContext = (component: Component, data: any): ProcessorContext<ProcessorScope> => {
     return {

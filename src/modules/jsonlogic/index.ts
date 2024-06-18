@@ -1,7 +1,14 @@
-import { BaseEvaluator } from 'utils';
+import { BaseEvaluator, EvaluatorOptions } from 'utils';
 import { jsonLogic } from './jsonLogic';
-class JSONLogicEvaluator extends BaseEvaluator {
-    public static evaluate(func: any, args: any = {}, ret: any = '', tokenize: boolean = false, context: any = {}) {
+export class JSONLogicEvaluator extends BaseEvaluator {
+    public static evaluate(
+        func: any,
+        args: any = {},
+        ret: any = '',
+        interpolate: boolean = false,
+        context: any = {},
+        options: EvaluatorOptions = {}
+    ) {
         let returnVal = null;
         if (typeof func === 'object') {
             try {
@@ -13,7 +20,7 @@ class JSONLogicEvaluator extends BaseEvaluator {
             }
         }
         else {
-            returnVal = BaseEvaluator.evaluate(func, args, ret, tokenize, context);
+            returnVal = BaseEvaluator.evaluate(func, args, ret, interpolate, context, options);
         }
         return returnVal;
     }
@@ -32,20 +39,17 @@ export function evaluate(
     evaluation: string, 
     ret: string = 'result', 
     evalContextFn?: EvaluatorFn,
-    fnName?: string,
-    options: any = {}
+    options: EvaluatorOptions = {}
 ) {
     const { evalContext, instance } = context;
     const evalContextValue = evalContext ? evalContext(context) : context;
     if (evalContextFn) {
         evalContextFn(evalContextValue);
     }
-    fnName = fnName || 'evaluate';
-    if (instance && (instance as any)[fnName]) {
-        evaluation = `var ${ret}; ${ret} = ${evaluation}; return ${ret}`;
-        return (instance as any)[fnName](evaluation, evalContextValue, options);
+    if (instance && (instance as any).evaluate) {
+        return (instance as any).evaluate(evaluation, evalContextValue, ret, false, options);
     }
-    return (JSONLogicEvaluator as any)[fnName](evaluation, evalContextValue, ret);
+    return (JSONLogicEvaluator as any).evaluate(evaluation, evalContextValue, ret, false, context, options);
 }
 
 export function interpolate(
@@ -53,12 +57,22 @@ export function interpolate(
     evaluation: string, 
     evalContextFn?: EvaluatorFn
 ) : string {
-    return evaluate(context, evaluation, undefined, evalContextFn, 'interpolate', {
+    const { evalContext, instance } = context;
+    const evalContextValue = evalContext ? evalContext(context) : context;
+    if (evalContextFn) {
+        evalContextFn(evalContextValue);
+    }
+    if (instance && (instance as any).evaluate) {
+        return (instance as any).interpolate(evaluation, evalContextValue, {
+            noeval: true
+        });
+    }
+    return (JSONLogicEvaluator as any).interpolate(evaluation, evalContextValue, {
         noeval: true
     });
 }
 
-export default {
+export * from './jsonLogic';
+export const JSONLogicModule = {
     evaluator: JSONLogicEvaluator,
-    jsonLogic: jsonLogic
-}
+};
