@@ -96,7 +96,7 @@ export function Model(props: any = {}) : ModelDecoratorInterface {
              * Returns the data value for this component.
              */
             public get dataValue(): any {
-                return get(this.data, this.component.key);
+                return this.component.key ? get(this.data, this.component.key) : this.data;
             }
 
             /**

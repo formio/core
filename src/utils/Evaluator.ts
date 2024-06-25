@@ -1,5 +1,10 @@
 import { noop, trim, keys, get, set, isObject, values } from 'lodash';
 
+export interface EvaluatorOptions {
+    noeval?: boolean;
+    data?: any;
+}
+
 // BaseEvaluator is for extending.
 export class BaseEvaluator {
     static templateSettings = {
@@ -22,7 +27,7 @@ export class BaseEvaluator {
         return new Function(...params, func);
     };
 
-    public static interpolateString(rawTemplate: string, data: any, options: any = {}) {
+    public static interpolateString(rawTemplate: string, data: any, options: EvaluatorOptions = {}) {
         if (!rawTemplate) {
             return '';
         }
@@ -74,7 +79,7 @@ export class BaseEvaluator {
         });
     }
 
-    public static interpolate(rawTemplate: any, data: any, options: any = {}) {
+    public static interpolate(rawTemplate: any, data: any, options: EvaluatorOptions = {}) {
         if (typeof rawTemplate === 'function' && !(Evaluator.noeval || options.noeval)) {
             try {
                 return rawTemplate(data);
@@ -101,7 +106,7 @@ export class BaseEvaluator {
         ret: any = '',
         interpolate: boolean = false,
         context: any = {},
-        options: any = {}
+        options: EvaluatorOptions = {}
     ): any {
         let returnVal = null;
         options = isObject(options) ? options : { noeval: options };
@@ -158,7 +163,7 @@ export class BaseEvaluator {
      * @param args
      * @returns
      */
-    public static execute(func: string | any, args: any, context: any = {}, options: any = {}) {
+    public static execute(func: string | any, args: any, context: any = {}, options: EvaluatorOptions = {}) {
         options = isObject(options) ? options : { noeval: options };
         if (Evaluator.noeval || options.noeval) {
             console.warn('No evaluations allowed for this renderer.');

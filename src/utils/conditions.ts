@@ -1,8 +1,7 @@
 import { ConditionsContext, JSONConditional, LegacyConditional, SimpleConditional } from "types";
-import JSONLogic, { EvaluatorFn, evaluate } from 'modules/jsonlogic';
+import { EvaluatorFn, evaluate, JSONLogicEvaluator } from 'modules/jsonlogic';
 import { getComponentActualValue } from "./formUtil";
 import { has, isObject, map, every, some, find, filter } from 'lodash';
-const JSONLogicEvaluator = JSONLogic.evaluator;
 import ConditionOperators from './operators';
 
 export const isJSONConditional = (conditional: any): conditional is JSONConditional => {

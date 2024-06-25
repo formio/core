@@ -31,6 +31,11 @@ import {
   Component,
   ComponentDataCallback,
   DataObject,
+  ColumnsComponent,
+  TableComponent,
+  LegacyConditional,
+  JSONConditional,
+  SimpleConditional,
 } from "types";
 import { Evaluator } from "./Evaluator";
 
@@ -45,7 +50,10 @@ import { Evaluator } from "./Evaluator";
  * @returns {Object}
  *   The flattened components map.
  */
-export function flattenComponents(components: Component[], includeAll: boolean) {
+export function flattenComponents(
+  components: Component[],
+  includeAll: boolean = false
+) {
   const flattened: any = {};
   eachComponent(
     components,
@@ -101,6 +109,7 @@ export const MODEL_TYPES: Record<string, string[]> = {
     'editgrid',
     'datatable',
     'dynamicWizard',
+    'tagpad'
   ],
   dataObject: [
     'form'
@@ -194,7 +203,7 @@ export function componentPath(component: Component, parentPath?: string): string
   return parentPath ? `${parentPath}.${key}` : key;
 }
 
-export const componentChildPath = (component: any, parentPath?: string, path?: string): string => {
+export const componentDataPath = (component: any, parentPath: string, path: string): string => {
   parentPath = component.parentPath || parentPath;
   path = path || componentPath(component, parentPath);
   // See if we are a nested component.
@@ -208,9 +217,21 @@ export const componentChildPath = (component: any, parentPath?: string, path?: s
     if (isComponentNestedDataType(component)) {
       return path;
     }
-    return parentPath === undefined ? path : parentPath;
+    return parentPath;
   }
   return path;
+}
+
+export const componentFormPath = (component: any, parentPath: string, path: string): string => {
+  parentPath = component.parentPath || parentPath;
+  path = path || componentPath(component, parentPath);
+  if (isComponentModelType(component, 'dataObject')) {
+    return `${path}.data`;
+  }    
+  if (isComponentNestedDataType(component)) {
+    return path;
+  }
+  return parentPath;
 }
 
 // Async each component data.
@@ -256,14 +277,14 @@ export const eachComponentDataAsync = async (
           // No need to bother processing all the children data if there is no data for this form.
           if (has(data, component.path)) {
             // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
-            const childPath: string = componentChildPath(component, path, compPath);
+            const childPath: string = componentDataPath(component, path, compPath);
             const childData: any = get(data, childPath, null);
             await eachComponentDataAsync(component.components, childData, fn, '', index, component, includeAll);
             set(data, childPath, childData);
           }
         }
         else {
-          await eachComponentDataAsync(component.components, data, fn, componentChildPath(component, path, compPath), index, component, includeAll);
+          await eachComponentDataAsync(component.components, data, fn, componentDataPath(component, path, compPath), index, component, includeAll);
         }
         return true;
       } else {
@@ -310,14 +331,14 @@ export const eachComponentData = (
           // No need to bother processing all the children data if there is no data for this form.
           if (has(data, component.path)) {
             // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
-            const childPath: string = componentChildPath(component, path, compPath);
+            const childPath: string = componentDataPath(component, path, compPath);
             const childData: any = get(data, childPath, {});
             eachComponentData(component.components, childData, fn, '', index, component, includeAll);
             set(data, childPath, childData);
           }
         }
         else {
-          eachComponentData(component.components, data, fn, componentChildPath(component, path, compPath), index, component, includeAll);
+          eachComponentData(component.components, data, fn, componentDataPath(component, path, compPath), index, component, includeAll);
         }
         return true;
       } else {
@@ -355,11 +376,15 @@ export function componentInfo(component: any) {
   const hasColumns = component.columns && Array.isArray(component.columns);
   const hasRows = component.rows && Array.isArray(component.rows);
   const hasComps = component.components && Array.isArray(component.components);
+  const isContent = isComponentModelType(component, 'content');
+  const isLayout = isComponentModelType(component, 'layout');
+  const isInput = !component.hasOwnProperty('input') || !!component.input;
   return {
     hasColumns,
     hasRows,
     hasComps,
-    iterable: hasColumns || hasRows || hasComps || isComponentModelType(component, 'content'),
+    layout: hasColumns || hasRows || (hasComps && !isInput) || isLayout || isContent,
+    iterable: hasColumns || hasRows || hasComps || isContent,
   }
 }
 
@@ -422,7 +447,7 @@ export function eachComponent(
       value: componentPath(component, path)
     });
 
-    if (includeAll || component.tree || !info.iterable) {
+    if (includeAll || component.tree || !info.layout) {
       noRecurse = fn(component, component.path, components, parent);
     }
 
@@ -456,7 +481,7 @@ export function eachComponent(
           component.components,
           fn,
           includeAll,
-          componentChildPath(component, path),
+          componentFormPath(component, path, component.path),
           parent ? component : null
         );
       }
@@ -507,7 +532,7 @@ export async function eachComponentAsync(
       writable: true,
       value: componentPath(component, path)
     });
-    if (includeAll || component.tree || !info.iterable) {
+    if (includeAll || component.tree || !info.layout) {
       if (await fn(component, component.path, components, parent)) {
         continue;
       }
@@ -541,7 +566,7 @@ export async function eachComponentAsync(
         component.components,
         fn,
         includeAll,
-        componentChildPath(component, path),
+        componentFormPath(component, path, component.path),
         parent ? component : null
       );
     }
@@ -599,11 +624,11 @@ export function getComponentActualValue(component: Component, compPath: string, 
  * @returns {Boolean}
  *   Whether or not the component is a layout component.
  */
-export function isLayoutComponent(component: any) {
+export function isLayoutComponent(component: Component) {
   return Boolean(
-    (component.columns && Array.isArray(component.columns)) ||
-    (component.rows && Array.isArray(component.rows)) ||
-    (component.components && Array.isArray(component.components))
+    ((component as ColumnsComponent).columns && Array.isArray((component as ColumnsComponent).columns)) ||
+    ((component as TableComponent).rows && Array.isArray((component as TableComponent).rows)) ||
+    ((component as HasChildComponents).components && Array.isArray((component as HasChildComponents).components))
   );
 }
 
@@ -614,7 +639,7 @@ export function isLayoutComponent(component: any) {
  * @param query
  * @return {boolean}
  */
-export function matchComponent(component: any, query: any) {
+export function matchComponent(component: Component, query: any) {
   if (isString(query)) {
     return (component.key === query) || (component.path === query);
   }
@@ -633,17 +658,18 @@ export function matchComponent(component: any, query: any) {
 /**
  * Get a component by its key
  *
- * @param {Object} components
- *   The components to iterate.
- * @param {String|Object} key
- *   The key of the component to get, or a query of the component to search.
- *
- * @returns {Object}
- *   The component that matches the given key, or undefined if not found.
+ * @param {Object} components - The components to iterate.
+ * @param {String|Object} key - The key of the component to get, or a query of the component to search.
+ * @param {boolean} includeAll - Whether or not to include layout components.
+ * @returns {Component} - The component that matches the given key, or undefined if not found.
  */
-export function getComponent(components: any, key: any, includeAll: any) {
+export function getComponent(
+  components: Component[],
+  key: any,
+  includeAll: any = false
+): (Component | undefined) {
   let result;
-  eachComponent(components, (component: any, path: any) => {
+  eachComponent(components, (component: Component, path: any) => {
     if ((path === key) || (component.path === key)) {
       result = component;
       return true;
@@ -659,14 +685,25 @@ export function getComponent(components: any, key: any, includeAll: any) {
  * @param query
  * @return {*}
  */
-export function searchComponents(components: any, query: any) {
-  const results: any[] = [];
+export function searchComponents(components: Component[], query: any): Component[] {
+  const results: Component[] = [];
   eachComponent(components, (component: any) => {
     if (matchComponent(component, query)) {
       results.push(component);
     }
   }, true);
   return results;
+}
+
+/**
+ * Deprecated version of findComponents. Renamed to searchComponents.
+ * @param {import('@formio/core').Component[]} components - The components to find components within.
+ * @param {object} query - The query to use when searching for the components.
+ * @returns {import('@formio/core').Component[]} - The result of the component that is found.
+ */
+export function findComponents(components: Component[], query: any): Component[] {
+  console.warn('formio.js/utils findComponents is deprecated. Use searchComponents instead.');
+  return searchComponents(components, query);
 }
 
 
@@ -676,7 +713,7 @@ export function searchComponents(components: any, query: any) {
  * @param components
  * @param path
  */
-export function removeComponent(components: any, path: string) {
+export function removeComponent(components: Component[], path: string) {
   // Using _.unset() leave a null value. Use Array splice instead.
   // @ts-ignore
   var index = path.pop();
@@ -693,13 +730,13 @@ export function removeComponent(components: any, path: string) {
  *
  * @returns {boolean} - TRUE - This component has a conditional, FALSE - No conditional provided.
  */
-export function hasCondition(component: any) {
+export function hasCondition(component: Component) {
   return Boolean(
     (component.customConditional) ||
     (component.conditional && (
-      component.conditional.when ||
-      component.conditional.json ||
-      component.conditional.condition
+      (component.conditional as LegacyConditional).when ||
+      (component.conditional as JSONConditional).json ||
+      (component.conditional as SimpleConditional).conjunction
     ))
   );
 }
