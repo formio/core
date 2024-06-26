@@ -14,7 +14,7 @@
     "./error": "./lib/error/index.js"
   },
   "scripts": {
-    "test": "TEST=1 mocha -r ts-node/register -r tsconfig-paths/register -r mock-local-storage -r jsdom-global/register -b -t 0 'src/**/__tests__/*.test.ts'",
+    "test": "TEST=1 nyc --reporter=lcov --reporter=text --reporter=text-summary mocha -r ts-node/register -r tsconfig-paths/register -r mock-local-storage -r jsdom-global/register -t 0 'src/**/__tests__/*.test.ts'",
     "lib": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "replace": "node -r tsconfig-paths/register -r ts-node/register ./lib/base/array/ArrayComponent.js",
     "test:debug": "mocha -r ts-node/register -r tsconfig-paths/register -r mock-local-storage -r jsdom-global/register --debug-brk --inspect '**/*.spec.ts'",
@@ -75,6 +75,7 @@
     "mocha": "^10.4.0",
     "mocha-jsdom": "^2.0.0",
     "mock-local-storage": "^1.1.20",
+    "nyc": "^15.1.0",
     "power-assert": "^1.6.1",
     "sinon": "^17.0.2",
     "ts-loader": "^9.5.0",
@@ -101,5 +102,23 @@
     "json-logic-js": "^2.0.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.4"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "statements": 62,
+    "branches": 52,
+    "functions": 57,
+    "lines": 60,
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "src/**/*.test.ts",
+      "src/**/__tests__/",
+      "src/experimental/**/*.ts",
+      "src/types/**/*.ts"
+    ],
+    "all": true
   }
 }

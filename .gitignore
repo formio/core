@@ -1,6 +1,10 @@
+.DS_Store
 .vscode
 node_modules
 docs
 lib
 dist
 .dccache
+# ignore nyc output
+.nyc_output
+coverage
