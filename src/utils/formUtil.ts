@@ -596,8 +596,18 @@ export function getComponentActualValue(component: Component, compPath: string, 
   //
   //   a[0].b[2].c[3].d => a.b.c.d
   //
-  if (component.parent?.path) {
-    const parentCompPath = component.parent?.path.replace(/\[[0-9]+\]/g, '');
+  let parentInputComponent: any = null;
+  let parent = component;
+
+  while (parent?.parent?.path && !parentInputComponent) {
+    parent = parent.parent;
+    if (parent.input) {
+      parentInputComponent = parent;
+    }
+  }
+
+  if (parentInputComponent) {
+    const parentCompPath = parentInputComponent.path.replace(/\[[0-9]+\]/g, '');
     compPath = compPath.replace(parentCompPath, '');
     compPath = trim(compPath, '. ');
   }
