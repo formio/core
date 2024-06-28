@@ -1,9 +1,4 @@
-import get from 'lodash/get';
-import set from 'lodash/set';
-import isString from 'lodash/isString';
-import toString from 'lodash/toString';
-import isNil from 'lodash/isNil';
-import isObject from 'lodash/isObject';
+import { get, set, isString, toString, isNil, isObject } from 'lodash';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import {
@@ -262,6 +257,10 @@ const normalizeTextFieldComponentValue = (
     value: any,
     path: string
 ) => {
+    // If the component has truncate multiple spaces enabled, then normalize the value to remove extra spaces.
+    if (component.truncateMultipleSpaces && typeof value === 'string') {
+        value = value.trim().replace(/\s{2,}/g, ' ');
+    }
     if (component.allowMultipleMasks && component.inputMasks && component.inputMasks.length > 0) {
         if (Array.isArray(value)) {
             return value.map((val) => normalizeMaskValue(component, defaultValues, val, path));

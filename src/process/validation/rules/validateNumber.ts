@@ -25,7 +25,7 @@ export const validateNumberSync: RuleFnSync = (context: ValidationContext) => {
     const error = new FieldError('number', context);
     const { value } = context;
     
-    if (typeof value !== 'number')  {
+    if (value && typeof value !== 'number')  {
         return error;
     }
     return null;

@@ -31,6 +31,11 @@ import {
   Component,
   ComponentDataCallback,
   DataObject,
+  ColumnsComponent,
+  TableComponent,
+  LegacyConditional,
+  JSONConditional,
+  SimpleConditional,
 } from "types";
 import { Evaluator } from "./Evaluator";
 
@@ -45,7 +50,10 @@ import { Evaluator } from "./Evaluator";
  * @returns {Object}
  *   The flattened components map.
  */
-export function flattenComponents(components: Component[], includeAll: boolean) {
+export function flattenComponents(
+  components: Component[],
+  includeAll: boolean = false
+) {
   const flattened: any = {};
   eachComponent(
     components,
@@ -101,6 +109,7 @@ export const MODEL_TYPES: Record<string, string[]> = {
     'editgrid',
     'datatable',
     'dynamicWizard',
+    'tagpad'
   ],
   dataObject: [
     'form'
@@ -194,7 +203,7 @@ export function componentPath(component: Component, parentPath?: string): string
   return parentPath ? `${parentPath}.${key}` : key;
 }
 
-export const componentChildPath = (component: any, parentPath?: string, path?: string): string => {
+export const componentDataPath = (component: any, parentPath: string, path: string): string => {
   parentPath = component.parentPath || parentPath;
   path = path || componentPath(component, parentPath);
   // See if we are a nested component.
@@ -208,9 +217,21 @@ export const componentChildPath = (component: any, parentPath?: string, path?: s
     if (isComponentNestedDataType(component)) {
       return path;
     }
-    return parentPath === undefined ? path : parentPath;
+    return parentPath;
   }
   return path;
+}
+
+export const componentFormPath = (component: any, parentPath: string, path: string): string => {
+  parentPath = component.parentPath || parentPath;
+  path = path || componentPath(component, parentPath);
+  if (isComponentModelType(component, 'dataObject')) {
+    return `${path}.data`;
+  }    
+  if (isComponentNestedDataType(component)) {
+    return path;
+  }
+  return parentPath;
 }
 
 // Async each component data.
@@ -256,14 +277,14 @@ export const eachComponentDataAsync = async (
           // No need to bother processing all the children data if there is no data for this form.
           if (has(data, component.path)) {
             // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
-            const childPath: string = componentChildPath(component, path, compPath);
+            const childPath: string = componentDataPath(component, path, compPath);
             const childData: any = get(data, childPath, null);
             await eachComponentDataAsync(component.components, childData, fn, '', index, component, includeAll);
             set(data, childPath, childData);
           }
         }
         else {
-          await eachComponentDataAsync(component.components, data, fn, componentChildPath(component, path, compPath), index, component, includeAll);
+          await eachComponentDataAsync(component.components, data, fn, componentDataPath(component, path, compPath), index, component, includeAll);
         }
         return true;
       } else {
@@ -310,14 +331,14 @@ export const eachComponentData = (
           // No need to bother processing all the children data if there is no data for this form.
           if (has(data, component.path)) {
             // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
-            const childPath: string = componentChildPath(component, path, compPath);
+            const childPath: string = componentDataPath(component, path, compPath);
             const childData: any = get(data, childPath, {});
             eachComponentData(component.components, childData, fn, '', index, component, includeAll);
             set(data, childPath, childData);
           }
         }
         else {
-          eachComponentData(component.components, data, fn, componentChildPath(component, path, compPath), index, component, includeAll);
+          eachComponentData(component.components, data, fn, componentDataPath(component, path, compPath), index, component, includeAll);
         }
         return true;
       } else {
@@ -355,11 +376,15 @@ export function componentInfo(component: any) {
   const hasColumns = component.columns && Array.isArray(component.columns);
   const hasRows = component.rows && Array.isArray(component.rows);
   const hasComps = component.components && Array.isArray(component.components);
+  const isContent = isComponentModelType(component, 'content');
+  const isLayout = isComponentModelType(component, 'layout');
+  const isInput = !component.hasOwnProperty('input') || !!component.input;
   return {
     hasColumns,
     hasRows,
     hasComps,
-    iterable: hasColumns || hasRows || hasComps || isComponentModelType(component, 'content'),
+    layout: hasColumns || hasRows || (hasComps && !isInput) || isLayout || isContent,
+    iterable: hasColumns || hasRows || hasComps || isContent,
   }
 }
 
@@ -422,7 +447,7 @@ export function eachComponent(
       value: componentPath(component, path)
     });
 
-    if (includeAll || component.tree || !info.iterable) {
+    if (includeAll || component.tree || !info.layout) {
       noRecurse = fn(component, component.path, components, parent);
     }
 
@@ -456,7 +481,7 @@ export function eachComponent(
           component.components,
           fn,
           includeAll,
-          componentChildPath(component, path),
+          componentFormPath(component, path, component.path),
           parent ? component : null
         );
       }
@@ -507,7 +532,7 @@ export async function eachComponentAsync(
       writable: true,
       value: componentPath(component, path)
     });
-    if (includeAll || component.tree || !info.iterable) {
+    if (includeAll || component.tree || !info.layout) {
       if (await fn(component, component.path, components, parent)) {
         continue;
       }
@@ -541,7 +566,7 @@ export async function eachComponentAsync(
         component.components,
         fn,
         includeAll,
-        componentChildPath(component, path),
+        componentFormPath(component, path, component.path),
         parent ? component : null
       );
     }
@@ -571,21 +596,31 @@ export function getComponentActualValue(component: Component, compPath: string, 
   //
   //   a[0].b[2].c[3].d => a.b.c.d
   //
-  if (component.parent?.path) {
-    const parentCompPath = component.parent?.path.replace(/\[[0-9]+\]/g, '');
+  let parentInputComponent: any = null;
+  let parent = component;
+
+  while (parent?.parent?.path && !parentInputComponent) {
+    parent = parent.parent;
+    if (parent.input) {
+      parentInputComponent = parent;
+    }
+  }
+
+  if (parentInputComponent) {
+    const parentCompPath = parentInputComponent.path.replace(/\[[0-9]+\]/g, '');
     compPath = compPath.replace(parentCompPath, '');
     compPath = trim(compPath, '. ');
   }
 
   let value = null;
   if (row) {
-      value = get(row, compPath);
+    value = get(row, compPath);
   }
   if (data && isNil(value)) {
-      value = get(data, compPath);
+    value = get(data, compPath);
   }
   if (isNil(value) || (isObject(value) && isEmpty(value))) {
-      value = '';
+    value = '';
   }
   return value;
 }
@@ -599,11 +634,11 @@ export function getComponentActualValue(component: Component, compPath: string, 
  * @returns {Boolean}
  *   Whether or not the component is a layout component.
  */
-export function isLayoutComponent(component: any) {
+export function isLayoutComponent(component: Component) {
   return Boolean(
-    (component.columns && Array.isArray(component.columns)) ||
-    (component.rows && Array.isArray(component.rows)) ||
-    (component.components && Array.isArray(component.components))
+    ((component as ColumnsComponent).columns && Array.isArray((component as ColumnsComponent).columns)) ||
+    ((component as TableComponent).rows && Array.isArray((component as TableComponent).rows)) ||
+    ((component as HasChildComponents).components && Array.isArray((component as HasChildComponents).components))
   );
 }
 
@@ -614,7 +649,7 @@ export function isLayoutComponent(component: any) {
  * @param query
  * @return {boolean}
  */
-export function matchComponent(component: any, query: any) {
+export function matchComponent(component: Component, query: any) {
   if (isString(query)) {
     return (component.key === query) || (component.path === query);
   }
@@ -633,17 +668,18 @@ export function matchComponent(component: any, query: any) {
 /**
  * Get a component by its key
  *
- * @param {Object} components
- *   The components to iterate.
- * @param {String|Object} key
- *   The key of the component to get, or a query of the component to search.
- *
- * @returns {Object}
- *   The component that matches the given key, or undefined if not found.
+ * @param {Object} components - The components to iterate.
+ * @param {String|Object} key - The key of the component to get, or a query of the component to search.
+ * @param {boolean} includeAll - Whether or not to include layout components.
+ * @returns {Component} - The component that matches the given key, or undefined if not found.
  */
-export function getComponent(components: any, key: any, includeAll: any) {
+export function getComponent(
+  components: Component[],
+  key: any,
+  includeAll: any = false
+): (Component | undefined) {
   let result;
-  eachComponent(components, (component: any, path: any) => {
+  eachComponent(components, (component: Component, path: any) => {
     if ((path === key) || (component.path === key)) {
       result = component;
       return true;
@@ -659,14 +695,25 @@ export function getComponent(components: any, key: any, includeAll: any) {
  * @param query
  * @return {*}
  */
-export function searchComponents(components: any, query: any) {
-  const results: any[] = [];
+export function searchComponents(components: Component[], query: any): Component[] {
+  const results: Component[] = [];
   eachComponent(components, (component: any) => {
     if (matchComponent(component, query)) {
       results.push(component);
     }
   }, true);
   return results;
+}
+
+/**
+ * Deprecated version of findComponents. Renamed to searchComponents.
+ * @param {import('@formio/core').Component[]} components - The components to find components within.
+ * @param {object} query - The query to use when searching for the components.
+ * @returns {import('@formio/core').Component[]} - The result of the component that is found.
+ */
+export function findComponents(components: Component[], query: any): Component[] {
+  console.warn('formio.js/utils findComponents is deprecated. Use searchComponents instead.');
+  return searchComponents(components, query);
 }
 
 
@@ -676,7 +723,7 @@ export function searchComponents(components: any, query: any) {
  * @param components
  * @param path
  */
-export function removeComponent(components: any, path: string) {
+export function removeComponent(components: Component[], path: string) {
   // Using _.unset() leave a null value. Use Array splice instead.
   // @ts-ignore
   var index = path.pop();
@@ -693,13 +740,13 @@ export function removeComponent(components: any, path: string) {
  *
  * @returns {boolean} - TRUE - This component has a conditional, FALSE - No conditional provided.
  */
-export function hasCondition(component: any) {
+export function hasCondition(component: Component) {
   return Boolean(
     (component.customConditional) ||
     (component.conditional && (
-      component.conditional.when ||
-      component.conditional.json ||
-      component.conditional.condition
+      (component.conditional as LegacyConditional).when ||
+      (component.conditional as JSONConditional).json ||
+      (component.conditional as SimpleConditional).conjunction
     ))
   );
 }
@@ -945,20 +992,20 @@ export function generateFormChange(type: any, data: any) {
 
 export function applyFormChanges(form: any, changes: any) {
   const failed: any = [];
-  changes.forEach(function(change: any) {
+  changes.forEach(function (change: any) {
     var found = false;
     switch (change.op) {
       case 'add':
         var newComponent = change.component;
 
         // Find the container to set the component in.
-        findComponent(form.components, change.container, null, function(parent: any) {
+        findComponent(form.components, change.container, null, function (parent: any) {
           if (!change.container) {
             parent = form;
           }
 
           // A move will first run an add so remove any existing components with matching key before inserting.
-          findComponent(form.components, change.key, null, function(component: any, path: any) {
+          findComponent(form.components, change.key, null, function (component: any, path: any) {
             // If found, use the existing component. (If someone else edited it, the changes would be here)
             newComponent = component;
             removeComponent(form.components, path);
@@ -970,7 +1017,7 @@ export function applyFormChanges(form: any, changes: any) {
         });
         break;
       case 'remove':
-        findComponent(form.components, change.key, null, function(component: any, path: any) {
+        findComponent(form.components, change.key, null, function (component: any, path: any) {
           found = true;
           const oldComponent = get(form.components, path);
           if (oldComponent.key !== component.key) {
@@ -980,7 +1027,7 @@ export function applyFormChanges(form: any, changes: any) {
         });
         break;
       case 'edit':
-        findComponent(form.components, change.key, null, function(component: any, path: any) {
+        findComponent(form.components, change.key, null, function (component: any, path: any) {
           found = true;
           try {
             const oldComponent = get(form.components, path);
@@ -1011,18 +1058,18 @@ export function applyFormChanges(form: any, changes: any) {
   };
 }
 
-  /**
- * This function will find a component in a form and return the component AND THE PATH to the component in the form.
- * Path to the component is stored as an array of nested components and their indexes.The Path is being filled recursively
- * when you iterating through the nested structure.
- * If the component is not found the callback won't be called and function won't return anything.
- *
- * @param components
- * @param key
- * @param fn
- * @param path
- * @returns {*}
- */
+/**
+* This function will find a component in a form and return the component AND THE PATH to the component in the form.
+* Path to the component is stored as an array of nested components and their indexes.The Path is being filled recursively
+* when you iterating through the nested structure.
+* If the component is not found the callback won't be called and function won't return anything.
+*
+* @param components
+* @param key
+* @param fn
+* @param path
+* @returns {*}
+*/
 export function findComponent(components: any, key: any, path: any, fn: any) {
   if (!components) return;
   path = path || [];
@@ -1031,7 +1078,7 @@ export function findComponent(components: any, key: any, path: any, fn: any) {
     return fn(components);
   }
 
-  components.forEach(function(component: any, index: any) {
+  components.forEach(function (component: any, index: any) {
     var newPath = path.slice();
     // Add an index of the component it iterates through in nested structure
     newPath.push(index);
@@ -1039,7 +1086,7 @@ export function findComponent(components: any, key: any, path: any, fn: any) {
 
     if (component.hasOwnProperty('columns') && Array.isArray(component.columns)) {
       newPath.push('columns');
-      component.columns.forEach(function(column: any, index: any) {
+      component.columns.forEach(function (column: any, index: any) {
         var colPath = newPath.slice();
         colPath.push(index);
         colPath.push('components');
@@ -1049,10 +1096,10 @@ export function findComponent(components: any, key: any, path: any, fn: any) {
 
     if (component.hasOwnProperty('rows') && Array.isArray(component.rows)) {
       newPath.push('rows');
-      component.rows.forEach(function(row: any, index: any) {
+      component.rows.forEach(function (row: any, index: any) {
         var rowPath = newPath.slice();
         rowPath.push(index);
-        row.forEach(function(column: any, index: any) {
+        row.forEach(function (column: any, index: any) {
           var colPath = rowPath.slice();
           colPath.push(index);
           colPath.push('components');
@@ -1084,20 +1131,20 @@ const isTextAreaComponent = (component: Component): component is TextAreaCompone
 const isTextFieldComponent = (component: Component): component is TextFieldComponent => component.type === 'textfield';
 
 export function getEmptyValue(component: Component) {
-    switch (component.type) {
-        case 'textarea':
-        case 'textfield':
-        case 'time':
-        case 'datetime':
-        case 'day':
-            return '';
-        case 'datagrid':
-        case 'editgrid':
-            return [];
+  switch (component.type) {
+    case 'textarea':
+    case 'textfield':
+    case 'time':
+    case 'datetime':
+    case 'day':
+      return '';
+    case 'datagrid':
+    case 'editgrid':
+      return [];
 
-        default:
-            return null;
-    }
+    default:
+      return null;
+  }
 }
 
 const replaceBlanks = (value: unknown) => {
@@ -1109,17 +1156,17 @@ const replaceBlanks = (value: unknown) => {
 };
 
 function trimBlanks(value: unknown) {
-    if (!value) {
-      return value;
-    }
-
-    if (Array.isArray(value)) {
-      value = value.map((val: any) => replaceBlanks(val));
-    }
-    else {
-      value = replaceBlanks(value);
-    }
+  if (!value) {
     return value;
+  }
+
+  if (Array.isArray(value)) {
+    value = value.map((val: any) => replaceBlanks(val));
+  }
+  else {
+    value = replaceBlanks(value);
+  }
+  return value;
 }
 
 function isValueEmpty(component: Component, value: any) {
@@ -1128,42 +1175,42 @@ function isValueEmpty(component: Component, value: any) {
 }
 
 export function isComponentDataEmpty(component: Component, data: any, path: string): boolean {
-    const value = get(data, path);
-    if (isCheckboxComponent(component)) {
-        return isValueEmpty(component, value) || value === false;
-    } else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {
-        if (component.components?.length) {
-            let childrenEmpty = true;
-            // wrap component in an array to let eachComponentData handle introspection to child components (e.g. this will be different
-            // for data grids versus nested forms, etc.)
-            eachComponentData([component], data, (thisComponent, data, row, path, components, index) => {
-                if (component.key === thisComponent.key) return;
-                if (!isComponentDataEmpty(thisComponent, data, path)) {
-                    childrenEmpty = false;
-                }
-            });
-            return isValueEmpty(component, value) || childrenEmpty;
+  const value = get(data, path);
+  if (isCheckboxComponent(component)) {
+    return isValueEmpty(component, value) || value === false;
+  } else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {
+    if (component.components?.length) {
+      let childrenEmpty = true;
+      // wrap component in an array to let eachComponentData handle introspection to child components (e.g. this will be different
+      // for data grids versus nested forms, etc.)
+      eachComponentData([component], data, (thisComponent, data, row, path, components, index) => {
+        if (component.key === thisComponent.key) return;
+        if (!isComponentDataEmpty(thisComponent, data, path)) {
+          childrenEmpty = false;
         }
-        return isValueEmpty(component, value);
-    } else if (isDateTimeComponent(component)) {
-        return isValueEmpty(component, value) || value.toString() === 'Invalid date';
-    } else if (isSelectBoxesComponent(component)) {
-        let selectBoxEmpty = true;
-        for (const key in value) {
-            if (value[key]) {
-                selectBoxEmpty = false;
-                break;
-            }
-        }
-        return isValueEmpty(component, value) || selectBoxEmpty;
-    } else if (isTextAreaComponent(component)) {
-        const isPlain = !component.wysiwyg && !component.editor;
-        return isPlain ? typeof value === 'string' ? isValueEmpty(component, value.trim()) : isValueEmpty(component, value) : isValueEmpty(component, trimBlanks(value));
-    } else if (isTextFieldComponent(component)) {
-        if (component.allowMultipleMasks && !!component.inputMasks && !!component.inputMasks.length) {
-          return isValueEmpty(component, value) || (component.multiple ? value.length === 0 : (!value.maskName || !value.value));
-        }
-        return isValueEmpty(component, value?.toString().trim());
+      });
+      return isValueEmpty(component, value) || childrenEmpty;
     }
     return isValueEmpty(component, value);
+  } else if (isDateTimeComponent(component)) {
+    return isValueEmpty(component, value) || value.toString() === 'Invalid date';
+  } else if (isSelectBoxesComponent(component)) {
+    let selectBoxEmpty = true;
+    for (const key in value) {
+      if (value[key]) {
+        selectBoxEmpty = false;
+        break;
+      }
+    }
+    return isValueEmpty(component, value) || selectBoxEmpty;
+  } else if (isTextAreaComponent(component)) {
+    const isPlain = !component.wysiwyg && !component.editor;
+    return isPlain ? typeof value === 'string' ? isValueEmpty(component, value.trim()) : isValueEmpty(component, value) : isValueEmpty(component, trimBlanks(value));
+  } else if (isTextFieldComponent(component)) {
+    if (component.allowMultipleMasks && !!component.inputMasks && !!component.inputMasks.length) {
+      return isValueEmpty(component, value) || (component.multiple ? value.length === 0 : (!value.maskName || !value.value));
+    }
+    return isValueEmpty(component, value?.toString().trim());
+  }
+  return isValueEmpty(component, value);
 }

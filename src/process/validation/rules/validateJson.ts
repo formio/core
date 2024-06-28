@@ -1,4 +1,4 @@
-import jsonLogic from 'modules/jsonlogic';
+import { JSONLogicEvaluator } from 'modules/jsonlogic';
 import { FieldError } from 'error';
 import { RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
@@ -25,7 +25,7 @@ export const validateJsonSync: RuleFnSync = (context: ValidationContext) => {
     const func = component?.validate?.json;
     const evalContextValue = evalContext ? evalContext(context) : context;
     evalContextValue.value = value || null;
-    const valid: true | string = jsonLogic.evaluator.evaluate(
+    const valid: true | string = JSONLogicEvaluator.evaluate(
         func,
         {
             ...evalContextValue,

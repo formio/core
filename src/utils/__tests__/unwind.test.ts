@@ -54,8 +54,8 @@ describe('Test Unwinder', () => {
 
     const submissions = unwind(form, submission);
     assert.equal(submissions.length, 3);
-    assert.equal(form.components[0].components[0].key, 'units[0].a');
-    assert.equal(form.components[0].components[1].key, 'units[0].b');
+    assert.equal(form.components[0].components[0].key, 'units.a');
+    assert.equal(form.components[0].components[1].key, 'units.b');
     assert.deepEqual(submissions[0], {
       data: {
         units: [

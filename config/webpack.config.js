@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 module.exports = {
   mode: 'development',
@@ -20,11 +21,19 @@ module.exports = {
       arrowFunction: false
     },
   },
+  plugins: [
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^\.\/locale$/,
+      contextRegExp: /moment$/,
+    })
+  ],
   resolve: {
     extensions: ['.ts', '.js'],
-    plugins: [new TsconfigPathsPlugin({
-      configFile: path.resolve(__dirname, '..', 'tsconfig.json')
-    })]
+    plugins: [
+      new TsconfigPathsPlugin({
+        configFile: path.resolve(__dirname, '..', 'tsconfig.json')
+      })
+    ]
   },
   module: {
     rules: [
