@@ -109,7 +109,15 @@ const normalizeDayComponentValue = (component: DayComponent, form: any, value: a
     return dateParts.join('/');
 };
 
-const normalizeRadioComponentValue = (value: any) => {
+const normalizeRadioComponentValue = (value: any, dataType?: string) => {
+    switch(dataType) {
+        case 'number':
+            return +value;
+        case 'string':
+            return typeof value === 'object' ? JSON.stringify(value) : String(value);
+        case 'boolean':
+            return !(!value || value.toString() === 'false');
+    }
     const isEquivalent = toString(value) === Number(value).toString();
     if (!isNaN(parseFloat(value)) && isFinite(value) && isEquivalent) {
         return +value;
@@ -318,7 +326,7 @@ export const normalizeProcessSync: ProcessorFnSync<NormalizeScope> = (context) =
             scope.normalize[path].normalized = true;
         }
     } else if (isRadioComponent(component)) {
-        set(data, path, normalizeRadioComponentValue(value));
+        set(data, path, normalizeRadioComponentValue(value, component.dataType));
         scope.normalize[path].normalized = true;
     } else if (isSelectComponent(component)) {
         set(data, path, normalizeSelectComponentValue(component, value));

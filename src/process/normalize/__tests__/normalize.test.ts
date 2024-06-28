@@ -103,6 +103,32 @@ it('Should normalize a radio component value with a number', () => {
     expect(context.data).to.deep.equal({radio: 0});
 });
 
+it('Should normalize a radio component value with a string if storage type is set to string', () => {
+    const radioComp = {
+        type: 'radio',
+        key: 'radio',
+        input: true,
+        label: 'Radio',
+        dataType: 'string',
+        values: [
+            {
+                label: '1',
+                value: 1,
+            },
+            {
+                label: '0',
+                value: 0,
+            }
+        ]
+    };
+    const data = {
+        radio: 0
+    };
+    const context = generateProcessorContext(radioComp, data);
+    normalizeProcessSync(context);
+    expect(context.data).to.deep.equal({radio: '0'});
+});
+
 it('Should normalize a number component value with a string value', () => {
     const numberComp = {
         type: 'number',
