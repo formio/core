@@ -1,4 +1,4 @@
-## [Unreleased: 2.1.1-rc.1]
+## 2.1.1-rc.1
 ### Changed
  - Changes to the Experimental Exports
  - fix path/import issue with JSONLogicEvaluator 
