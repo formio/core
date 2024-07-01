@@ -1,4 +1,10 @@
-## [Unreleased: 2.2.0-rc.1]
+## [Unreleased: 2.2.0-rc.2]
+### Changed
+ - updated thresholds to current values
+ - FIO-8450: Fix custom error message for unique validation
+ - FIO-8598 fixed normalization of radio component values depending on storage type
+   
+## 2.2.0-rc.1
 ### Changed
  - FIO-8177: fix unsetting empty array values
  - FIO-8185: Fixing issues with EditGrid and DataGrid clearOnHide with Conditionally visible elements
@@ -31,6 +37,10 @@
  - FIO-8354: fallback to passing response in argument if response.body is undefined
  - Changes to the Experimental Exports, and changes for 5.x Renderer
  - Experimental component changes
+ - FIO-8597: fixed an issue with a blank value for a number component with multiple values enabled
+ - FIO-8512: fixed an issue where conditionally visible data inside layout components inside editGrid/dataGrid is unset on server side
+ - FIO-8316 invalid data submitted in nested form
+ - fix path/import issue with JSONLogicEvaluator
 
 
 ## 2.0.0-rc.24
