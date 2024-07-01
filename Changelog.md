@@ -31,6 +31,10 @@
  - FIO-8354: fallback to passing response in argument if response.body is undefined
  - Changes to the Experimental Exports, and changes for 5.x Renderer
  - Experimental component changes
+ - FIO-8597: fixed an issue with a blank value for a number component with multiple values enabled
+ - FIO-8512: fixed an issue where conditionally visible data inside layout components inside editGrid/dataGrid is unset on server side
+ - FIO-8316 invalid data submitted in nested form
+ - fix path/import issue with JSONLogicEvaluator
 
 
 ## 2.0.0-rc.24
