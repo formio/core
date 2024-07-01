@@ -17,7 +17,7 @@ function isValidatableRadioComponent(component: any): component is RadioComponen
 function isValidateableSelectComponent(component: any): component is SelectComponent {
     return (
         component &&
-        !!component.validate?.hasOwnProperty('onlyAvailableItems') &&
+        !!component.validate?.onlyAvailableItems &&
         component.type === 'select' &&
         component.dataSrc !== 'resource'
     );
