@@ -1,3 +1,12 @@
+## [Unreleased: 2.1.1-rc.1]
+### Changed
+ - Changes to the Experimental Exports
+ - fix path/import issue with JSONLogicEvaluator 
+ - Fio-8316 invalid data submitted in nested form 
+ - FIO-8512: fixed an issue where conditionally visible data inside layout components inside editGrid/dataGrid is unset on server side
+ - FIO-8597: fixed an issue with a blank value for a number component with multiple values enabled
+ - FIO-8598 fixed normalization of radio component values depending on storage type
+
 ## 2.1.0
 ### Changed
  - Official Release
