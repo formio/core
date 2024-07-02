@@ -90,8 +90,8 @@ export function matchInputMask(value: any, inputMask: any) {
 }
 
 export const shouldValidate = (context: ValidationContext) => {
-    const { component, value } = context;
-    if (!isValidatableComponent(component) || !value) {
+    const { component, value, instance } = context;
+    if ((instance as any)?.skipMaskValidation || !isValidatableComponent(component) || !value) {
         return false;
     }
     if (value == null) {
