@@ -1,12 +1,15 @@
-import dayjs from 'dayjs';
+import dayjs, { ConfigType } from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { isNaN, isNil } from 'lodash';
 import { Evaluator } from './Evaluator';
 import { DayComponent } from 'types';
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
+dayjs.extend(advancedFormat);
 dayjs.extend(customParseFormat);
 
 /**
@@ -64,15 +67,17 @@ export function momentDate(value: any, format: any, timezone: any): any {
  * @param timezone
  * @return {string}
  */
-export function formatDate(value: any, format: any, timezone: any): string {
-    const momentDate = dayjs(value);
+export function formatDate(value: ConfigType, format: string, timezone?: string): string {
+    const date = dayjs(value);
+    const dayjsFormat = convertFormatToMoment(format);
+
     if (timezone === 'UTC') {
-        return `${dayjs.utc().format(convertFormatToMoment(format))} UTC`;
+        return `${date.utc().format(dayjsFormat)} UTC`;
     }
     if (timezone) {
-        return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
+        return date.tz(timezone).format(`${dayjsFormat} z`);
     }
-    return momentDate.format(convertFormatToMoment(format));
+    return date.format(dayjsFormat);
 }
 
 /**
