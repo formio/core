@@ -1,4 +1,10 @@
-## [Unreleased: 2.2.0-rc.1]
+## [Unreleased: 2.2.0-rc.2]
+### Changed
+ - updated thresholds to current values
+ - FIO-8450: Fix custom error message for unique validation
+ - FIO-8598 fixed normalization of radio component values depending on storage type
+   
+## 2.2.0-rc.1
 ### Changed
  - FIO-8177: fix unsetting empty array values
  - FIO-8185: Fixing issues with EditGrid and DataGrid clearOnHide with Conditionally visible elements
