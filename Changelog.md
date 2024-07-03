@@ -1,4 +1,4 @@
-## [Unreleased: 2.2.0-rc.2]
+## 2.2.0-rc.2
 ### Changed
  - updated thresholds to current values
  - FIO-8450: Fix custom error message for unique validation
@@ -42,6 +42,82 @@
  - FIO-8316 invalid data submitted in nested form
  - fix path/import issue with JSONLogicEvaluator
 
+## 2.1.1-rc.1
+### Changed
+ - Changes to the Experimental Exports
+ - fix path/import issue with JSONLogicEvaluator 
+ - Fio-8316 invalid data submitted in nested form 
+ - FIO-8512: fixed an issue where conditionally visible data inside layout components inside editGrid/dataGrid is unset on server side
+ - FIO-8597: fixed an issue with a blank value for a number component with multiple values enabled
+ - FIO-8598 fixed normalization of radio component values depending on storage type
+
+## 2.1.0
+### Changed
+ - Official Release
+
+## 2.1.0-rc.4
+### Changed
+ - FIO-8354: fallback to passing response in argument if response.body is undefined
+
+## 2.1.0-rc.3
+### Changed
+ - FIO-7675: Map Key From Core
+
+## 2.1.0-rc.2
+### Changed
+ - FIO-8128: adds includeAll flag to eachComponentData and eachComponentDataAsync
+ - FIO-8288: do not validate dates in textfield components with calendar widgets
+ - FIO-8037: added number component normalization
+ - FIO-8037: fixed an issue where number component can be sent text through API
+
+## 2.1.0-rc.1
+### Changed
+ - FIO 7488: improve error handling
+   
+## 2.0.1
+### Changed
+ - Official Release
+
+## 2.0.1-rc.1
+### Changed
+ - FIO-8264: update validate required
+
+## 2.0.0
+### Changed
+ - Official Release
+
+## 2.0.0-rc.32
+### Changed
+ - revert: change filter processor to be more verbose and have compModelType in …
+   
+## 2.0.0-rc.31
+### Changed
+ - FIO-8210: fix nested form validation
+ - change filter processor to be more verbose and have compModelType in …
+
+## 2.0.0-rc.30
+### Changed
+ - FIO-8177: fix unsetting empty array values
+ - FIO-8185: Fixing issues with EditGrid and DataGrid clearOnHide with Conditionally visible elements.
+
+## 2.0.0-rc.29
+### Changed
+ - FIO-8178: correctly add "validator" param to interpolated error object
+
+## 2.0.0-rc.28
+### Changed
+ - Fix json and custom validation errors response
+
+## 2.0.0-rc.27
+ - FIO-8128: allow export of dist minified js
+   
+## 2.0.0-rc.26
+### Changed
+ - FIO-8128: allow export of dist minified js
+
+## 2.0.0-rc.25
+### Changed
+ - FIO-8143: update eachComponent to be able to return proper pathing
 
 ## 2.0.0-rc.24
 ### Changed
