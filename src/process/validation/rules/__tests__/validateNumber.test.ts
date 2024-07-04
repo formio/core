@@ -39,3 +39,16 @@ it('Validating a multiple number with a blank value will return null', async () 
     const result = await validateMultiple(context);
     expect(result).to.equal(null);
 });
+
+it('Validating a multiple number with an empty array value will return null', async () => {
+    const component = {
+        ...simpleNumberField,
+        multiple: true
+    };
+    const data = {
+        component: [],
+    };
+    const context = generateProcessorContext(component, data);
+    const result = await validateMultiple(context);
+    expect(result).to.equal(null);
+});
