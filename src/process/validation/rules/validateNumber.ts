@@ -11,6 +11,9 @@ export const shouldValidate = (context: ValidationContext) => {
     if (!value) {
         return false;
     }
+    if (component.multiple && Array.isArray(value) && value.length === 0) {
+        return false;
+    }
     if (!isValidatableNumberComponent(component)) {
         return false;
     }
