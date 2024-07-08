@@ -1,4 +1,8 @@
 
+## 2.1.1-rc.3
+### Changed
+ - FIO-8597: fixed an issue with an empty array value for a number component with multiple values enabled
+
 ## 2.1.1-rc.2
  - FIO-8336: fix validation on multiple values
  - change filter processor to be more verbose and have compModelType
