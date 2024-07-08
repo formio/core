@@ -1,5 +1,9 @@
 
-## [Unreleased: 2.1.1-rc.2]
+## 2.1.1-rc.2
+ - FIO-8336: fix validation on multiple values
+ - change filter processor to be more verbose and have compModelType
+ - FIO-8218: Fix tests for PR 79
+ - FIO-8218: add tests for FIO-8210
 
 ## 2.1.1-rc.1
 ### Changed
