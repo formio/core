@@ -2862,6 +2862,29 @@ describe('Process Tests', () => {
           components: [nestedForm],
         },
       ];
+      it('should return empty array when no data is provided', async () => {
+        const submission = {
+          data: {
+            editGrid: [],
+          },
+        };
+        const context = {
+          form: { components },
+          submission,
+          data: submission.data,
+          components,
+          processors: ProcessTargets.submission,
+          scope: {},
+          config: {
+            server: true,
+          },
+        };
+        processSync(context);
+        context.processors = ProcessTargets.evaluator;
+        processSync(context);
+        expect(context.data).to.deep.equal({ editGrid: [] });
+
+      })
       it('Should validate required component when it is filled out', async () => {
         const submission = {
           data: {
@@ -2924,6 +2947,7 @@ describe('Process Tests', () => {
         processSync(context);
         expect((context.scope as ValidationScope).errors).to.have.length(1);
       });
+      
     });
   });
   /*
