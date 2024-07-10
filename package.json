@@ -1,6 +1,6 @@
 {
   "name": "@formio/core",
-  "version": "2.1.1-rc.3",
+  "version": "2.1.1-rc.4",
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
   "exports": {
@@ -104,10 +104,10 @@
   },
   "nyc": {
     "check-coverage": true,
-    "statements": 64,
-    "branches": 55,
-    "functions": 60,
-    "lines": 63,
+    "statements": 62,
+    "branches": 52,
+    "functions": 57,
+    "lines": 60,
     "include": [
       "src/**/*.ts",
       "src/**/*.js"

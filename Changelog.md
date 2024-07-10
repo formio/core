@@ -1,4 +1,8 @@
 
+## 2.1.1-rc.4
+### Changed
+ - FIO-8598 fixed normalization of radio component values depending on storage type
+
 ## 2.1.1-rc.3
 ### Changed
  - FIO-8597: fixed an issue with an empty array value for a number component with multiple values enabled
