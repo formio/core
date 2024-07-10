@@ -61,15 +61,18 @@ export const filterPostProcess: ProcessorFnSync<FilterScope> = (
   context: FilterContext
 ) => {
   const { scope, component, submission } = context;
-  let filtered = {};
+  let filtered: Record<string, object> = {};
   for (const path in scope.filter) {
+    let value = get(submission?.data, path) as any;
     const pathFilter = scope.filter[path];
-    if (pathFilter.compModelType === 'array') {
-      continue;
-    }
-    if (pathFilter) {
-      let value = get(submission?.data, path) as any;
 
+    if (pathFilter.compModelType === 'array') {
+      // special case for array, if it's empty, set it to empty array
+      if(value.length === 0) {
+        filtered[path] = []
+      }
+      continue;
+    } else if (pathFilter) {
       // when it's a dataModel Object, don't set values directly on the data object, let child fields do that.
       // it can have extra data on updates, so pass all other values except data
       // standard lodash set function will mutate original value, using the functional version so it doesn't
