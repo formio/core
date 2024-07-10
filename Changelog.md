@@ -1,3 +1,7 @@
+## 2.2.0-rc.3
+### Changed
+ - Updated the build for recent changes.
+
 ## 2.2.0-rc.2
 ### Changed
  - updated thresholds to current values
