@@ -1,3 +1,7 @@
+## 2.2.0-rc.4
+### Changed
+ - FIO-8650 -- returning empty array for empty edit grids
+
 ## 2.2.0-rc.3
 ### Changed
  - Updated the build for recent changes.
