@@ -1,4 +1,7 @@
-## [Unreleased: 2.1.1-rc.5]
+## 2.1.1-rc.5
+### Changed
+ - FIO-8650 -- returning empty array for empty edit grids
+
  - FIO-8027 added Cloudflare Turnstile as a captcha Provider
    
 ## 2.1.1-rc.4
