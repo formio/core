@@ -1,8 +1,10 @@
-## [Unreleased: 2.2.0-rc.2]
+## [Unreleased: 2.3.0-rc.1]
 ### Changed
  - updated thresholds to current values
  - FIO-8450: Fix custom error message for unique validation
  - FIO-8598 fixed normalization of radio component values depending on storage type
+ - FIO-8650 -- returning empty array for empty edit grids
+ - FIO-8477: Fix the timezones issue in formatDate function
    
 ## 2.2.0-rc.1
 ### Changed
