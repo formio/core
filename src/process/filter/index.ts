@@ -5,9 +5,9 @@ import {
   ProcessorFnSync,
   ProcessorInfo,
 } from 'types';
-import set from 'lodash/fp/set';
+
 import { Utils } from 'utils';
-import { get } from 'lodash';
+import { get, isObject, set } from 'lodash';
 import { getComponentAbsolutePath } from 'utils/formUtil';
 export const filterProcessSync: ProcessorFnSync<FilterScope> = (
   context: FilterContext
@@ -57,34 +57,23 @@ export const filterProcess: ProcessorFn<FilterScope> = async (
   return filterProcessSync(context);
 };
 
-export const filterPostProcess: ProcessorFnSync<FilterScope> = (
-  context: FilterContext
-) => {
-  const { scope, component, submission } = context;
-  let filtered: Record<string, object> = {};
-  for (const path in scope.filter) {
-    let value = get(submission?.data, path) as any;
-    const pathFilter = scope.filter[path];
-
-    if (pathFilter.compModelType === 'array') {
-      // special case for array, if it's empty, set it to empty array
-      if(value.length === 0) {
-        filtered[path] = []
-      }
-      continue;
-    } else if (pathFilter) {
-      // when it's a dataModel Object, don't set values directly on the data object, let child fields do that.
-      // it can have extra data on updates, so pass all other values except data
-      // standard lodash set function will mutate original value, using the functional version so it doesn't
-      if (pathFilter.compModelType === 'dataObject') {
-        const { data, ...rest } = value;
-        filtered = set(path, rest)(filtered);
-      } else {
-        filtered = set(path, value)(filtered);
-      }
+export const filterPostProcess: ProcessorFnSync<FilterScope> = (context: FilterContext) => {
+    const { scope, submission } = context;
+    const filtered = {};
+    for (const path in scope.filter) {
+        if (scope.filter[path].include) {
+            let value = get(submission?.data, path);
+            if (isObject(value) && isObject(scope.filter[path].value)) {
+                if (scope.filter[path].compModelType === 'dataObject') {
+                    value = {...value, ...scope.filter[path].value, data: (value as any)?.data}
+                } else {
+                    value = {...value, ...scope.filter[path].value}
+                }
+            }
+            set(filtered, path, value);
+        }
     }
-  }
-  context.data = filtered;
+    context.data = filtered;
 };
 
 export const filterProcessInfo: ProcessorInfo<FilterContext, void> = {

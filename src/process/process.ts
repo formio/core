@@ -30,6 +30,8 @@ import { filterProcessInfo } from './filter';
 import { normalizeProcessInfo } from './normalize';
 import { dereferenceProcessInfo } from './dereference';
 import { clearHiddenProcessInfo } from './clearHidden';
+import { removeInvalidFieldsProcessInfo } from './removeInvalidFields';
+import { remove } from 'lodash';
 
 export async function process<ProcessScope>(
   context: ProcessContext<ProcessScope>
@@ -116,6 +118,7 @@ export function processSync<ProcessScope>(
 }
 
 export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
+  removeInvalidFields: removeInvalidFieldsProcessInfo,
   filter: filterProcessInfo,
   defaultValue: defaultValueProcessInfo,
   serverDefaultValue: serverDefaultValueProcessInfo,
@@ -136,6 +139,7 @@ export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
 
 export const ProcessTargets: ProcessTarget = {
   submission: [
+    removeInvalidFieldsProcessInfo,
     filterProcessInfo,
     serverDefaultValueProcessInfo,
     normalizeProcessInfo,
