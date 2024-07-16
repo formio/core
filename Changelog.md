@@ -1,3 +1,7 @@
+## 2.1.1-rc.6
+### Changed
+ - FIO-8537: Fixing the filter processor to handle nested component data properly.
+
 ## 2.1.1-rc.5
 ### Changed
  - FIO-8650 -- returning empty array for empty edit grids
