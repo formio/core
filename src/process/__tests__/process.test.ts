@@ -831,29 +831,7 @@ describe('Process Tests', () => {
               'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
             pathName: '/',
             onLine: true,
-            headers: {
-              host: 'localhost:3000',
-              connection: 'keep-alive',
-              'content-length': '9020',
-              pragma: 'no-cache',
-              'cache-control': 'no-cache',
-              'sec-ch-ua':
-                '"Chromium";v="122", "Not(A:Brand";v="24", "Brave";v="122"',
-              accept: 'application/json',
-              'content-type': 'application/json',
-              'sec-ch-ua-mobile': '?0',
-              'user-agent':
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-              'sec-ch-ua-platform': '"macOS"',
-              'sec-gpc': '1',
-              'accept-language': 'en-US,en',
-              origin: 'http://localhost:3000',
-              'sec-fetch-site': 'same-origin',
-              'sec-fetch-mode': 'cors',
-              'sec-fetch-dest': 'empty',
-              referer: 'http://localhost:3000/',
-              'accept-encoding': 'gzip, deflate, br',
-            },
+            
           },
           data: {
             number: 23,
@@ -969,40 +947,7 @@ describe('Process Tests', () => {
       },
       owner: '65ea3601c3792e416cabcb2a',
       access: [],
-      metadata: {
-        timezone: 'America/Chicago',
-        offset: -360,
-        origin: 'http://localhost:3000',
-        referrer: '',
-        browserName: 'Netscape',
-        userAgent:
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        pathName: '/',
-        onLine: true,
-        headers: {
-          'accept-language': 'en-US,en',
-          'cache-control': 'no-cache',
-          connection: 'keep-alive',
-          origin: 'http://localhost:3000',
-          pragma: 'no-cache',
-          referer: 'http://localhost:3000/',
-          'sec-fetch-dest': 'empty',
-          'sec-fetch-mode': 'cors',
-          'sec-fetch-site': 'same-origin',
-          'sec-gpc': '1',
-          'user-agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-          accept: 'application/json',
-          'content-type': 'application/json',
-          'sec-ch-ua':
-            '"Chromium";v="122", "Not(A:Brand";v="24", "Brave";v="122"',
-          'sec-ch-ua-mobile': '?0',
-          'sec-ch-ua-platform': '"macOS"',
-          host: 'localhost:3000',
-          'accept-encoding': 'gzip, deflate, br',
-          'content-length': '18055',
-        },
-      },
+      
       _vnote: '',
       state: 'submitted',
       form: '65ea368b705068f84a93c87a',
@@ -1024,6 +969,8 @@ describe('Process Tests', () => {
     submission.data = context.data;
     context.processors = ProcessTargets.evaluator;
     processSync(context);
+    console.log(context.scope.errors);
+    
     assert.equal(context.scope.errors.length, 0);
   });
   it('should remove submission data not in a nested form definition', async function () {
@@ -3253,8 +3200,13 @@ describe('Process Tests', () => {
                 form: {
                   data: {
                     textField: 'test',
+                    invalidField: 'bad',
                   },
+                  
                 },
+              },
+              {
+                invalidDataGridField: 'wrong',
               },
             ],
           },
@@ -3274,7 +3226,12 @@ describe('Process Tests', () => {
         processSync(context);
         context.processors = ProcessTargets.evaluator;
         processSync(context);
+        console.log(JSON.stringify(context.data, null, 2));
+        
         expect((context.scope as ValidationScope).errors).to.have.length(0);
+         expect(context.data).to.deep.equal({
+          editGrid: [{ form: { data: { textField: 'test' } } }],
+        });
       });
       it('Should not validate required component when it is not filled out', async () => {
         const submission = {
