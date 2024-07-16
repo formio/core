@@ -23,12 +23,11 @@ export const processInvalidFieldsSync: ProcessorFnSync<ProcessorScope> =  (conte
         console.log({absolutePath: getComponentAbsolutePath(component)});
         
         const dataObj = get(data, `${path}.data`) as Record<string,any> ;
-        const topLevelKeys = new Set<string>();
-
-        
+        const topLevelKeys = new Set<string>();        
         eachComponent(component.components, (comp: Component, compPath: string) => {
-            const topLevelComponentKeys = compPath.replace(`${path}.`, '').split('.')[0];    
-            topLevelKeys.add(topLevelComponentKeys);
+            
+            const componentKey = compPath.replace(`${path}.`, '').split('.')[0];    
+            topLevelKeys.add(componentKey);
                 
             });
         console.log({topLevelKeys});
@@ -53,6 +52,7 @@ export const processInvalidFieldsSync: ProcessorFnSync<ProcessorScope> =  (conte
         // console.log({componentKeys, dataRecords, invalidElements});
         invalidElements?.forEach(element => {
             delete dataRecords[element.index][element.key];
+            
             if(isEmpty(dataRecords[element.index])){
                 dataRecords.splice(element.index, 1);
             }
