@@ -71,7 +71,3 @@ it('Should not filter empty array value for datTable component', async () => {
     filterProcessSync(context);
     expect(context.scope.filter).to.deep.equal({'dataTable': {'compModelType': 'array', 'include': true, value: []}});
 });
-
-it('Should filter nested fields within a nested form correctly.', async () => {
-
-});
