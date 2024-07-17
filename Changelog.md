@@ -1,3 +1,8 @@
+## 2.2.0-rc.5
+### Changed
+ - FIO-8639 fixed validation for select component if onlyAvailableItems is set to false
+ - FIO-8645: added tests and translations for validateRequiredDay
+
 ## 2.2.0-rc.4
 ### Changed
  - FIO-8650 -- returning empty array for empty edit grids
