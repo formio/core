@@ -125,7 +125,7 @@ it('Validating a simple static values select component with the available items 
     expect(result).to.equal(null);
 });
 
-it('Validating a simple static values select component without the available items validation parameter will return null', async () => {
+it('Validating a simple static values select component with the available items validation parameter set to false will return null', async () => {
     
     const component: SelectComponent = {
         ...simpleSelectOptions,
