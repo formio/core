@@ -1,6 +1,6 @@
 import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, ConditionsContext, SimpleConditional, JSONConditional, LegacyConditional, SimpleConditionalConditions, Component, NestedComponent, FilterScope } from 'types';
 import { Utils } from 'utils';
-import set from 'lodash/set';
+import { set } from 'lodash';
 import { componentInfo, getComponentKey, getComponentPath } from 'utils/formUtil';
 import {
     checkCustomConditional,

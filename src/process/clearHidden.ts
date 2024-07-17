@@ -1,4 +1,4 @@
-import unset from 'lodash/unset';
+import { unset } from 'lodash';
 import {
     ProcessorScope,
     ProcessorContext,

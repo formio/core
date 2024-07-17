@@ -1,4 +1,12 @@
-## [Unreleased: 2.2.0-rc.1]
+## [Unreleased: 2.3.0-rc.1]
+### Changed
+ - updated thresholds to current values
+ - FIO-8450: Fix custom error message for unique validation
+ - FIO-8598 fixed normalization of radio component values depending on storage type
+ - FIO-8650 -- returning empty array for empty edit grids
+ - FIO-8477: Fix the timezones issue in formatDate function
+   
+## 2.2.0-rc.1
 ### Changed
  - FIO-8177: fix unsetting empty array values
  - FIO-8185: Fixing issues with EditGrid and DataGrid clearOnHide with Conditionally visible elements
@@ -24,6 +32,17 @@
  - FIO-8288: do not validate dates in textfield components with calendar widgets
  - FIO-8254 fixed available values validation error for Select component
  - FIO-8281: fixed sync validation error for select component with url data src
+ - update validate required recursion to not recurse when nested data type
+ - FIO-7675: remove Map Key From Core (cycled out)
+ - FIO-8027 added Cloudflare Turnstile as a captcha Provider
+ - Fixing the truncate multiple spaces so it does not mutate the data in the validation system
+ - FIO-8354: fallback to passing response in argument if response.body is undefined
+ - Changes to the Experimental Exports, and changes for 5.x Renderer
+ - Experimental component changes
+ - FIO-8597: fixed an issue with a blank value for a number component with multiple values enabled
+ - FIO-8512: fixed an issue where conditionally visible data inside layout components inside editGrid/dataGrid is unset on server side
+ - FIO-8316 invalid data submitted in nested form
+ - fix path/import issue with JSONLogicEvaluator
 
 
 ## 2.0.0-rc.24

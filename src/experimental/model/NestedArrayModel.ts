@@ -130,7 +130,7 @@ export function NestedArrayModel(props: any = {}) : ModelDecoratorInterface {
              * Returns the dataValue for this component.
              */
             public get dataValue() {
-                return get(this.data, this.component.key);
+                return this.component.key ? get(this.data, this.component.key) : this.data;
             }
 
             /**

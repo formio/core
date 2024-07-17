@@ -45,7 +45,7 @@ const valueIsPresent = (value: any, considerFalseTruthy: boolean, isNestedDataty
     }
     // Recursively evaluate
     else if (typeof value === 'object' && !isNestedDatatype) {
-        return Object.values(value).some((val) => valueIsPresent(val, considerFalseTruthy));
+        return Object.values(value).some((val) => valueIsPresent(val, considerFalseTruthy, isNestedDatatype));
     }
     // If value is an array, check it's children have value
     else if (Array.isArray(value) && value.length) {

@@ -53,6 +53,9 @@ export function isObject(obj: any): obj is Object {
     return typeof obj != null && (typeof obj === 'object' || typeof obj === 'function');
 }
 
+const getCustomErrorMessage = ({ errorKeyOrMessage, context }: FieldError): string =>
+    context.component?.errors?.[errorKeyOrMessage] || '';
+
 /**
  * Interpolates @formio/core errors so that they are compatible with the renderer
  * @param {FieldError[]} errors
@@ -63,7 +66,7 @@ export const interpolateErrors = (errors: FieldError[], lang: string = 'en') => 
     return errors.map((error) => {
         const { errorKeyOrMessage, context } = error;
         const i18n = VALIDATION_ERRORS[lang] || {};
-        const toInterpolate = i18n[errorKeyOrMessage] ? i18n[errorKeyOrMessage] : errorKeyOrMessage;
+        const toInterpolate = getCustomErrorMessage(error) || i18n[errorKeyOrMessage] || errorKeyOrMessage;
         const paths: any = [];
         context.path.split('.').forEach((part) => {
             const match = part.match(/\[([0-9]+)\]$/);

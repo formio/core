@@ -1,4 +1,4 @@
-import jsonlogic from './jsonlogic';
+import { JSONLogicModule } from './jsonlogic';
 export default [
-    jsonlogic
+    JSONLogicModule
 ];

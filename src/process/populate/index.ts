@@ -1,5 +1,4 @@
-import set from 'lodash/set';
-import get from 'lodash/get';
+import { get, set } from 'lodash';
 import { PopulateContext, PopulateScope, ProcessorFnSync } from 'types';
 import { componentPath, getContextualRowPath, getModelType } from 'utils/formUtil';
 

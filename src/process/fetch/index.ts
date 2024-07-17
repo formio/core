@@ -1,6 +1,5 @@
 import { ProcessorFn, ProcessorInfo, FetchContext, FetchScope, FetchFn, DataSourceComponent, FilterContext } from 'types';
-import get from 'lodash/get';
-import set from 'lodash/set';
+import { get, set } from 'lodash';
 import { Evaluator } from 'utils';
 import { getComponentKey } from 'utils/formUtil';
 
