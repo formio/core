@@ -12,15 +12,6 @@ import {
     isJSONConditional
 } from 'utils/conditions';
 
-const skipOnServer = (context: ConditionsContext): boolean => {
-    const { component, config } = context;
-    const clearOnHide = component.hasOwnProperty('clearOnHide') ? component.clearOnHide : true;
-    if (config?.server && !clearOnHide) {
-        // No need to run conditionals on server unless clearOnHide is set.
-        return true;
-    }
-    return false;
-};
 
 const hasCustomConditions = (context: ConditionsContext): boolean => {
     const { component } = context;
@@ -100,10 +91,6 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
     if (!conditionalComp) {
         conditionalComp = {path, conditionallyHidden: false};
         scope.conditionals.push(conditionalComp);
-    }
-
-    if (skipOnServer(context)) {
-        return false;
     }
 
     conditionalComp.conditionallyHidden = conditionalComp.conditionallyHidden || isHidden(context);

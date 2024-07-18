@@ -21,8 +21,9 @@ export const clearHiddenProcess: ProcessorFnSync<ClearHiddenScope> = (context) =
     if (!scope.clearHidden) {
         scope.clearHidden = {};
     }
+    //conditional path is a partial path, check to see if in the path
     const conditionallyHidden = (scope as ConditionsScope).conditionals?.find((cond) => {
-        return cond.path === path;
+        return path.includes(cond.path);
     });
     if (
         conditionallyHidden?.conditionallyHidden &&
