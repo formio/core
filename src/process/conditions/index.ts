@@ -100,6 +100,7 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
             // If this is a container component, we need to add all the child components as conditionally hidden as well.
             Utils.eachComponentData([component], row, (comp: Component, data: any, compRow: any, compPath: string) => {
                 if (comp !== component) {
+                    // the path set here is not the absolute path, but the path relative to the parent component
                     scope.conditionals?.push({ path: getComponentPath(comp, compPath), conditionallyHidden: true });
                 }
                 set(comp, 'hidden', true);
