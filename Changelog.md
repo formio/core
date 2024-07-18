@@ -1,3 +1,7 @@
+## 2.1.1-rc.7
+### Changed
+ - fixing child components being displayed when they should be removed when clearOnHide is set
+
 ## 2.1.1-rc.6
 ### Changed
  - FIO-8537: Fixing the filter processor to handle nested component data properly.
