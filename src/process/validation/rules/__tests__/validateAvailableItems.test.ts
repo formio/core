@@ -125,6 +125,27 @@ it('Validating a simple static values select component with the available items 
     expect(result).to.equal(null);
 });
 
+it('Validating a simple static values select component with the available items validation parameter set to false will return null', async () => {
+    
+    const component: SelectComponent = {
+        ...simpleSelectOptions,
+        dataSrc: 'values',
+        data: {
+            values: [
+                { label: 'foo', value: 'foo' },
+                { label: 'bar', value: 'bar' }
+            ],
+        },
+        validate: { onlyAvailableItems: false },
+    };
+    const data = {
+        component: 'baz',
+    };
+    const context = generateProcessorContext(component, data);
+    const result = await validateAvailableItems(context);
+    expect(result).to.equal(null);
+});
+
 it('Validating a simple URL select component without the available items validation parameter will return null', async () => {
     const component: SelectComponent = {
         ...simpleSelectOptions,
