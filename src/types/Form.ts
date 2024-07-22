@@ -3,35 +3,35 @@ import { Access, Component, ProjectId, SubmissionId } from 'types';
 export type FormId = string;
 
 export interface Form {
-    _id: FormId;
-    _vid: number;
+    _id?: FormId;
+    _vid?: number;
 
-    title: string;
-    name: string;
-    path: string;
-    type: FormType;
+    title?: string;
+    name?: string;
+    path?: string;
+    type?: FormType;
     display?: FormDisplay;
     action?: string;
     tags?: string[];
-    access: Access[];
-    submissionAccess: Access[];
-    fieldMatchAccess: any;
-    owner: SubmissionId;
-    machineName: string;
+    access?: Access[];
+    submissionAccess?: Access[];
+    fieldMatchAccess?: any;
+    owner?: SubmissionId;
+    machineName?: string;
     components: Component[];
     settings?: FormSettings;
-    properties: Record<string, string>;
-    project: ProjectId;
-    revisions: 'current' | 'original' | '';
-    submissionRevisions: 'true' | '';
+    properties?: Record<string, string>;
+    project?: ProjectId;
+    revisions?: 'current' | 'original' | '';
+    submissionRevisions?: 'true' | '';
     controller?: string;
     builder?: boolean;
     page?: number;
 
     // Database timestamps
-    created: Date | string;
-    modified: Date | string;
-    deleted: Date | string;
+    created?: Date | string;
+    modified?: Date | string;
+    deleted?: Date | string;
 }
 
 export type FormType = 'form' | 'resource';
