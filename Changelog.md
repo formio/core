@@ -1,3 +1,7 @@
+## 2.2.0-rc.6
+### Changed
+ - FIO-7733: update most form params to optional
+
 ## 2.2.0-rc.5
 ### Changed
  - FIO-8639 fixed validation for select component if onlyAvailableItems is set to false
