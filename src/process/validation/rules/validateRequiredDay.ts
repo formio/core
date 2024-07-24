@@ -6,17 +6,13 @@ const isValidatableDayComponent = (component: any): component is DayComponent =>
     return (
         component &&
         component.type === 'day' &&
-        component.fields.day &&
-        component.fields.day.required
+        (component.fields?.day?.required || component.fields?.month?.required || component.fields?.year?.required)
     );
 };
 
 export const shouldValidate = (context: ValidationContext) => {
     const { component } = context;
-    if (!isValidatableDayComponent(component)) {
-        return false;
-    }
-    return true;
+    return isValidatableDayComponent(component);
 };
 
 export const validateRequiredDay: RuleFn = async (context: ValidationContext) => {
@@ -26,6 +22,9 @@ export const validateRequiredDay: RuleFn = async (context: ValidationContext) =>
 export const validateRequiredDaySync: RuleFnSync = (context: ValidationContext) => {
     const { component, value } = context;
     if (!shouldValidate(context)) {
+        return null;
+    }
+    if(!isValidatableDayComponent(component)){
         return null;
     }
     if (!value) {
@@ -38,19 +37,19 @@ export const validateRequiredDaySync: RuleFnSync = (context: ValidationContext) 
             'validate:validateRequiredDay'
         );
     }
-    const [DAY, MONTH, YEAR] = (component as DayComponent).dayFirst ? [0, 1, 2] : [1, 0, 2];
+    const [DAY, MONTH, YEAR] = (component).dayFirst ? [0, 1, 2] : [1, 0, 2];
     const values = value.split('/').map((x) => parseInt(x, 10)),
         day = values[DAY],
         month = values[MONTH],
         year = values[YEAR];
 
-    if (!day && (component as DayComponent).fields.day.required === true) {
+    if (!day && component.fields?.day?.required) {
         return new FieldError('requiredDayField', context, 'day');
     }
-    if (!month && (component as DayComponent).fields.month.required === true) {
+    if (!month && component.fields?.month?.required) {
         return new FieldError('requiredMonthField', context, 'day');
     }
-    if (!year && (component as DayComponent).fields.year.required === true) {
+    if (!year && component.fields?.year?.required) {
         return new FieldError('requiredYearField', context, 'day');
     }
     return null;

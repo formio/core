@@ -11,6 +11,9 @@ export const shouldValidate = (context: ValidationContext) => {
     if (!value) {
         return false;
     }
+    if (component.multiple && Array.isArray(value) && value.length === 0) {
+        return false;
+    }
     if (!isValidatableNumberComponent(component)) {
         return false;
     }
@@ -25,7 +28,7 @@ export const validateNumberSync: RuleFnSync = (context: ValidationContext) => {
     const error = new FieldError('number', context);
     const { value } = context;
     
-    if (typeof value !== 'number')  {
+    if (value && typeof value !== 'number')  {
         return error;
     }
     return null;

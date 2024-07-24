@@ -831,29 +831,7 @@ describe('Process Tests', () => {
               'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
             pathName: '/',
             onLine: true,
-            headers: {
-              host: 'localhost:3000',
-              connection: 'keep-alive',
-              'content-length': '9020',
-              pragma: 'no-cache',
-              'cache-control': 'no-cache',
-              'sec-ch-ua':
-                '"Chromium";v="122", "Not(A:Brand";v="24", "Brave";v="122"',
-              accept: 'application/json',
-              'content-type': 'application/json',
-              'sec-ch-ua-mobile': '?0',
-              'user-agent':
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-              'sec-ch-ua-platform': '"macOS"',
-              'sec-gpc': '1',
-              'accept-language': 'en-US,en',
-              origin: 'http://localhost:3000',
-              'sec-fetch-site': 'same-origin',
-              'sec-fetch-mode': 'cors',
-              'sec-fetch-dest': 'empty',
-              referer: 'http://localhost:3000/',
-              'accept-encoding': 'gzip, deflate, br',
-            },
+            
           },
           data: {
             number: 23,
@@ -969,40 +947,7 @@ describe('Process Tests', () => {
       },
       owner: '65ea3601c3792e416cabcb2a',
       access: [],
-      metadata: {
-        timezone: 'America/Chicago',
-        offset: -360,
-        origin: 'http://localhost:3000',
-        referrer: '',
-        browserName: 'Netscape',
-        userAgent:
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        pathName: '/',
-        onLine: true,
-        headers: {
-          'accept-language': 'en-US,en',
-          'cache-control': 'no-cache',
-          connection: 'keep-alive',
-          origin: 'http://localhost:3000',
-          pragma: 'no-cache',
-          referer: 'http://localhost:3000/',
-          'sec-fetch-dest': 'empty',
-          'sec-fetch-mode': 'cors',
-          'sec-fetch-site': 'same-origin',
-          'sec-gpc': '1',
-          'user-agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-          accept: 'application/json',
-          'content-type': 'application/json',
-          'sec-ch-ua':
-            '"Chromium";v="122", "Not(A:Brand";v="24", "Brave";v="122"',
-          'sec-ch-ua-mobile': '?0',
-          'sec-ch-ua-platform': '"macOS"',
-          host: 'localhost:3000',
-          'accept-encoding': 'gzip, deflate, br',
-          'content-length': '18055',
-        },
-      },
+      
       _vnote: '',
       state: 'submitted',
       form: '65ea368b705068f84a93c87a',
@@ -1024,6 +969,8 @@ describe('Process Tests', () => {
     submission.data = context.data;
     context.processors = ProcessTargets.evaluator;
     processSync(context);
+    console.log(context.scope.errors);
+    
     assert.equal(context.scope.errors.length, 0);
   });
   it('should remove submission data not in a nested form definition', async function () {
@@ -2853,6 +2800,366 @@ describe('Process Tests', () => {
         expect((context.scope as ValidationScope).errors).to.have.length(1);
       });
     });
+    it('Should not return fields from conditionally hidden containers', async () => {
+        const form = {
+          display: 'form',
+          "components": [
+        {
+          "title": "__information_on_the_appointee",
+          "theme": "primary",
+          "collapsible": false,
+          "key": "HeadingNestedFormCandidates",
+          "type": "panel",
+          "label": "Appointees",
+          "input": false,
+          "tableView": false,
+          "components": [
+            {
+              "label": "Appointees",
+              "hideLabel": true,
+              "tableView": false,
+              
+              "addAnother": "__add_appointee",
+              "modal": true,
+              "saveRow": "Close",
+              "rowDrafts": true,
+              "key": "candidates",
+              "type": "editgrid",
+              "displayAsTable": false,
+              "input": true,
+              "components": [
+                {
+                  "label": "Appointee",
+                  "tableView": false,
+                  "key": "candidate",
+                  "type": "container",
+                  "input": true,
+                  "components": [
+                    {
+                      "label": "Data",
+                      "tableView": false,
+                      "key": "data",
+                      "type": "container",
+                      "input": true,
+                      "components": [
+                        {
+                          "label": "Tabs",
+                          "components": [
+                            {
+                              "label": "__6_time_commitment",
+                              "key": "section6tab",
+                              "components": [
+                                {
+                                  "label": "Section 6",
+                                  "tableView": false,
+                                  "clearOnHide": true,
+                                  "validateWhenHidden": false,
+                                  "key": "section6",
+                                  "properties": {
+                                    "clearHiddenOnSave": "true"
+                                  },
+                                  "customConditional": "show = false;",
+                                  "type": "container",
+                                  "input": true,
+                                  "components": [
+                                    {
+                                      "title": "__6_dash_time_commitment",
+                                      "theme": "primary",
+                                      "collapsible": false,
+                                      "key": "heading6",
+                                      "type": "panel",
+                                      "label": "Time Commitment",
+                                      "input": false,
+                                      "tableView": false,
+                                      "components": [
+                                        {
+                                          "label": "__a_information_to_be_provided_by_the_supervised_entity_the",
+                                          "description": "__ul_li_see_the_report_on_declared_time_commitment_of",
+                                          "autoExpand": false,
+                                          "tableView": true,
+                                          "validate": {
+                                            "required": true
+                                          },
+                                          "key": "entityExpectedTimeCommit",
+                                          "type": "textarea",
+                                          "input": true
+                                        },
+                                        {
+                                          "label": "c",
+                                          "tableView": false,
+                                          "key": "c",
+                                          "type": "container",
+                                          "input": true,
+                                          "components": []
+                                        },
+                                        {
+                                          "label": "__d_list_of_executive_and_non_executive_directorships_and_other",
+                                          "description": "__for_each_directorship_or_other_activity_a_separate_row_needs",
+                                          "tableView": false,
+                                          "addAnother": "__add_another",
+                                          "validate": {
+                                            "required": true
+                                          },
+                                          "rowDrafts": false,
+                                          "key": "d",
+                                          "type": "editgrid",
+                                          "input": true,
+                                          "components": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ],
+                          "key": "tabs1",
+                          "type": "tabs",
+                          "input": false,
+                          "tableView": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Submit",
+          "action": "saveState",
+          "showValidations": false,
+          "tableView": false,
+          "key": "submit",
+          "type": "button",
+          "input": true,
+          "state": "draft"
+        }
+      ],
+          
+    };
+        const submission = {
+          "data": {
+              "candidates": [
+                  {
+                      "candidate": {
+                          "data": {
+                              "section6": {
+                                  "c": {},
+                                  "d": []
+                              }
+                          }
+                      }
+                  }
+              ],
+              "submit": true
+          }
+        };
+
+        const context = {
+          form,
+          submission,
+          data: submission.data,
+          components: form.components,
+          processors: ProcessTargets.submission,
+          scope: {},
+          config: {
+            server: true,
+          },
+        };
+        processSync(context);
+        context.processors = ProcessTargets.evaluator;
+        processSync(context);
+        console.log(JSON.stringify(context.data, null, 2))
+        expect(context.data).to.deep.equal({
+          candidates:[{candidate:{data:{}}}],
+          submit: true
+
+        });
+    
+      })
+    it('Should not return fields from conditionally hidden containers, clearOnHide = false', async () => {
+        
+        const TestForm45588WithClearOnHideFalse = {
+          display: 'form',
+          "components": [
+        {
+          "title": "__information_on_the_appointee",
+          "theme": "primary",
+          "collapsible": false,
+          "key": "HeadingNestedFormCandidates",
+          "type": "panel",
+          "label": "Appointees",
+          "input": false,
+          "tableView": false,
+          "components": [
+            {
+              "label": "Appointees",
+              "hideLabel": true,
+              "tableView": false,
+              
+              "addAnother": "__add_appointee",
+              "modal": true,
+              "saveRow": "Close",
+              "rowDrafts": true,
+              "key": "candidates",
+              "type": "editgrid",
+              "displayAsTable": false,
+              "input": true,
+              "components": [
+                {
+                  "label": "Appointee",
+                  "tableView": false,
+                  "key": "candidate",
+                  "type": "container",
+                  "input": true,
+                  "components": [
+                    {
+                      "label": "Data",
+                      "tableView": false,
+                      "key": "data",
+                      "type": "container",
+                      "input": true,
+                      "components": [
+                        {
+                          "label": "Tabs",
+                          "components": [
+                            {
+                              "label": "__6_time_commitment",
+                              "key": "section6tab",
+                              "components": [
+                                {
+                                  "label": "Section 6",
+                                  "tableView": false,
+                                  "clearOnHide": false,
+                                  "validateWhenHidden": false,
+                                  "key": "section6",
+                                  "properties": {
+                                    "clearHiddenOnSave": "true"
+                                  },
+                                  "customConditional": "show = false;",
+                                  "type": "container",
+                                  "input": true,
+                                  "components": [
+                                    {
+                                      "title": "__6_dash_time_commitment",
+                                      "theme": "primary",
+                                      "collapsible": false,
+                                      "key": "heading6",
+                                      "type": "panel",
+                                      "label": "Time Commitment",
+                                      "input": false,
+                                      "tableView": false,
+                                      "components": [
+                                        {
+                                          "label": "__a_information_to_be_provided_by_the_supervised_entity_the",
+                                          "description": "__ul_li_see_the_report_on_declared_time_commitment_of",
+                                          "autoExpand": false,
+                                          "tableView": true,
+                                          "validate": {
+                                            "required": true
+                                          },
+                                          "key": "entityExpectedTimeCommit",
+                                          "type": "textarea",
+                                          "input": true
+                                        },
+                                        {
+                                          "label": "c",
+                                          "tableView": false,
+                                          "key": "c",
+                                          "type": "container",
+                                          "input": true,
+                                          "components": []
+                                        },
+                                        {
+                                          "label": "__d_list_of_executive_and_non_executive_directorships_and_other",
+                                          "description": "__for_each_directorship_or_other_activity_a_separate_row_needs",
+                                          "tableView": false,
+                                          "addAnother": "__add_another",
+                                          "validate": {
+                                            "required": true
+                                          },
+                                          "rowDrafts": false,
+                                          "key": "d",
+                                          "type": "editgrid",
+                                          "input": true,
+                                          "components": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ],
+                          "key": "tabs1",
+                          "type": "tabs",
+                          "input": false,
+                          "tableView": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Submit",
+          "action": "saveState",
+          "showValidations": false,
+          "tableView": false,
+          "key": "submit",
+          "type": "button",
+          "input": true,
+          "state": "draft"
+        }
+      ],
+          
+    };
+        
+        const submission = {
+          "data": {
+              "candidates": [
+                  {
+                      "candidate": {
+                          "data": {
+                              "section6": {
+                                  "c": {},
+                                  "d": []
+                              }
+                          }
+                      }
+                  }
+              ],
+              "submit": true
+          }
+        };
+
+        const context = {
+          form: TestForm45588WithClearOnHideFalse,
+          submission,
+          data: submission.data,
+          components: TestForm45588WithClearOnHideFalse.components,
+          processors: ProcessTargets.submission,
+          scope: {},
+          config: {
+            server: true,
+          },
+        };
+        processSync(context);
+        context.processors = ProcessTargets.evaluator;
+        processSync(context);
+        console.log(JSON.stringify(context.data, null, 2))
+        expect(context.data).to.deep.equal({
+          candidates:[{candidate:{data:{section6:{}}}}],
+          submit: true
+
+        });
+    })
+
     describe('For EditGrid:', () => {
       const components = [
         {
@@ -2862,6 +3169,29 @@ describe('Process Tests', () => {
           components: [nestedForm],
         },
       ];
+      it('should return empty array when no data is provided', async () => {
+        const submission = {
+          data: {
+            editGrid: [],
+          },
+        };
+        const context = {
+          form: { components },
+          submission,
+          data: submission.data,
+          components,
+          processors: ProcessTargets.submission,
+          scope: {},
+          config: {
+            server: true,
+          },
+        };
+        processSync(context);
+        context.processors = ProcessTargets.evaluator;
+        processSync(context);
+        expect(context.data).to.deep.equal({ editGrid: [] });
+
+      })
       it('Should validate required component when it is filled out', async () => {
         const submission = {
           data: {
@@ -2870,8 +3200,13 @@ describe('Process Tests', () => {
                 form: {
                   data: {
                     textField: 'test',
+                    invalidField: 'bad',
                   },
+                  
                 },
+              },
+              {
+                invalidDataGridField: 'wrong',
               },
             ],
           },
@@ -2891,7 +3226,12 @@ describe('Process Tests', () => {
         processSync(context);
         context.processors = ProcessTargets.evaluator;
         processSync(context);
+        console.log(JSON.stringify(context.data, null, 2));
+        
         expect((context.scope as ValidationScope).errors).to.have.length(0);
+         expect(context.data).to.deep.equal({
+          editGrid: [{ form: { data: { textField: 'test' } } }],
+        });
       });
       it('Should not validate required component when it is not filled out', async () => {
         const submission = {
@@ -2924,6 +3264,7 @@ describe('Process Tests', () => {
         processSync(context);
         expect((context.scope as ValidationScope).errors).to.have.length(1);
       });
+      
     });
   });
   /*

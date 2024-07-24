@@ -1,6 +1,6 @@
 import { ConditionsContext, JSONConditional, LegacyConditional, SimpleConditional } from "types";
 import { EvaluatorFn, evaluate, JSONLogicEvaluator } from 'modules/jsonlogic';
-import { getComponentActualValue } from "./formUtil";
+import { getComponent, getComponentActualValue } from "./formUtil";
 import { has, isObject, map, every, some, find, filter } from 'lodash';
 import ConditionOperators from './operators';
 
@@ -95,7 +95,7 @@ export function checkJsonConditional(conditional: JSONConditional, context: Cond
  * @returns 
  */
 export function checkSimpleConditional(conditional: SimpleConditional, context: ConditionsContext): boolean | null {
-    const { component, data, row, instance } = context;
+    const { component, data, row, instance, form } = context;
     if (!conditional || !isSimpleConditional(conditional)) {
         return null;
     }
@@ -110,7 +110,10 @@ export function checkSimpleConditional(conditional: SimpleConditional, context: 
             // Ignore conditions if there is no component path.
             return null;
         }
-        const value = getComponentActualValue(component, conditionComponentPath, data, row);
+
+        const conditionComp = getComponent(form?.components || [], conditionComponentPath, true);
+        const value = conditionComp ? getComponentActualValue(conditionComp, conditionComponentPath, data, row) : null;
+
         const ConditionOperator = ConditionOperators[operator];
         return ConditionOperator
             ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })

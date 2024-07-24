@@ -33,5 +33,8 @@ export const EN_ERRORS = {
     valueIsNotAvailable: '{{ field }} is an invalid value.',
     time: '{{field}} is not a valid time.',
     invalidDate: '{{field}} is not a valid date',
-    number: '{{field}} is not a valid number.'
+    number: '{{field}} is not a valid number.',
+    requiredDayField: '{{ field }} is required',
+    requiredMonthField: '{{ field }} is required',
+    requiredYearField: '{{ field }} is required'
 };

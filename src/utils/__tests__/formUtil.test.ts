@@ -19,7 +19,8 @@ import {
     findComponent,
     findComponents,
     getComponent,
-    flattenComponents
+    flattenComponents,
+    getComponentActualValue
 } from "../formUtil";
 import { fastCloneDeep } from 'utils/fastCloneDeep';
 
@@ -1747,3 +1748,51 @@ describe('eachComponentData', () => {
         ]);
     });
 });
+
+describe('getComponentActualValue', () => {
+    it('Should return correct value for component inside inside panel inside editGrid', () => {
+      const component = {
+        label: 'Radio',
+        optionsLabelPosition: 'right',
+        inline: false,
+        tableView: false,
+        values: [
+          { label: 'yes', value: 'yes', shortcut: '' },
+          { label: 'no', value: 'no', shortcut: '' },
+        ],
+        key: 'radio',
+        type: 'radio',
+        input: true,
+        path: 'editGrid.radio',
+        parent: {
+          collapsible: false,
+          key: 'panel',
+          type: 'panel',
+          label: 'Panel',
+          input: false,
+          tableView: false,
+          path: 'editGrid[0].panel',
+          parent: {
+            label: 'Edit Grid',
+            tableView: false,
+            rowDrafts: false,
+            key: 'editGrid',
+            type: 'editgrid',
+            path: 'editGrid',
+            displayAsTable: false,
+            input: true,
+          },
+        },
+      };
+      const compPath = 'editGrid.radio';
+      const data = {
+        editGrid: [{ radio: 'yes', textArea: 'test' }],
+        submit: true,
+      };
+      const row = { radio: 'yes', textArea: 'test' };
+  
+      const value = getComponentActualValue(component, compPath, data, row);
+      expect(value).to.equal('yes');
+    });
+  });
+  
