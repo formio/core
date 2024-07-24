@@ -21,6 +21,14 @@ const isValidatableComponent = (component: any): component is TextFieldComponent
     );
 };
 
+// Include instance.skipMaskValidation check to maintain backward compatibility
+const shouldSkipMaskValidation = (context: ValidationContext) => {
+    const { component, instance } = context;
+    return (component as TextFieldComponent).validate?.skipMaskValidation ||
+        (instance as any)?.skipMaskValidation;
+};
+
+
 function getMaskByLabel(component: TextFieldComponent, maskName: string | undefined) {
     if (maskName) {
         const inputMask = component.inputMasks?.find((inputMask) => {
@@ -91,7 +99,7 @@ export function matchInputMask(value: any, inputMask: any) {
 
 export const shouldValidate = (context: ValidationContext) => {
     const { component, value, instance } = context;
-    if ((instance as any)?.skipMaskValidation || !isValidatableComponent(component) || !value) {
+    if (!isValidatableComponent(component) || !value || shouldSkipMaskValidation(context)) {
         return false;
     }
     if (value == null) {

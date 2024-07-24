@@ -100,3 +100,19 @@ it('Validating a mask component should return null if the instance contains a sk
     result = await validateMask(context);
     expect(result).to.equal(null);
 });
+
+it('Validating a mask component should return null if the validate object contains a skipMaskValidation', async () => {
+    const component = {
+        ...simpleTextField,
+        inputMask: '999-999-9999',
+        validate: {
+            skipMaskValidation: true,
+        },
+    };
+    const data = {
+        component: '1234',
+    };
+    const context = generateProcessorContext(component, data);
+    const result = await validateMask(context);
+    expect(result).to.equal(null);
+});
