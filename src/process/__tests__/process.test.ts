@@ -2702,6 +2702,85 @@ describe('Process Tests', () => {
     });
   });
 
+  it('Should include submission data for logically visible fields', async () => {
+    const form = {
+      display: 'form',
+      components: [
+        {
+          type: 'textfield',
+          key: 'textField',
+          label: 'Text Field',
+          input: true,
+        },
+        {
+          type: 'textarea',
+          key: 'textArea',
+          label: 'Text Area',
+          input: true,
+          hidden: true,
+          logic: [
+            {
+              name: 'Show When Not Empty',
+              trigger: {
+                type: 'simple' as const,
+                simple: {
+                  show: true,
+                  conjunction: 'all',
+                  conditions: [
+                    {
+                      component: 'textField',
+                      operator: 'isNotEmpty',
+                    },
+                  ],
+                },
+              },
+              actions: [
+                {
+                  name: 'Show',
+                  type: 'property' as const,
+                  property: {
+                    label: 'Hidden',
+                    value: 'hidden',
+                    type: 'boolean' as const,
+                  },
+                  state: false,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        textField: 'not empty',
+        textArea: 'should be conditionally visible',
+      },
+    };
+
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    expect((context.scope as any).conditionals).to.deep.equal([{
+      path: 'textArea',
+      conditionallyHidden: false,
+    }]);
+    expect(context.data).to.deep.equal({
+      textArea: 'should be conditionally visible',
+      textField: 'not empty',
+    });
+  });
+
   describe('Required component validation in nested form in DataGrid/EditGrid', () => {
     const nestedForm = {
       key: 'form',
