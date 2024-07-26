@@ -4,8 +4,9 @@ import {
     ProcessorContext,
     ProcessorInfo,
     ProcessorFnSync,
-    ConditionsScope
+    ConditionsScope,
 } from "types";
+import { isParentHidden } from 'utils/isParentHidden';
 
 type ClearHiddenScope = ProcessorScope & {
     clearHidden: {
@@ -25,10 +26,12 @@ export const clearHiddenProcess: ProcessorFnSync<ClearHiddenScope> = (context) =
     const conditionallyHidden = (scope as ConditionsScope).conditionals?.find((cond) => {
         return path.includes(cond.path);
     });
+
+    const isHidden = component.hasOwnProperty('clearOnHide') && component.clearOnHide && isParentHidden(component);
+
     if (
         conditionallyHidden?.conditionallyHidden &&
-        (value !== undefined) &&
-        (!component.hasOwnProperty('clearOnHide') || component.clearOnHide)
+        (value !== undefined) || isHidden
     ) {
         unset(data, path);
         scope.clearHidden[path] = true;
