@@ -1,10 +1,9 @@
 import { expect } from 'chai';
+import assert from 'node:assert'
+import type { ContainerComponent, ValidationScope } from 'types';
+import { getComponent } from 'utils/formUtil';
 import { processSync, ProcessTargets } from '../index';
-import { ValidationScope } from 'types';
-const assert = require('assert');
-const form1 = require('./fixtures/form1.json');
-const data1a = require('./fixtures/data1a.json');
-const subs = require('./fixtures/subs.json');
+import { clearOnHideWithCustomCondition, clearOnHideWithHiddenParent,  } from './fixtures'
 /*
 describe('Process Tests', () => {
     it('Should perform the processes using the processReduced method.', async () => {
@@ -831,7 +830,7 @@ describe('Process Tests', () => {
               'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
             pathName: '/',
             onLine: true,
-            
+
           },
           data: {
             number: 23,
@@ -947,7 +946,7 @@ describe('Process Tests', () => {
       },
       owner: '65ea3601c3792e416cabcb2a',
       access: [],
-      
+
       _vnote: '',
       state: 'submitted',
       form: '65ea368b705068f84a93c87a',
@@ -970,7 +969,7 @@ describe('Process Tests', () => {
     context.processors = ProcessTargets.evaluator;
     processSync(context);
     console.log(context.scope.errors);
-    
+
     assert.equal(context.scope.errors.length, 0);
   });
   it('should remove submission data not in a nested form definition', async function () {
@@ -2879,365 +2878,107 @@ describe('Process Tests', () => {
         expect((context.scope as ValidationScope).errors).to.have.length(1);
       });
     });
-    it('Should not return fields from conditionally hidden containers', async () => {
-        const form = {
-          display: 'form',
-          "components": [
-        {
-          "title": "__information_on_the_appointee",
-          "theme": "primary",
-          "collapsible": false,
-          "key": "HeadingNestedFormCandidates",
-          "type": "panel",
-          "label": "Appointees",
-          "input": false,
-          "tableView": false,
-          "components": [
-            {
-              "label": "Appointees",
-              "hideLabel": true,
-              "tableView": false,
-              
-              "addAnother": "__add_appointee",
-              "modal": true,
-              "saveRow": "Close",
-              "rowDrafts": true,
-              "key": "candidates",
-              "type": "editgrid",
-              "displayAsTable": false,
-              "input": true,
-              "components": [
-                {
-                  "label": "Appointee",
-                  "tableView": false,
-                  "key": "candidate",
-                  "type": "container",
-                  "input": true,
-                  "components": [
-                    {
-                      "label": "Data",
-                      "tableView": false,
-                      "key": "data",
-                      "type": "container",
-                      "input": true,
-                      "components": [
-                        {
-                          "label": "Tabs",
-                          "components": [
-                            {
-                              "label": "__6_time_commitment",
-                              "key": "section6tab",
-                              "components": [
-                                {
-                                  "label": "Section 6",
-                                  "tableView": false,
-                                  "clearOnHide": true,
-                                  "validateWhenHidden": false,
-                                  "key": "section6",
-                                  "properties": {
-                                    "clearHiddenOnSave": "true"
-                                  },
-                                  "customConditional": "show = false;",
-                                  "type": "container",
-                                  "input": true,
-                                  "components": [
-                                    {
-                                      "title": "__6_dash_time_commitment",
-                                      "theme": "primary",
-                                      "collapsible": false,
-                                      "key": "heading6",
-                                      "type": "panel",
-                                      "label": "Time Commitment",
-                                      "input": false,
-                                      "tableView": false,
-                                      "components": [
-                                        {
-                                          "label": "__a_information_to_be_provided_by_the_supervised_entity_the",
-                                          "description": "__ul_li_see_the_report_on_declared_time_commitment_of",
-                                          "autoExpand": false,
-                                          "tableView": true,
-                                          "validate": {
-                                            "required": true
-                                          },
-                                          "key": "entityExpectedTimeCommit",
-                                          "type": "textarea",
-                                          "input": true
-                                        },
-                                        {
-                                          "label": "c",
-                                          "tableView": false,
-                                          "key": "c",
-                                          "type": "container",
-                                          "input": true,
-                                          "components": []
-                                        },
-                                        {
-                                          "label": "__d_list_of_executive_and_non_executive_directorships_and_other",
-                                          "description": "__for_each_directorship_or_other_activity_a_separate_row_needs",
-                                          "tableView": false,
-                                          "addAnother": "__add_another",
-                                          "validate": {
-                                            "required": true
-                                          },
-                                          "rowDrafts": false,
-                                          "key": "d",
-                                          "type": "editgrid",
-                                          "input": true,
-                                          "components": []
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ],
-                          "key": "tabs1",
-                          "type": "tabs",
-                          "input": false,
-                          "tableView": false
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+
+    it('Should not return fields from conditionally hidden containers, clearOnHide = true', async () => {
+      const { form, submission } = clearOnHideWithCustomCondition;
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: ProcessTargets.submission,
+        scope: {},
+        config: {
+          server: true,
         },
-        {
-          "label": "Submit",
-          "action": "saveState",
-          "showValidations": false,
-          "tableView": false,
-          "key": "submit",
-          "type": "button",
-          "input": true,
-          "state": "draft"
-        }
-      ],
-          
-    };
-        const submission = {
-          "data": {
-              "candidates": [
-                  {
-                      "candidate": {
-                          "data": {
-                              "section6": {
-                                  "c": {},
-                                  "d": []
-                              }
-                          }
-                      }
-                  }
-              ],
-              "submit": true
-          }
-        };
+      };
 
-        const context = {
-          form,
-          submission,
-          data: submission.data,
-          components: form.components,
-          processors: ProcessTargets.submission,
-          scope: {},
-          config: {
-            server: true,
-          },
-        };
-        processSync(context);
-        context.processors = ProcessTargets.evaluator;
-        processSync(context);
-        console.log(JSON.stringify(context.data, null, 2))
-        expect(context.data).to.deep.equal({
-          candidates:[{candidate:{data:{}}}],
-          submit: true
+      processSync(context);
+      context.processors = ProcessTargets.evaluator;
+      processSync(context);
 
-        });
-    
-      })
+
+      expect(context.data).to.deep.equal({
+        candidates:[{candidate:{data:{}}}],
+        submit: true
+      });
+    });
+
     it('Should not return fields from conditionally hidden containers, clearOnHide = false', async () => {
-        
-        const TestForm45588WithClearOnHideFalse = {
-          display: 'form',
-          "components": [
-        {
-          "title": "__information_on_the_appointee",
-          "theme": "primary",
-          "collapsible": false,
-          "key": "HeadingNestedFormCandidates",
-          "type": "panel",
-          "label": "Appointees",
-          "input": false,
-          "tableView": false,
-          "components": [
-            {
-              "label": "Appointees",
-              "hideLabel": true,
-              "tableView": false,
-              
-              "addAnother": "__add_appointee",
-              "modal": true,
-              "saveRow": "Close",
-              "rowDrafts": true,
-              "key": "candidates",
-              "type": "editgrid",
-              "displayAsTable": false,
-              "input": true,
-              "components": [
-                {
-                  "label": "Appointee",
-                  "tableView": false,
-                  "key": "candidate",
-                  "type": "container",
-                  "input": true,
-                  "components": [
-                    {
-                      "label": "Data",
-                      "tableView": false,
-                      "key": "data",
-                      "type": "container",
-                      "input": true,
-                      "components": [
-                        {
-                          "label": "Tabs",
-                          "components": [
-                            {
-                              "label": "__6_time_commitment",
-                              "key": "section6tab",
-                              "components": [
-                                {
-                                  "label": "Section 6",
-                                  "tableView": false,
-                                  "clearOnHide": false,
-                                  "validateWhenHidden": false,
-                                  "key": "section6",
-                                  "properties": {
-                                    "clearHiddenOnSave": "true"
-                                  },
-                                  "customConditional": "show = false;",
-                                  "type": "container",
-                                  "input": true,
-                                  "components": [
-                                    {
-                                      "title": "__6_dash_time_commitment",
-                                      "theme": "primary",
-                                      "collapsible": false,
-                                      "key": "heading6",
-                                      "type": "panel",
-                                      "label": "Time Commitment",
-                                      "input": false,
-                                      "tableView": false,
-                                      "components": [
-                                        {
-                                          "label": "__a_information_to_be_provided_by_the_supervised_entity_the",
-                                          "description": "__ul_li_see_the_report_on_declared_time_commitment_of",
-                                          "autoExpand": false,
-                                          "tableView": true,
-                                          "validate": {
-                                            "required": true
-                                          },
-                                          "key": "entityExpectedTimeCommit",
-                                          "type": "textarea",
-                                          "input": true
-                                        },
-                                        {
-                                          "label": "c",
-                                          "tableView": false,
-                                          "key": "c",
-                                          "type": "container",
-                                          "input": true,
-                                          "components": []
-                                        },
-                                        {
-                                          "label": "__d_list_of_executive_and_non_executive_directorships_and_other",
-                                          "description": "__for_each_directorship_or_other_activity_a_separate_row_needs",
-                                          "tableView": false,
-                                          "addAnother": "__add_another",
-                                          "validate": {
-                                            "required": true
-                                          },
-                                          "rowDrafts": false,
-                                          "key": "d",
-                                          "type": "editgrid",
-                                          "input": true,
-                                          "components": []
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ],
-                          "key": "tabs1",
-                          "type": "tabs",
-                          "input": false,
-                          "tableView": false
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+      const { form, submission } = clearOnHideWithCustomCondition;
+      const containerComponent = getComponent(form.components, 'section6') as ContainerComponent;
+      containerComponent.clearOnHide = false;
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: ProcessTargets.submission,
+        scope: {},
+        config: {
+          server: true,
         },
-        {
-          "label": "Submit",
-          "action": "saveState",
-          "showValidations": false,
-          "tableView": false,
-          "key": "submit",
-          "type": "button",
-          "input": true,
-          "state": "draft"
-        }
-      ],
-          
-    };
-        
-        const submission = {
-          "data": {
-              "candidates": [
-                  {
-                      "candidate": {
-                          "data": {
-                              "section6": {
-                                  "c": {},
-                                  "d": []
-                              }
-                          }
-                      }
-                  }
-              ],
-              "submit": true
-          }
-        };
+      };
 
-        const context = {
-          form: TestForm45588WithClearOnHideFalse,
-          submission,
-          data: submission.data,
-          components: TestForm45588WithClearOnHideFalse.components,
-          processors: ProcessTargets.submission,
-          scope: {},
-          config: {
-            server: true,
-          },
-        };
-        processSync(context);
-        context.processors = ProcessTargets.evaluator;
-        processSync(context);
-        console.log(JSON.stringify(context.data, null, 2))
-        expect(context.data).to.deep.equal({
-          candidates:[{candidate:{data:{section6:{}}}}],
-          submit: true
+      processSync(context);
+      context.processors = ProcessTargets.evaluator;
+      processSync(context);
 
-        });
-    })
+      expect(context.data).to.deep.equal({
+        candidates:[{candidate:{data:{section6:{}}}}],
+        submit: true
+      });
+    });
+
+    it('Should not return fields from hidden containers, clearOnHide = false', async () => {
+      const { form, submission } = clearOnHideWithHiddenParent;
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: ProcessTargets.submission,
+        scope: {},
+        config: {
+          server: true,
+        },
+      };
+
+      processSync(context);
+      context.processors = ProcessTargets.evaluator;
+      processSync(context);
+
+      expect(context.data).to.deep.equal({
+        candidates:[{candidate:{data:{section6:{}}}}],
+        submit: true
+      });
+    });
+
+    it('Should not return fields from hidden containers, clearOnHide = true', async () => {
+      const { form, submission } = clearOnHideWithHiddenParent;
+      const containerComponent = getComponent(form.components, 'section6') as ContainerComponent;
+      containerComponent.clearOnHide = true;
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: ProcessTargets.submission,
+        scope: {},
+        config: {
+          server: true,
+        },
+      };
+
+      processSync(context);
+      context.processors = ProcessTargets.evaluator;
+      processSync(context);
+
+      expect(context.data).to.deep.equal({
+        candidates:[{candidate:{data:{section6:{}}}}],
+        submit: true
+      });
+    });
 
     describe('For EditGrid:', () => {
       const components = [
@@ -3281,7 +3022,7 @@ describe('Process Tests', () => {
                     textField: 'test',
                     invalidField: 'bad',
                   },
-                  
+
                 },
               },
               {
@@ -3306,7 +3047,7 @@ describe('Process Tests', () => {
         context.processors = ProcessTargets.evaluator;
         processSync(context);
         console.log(JSON.stringify(context.data, null, 2));
-        
+
         expect((context.scope as ValidationScope).errors).to.have.length(0);
          expect(context.data).to.deep.equal({
           editGrid: [{ form: { data: { textField: 'test' } } }],
@@ -3343,7 +3084,7 @@ describe('Process Tests', () => {
         processSync(context);
         expect((context.scope as ValidationScope).errors).to.have.length(1);
       });
-      
+
     });
   });
   /*
