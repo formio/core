@@ -1,0 +1,79 @@
+{
+  "form": {
+    "title": "req",
+    "name": "req",
+    "path": "req",
+    "type": "form",
+    "display": "form",
+    "tags": [],
+    "components": [
+      {
+        "label": "hello there",
+        "applyMaskOn": "change",
+        "tableView": true,
+        "validateWhenHidden": false,
+        "key": "helloThere",
+        "type": "textfield",
+        "input": true
+      },
+      {
+        "label": "Checkbox",
+        "tableView": false,
+        "validateWhenHidden": false,
+        "key": "checkbox",
+        "type": "checkbox",
+        "input": true
+      },
+      {
+        "collapsible": false,
+        "key": "panel",
+        "conditional": {
+          "show": false,
+          "conjunction": "any",
+          "conditions": [
+            {
+              "component": "checkbox",
+              "operator": "isEqual",
+              "value": true
+            }
+          ]
+        },
+        "type": "panel",
+        "label": "Panel",
+        "input": false,
+        "tableView": false,
+        "components": [
+          {
+            "label": "Text Field",
+            "applyMaskOn": "change",
+            "tableView": true,
+            "validate": {
+              "required": true
+            },
+            "validateWhenHidden": false,
+            "key": "textField",
+            "type": "textfield",
+            "input": true
+          }
+        ]
+      },
+      {
+        "type": "button",
+        "label": "Submit",
+        "key": "submit",
+        "disableOnInvalid": true,
+        "input": true,
+        "tableView": false
+      }
+    ],
+    "created": "2024-07-29T13:38:39.681Z",
+    "modified": "2024-07-29T13:39:19.804Z"
+  },
+  "submission": {
+    "data": {
+      "helloThere": "",
+      "checkbox": true,
+      "submit": true
+    }
+  }
+}

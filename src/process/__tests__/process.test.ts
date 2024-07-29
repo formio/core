@@ -1,10 +1,8 @@
 import { expect } from 'chai';
 import { processSync, ProcessTargets } from '../index';
 import { ValidationScope } from 'types';
+import { skipValidForConditionallyHiddenComp } from './fixtures';
 const assert = require('assert');
-const form1 = require('./fixtures/form1.json');
-const data1a = require('./fixtures/data1a.json');
-const subs = require('./fixtures/subs.json');
 /*
 describe('Process Tests', () => {
     it('Should perform the processes using the processReduced method.', async () => {
@@ -831,7 +829,7 @@ describe('Process Tests', () => {
               'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
             pathName: '/',
             onLine: true,
-            
+
           },
           data: {
             number: 23,
@@ -947,7 +945,7 @@ describe('Process Tests', () => {
       },
       owner: '65ea3601c3792e416cabcb2a',
       access: [],
-      
+
       _vnote: '',
       state: 'submitted',
       form: '65ea368b705068f84a93c87a',
@@ -970,7 +968,7 @@ describe('Process Tests', () => {
     context.processors = ProcessTargets.evaluator;
     processSync(context);
     console.log(context.scope.errors);
-    
+
     assert.equal(context.scope.errors.length, 0);
   });
   it('should remove submission data not in a nested form definition', async function () {
@@ -2897,7 +2895,7 @@ describe('Process Tests', () => {
               "label": "Appointees",
               "hideLabel": true,
               "tableView": false,
-              
+
               "addAnother": "__add_appointee",
               "modal": true,
               "saveRow": "Close",
@@ -3016,7 +3014,7 @@ describe('Process Tests', () => {
           "state": "draft"
         }
       ],
-          
+
     };
         const submission = {
           "data": {
@@ -3056,10 +3054,11 @@ describe('Process Tests', () => {
           submit: true
 
         });
-    
+
       })
+
     it('Should not return fields from conditionally hidden containers, clearOnHide = false', async () => {
-        
+
         const TestForm45588WithClearOnHideFalse = {
           display: 'form',
           "components": [
@@ -3077,7 +3076,7 @@ describe('Process Tests', () => {
               "label": "Appointees",
               "hideLabel": true,
               "tableView": false,
-              
+
               "addAnother": "__add_appointee",
               "modal": true,
               "saveRow": "Close",
@@ -3196,9 +3195,9 @@ describe('Process Tests', () => {
           "state": "draft"
         }
       ],
-          
+
     };
-        
+
         const submission = {
           "data": {
               "candidates": [
@@ -3281,7 +3280,7 @@ describe('Process Tests', () => {
                     textField: 'test',
                     invalidField: 'bad',
                   },
-                  
+
                 },
               },
               {
@@ -3306,7 +3305,7 @@ describe('Process Tests', () => {
         context.processors = ProcessTargets.evaluator;
         processSync(context);
         console.log(JSON.stringify(context.data, null, 2));
-        
+
         expect((context.scope as ValidationScope).errors).to.have.length(0);
          expect(context.data).to.deep.equal({
           editGrid: [{ form: { data: { textField: 'test' } } }],
@@ -3343,7 +3342,27 @@ describe('Process Tests', () => {
         processSync(context);
         expect((context.scope as ValidationScope).errors).to.have.length(1);
       });
-      
+
+      it('Should not validate component if it is hidden', async () => {
+        const { form, submission } = skipValidForConditionallyHiddenComp;
+        const context = {
+          form,
+          submission,
+          data: submission.data,
+          components: form.components,
+          processors: ProcessTargets.submission,
+          scope: {},
+          config: {
+            server: true,
+          },
+        };
+
+        processSync(context);
+        context.processors = ProcessTargets.evaluator;
+        processSync(context);
+        expect((context.scope as ValidationScope).errors).to.have.length(0);
+      });
+
     });
   });
   /*
