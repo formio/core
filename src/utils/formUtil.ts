@@ -680,7 +680,7 @@ export function getComponent(
 ): (Component | undefined) {
   let result;
   eachComponent(components, (component: Component, path: any) => {
-    if ((path === key) || (component.path === key) || (component.key === key)) {
+    if ((path === key) || (component.path === key) || (component.input && (component.key === key))) {
       result = component;
       return true;
     }
