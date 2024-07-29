@@ -88,7 +88,8 @@
                                         "key": "c",
                                         "type": "container",
                                         "input": true,
-                                        "components": []
+                                        "components": [],
+                                        "clearOnHide": true
                                       },
                                       {
                                         "label": "__d_list_of_executive_and_non_executive_directorships_and_other",
@@ -102,7 +103,8 @@
                                         "key": "d",
                                         "type": "editgrid",
                                         "input": true,
-                                        "components": []
+                                        "components": [],
+                                        "clearOnHide": true
                                       }
                                     ]
                                   }
