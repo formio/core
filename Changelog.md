@@ -1,3 +1,7 @@
+## 2.1.1-rc.8
+### Changed
+ - FIO-8730: Fix submission has hidden fields when 'Clear value when hidden' is checked
+
 ## 2.1.1-rc.7
 ### Changed
  - fixing child components being displayed when they should be removed when clearOnHide is set
