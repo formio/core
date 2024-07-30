@@ -1,3 +1,10 @@
+## 2.2.0-rc.7
+### Changed
+ - FIO-8597: fixed an issue with an empty array value for a number component with multiple values enabled
+ - FIO-8730: Fix submission has hidden fields when 'Clear value when hidden' is checked
+ - FIO-8537: Fixing the filter processor to handle nested component data properly
+ - fixing child components being displayed when they should be removed when clearOnHide is set
+
 ## 2.2.0-rc.6
 ### Changed
  - FIO-7733: update most form params to optional
