@@ -13,21 +13,20 @@ const isMaskType = (obj: any): obj is DataObject & { maskName: string; value: st
     );
 };
 
-const isValidatableComponent = (component: any): component is TextFieldComponent => {
+const isValidatableComponent = (component: any, instance: any): component is TextFieldComponent => {
+    if (!component) return false;
+
+    const { type, inputMask, inputMasks, validate } = component;
+
     // For some reason we skip mask validation for time components
-    return ((component && component.type && component.type !== 'time') &&
-        (component && component.hasOwnProperty('inputMask') && !!component.inputMask) ||
-        (component && component.hasOwnProperty('inputMasks') && !isEmpty(component.inputMasks))
-    );
-};
+    if (type === 'time') return false;
 
-// Include instance.skipMaskValidation check to maintain backward compatibility
-const shouldSkipMaskValidation = (context: ValidationContext) => {
-    const { component, instance } = context;
-    return (component as TextFieldComponent).validate?.skipMaskValidation ||
-        (instance as any)?.skipMaskValidation;
-};
+    const hasInputMask = inputMask || !isEmpty(inputMasks);
+    // Include instance.skipMaskValidation check to maintain backward compatibility
+    const skipMaskValidation = validate?.skipMaskValidation || instance?.skipMaskValidation;
 
+    return hasInputMask && !skipMaskValidation;
+};
 
 function getMaskByLabel(component: TextFieldComponent, maskName: string | undefined) {
     if (maskName) {
@@ -99,7 +98,7 @@ export function matchInputMask(value: any, inputMask: any) {
 
 export const shouldValidate = (context: ValidationContext) => {
     const { component, value, instance } = context;
-    if (!isValidatableComponent(component) || !value || shouldSkipMaskValidation(context)) {
+    if (!isValidatableComponent(component, instance) || !value) {
         return false;
     }
     if (value == null) {
