@@ -48,11 +48,10 @@ export function setActionBooleanProperty(context: LogicContext, action: LogicAct
     if (currentValue !== newValue) {
         set(component, property, newValue === 'true');
 
-        // If this is "logic" forcing a component to be hidden, then we will set the "conditionallyHidden"
+        // If this is "logic" forcing a component to set hidden property, then we will set the "conditionallyHidden"
         // flag which will trigger the clearOnHide functionality.
         if (
             property === 'hidden' &&
-            component.hidden &&
             path
         ) {
             if (!(scope as any).conditionals) {
@@ -62,12 +61,12 @@ export function setActionBooleanProperty(context: LogicContext, action: LogicAct
                 return cond.path === path
             });
             if (conditionalyHidden) {
-                conditionalyHidden.conditionallyHidden = true;
+                conditionalyHidden.conditionallyHidden = component.hidden;
             }
             else {
                 (scope as any).conditionals.push({
                     path,
-                    conditionallyHidden: true
+                    conditionallyHidden: component.hidden,
                 });
             }
         }
