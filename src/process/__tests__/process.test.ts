@@ -2780,6 +2780,112 @@ describe('Process Tests', () => {
     });
   });
 
+  it('Should properly validate comopnents inside Data Components with Advanced logic', async () => {
+    const form = {
+      display: 'form',
+      components: [
+        {
+          label: 'Data Grid',
+          reorder: false,
+          addAnotherPosition: 'bottom',
+          layoutFixed: false,
+          enableRowGroups: false,
+          initEmpty: false,
+          tableView: false,
+          key: 'dataGrid',
+          type: 'datagrid',
+          input: true,
+          components: [
+            {
+              label: 'Text Field1',
+              tableView: true,
+              key: 'textField1',
+              logic: [
+                  {
+                    name: 'logic1',
+                    trigger: {
+                      type: 'javascript',
+                      javascript: 'result = !row.textField2;'
+                    },
+                    actions: [
+                      {
+                        name: 'action1',
+                        type: 'property',
+                        property: {
+                          label: 'Required',
+                          value: 'validate.required',
+                          type: 'boolean'
+                        },
+                        state: true
+                      }
+                    ]
+                  }
+              ],
+              type: 'textfield',
+              input: true
+            },
+            {
+              label: 'Text Field2',
+              tableView: true,
+              key: 'textField2',
+              logic: [
+                {
+                  name: 'logic2',
+                  trigger: {
+                    type: 'javascript',
+                    javascript: 'result = !row.textField1;'
+                  },
+                  actions: [
+                    {
+                      name: 'action2',
+                      type: 'property',
+                      property: {
+                        label: 'Required',
+                        value: 'validate.required',
+                        type: 'boolean'
+                      },
+                      state: true
+                    }
+                  ]
+                }
+              ],
+              type: 'textfield',
+              input: true
+            }
+          ]
+        }
+      ]
+    };
+    const submission ={
+      data: {
+        dataGrid: [
+          {
+            textField1: 'test',
+            textField2: ''
+          },
+          {
+            textField1: '',
+            textField2: 'test'
+          }
+        ]
+      }
+    }
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    expect(context.components[0].components).to.deep.equal(form.components[0].components);
+    expect((context.scope as ValidationScope).errors).to.have.length(0);
+})
+
   describe('Required component validation in nested form in DataGrid/EditGrid', () => {
     const nestedForm = {
       key: 'form',

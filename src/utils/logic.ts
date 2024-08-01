@@ -3,6 +3,7 @@ import { checkCustomConditional, checkJsonConditional, checkLegacyConditional, c
 import { LogicActionCustomAction, LogicActionMergeComponentSchema, LogicActionProperty, LogicActionPropertyBoolean, LogicActionPropertyString, LogicActionValue } from "types/AdvancedLogic";
 import { get, set, clone, isEqual, assign } from 'lodash';
 import { evaluate, interpolate } from 'modules/jsonlogic';
+import { fastCloneDeep } from "./fastCloneDeep";
 
 export const hasLogic = (context: LogicContext): boolean => {
     const { component } = context;
@@ -46,7 +47,10 @@ export function setActionBooleanProperty(context: LogicContext, action: LogicAct
     const currentValue = get(component, property, false).toString();
     const newValue = action.state.toString();
     if (currentValue !== newValue) {
-        set(component, property, newValue === 'true');
+        const newComponent = fastCloneDeep(component);
+        set(newComponent, property, newValue === 'true');
+        set(context, 'component', newComponent);
+
 
         // If this is "logic" forcing a component to set hidden property, then we will set the "conditionallyHidden"
         // flag which will trigger the clearOnHide functionality.
@@ -61,12 +65,12 @@ export function setActionBooleanProperty(context: LogicContext, action: LogicAct
                 return cond.path === path
             });
             if (conditionalyHidden) {
-                conditionalyHidden.conditionallyHidden = component.hidden;
+                conditionalyHidden.conditionallyHidden = newComponent.hidden;
             }
             else {
                 (scope as any).conditionals.push({
                     path,
-                    conditionallyHidden: component.hidden,
+                    conditionallyHidden: newComponent.hidden,
                 });
             }
         }
