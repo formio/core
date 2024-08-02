@@ -1,0 +1,67 @@
+{
+  "form": {
+    "name": "conditional",
+    "path": "conditional",
+    "type": "form",
+    "display": "form",
+    "components": [
+      {
+        "label": "Checkbox",
+        "tableView": false,
+        "validateWhenHidden": false,
+        "key": "checkbox",
+        "type": "checkbox",
+        "input": true
+      },
+      {
+        "collapsible": false,
+        "key": "panel",
+        "conditional": {
+          "show": false,
+          "conjunction": "all",
+          "conditions": [
+            {
+              "component": "checkbox",
+              "operator": "isEqual",
+              "value": true
+            }
+          ]
+        },
+        "type": "panel",
+        "label": "Panel",
+        "input": false,
+        "tableView": false,
+        "components": [
+          {
+            "label": "Text Field",
+            "applyMaskOn": "change",
+            "tableView": true,
+            "validate": {
+              "required": true
+            },
+            "validateWhenHidden": false,
+            "key": "textField",
+            "type": "textfield",
+            "input": true
+          }
+        ]
+      },
+      {
+        "type": "button",
+        "label": "Submit",
+        "key": "submit",
+        "disableOnInvalid": true,
+        "input": true,
+        "tableView": false
+      }
+    ],
+    "created": "2024-08-02T10:28:35.696Z",
+    "modified": "2024-08-02T10:28:35.704Z"
+  },
+  "submission": {
+    "data": {
+      "checkbox": true,
+      "submit": true
+    }
+  }
+}

@@ -1,3 +1,7 @@
+## [Unreleased: 2.2.0-rc.8]
+### Changed
+ - FIO-8731: Fixes component gets validated when being in a hidden parent
+ 
 ## 2.2.0-rc.7
 ### Changed
  - FIO-8597: fixed an issue with an empty array value for a number component with multiple values enabled

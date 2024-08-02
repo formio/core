@@ -1,0 +1,55 @@
+{
+  "form": {
+    "type": "form",
+    "display": "form",
+    "components": [
+      {
+        "label": "Checkbox",
+        "tableView": false,
+        "validateWhenHidden": false,
+        "key": "checkbox",
+        "type": "checkbox",
+        "input": true
+      },
+      {
+        "collapsible": false,
+        "hidden": true,
+        "key": "panel",
+        "type": "panel",
+        "label": "Panel",
+        "input": false,
+        "tableView": false,
+        "components": [
+          {
+            "label": "Text Field",
+            "applyMaskOn": "change",
+            "tableView": true,
+            "validate": {
+              "required": true
+            },
+            "validateWhenHidden": false,
+            "key": "textField",
+            "type": "textfield",
+            "input": true
+          }
+        ]
+      },
+      {
+        "type": "button",
+        "label": "Submit",
+        "key": "submit",
+        "disableOnInvalid": true,
+        "input": true,
+        "tableView": false
+      }
+    ],
+    "created": "2024-08-02T11:13:50.020Z",
+    "modified": "2024-08-02T11:14:14.155Z"
+  },
+  "submission": {
+    "data": {
+      "checkbox": true,
+      "submit": true
+    }
+  }
+}
