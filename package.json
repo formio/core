@@ -24,6 +24,7 @@
     "build:prod": "npx webpack --config config/webpack.prod.js",
     "clean": "rm -rf lib && rm -rf dist && rm -rf docs",
     "build": "npm run clean && gulp templates && npm run docs && npm run lib && npm run build:dev && npm run build:prod",
+    "prepublish": "npm run build && npm run test",
     "show-coverage": "open coverage/lcov-report/index.html"
   },
   "repository": {
