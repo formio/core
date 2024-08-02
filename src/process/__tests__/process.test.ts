@@ -2,8 +2,8 @@ import { expect } from 'chai';
 import assert from 'node:assert'
 import type { ContainerComponent, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
-import { processSync, ProcessTargets } from '../index';
-import { clearOnHideWithCustomCondition, clearOnHideWithHiddenParent,  } from './fixtures'
+import { process, processSync, ProcessTargets } from '../index';
+import { clearOnHideWithCustomCondition, clearOnHideWithHiddenParent, skipValidForConditionallyHiddenComp, skipValidForLogicallyHiddenComp, skipValidWithHiddenParentComp  } from './fixtures'
 /*
 describe('Process Tests', () => {
     it('Should perform the processes using the processReduced method.', async () => {
@@ -2902,6 +2902,66 @@ describe('Process Tests', () => {
         candidates:[{candidate:{data:{}}}],
         submit: true
       });
+    });
+
+    it('Should skip child validation with conditional', async () => {
+      const { form, submission } = skipValidForConditionallyHiddenComp;
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: ProcessTargets.submission,
+        scope: {},
+        config: {
+          server: true,
+        },
+      };
+
+      processSync(context);
+      context.processors = ProcessTargets.evaluator;
+      processSync(context);
+      expect((context.scope as ValidationScope).errors).to.have.length(0);
+    });
+
+    it('Should skip child validation with hidden parent component', async () => {
+      const { form, submission } = skipValidWithHiddenParentComp;
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: ProcessTargets.submission,
+        scope: {},
+        config: {
+          server: true,
+        },
+      };
+
+      await process(context);
+      context.processors = ProcessTargets.evaluator;
+      await process(context);
+      expect((context.scope as ValidationScope).errors).to.have.length(0);
+    });
+
+    it('Should skip child validation with logic', async () => {
+      const { form, submission } = skipValidForLogicallyHiddenComp;
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: ProcessTargets.submission,
+        scope: {},
+        config: {
+          server: true,
+        },
+      };
+
+      processSync(context as any);
+      context.processors = ProcessTargets.evaluator;
+      processSync(context as any);
+      expect((context.scope as ValidationScope).errors).to.have.length(0);
     });
 
     it('Should not return fields from conditionally hidden containers, clearOnHide = false', async () => {

@@ -2,13 +2,12 @@ import { ConditionsScope, ProcessorFn, ProcessorFnSync, ProcessorInfo, Validatio
 import { evaluationRules, rules, serverRules } from "./rules";
 import find from "lodash/find";
 import get from "lodash/get";
-import set from "lodash/set";
 import pick from "lodash/pick";
 import { getComponentAbsolutePath, getComponentPath } from "utils/formUtil";
 import { getErrorMessage } from "utils/error";
 import { FieldError } from "error";
 import { ConditionallyHidden, isConditionallyHidden, isCustomConditionallyHidden, isSimpleConditionallyHidden } from "processes/conditions";
-import { validate } from 'fast-json-patch';
+import { isParentHidden } from 'utils/isParentHidden';
 
 // Cleans up validation errors to remove unnessesary parts
 // and make them transferable to ivm.
@@ -96,6 +95,7 @@ export function isForcedHidden(context: ValidationContext, isConditionallyHidden
 
 export const _shouldSkipValidation = (context: ValidationContext, isConditionallyHidden: ConditionallyHidden) => {
     const { component, scope, path } = context;
+
     if (
         (scope as ConditionsScope)?.conditionals &&
         find((scope as ConditionsScope).conditionals, {
@@ -115,9 +115,11 @@ export const _shouldSkipValidation = (context: ValidationContext, isConditionall
       () => isValueHidden(context),
       // Force valid if component is hidden.
       () => isForcedHidden(context, isConditionallyHidden) && !validateWhenHidden,
+      // Do not validate if 'validateWhenHidden' is disabled and some component parent is hidden
+      () => !validateWhenHidden && isParentHidden(component),
     ];
 
-    return rules.some(pred => pred());
+    return rules.some(pred => pred());;
 };
 
 export const shouldSkipValidationCustom: SkipValidationFn = (context: ValidationContext) => {

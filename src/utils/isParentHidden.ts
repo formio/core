@@ -1,4 +1,4 @@
-import { BaseComponent, Component } from 'types';
+import type { BaseComponent, Component } from 'types';
 
 export const isParentHidden = (comp: Component) => {
   let parentComponent: BaseComponent | undefined = comp.parent;
@@ -7,7 +7,8 @@ export const isParentHidden = (comp: Component) => {
     if (parentComponent.hidden) {
       return true;
     }
-    parentComponent = parentComponent.parent;
+    // Exit if there's a circular reference in 'parent' prop
+    parentComponent = parentComponent === parentComponent.parent ? undefined : parentComponent.parent;
   }
 
   return false;

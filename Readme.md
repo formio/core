@@ -60,3 +60,7 @@ FormioCore.render(document.getElementById('data-table'), {
 ```
 
 See https://formio.github.io/core for more examples of how to use this library.
+
+### Debug
+
+[Instructions on how to debug with API Server](https://formio.atlassian.net/wiki/spaces/SD/pages/184025089/Debugging+formio+core)

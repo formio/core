@@ -1,4 +1,8 @@
-## [Unreleased: 2.3.0-rc.1]
+## [Unreleased: 2.3.0-rc.2]
+### Changed
+ - Regression | Nested Form | Components in Nested forms should not validate hidden components without Validate When Hidden = true
+
+## 2.3.0-rc.1
 ### Changed
  - updated thresholds to current values
  - FIO-8450: Fix custom error message for unique validation
