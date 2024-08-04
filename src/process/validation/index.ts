@@ -115,8 +115,6 @@ export const _shouldSkipValidation = (context: ValidationContext, isConditionall
       () => isValueHidden(context),
       // Force valid if component is hidden.
       () => isForcedHidden(context, isConditionallyHidden) && !validateWhenHidden,
-      // Do not validate if 'validateWhenHidden' is disabled and some component parent is hidden
-      () => !validateWhenHidden && isParentHidden(component),
     ];
 
     return rules.some(pred => pred());;
