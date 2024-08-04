@@ -1,5 +1,3 @@
-import get from 'lodash/get';
-import set from 'lodash/set';
 import {
   ProcessContext,
   ProcessTarget,
@@ -30,6 +28,7 @@ import { filterProcessInfo } from './filter';
 import { normalizeProcessInfo } from './normalize';
 import { dereferenceProcessInfo } from './dereference';
 import { clearHiddenProcessInfo } from './clearHidden';
+import { hiddenChildrenProcessorInfo } from './hiddenChildren';
 
 export async function process<ProcessScope>(
   context: ProcessContext<ProcessScope>
@@ -132,6 +131,7 @@ export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
   validate: validateProcessInfo,
   validateCustom: validateCustomProcessInfo,
   validateServer: validateServerProcessInfo,
+  hiddenChildren: hiddenChildrenProcessorInfo
 };
 
 export const ProcessTargets: ProcessTarget = {
@@ -149,6 +149,7 @@ export const ProcessTargets: ProcessTarget = {
     calculateProcessInfo,
     logicProcessInfo,
     conditionProcessInfo,
+    hiddenChildrenProcessorInfo,
     clearHiddenProcessInfo,
     validateProcessInfo,
   ],
