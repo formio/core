@@ -1,4 +1,4 @@
-## [Unreleased: 2.2.0-rc.9]
+## 2.2.0-rc.9
  - FIO-8731: Update fix to nested hidden components
 
 ## 2.2.0-rc.8
