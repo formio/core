@@ -3,6 +3,7 @@ import { checkCustomConditional, checkJsonConditional, checkLegacyConditional, c
 import { LogicActionCustomAction, LogicActionMergeComponentSchema, LogicActionProperty, LogicActionPropertyBoolean, LogicActionPropertyString, LogicActionValue } from "types/AdvancedLogic";
 import { get, set, clone, isEqual, assign } from 'lodash';
 import { evaluate, interpolate } from 'modules/jsonlogic';
+import { componentInfo, eachComponentData, getComponentPath } from "./formUtil";
 
 export const hasLogic = (context: LogicContext): boolean => {
     const { component } = context;
@@ -69,6 +70,7 @@ export function setActionBooleanProperty(context: LogicContext, action: LogicAct
                     conditionallyHidden: !!component.hidden,
                 });
             }
+            set(component, 'hidden', !!component.hidden);
         }
         return true;
     }

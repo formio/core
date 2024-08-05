@@ -1,3 +1,6 @@
+## [Unreleased: 2.3.0-rc.9]
+ - FIO-8731: Update fix to nested hidden components
+
 ## 2.3.0-rc.8
 ### Changed
  - FIO-8723: Clear values from submission for hidden comp with clearOnHide flag

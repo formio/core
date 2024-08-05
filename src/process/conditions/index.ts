@@ -79,7 +79,7 @@ export const isConditionallyHidden = (context: ConditionsContext): boolean => {
 export type ConditionallyHidden = (context: ConditionsContext) => boolean;
 
 export const conditionalProcess = (context: ConditionsContext, isHidden: ConditionallyHidden) => {
-    const { component, scope, path } = context;
+    const { component, row, scope, path } = context;
     if (!hasConditions(context)) {
         return;
     }
@@ -93,6 +93,9 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
     }
 
     conditionalComp.conditionallyHidden = conditionalComp.conditionallyHidden || isHidden(context);
+    if (conditionalComp.conditionallyHidden) {
+        set(component, 'hidden', true);
+    }
 };
 
 export const customConditionProcess: ProcessorFn<ConditionsScope> = async (context: ConditionsContext) => {
