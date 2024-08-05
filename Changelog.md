@@ -1,3 +1,6 @@
+## [Unreleased: 2.2.0-rc.9]
+ - FIO-8731: Update fix to nested hidden components
+
 ## 2.2.0-rc.8
 ### Changed
  - FIO-8731: Fixes component gets validated when being in a hidden parent
