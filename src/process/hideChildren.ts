@@ -13,7 +13,7 @@ import { componentInfo, eachComponentData, getComponentPath } from 'utils/formUt
 /**
  * This processor function checks components for the `hidden` property and, if children are present, sets them to hidden as well.
  */
-export const hiddenChildrenProcessor: ProcessorFnSync<ConditionsScope> = (context) => {
+export const hideChildrenProcessor: ProcessorFnSync<ConditionsScope> = (context) => {
     const { component, path, row, scope } = context;
     // Check if there's a conditional set for the component and if it's marked as conditionally hidden
     const isConditionallyHidden = scope.conditionals?.find((cond) => {
@@ -44,13 +44,13 @@ export const hiddenChildrenProcessor: ProcessorFnSync<ConditionsScope> = (contex
     }
 }
 
-export const hiddenChildrenProcessorAsync: ProcessorFn<ProcessorScope> = async (context) => {
-    return hiddenChildrenProcessor(context);
+export const hideChildrenProcessorAsync: ProcessorFn<ProcessorScope> = async (context) => {
+    return hideChildrenProcessor(context);
 };
 
-export const hiddenChildrenProcessorInfo: ProcessorInfo<ProcessorContext<ProcessorScope>, void> = {
-    name: 'hiddenChildren',
+export const hideChildrenProcessorInfo: ProcessorInfo<ProcessorContext<ProcessorScope>, void> = {
+    name: 'hideChildren',
     shouldProcess: () => true,
-    processSync: hiddenChildrenProcessor,
-    process: hiddenChildrenProcessorAsync,
+    processSync: hideChildrenProcessor,
+    process: hideChildrenProcessorAsync,
 }
