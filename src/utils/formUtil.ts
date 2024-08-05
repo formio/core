@@ -288,12 +288,6 @@ export const eachComponentDataAsync = async (
         }
         return true;
       }
-      // This way layout components are added as parents to the child components
-      if (isComponentModelType(component, 'layout')) {
-        await eachComponentDataAsync(component.components, data, fn, componentDataPath(component, path, compPath), index, component, includeAll);
-        return true;
-      }
-
       return false;
     },
     true,
@@ -345,12 +339,6 @@ export const eachComponentData = (
         else {
           eachComponentData(component.components, data, fn, componentDataPath(component, path, compPath), index, component, includeAll);
         }
-        return true;
-      }
-
-      // This way layout components are added as parents to the child components
-      if (isComponentModelType(component, 'layout')) {
-        eachComponentData(component.components, data, fn, componentDataPath(component, path, compPath), index, component, includeAll);
         return true;
       }
 
