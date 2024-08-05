@@ -4,7 +4,6 @@ import type { ContainerComponent, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
 import { process, processSync, ProcessTargets } from '../index';
 import { clearOnHideWithCustomCondition, clearOnHideWithHiddenParent, skipValidForConditionallyHiddenComp, skipValidForLogicallyHiddenComp, skipValidWithHiddenParentComp  } from './fixtures'
-import components from 'src/experimental/components/index.js';
 /*
 describe('Process Tests', () => {
     it('Should perform the processes using the processReduced method.', async () => {
