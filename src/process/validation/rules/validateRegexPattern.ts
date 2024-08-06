@@ -1,4 +1,4 @@
-import { FieldError } from 'error';
+import { FieldError } from '../../../error';
 import { TextAreaComponent, TextFieldComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
@@ -15,7 +15,7 @@ export const shouldValidate = (context: ValidationContext) => {
     }
 
     const pattern = component.validate?.pattern;
-    if (!pattern) {
+    if (!pattern || !value || typeof value !== 'string') {
         return false;
     }
     return true;
