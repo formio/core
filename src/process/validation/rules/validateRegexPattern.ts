@@ -1,4 +1,4 @@
-import { FieldError } from '../../../error';
+import { FieldError } from 'error';
 import { TextAreaComponent, TextFieldComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
