@@ -4,8 +4,9 @@ import {
     ProcessorContext,
     ProcessorInfo,
     ProcessorFnSync,
-    ConditionsScope
+    ConditionsScope,
 } from "types";
+import { isParentHidden } from 'utils/isParentHidden';
 
 type ClearHiddenScope = ProcessorScope & {
     clearHidden: {
@@ -18,17 +19,24 @@ type ClearHiddenScope = ProcessorScope & {
  */
 export const clearHiddenProcess: ProcessorFnSync<ClearHiddenScope> = (context) => {
     const { component, data, path, value, scope } = context;
+
+    // No need to unset the value if it's undefined
+    if (value === undefined) {
+        return;
+    }
+
     if (!scope.clearHidden) {
         scope.clearHidden = {};
     }
-    const conditionallyHidden = (scope as ConditionsScope).conditionals?.find((cond) => {
-        return cond.path === path;
+
+    // Check if there's a conditional set for the component and if it's marked as conditionally hidden
+    const isConditionallyHidden = (scope as ConditionsScope).conditionals?.find((cond) => {
+        return path.includes(cond.path) && cond.conditionallyHidden;
     });
-    if (
-        conditionallyHidden?.conditionallyHidden &&
-        (value !== undefined) &&
-        (!component.hasOwnProperty('clearOnHide') || component.clearOnHide)
-    ) {
+
+    const shouldClearValueWhenHidden = !component.hasOwnProperty('clearOnHide') || component.clearOnHide;
+
+    if (shouldClearValueWhenHidden && (isConditionallyHidden || isParentHidden(component))) {
         unset(data, path);
         scope.clearHidden[path] = true;
     }

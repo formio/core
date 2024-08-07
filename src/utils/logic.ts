@@ -1,8 +1,9 @@
-import { ConditionsScope, LogicContext, ProcessorContext } from "types";
+import { Component, ConditionsScope, LogicContext, ProcessorContext } from "types";
 import { checkCustomConditional, checkJsonConditional, checkLegacyConditional, checkSimpleConditional, conditionallyHidden, isLegacyConditional } from "./conditions";
 import { LogicActionCustomAction, LogicActionMergeComponentSchema, LogicActionProperty, LogicActionPropertyBoolean, LogicActionPropertyString, LogicActionValue } from "types/AdvancedLogic";
 import { get, set, clone, isEqual, assign } from 'lodash';
 import { evaluate, interpolate } from 'modules/jsonlogic';
+import { componentInfo, eachComponentData, getComponentPath } from "./formUtil";
 
 export const hasLogic = (context: LogicContext): boolean => {
     const { component } = context;
@@ -41,35 +42,35 @@ export const checkTrigger = (context: LogicContext, trigger: any): boolean => {
 };
 
 export function setActionBooleanProperty(context: LogicContext, action: LogicActionPropertyBoolean): boolean {
-    const { component, scope, path } = context;
+    const { component, scope, path, row } = context;
     const property = action.property.value;
     const currentValue = get(component, property, false).toString();
     const newValue = action.state.toString();
     if (currentValue !== newValue) {
         set(component, property, newValue === 'true');
 
-        // If this is "logic" forcing a component to be hidden, then we will set the "conditionallyHidden"
+        // If this is "logic" forcing a component to set hidden property, then we will set the "conditionallyHidden"
         // flag which will trigger the clearOnHide functionality.
         if (
             property === 'hidden' &&
-            component.hidden &&
             path
         ) {
-            if (!(scope as any).conditionals) {
-                (scope as any).conditionals = [];
+            if (!(scope as ConditionsScope).conditionals) {
+                (scope as ConditionsScope).conditionals = [];
             }
-            const conditionalyHidden = (scope as any).conditionals.find((cond: any) => {
+            const conditionalyHidden = (scope as ConditionsScope).conditionals?.find((cond: any) => {
                 return cond.path === path
             });
             if (conditionalyHidden) {
-                conditionalyHidden.conditionallyHidden = true;
+                conditionalyHidden.conditionallyHidden = !!component.hidden;
             }
             else {
-                (scope as any).conditionals.push({
+                (scope as ConditionsScope).conditionals?.push({
                     path,
-                    conditionallyHidden: true
+                    conditionallyHidden: !!component.hidden,
                 });
             }
+            set(component, 'hidden', !!component.hidden);
         }
         return true;
     }

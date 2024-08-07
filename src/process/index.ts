@@ -10,3 +10,5 @@ export * from './processOne';
 export * from './process';
 export * from './normalize';
 export * from './dereference';
+export * from './clearHidden';
+export * from './hideChildren';

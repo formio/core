@@ -227,7 +227,7 @@ export const componentFormPath = (component: any, parentPath: string, path: stri
   path = path || componentPath(component, parentPath);
   if (isComponentModelType(component, 'dataObject')) {
     return `${path}.data`;
-  }    
+  }
   if (isComponentNestedDataType(component)) {
     return path;
   }
@@ -287,9 +287,8 @@ export const eachComponentDataAsync = async (
           await eachComponentDataAsync(component.components, data, fn, componentDataPath(component, path, compPath), index, component, includeAll);
         }
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
     true,
     path,
@@ -341,9 +340,9 @@ export const eachComponentData = (
           eachComponentData(component.components, data, fn, componentDataPath(component, path, compPath), index, component, includeAll);
         }
         return true;
-      } else {
-        return false;
       }
+
+      return false
     },
     true,
     path,
@@ -680,7 +679,7 @@ export function getComponent(
 ): (Component | undefined) {
   let result;
   eachComponent(components, (component: Component, path: any) => {
-    if ((path === key) || (component.path === key)) {
+    if ((path === key) || (component.path === key) || (component.input && (component.key === key))) {
       result = component;
       return true;
     }

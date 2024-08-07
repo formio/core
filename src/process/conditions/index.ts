@@ -1,7 +1,6 @@
 import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, ConditionsContext, SimpleConditional, JSONConditional, LegacyConditional, SimpleConditionalConditions, Component, NestedComponent, FilterScope } from 'types';
-import { Utils } from 'utils';
 import { set } from 'lodash';
-import { componentInfo, getComponentKey, getComponentPath } from 'utils/formUtil';
+import { componentInfo, eachComponentData, getComponentPath } from 'utils/formUtil';
 import {
     checkCustomConditional,
     checkJsonConditional,
@@ -12,15 +11,6 @@ import {
     isJSONConditional
 } from 'utils/conditions';
 
-const skipOnServer = (context: ConditionsContext): boolean => {
-    const { component, config } = context;
-    const clearOnHide = component.hasOwnProperty('clearOnHide') ? component.clearOnHide : true;
-    if (config?.server && !clearOnHide) {
-        // No need to run conditionals on server unless clearOnHide is set.
-        return true;
-    }
-    return false;
-};
 
 const hasCustomConditions = (context: ConditionsContext): boolean => {
     const { component } = context;
@@ -89,7 +79,7 @@ export const isConditionallyHidden = (context: ConditionsContext): boolean => {
 export type ConditionallyHidden = (context: ConditionsContext) => boolean;
 
 export const conditionalProcess = (context: ConditionsContext, isHidden: ConditionallyHidden) => {
-    const { component, data, row, scope, path } = context;
+    const { component, row, scope, path } = context;
     if (!hasConditions(context)) {
         return;
     }
@@ -102,25 +92,9 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
         scope.conditionals.push(conditionalComp);
     }
 
-    if (skipOnServer(context)) {
-        return false;
-    }
-
     conditionalComp.conditionallyHidden = conditionalComp.conditionallyHidden || isHidden(context);
     if (conditionalComp.conditionallyHidden) {
-        const info = componentInfo(component);
-        if (info.hasColumns || info.hasComps || info.hasRows) {
-            // If this is a container component, we need to add all the child components as conditionally hidden as well.
-            Utils.eachComponentData([component], row, (comp: Component, data: any, compRow: any, compPath: string) => {
-                if (comp !== component) {
-                    scope.conditionals?.push({ path: getComponentPath(comp, compPath), conditionallyHidden: true });
-                }
-                set(comp, 'hidden', true);
-            });
-        }
-        else {
-            set(component, 'hidden', true);
-        }
+        set(component, 'hidden', true);
     }
 };
 
