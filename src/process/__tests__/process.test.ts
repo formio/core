@@ -2780,6 +2780,57 @@ describe('Process Tests', () => {
     });
   });
 
+  it('Should not filter a simple datamap compoennt', async () => {
+    const form = {
+      display: 'form',
+      components: [
+        {
+          label: "Data Map",
+          tableView: false,
+          validateWhenHidden: false,
+          key: "dataMap",
+          type: "datamap",
+          path: "dataMap",
+          input: true,
+          valueComponent: {
+            type: "textfield",
+            key: "value",
+            label: "Value",
+            input: true,
+            hideLabel: true,
+            tableView: true,
+          },
+        }
+      ]
+    };
+    const submission = {
+      data: {
+        dataMap: {
+          key1: "value1",
+          key2: "value2"
+        }
+      }
+    };
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    expect(context.data).to.deep.equal({
+      dataMap: {
+        key1: "value1",
+        key2: "value2"
+      }
+    });
+  })
+
   describe('Required component validation in nested form in DataGrid/EditGrid', () => {
     const nestedForm = {
       key: 'form',
@@ -3147,6 +3198,7 @@ describe('Process Tests', () => {
 
     });
   });
+
   /*
           it('Should not clearOnHide when set to false', async () => {
             var components = [
