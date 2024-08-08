@@ -144,6 +144,9 @@ export function getModelType(component: Component) {
     if (isComponentModelType(component, 'array')) {
       return 'array';
     }
+    if (isComponentModelType(component, 'map')) {
+      return 'map';
+    }
     return 'object';
   }
   if ((component.input === false) || isComponentModelType(component, 'layout')) {
