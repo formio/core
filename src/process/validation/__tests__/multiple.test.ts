@@ -3,6 +3,7 @@ import { ValidationContext } from 'types';
 import { validationRules } from '..';
 import { rules, serverRules } from '../rules';
 import { shouldValidate as shouldValidateRegexPattern } from '../rules/validateRegexPattern';
+import { shouldValidate as shouldValidateRequired } from '../rules/validateRequired';
 
 const allRules = [...rules, ...serverRules];
 
@@ -67,13 +68,11 @@ const contextWithSelectComponent: ValidationContext = {
 
 it('Validating required rule will work for multiple values component with no rows', async () => {
     // TextField
-    const fullValueRules = allRules.filter((rule) => rule.fullValue);
-    const rulesToValidate = validationRules(context, fullValueRules, undefined);
-    expect(rulesToValidate).to.not.have.length(0);
+    const shouldValidateRequiredTextField = shouldValidateRequired(context);
+    expect(shouldValidateRequiredTextField).to.be.equal(true);
     // Select
-    const fullValueRulesSelect = allRules.filter((rule) => rule.fullValue);
-    const rulesToValidateSelect = validationRules(contextWithSelectComponent, fullValueRulesSelect, undefined);
-    expect(rulesToValidateSelect).to.not.have.length(0);
+    const shouldValidateRequiredSelect = shouldValidateRequired(contextWithSelectComponent);
+    expect(shouldValidateRequiredSelect).to.be.equal(true);
 });
 
 it('Validate RegexPattern rule won\'t execute for multiple values component with no rows', async () => {
@@ -82,7 +81,7 @@ it('Validate RegexPattern rule won\'t execute for multiple values component with
 
     const contextWithValues = {
         ...context,
-        value: ['a'],
+        value: 'a',
         data: {
             multiple_textfield: ['a'],
         },
@@ -91,5 +90,5 @@ it('Validate RegexPattern rule won\'t execute for multiple values component with
         },
     };
     const shouldValidateRegexRuleWithValues = shouldValidateRegexPattern(contextWithValues);
-    expect(shouldValidateRegexRule).to.be.equal(true);
+    expect(shouldValidateRegexRuleWithValues).to.be.equal(true);
 });
