@@ -1,3 +1,7 @@
+## 2.2.1
+### Changed
+ - Official Release
+
 ## 2.2.1-rc.1
 ### Changed
  - FIO-8778: add case for map component model type in filter; add tests
