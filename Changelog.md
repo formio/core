@@ -1,3 +1,7 @@
+## 2.2.2-rc.1
+### Changed
+ - FIO-8807: fixed an issue where conditionals based on selectBoxes component do not work
+
 ## 2.2.1
 ### Changed
  - Official Release
