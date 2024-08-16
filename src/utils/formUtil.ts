@@ -14,7 +14,8 @@ import {
   isPlainObject,
   isArray,
   isEqual,
-  trim
+  trim,
+  isBoolean
 } from "lodash";
 import { compare, applyPatch } from 'fast-json-patch';
 import {
@@ -745,7 +746,7 @@ export function hasCondition(component: Component) {
     (component.conditional && (
       (component.conditional as LegacyConditional).when ||
       (component.conditional as JSONConditional).json ||
-      (component.conditional as SimpleConditional).conjunction
+      ((component.conditional as SimpleConditional).conjunction && isBoolean((component.conditional as SimpleConditional).show) && !isEmpty((component.conditional as SimpleConditional).conditions))
     ))
   );
 }
