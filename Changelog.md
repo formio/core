@@ -1,3 +1,7 @@
+## 2.2.2-rc.2
+### Changed
+ - FIO-8769 added check for the simpleConditional properties state
+
 ## 2.2.2-rc.1
 ### Changed
  - FIO-8807: fixed an issue where conditionals based on selectBoxes component do not work
