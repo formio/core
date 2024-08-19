@@ -83,6 +83,9 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
     if (!hasConditions(context)) {
         return;
     }
+    if (component.hidden) {
+        delete component.hidden;
+    }
     if (!scope.conditionals) {
         scope.conditionals = [];
     }

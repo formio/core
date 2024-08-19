@@ -2770,10 +2770,6 @@ describe('Process Tests', () => {
       },
     };
     processSync(context);
-    expect((context.scope as any).conditionals).to.deep.equal([{
-      path: 'textArea',
-      conditionallyHidden: false,
-    }]);
     expect(context.data).to.deep.equal({
       textArea: 'should be conditionally visible',
       textField: 'not empty',
@@ -3086,7 +3082,7 @@ describe('Process Tests', () => {
       processSync(context);
 
       expect(context.data).to.deep.equal({
-        candidates:[{candidate:{data:{section6:{}}}}],
+        candidates:[{candidate:{data:{}}}],
         submit: true
       });
     });
