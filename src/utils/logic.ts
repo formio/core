@@ -3,7 +3,6 @@ import { checkCustomConditional, checkJsonConditional, checkLegacyConditional, c
 import { LogicActionCustomAction, LogicActionMergeComponentSchema, LogicActionProperty, LogicActionPropertyBoolean, LogicActionPropertyString, LogicActionValue } from "types/AdvancedLogic";
 import { get, set, clone, isEqual, assign } from 'lodash';
 import { evaluate, interpolate } from 'modules/jsonlogic';
-import { componentInfo, eachComponentData, getComponentPath } from "./formUtil";
 
 export const hasLogic = (context: LogicContext): boolean => {
     const { component } = context;
@@ -141,6 +140,9 @@ export const applyActions = (context: LogicContext): boolean => {
     const { logic } = component;
     if (!logic || !logic.length) {
         return false;
+    }
+    if(component.hidden) {
+        delete component.hidden
     }
     return logic.reduce((changed, logicItem) => {
         const { actions, trigger } = logicItem;
