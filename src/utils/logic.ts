@@ -141,7 +141,8 @@ export const applyActions = (context: LogicContext): boolean => {
     if (!logic || !logic.length) {
         return false;
     }
-    if(component.hidden) {
+    // Reset 'hidden' property to recalculate the logic for every component
+    if (component.hidden) {
         delete component.hidden
     }
     return logic.reduce((changed, logicItem) => {

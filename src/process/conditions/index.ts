@@ -83,6 +83,7 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
     if (!hasConditions(context)) {
         return;
     }
+    // Reset 'hidden' property to recalculate the conditions for every component
     if (component.hidden) {
         delete component.hidden;
     }
