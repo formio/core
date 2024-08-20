@@ -278,8 +278,11 @@ export const eachComponentDataAsync = async (
           return true;
         }
         if (isComponentModelType(component, 'dataObject')) {
-          // No need to bother processing all the children data if there is no data for this form.
-          if (has(data, component.path)) {
+          // No need to bother processing all the children data if there is no data for this form or the reference value has not been loaded.
+          const nestedFormValue: any = get(data, component.path);
+          const noReferenceAttached = nestedFormValue && nestedFormValue._id && isEmpty(nestedFormValue.data) && !has(nestedFormValue, 'form');
+          const shouldProcessNestedFormData = nestedFormValue && nestedFormValue._id ? !noReferenceAttached : has(data, component.path);
+          if (shouldProcessNestedFormData) {
             // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
             const childPath: string = componentDataPath(component, path, compPath);
             const childData: any = get(data, childPath, null);
@@ -331,8 +334,11 @@ export const eachComponentData = (
           return true;
         }
         if (isComponentModelType(component, 'dataObject')) {
-          // No need to bother processing all the children data if there is no data for this form.
-          if (has(data, component.path)) {
+          // No need to bother processing all the children data if there is no data for this form or the reference value has not been loaded.
+          const nestedFormValue: any = get(data, component.path);
+          const noReferenceAttached = nestedFormValue && nestedFormValue._id && isEmpty(nestedFormValue.data) && !has(nestedFormValue, 'form');
+          const shouldProcessNestedFormData = nestedFormValue && nestedFormValue._id ? !noReferenceAttached : has(data, component.path);
+          if (shouldProcessNestedFormData) {
             // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
             const childPath: string = componentDataPath(component, path, compPath);
             const childData: any = get(data, childPath, {});
