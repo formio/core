@@ -57,13 +57,38 @@ export const validateDaySync: RuleFnSync = (context: ValidationContext) => {
     if (typeof value !== 'string') {
         return error;
     }
-    const [DAY, MONTH, YEAR] = (component as DayComponent).dayFirst ? [0, 1, 2] : [1, 0, 2];
-    const values = value.split('/').map((x) => parseInt(x, 10)),
-        day = values[DAY],
-        month = values[MONTH],
-        year = values[YEAR],
-        maxDay = getDaysInMonthCount(month, year);
+    let [DAY, MONTH, YEAR] = (component as DayComponent).dayFirst ? [0, 1, 2] : [1, 0, 2];
+    
+    const values = value.split('/').map((x) => parseInt(x, 10));
+    let day = values[DAY];
+    let month = values[MONTH];
+    let year = values[YEAR];
 
+    if(values.length !== 3) {
+        if((component as DayComponent).fields.day.hide) {
+            MONTH = MONTH === 0 ? 0 : MONTH - 1;
+            YEAR = YEAR - 1;
+            day = 0;
+            month = values[MONTH];
+            year = values[YEAR];
+            
+        };
+        if((component as DayComponent).fields.month.hide) {
+            DAY = DAY === 0 ? 0 : DAY - 1;
+            YEAR = YEAR - 1;
+            day = values[DAY];
+            month = 0;
+            year = values[YEAR];
+        };
+        if((component as DayComponent).fields.year.hide) {
+            day = values[DAY];
+            month = values[MONTH];
+            year = 0;
+        };
+    }
+
+    const maxDay = getDaysInMonthCount(month, year);
+    
     if (isNaN(day) || day < 0 || day > maxDay) {
         return error;
     }
