@@ -1,3 +1,7 @@
+## 2.2.2-rc.3
+### Changed
+ - FIO-8848 fixed validation for TextArea with Save as Json
+
 ## 2.2.2-rc.2
 ### Changed
  - FIO-8769 added check for the simpleConditional properties state
