@@ -1173,8 +1173,8 @@ function isValueEmpty(component: Component, value: any) {
   return value == null || value === '' || (isArray(value) && value.length === 0) || compValueIsEmptyArray;
 }
 
-export function isComponentDataEmpty(component: Component, data: any, path: string): boolean {
-  const value = get(data, path);
+export function isComponentDataEmpty(component: Component, data: any, path: string, valueCond?:any): boolean {
+  const value = isNil(valueCond) ? get(data, path): valueCond;
   if (isCheckboxComponent(component)) {
     return isValueEmpty(component, value) || value === false;
   } else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {

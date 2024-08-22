@@ -8,6 +8,7 @@ const processForm = (form: any, submission: any) => {
         processors: [conditionProcessInfo],
         components: form.components,
         data: submission.data,
+        form,
         scope: {}
     };
     processSync(context);
