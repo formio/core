@@ -52,23 +52,32 @@ describe('ArrayComponent', () => {
             {
                 firstName: 'Sally',
                 lastName: 'Thompson'
+            },
+            {
+                firstName: 'Jane',
+                lastName: 'Doe'
             }
         ];
         arrComp.dataValue = employees;
         assert.deepEqual(data, {employees: employees});
         assert.deepEqual(arrComp.dataValue, employees);
-        assert.equal(arrComp.rows.length, 2);
+        assert.equal(arrComp.rows.length, 3);
         assert.equal(arrComp.rows[0].length, 2);
         assert.equal(arrComp.rows[1].length, 2);
-        assert.equal(arrComp.components.length, 4);
+        assert.equal(arrComp.rows[2].length, 2);
+        assert.equal(arrComp.components.length, 6);
         assert.equal(arrComp.components[0].dataValue, 'Joe');
         assert.equal(arrComp.components[1].dataValue, 'Smith');
         assert.strictEqual(arrComp.rows[0][0], arrComp.components[0]);
         assert.strictEqual(arrComp.rows[0][1], arrComp.components[1]);
         assert.strictEqual(arrComp.rows[1][0], arrComp.components[2]);
         assert.strictEqual(arrComp.rows[1][1], arrComp.components[3]);
+        assert.strictEqual(arrComp.rows[2][0], arrComp.components[4]);
+        assert.strictEqual(arrComp.rows[2][1], arrComp.components[5]);
         assert.equal(arrComp.components[2].dataValue, 'Sally');
         assert.equal(arrComp.components[3].dataValue, 'Thompson');
+        assert.equal(arrComp.components[4].dataValue, 'Jane');
+        assert.equal(arrComp.components[5].dataValue, 'Doe');
 
         // Ensure it removes rows.
         employees = [
