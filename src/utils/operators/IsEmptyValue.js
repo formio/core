@@ -14,8 +14,8 @@ export default class IsEmptyValue extends ConditionOperator {
         return false;
     }
 
-    execute({ value, conditionComponentPath, data, conditionComp}) {
-        return  isComponentDataEmpty(conditionComp, data, conditionComponentPath, value);
+    execute({ value, conditionComponentPath, data, conditionComponent}) {
+        return  isComponentDataEmpty(conditionComponent, data, conditionComponentPath, value);
     }
 
     getResult(options) {

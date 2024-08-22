@@ -95,7 +95,7 @@ export function checkJsonConditional(conditional: JSONConditional, context: Cond
  * @returns
  */
 export function checkSimpleConditional(conditional: SimpleConditional, context: ConditionsContext): boolean | null {
-    const { component, data, row, instance, form } = context;
+    const { component, data, row, instance, form, components = [] } = context;
     if (!conditional || !isSimpleConditional(conditional)) {
         return null;
     }
@@ -111,12 +111,12 @@ export function checkSimpleConditional(conditional: SimpleConditional, context: 
             return null;
         }
 
-        const conditionComp = getComponent(form?.components || [], conditionComponentPath, true);
-        const value = conditionComp ? getComponentActualValue(conditionComp, conditionComponentPath, data, row) : null;
+        const conditionComponent = getComponent(form?.components || components, conditionComponentPath, true);
+        const value = conditionComponent ? getComponentActualValue(conditionComponent, conditionComponentPath, data, row) : null;
 
         const ConditionOperator = ConditionOperators[operator];
         return ConditionOperator
-            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath, data, conditionComp })
+            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponent, conditionComponentPath, data})
             : true;
     }), (res) => (res !== null));
 

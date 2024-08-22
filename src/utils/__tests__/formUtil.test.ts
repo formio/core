@@ -20,7 +20,8 @@ import {
     findComponents,
     getComponent,
     flattenComponents,
-    getComponentActualValue
+    getComponentActualValue,
+    hasCondition
 } from "../formUtil";
 import { fastCloneDeep } from 'utils/fastCloneDeep';
 
@@ -1795,4 +1796,22 @@ describe('getComponentActualValue', () => {
       expect(value).to.equal('yes');
     });
   });
+
+describe('hasCondition', () => {
+    it('Should return false if conditions is saved in invalid state', () => {
+        const component = {
+            label: 'Text Field',
+            hidden: true,
+            key: 'textField',
+            conditional: {
+              conjunction: 'all'
+            },
+            type: 'textfield',
+            input: true
+        }
+
+        const result = hasCondition(component as Component);
+        expect(result).to.equal(false);
+    })
+})
   

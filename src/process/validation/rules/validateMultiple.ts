@@ -22,7 +22,8 @@ export const isEligible = (component: Component) => {
     case 'textarea':
       if (
         !(component as TextAreaComponent).as ||
-        (component as TextAreaComponent).as !== 'json'
+        (component as TextAreaComponent).as !== 'json' ||
+        ((component as TextAreaComponent).as === 'json' && !component.multiple)
       ) {
         return false;
       }
