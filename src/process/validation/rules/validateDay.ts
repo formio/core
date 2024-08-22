@@ -50,37 +50,37 @@ export const validateDay: RuleFn = async (context: ValidationContext) => {
 
 export const validateDaySync: RuleFnSync = (context: ValidationContext) => {
     const { component, value } = context;
-    if (!shouldValidate(context)) {
+    if (!shouldValidate(context) || !isDayComponent(component)) {
         return null;
     }
     const error = new FieldError('invalidDay', context, 'day');
     if (typeof value !== 'string') {
         return error;
     }
-    let [DAY, MONTH, YEAR] = (component as DayComponent).dayFirst ? [0, 1, 2] : [1, 0, 2];
+    let [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     
     const values = value.split('/').map((x) => parseInt(x, 10));
     let day = values[DAY];
     let month = values[MONTH];
     let year = values[YEAR];
 
-    if(values.length !== 3) {
-        if((component as DayComponent).fields.day.hide) {
+    if (values.length !== 3) {
+        if (component.fields.day.hide) {
             MONTH = MONTH === 0 ? 0 : MONTH - 1;
             YEAR = YEAR - 1;
             day = 0;
             month = values[MONTH];
             year = values[YEAR];
-            
+
         };
-        if((component as DayComponent).fields.month.hide) {
+        if (component.fields.month.hide) {
             DAY = DAY === 0 ? 0 : DAY - 1;
             YEAR = YEAR - 1;
             day = values[DAY];
             month = 0;
             year = values[YEAR];
         };
-        if((component as DayComponent).fields.year.hide) {
+        if (component.fields.year.hide) {
             day = values[DAY];
             month = values[MONTH];
             year = 0;
