@@ -1,8 +1,8 @@
-import { expect } from "chai";
-import { processSync } from "../../process";
-import { conditionProcessInfo } from "../index";
-import { ConditionsScope, ProcessContext } from "types";
-import { get } from "lodash";
+import { expect } from 'chai';
+import { processSync } from '../../process';
+import { conditionProcessInfo } from '../index';
+import { ConditionsScope, ProcessContext } from 'types';
+import { get } from 'lodash';
 
 const processForm = (form: any, submission: any) => {
   const context: ProcessContext<ConditionsScope> = {
@@ -15,26 +15,26 @@ const processForm = (form: any, submission: any) => {
   return context;
 };
 
-describe("Condition processor", () => {
+describe('Condition processor', () => {
   it('Should modify component\'s "hidden" property when conditionally visible is false', async () => {
     const form = {
       components: [
         {
-          type: "textfield",
-          key: "a",
+          type: 'textfield',
+          key: 'a',
           input: true,
         },
         {
-          type: "textfield",
-          key: "b",
+          type: 'textfield',
+          key: 'b',
           input: true,
           conditional: {
             show: false,
-            conjunction: "all",
+            conjunction: 'all',
             conditions: [
               {
-                component: "a",
-                operator: "isEmpty",
+                component: 'a',
+                operator: 'isEmpty',
               },
             ],
           },
@@ -44,78 +44,78 @@ describe("Condition processor", () => {
 
     const submission = {
       data: {
-        a: "",
+        a: '',
       },
     };
 
     const context: ProcessContext<ConditionsScope> = processForm(
       form,
-      submission,
+      submission
     );
-    expect(context.components[1]).to.haveOwnProperty("hidden");
+    expect(context.components[1]).to.haveOwnProperty('hidden');
     expect(context.components[1].hidden).to.be.true;
   });
 
-  it("Should not define a conditional component (that condition is based on selectBoxes value) as hidden", async () => {
+  it('Should not define a conditional component (that condition is based on selectBoxes value) as hidden', async () => {
     const form1 = {
       components: [
         {
-          label: "Select Boxes",
-          optionsLabelPosition: "right",
+          label: 'Select Boxes',
+          optionsLabelPosition: 'right',
           tableView: false,
           defaultValue: {
-            "1": false,
-            "2": false,
-            "3": false,
+            '1': false,
+            '2': false,
+            '3': false,
             test3: false,
           },
           values: [
             {
-              label: "1",
-              value: "1",
-              shortcut: "",
+              label: '1',
+              value: '1',
+              shortcut: '',
             },
             {
-              label: "2",
-              value: "2",
-              shortcut: "",
+              label: '2',
+              value: '2',
+              shortcut: '',
             },
             {
-              label: "3",
-              value: "3",
-              shortcut: "",
+              label: '3',
+              value: '3',
+              shortcut: '',
             },
           ],
           validateWhenHidden: false,
-          key: "selectBoxes",
-          type: "selectboxes",
+          key: 'selectBoxes',
+          type: 'selectboxes',
           input: true,
-          inputType: "checkbox",
+          inputType: 'checkbox',
         },
         {
-          label: "Text Field",
-          applyMaskOn: "change",
+          label: 'Text Field',
+          applyMaskOn: 'change',
           tableView: true,
           validateWhenHidden: false,
-          key: "textField",
+          key: 'textField',
           conditional: {
             show: true,
-            conjunction: "all",
+            conjunction: 'all',
             conditions: [
               {
-                component: "selectBoxes",
-                operator: "isEqual",
-                value: "3",
+                component: 'selectBoxes',
+                operator: 'isEqual',
+                value: '3',
               },
             ],
           },
-          type: "textfield",
+          type: 'textfield',
           input: true,
         },
         {
-          type: "button",
-          label: "Submit",
-          key: "submit",
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
           disableOnInvalid: true,
           input: true,
           tableView: false,
@@ -126,43 +126,43 @@ describe("Condition processor", () => {
     const submission1 = {
       data: {
         selectBoxes: {
-          "1": false,
-          "2": false,
-          "3": true,
+          '1': false,
+          '2': false,
+          '3': true,
         },
-        textField: "test",
+        textField: 'test',
         submit: true,
       },
     };
 
     const context: ProcessContext<ConditionsScope> = processForm(
       form1,
-      submission1,
+      submission1
     );
 
-    expect(get(context, "scope.conditionals[0].conditionallyHidden")).to.be
+    expect(get(context, 'scope.conditionals[0].conditionallyHidden')).to.be
       .false;
   });
 
-  it("Should always add components keyed by absolute path to conditional scope (simple components)", async () => {
+  it('Should always add components keyed by absolute path to conditional scope (simple components)', async () => {
     const form = {
       components: [
         {
-          type: "textfield",
-          key: "a",
+          type: 'textfield',
+          key: 'a',
           input: true,
         },
         {
-          type: "textfield",
-          key: "b",
+          type: 'textfield',
+          key: 'b',
           input: true,
           conditional: {
             show: false,
-            conjunction: "all",
+            conjunction: 'all',
             conditions: [
               {
-                component: "a",
-                operator: "isEmpty",
+                component: 'a',
+                operator: 'isEmpty',
               },
             ],
           },
@@ -172,71 +172,71 @@ describe("Condition processor", () => {
 
     const submission = {
       data: {
-        a: "",
+        a: '',
       },
     };
 
     const context: ProcessContext<ConditionsScope> = processForm(
       form,
-      submission,
+      submission
     );
     expect(context.scope.conditionals).to.have.length(1);
-    expect(context.scope.conditionals?.[0].path).to.equal("b");
+    expect(context.scope.conditionals?.[0].path).to.equal('b');
   });
 
-  it("Should always add components keyed by absolute data path to conditional scope (data grid components)", async () => {
+  it('Should always add components keyed by absolute data path to conditional scope (data grid components)', async () => {
     const form = {
       components: [
         {
-          label: "Check Me",
+          label: 'Check Me',
           tableView: false,
           validateWhenHidden: false,
-          key: "checkMe",
-          type: "checkbox",
+          key: 'checkMe',
+          type: 'checkbox',
           input: true,
           defaultValue: false,
         },
         {
-          label: "Data Grid",
+          label: 'Data Grid',
           reorder: false,
-          addAnotherPosition: "bottom",
+          addAnotherPosition: 'bottom',
           layoutFixed: false,
           enableRowGroups: false,
           initEmpty: false,
           tableView: false,
           defaultValue: [{}],
           validateWhenHidden: false,
-          key: "dataGrid",
-          type: "datagrid",
+          key: 'dataGrid',
+          type: 'datagrid',
           input: true,
           components: [
             {
-              label: "Text Field",
-              applyMaskOn: "change",
+              label: 'Text Field',
+              applyMaskOn: 'change',
               tableView: true,
               validateWhenHidden: false,
-              key: "textField",
+              key: 'textField',
               conditional: {
                 show: true,
-                conjunction: "all",
+                conjunction: 'all',
                 conditions: [
                   {
-                    component: "checkMe",
-                    operator: "isEqual",
+                    component: 'checkMe',
+                    operator: 'isEqual',
                     value: true,
                   },
                 ],
               },
-              type: "textfield",
+              type: 'textfield',
               input: true,
             },
             {
-              label: "Text Field",
-              applyMaskOn: "change",
+              label: 'Text Field',
+              applyMaskOn: 'change',
               tableView: true,
               validateWhenHidden: false,
-              key: "textField1",
-              type: "textfield",
+              key: 'textField1',
+              type: 'textfield',
               input: true,
             },
           ],
@@ -247,76 +247,76 @@ describe("Condition processor", () => {
     const submission = {
       data: {
         checkMe: false,
-        dataGrid: [{ textField: "test" }, { textField: "test1" }],
+        dataGrid: [{ textField: 'test' }, { textField: 'test1' }],
       },
     };
 
     const context: ProcessContext<ConditionsScope> = processForm(
       form,
-      submission,
+      submission
     );
     expect(context.scope.conditionals).to.have.length(2);
     expect(context.scope.conditionals?.[0].path).to.equal(
-      "dataGrid[0].textField",
+      'dataGrid[0].textField'
     );
     expect(context.scope.conditionals?.[1].path).to.equal(
-      "dataGrid[1].textField",
+      'dataGrid[1].textField'
     );
   });
 
-  it("Should always add components keyed by absolute data path to conditional scope (edit grid components)", async () => {
+  it('Should always add components keyed by absolute data path to conditional scope (edit grid components)', async () => {
     const form = {
       components: [
         {
-          label: "Check Me",
+          label: 'Check Me',
           tableView: false,
           validateWhenHidden: false,
-          key: "checkMe",
-          type: "checkbox",
+          key: 'checkMe',
+          type: 'checkbox',
           input: true,
           defaultValue: false,
         },
         {
-          label: "Edit Grid",
+          label: 'Edit Grid',
           reorder: false,
-          addAnotherPosition: "bottom",
+          addAnotherPosition: 'bottom',
           layoutFixed: false,
           enableRowGroups: false,
           initEmpty: false,
           tableView: false,
           defaultValue: [{}],
           validateWhenHidden: false,
-          key: "editGrid",
-          type: "editgrid",
+          key: 'editGrid',
+          type: 'editgrid',
           input: true,
           components: [
             {
-              label: "Text Field",
-              applyMaskOn: "change",
+              label: 'Text Field',
+              applyMaskOn: 'change',
               tableView: true,
               validateWhenHidden: false,
-              key: "textField",
+              key: 'textField',
               conditional: {
                 show: true,
-                conjunction: "all",
+                conjunction: 'all',
                 conditions: [
                   {
-                    component: "checkMe",
-                    operator: "isEqual",
+                    component: 'checkMe',
+                    operator: 'isEqual',
                     value: true,
                   },
                 ],
               },
-              type: "textfield",
+              type: 'textfield',
               input: true,
             },
             {
-              label: "Text Field",
-              applyMaskOn: "change",
+              label: 'Text Field',
+              applyMaskOn: 'change',
               tableView: true,
               validateWhenHidden: false,
-              key: "textField1",
-              type: "textfield",
+              key: 'textField1',
+              type: 'textfield',
               input: true,
             },
           ],
@@ -327,69 +327,69 @@ describe("Condition processor", () => {
     const submission = {
       data: {
         checkMe: false,
-        editGrid: [{ textField: "test" }, { textField: "test1" }],
+        editGrid: [{ textField: 'test' }, { textField: 'test1' }],
       },
     };
 
     const context: ProcessContext<ConditionsScope> = processForm(
       form,
-      submission,
+      submission
     );
     expect(context.scope.conditionals).to.have.length(2);
     expect(context.scope.conditionals?.[0].path).to.equal(
-      "editGrid[0].textField",
+      'editGrid[0].textField'
     );
     expect(context.scope.conditionals?.[1].path).to.equal(
-      "editGrid[1].textField",
+      'editGrid[1].textField'
     );
   });
 
-  it("Should always add components keyed by absolute data path to conditional scope (container components)", async () => {
+  it('Should always add components keyed by absolute data path to conditional scope (container components)', async () => {
     const form = {
       components: [
         {
-          label: "Check Me",
+          label: 'Check Me',
           tableView: false,
           validateWhenHidden: false,
-          key: "checkMe",
-          type: "checkbox",
+          key: 'checkMe',
+          type: 'checkbox',
           input: true,
           defaultValue: false,
         },
         {
-          label: "Container",
+          label: 'Container',
           tableView: false,
-          key: "container",
-          type: "container",
+          key: 'container',
+          type: 'container',
           input: true,
           components: [
             {
-              label: "Text Field",
-              applyMaskOn: "change",
+              label: 'Text Field',
+              applyMaskOn: 'change',
               tableView: true,
               validateWhenHidden: false,
-              key: "textField",
+              key: 'textField',
               conditional: {
                 show: true,
-                conjunction: "all",
+                conjunction: 'all',
                 conditions: [
                   {
-                    component: "checkMe",
-                    operator: "isEqual",
+                    component: 'checkMe',
+                    operator: 'isEqual',
                     value: true,
                   },
                 ],
               },
-              type: "textfield",
+              type: 'textfield',
               input: true,
             },
             {
-              label: "Text Field",
-              applyMaskOn: "change",
+              label: 'Text Field',
+              applyMaskOn: 'change',
               tableView: true,
               validateWhenHidden: false,
-              key: "textField1",
-              type: "textfield",
+              key: 'textField1',
+              type: 'textfield',
               input: true,
             },
           ],
@@ -400,66 +400,66 @@ describe("Condition processor", () => {
     const submission = {
       data: {
         checkMe: false,
-        container: { textField: "test" },
+        container: { textField: 'test' },
       },
     };
 
     const context: ProcessContext<ConditionsScope> = processForm(
       form,
-      submission,
+      submission
     );
     expect(context.scope.conditionals).to.have.length(1);
     expect(context.scope.conditionals?.[0].path).to.equal(
-      "container.textField",
+      'container.textField'
     );
   });
 
-  it("Should always add components keyed by absolute data path to conditional scope (layout components)", async () => {
+  it('Should always add components keyed by absolute data path to conditional scope (layout components)', async () => {
     const form = {
       components: [
         {
-          label: "Check Me",
+          label: 'Check Me',
           tableView: false,
           validateWhenHidden: false,
-          key: "checkMe",
-          type: "checkbox",
+          key: 'checkMe',
+          type: 'checkbox',
           input: true,
           defaultValue: false,
         },
         {
-          label: "Panel",
+          label: 'Panel',
           tableView: false,
-          key: "panel",
-          type: "panel",
+          key: 'panel',
+          type: 'panel',
           input: true,
           components: [
             {
-              label: "Text Field",
-              applyMaskOn: "change",
+              label: 'Text Field',
+              applyMaskOn: 'change',
               tableView: true,
               validateWhenHidden: false,
-              key: "textField",
+              key: 'textField',
               conditional: {
                 show: true,
-                conjunction: "all",
+                conjunction: 'all',
                 conditions: [
                   {
-                    component: "checkMe",
-                    operator: "isEqual",
+                    component: 'checkMe',
+                    operator: 'isEqual',
                     value: true,
                   },
                 ],
               },
-              type: "textfield",
+              type: 'textfield',
               input: true,
             },
             {
-              label: "Text Field",
-              applyMaskOn: "change",
+              label: 'Text Field',
+              applyMaskOn: 'change',
               tableView: true,
               validateWhenHidden: false,
-              key: "textField1",
-              type: "textfield",
+              key: 'textField1',
+              type: 'textfield',
               input: true,
             },
           ],
@@ -470,48 +470,48 @@ describe("Condition processor", () => {
     const submission = {
       data: {
         checkMe: false,
-        panel: { textField: "test" },
+        panel: { textField: 'test' },
       },
     };
 
     const context: ProcessContext<ConditionsScope> = processForm(
       form,
-      submission,
+      submission
     );
     expect(context.scope.conditionals).to.have.length(1);
     // Panel components are layout components, so are not pathed
-    expect(context.scope.conditionals?.[0].path).to.equal("textField");
+    expect(context.scope.conditionals?.[0].path).to.equal('textField');
   });
 
-  it("Should always add components keyed by absolute data path to conditional scope (deeply nested components)", async () => {
+  it('Should always add components keyed by absolute data path to conditional scope (deeply nested components)', async () => {
     const form = {
       components: [
         {
-          label: "Tabs",
+          label: 'Tabs',
           components: [
             {
-              label: "Tab 1",
-              key: "tab1",
+              label: 'Tab 1',
+              key: 'tab1',
               components: [
                 {
-                  label: "Check Me",
+                  label: 'Check Me',
                   tableView: false,
                   validateWhenHidden: false,
-                  key: "checkMe",
-                  type: "checkbox",
+                  key: 'checkMe',
+                  type: 'checkbox',
                   input: true,
                   defaultValue: false,
                 },
               ],
             },
             {
-              label: "Tab 2",
-              key: "tab2",
+              label: 'Tab 2',
+              key: 'tab2',
               components: [
                 {
-                  label: "Outer Data Grid",
+                  label: 'Outer Data Grid',
                   reorder: false,
-                  addAnotherPosition: "bottom",
+                  addAnotherPosition: 'bottom',
                   layoutFixed: false,
                   enableRowGroups: false,
                   initEmpty: false,
@@ -522,7 +522,7 @@ describe("Condition processor", () => {
                         innerContainer: {
                           dataGrid: [
                             {
-                              textField1: "",
+                              textField1: '',
                             },
                           ],
                         },
@@ -530,71 +530,71 @@ describe("Condition processor", () => {
                     },
                   ],
                   validateWhenHidden: false,
-                  key: "outerDataGrid",
-                  type: "datagrid",
+                  key: 'outerDataGrid',
+                  type: 'datagrid',
                   input: true,
                   components: [
                     {
-                      label: "Outer Container",
+                      label: 'Outer Container',
                       tableView: false,
                       validateWhenHidden: false,
-                      key: "outerContainer",
-                      type: "container",
+                      key: 'outerContainer',
+                      type: 'container',
                       input: true,
                       components: [
                         {
-                          label: "Inner Container",
+                          label: 'Inner Container',
                           tableView: false,
                           validateWhenHidden: false,
-                          key: "innerContainer",
-                          type: "container",
+                          key: 'innerContainer',
+                          type: 'container',
                           input: true,
                           components: [
                             {
-                              label: "Inner Data Grid",
+                              label: 'Inner Data Grid',
                               reorder: false,
-                              addAnotherPosition: "bottom",
+                              addAnotherPosition: 'bottom',
                               layoutFixed: false,
                               enableRowGroups: false,
                               initEmpty: false,
                               tableView: false,
                               defaultValue: [
                                 {
-                                  textField1: "",
+                                  textField1: '',
                                 },
                               ],
                               validateWhenHidden: false,
-                              key: "innerDataGrid",
-                              type: "datagrid",
+                              key: 'innerDataGrid',
+                              type: 'datagrid',
                               input: true,
                               components: [
                                 {
-                                  label: "Text Field",
-                                  applyMaskOn: "change",
+                                  label: 'Text Field',
+                                  applyMaskOn: 'change',
                                   tableView: true,
                                   validateWhenHidden: false,
-                                  key: "textField",
+                                  key: 'textField',
                                   conditional: {
                                     show: true,
-                                    conjunction: "all",
+                                    conjunction: 'all',
                                     conditions: [
                                       {
-                                        component: "checkMe",
-                                        operator: "isEqual",
+                                        component: 'checkMe',
+                                        operator: 'isEqual',
                                         value: true,
                                       },
                                     ],
                                   },
-                                  type: "textfield",
+                                  type: 'textfield',
                                   input: true,
                                 },
                                 {
-                                  label: "Text Field",
-                                  applyMaskOn: "change",
+                                  label: 'Text Field',
+                                  applyMaskOn: 'change',
                                   tableView: true,
                                   validateWhenHidden: false,
-                                  key: "textField1",
-                                  type: "textfield",
+                                  key: 'textField1',
+                                  type: 'textfield',
                                   input: true,
                                 },
                               ],
@@ -608,8 +608,8 @@ describe("Condition processor", () => {
               ],
             },
           ],
-          key: "tabs",
-          type: "tabs",
+          key: 'tabs',
+          type: 'tabs',
           input: false,
           tableView: false,
         },
@@ -625,7 +625,7 @@ describe("Condition processor", () => {
               innerContainer: {
                 innerDataGrid: [
                   {
-                    textField1: "test",
+                    textField1: 'test',
                   },
                 ],
               },
@@ -638,11 +638,11 @@ describe("Condition processor", () => {
 
     const context: ProcessContext<ConditionsScope> = processForm(
       form,
-      submission,
+      submission
     );
     expect(context.scope.conditionals).to.have.length(1);
     expect(context.scope.conditionals?.[0].path).to.equal(
-      "outerDataGrid[0].outerContainer.innerContainer.innerDataGrid[0].textField",
+      'outerDataGrid[0].outerContainer.innerContainer.innerDataGrid[0].textField'
     );
   });
 });
