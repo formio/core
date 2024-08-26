@@ -15,6 +15,7 @@
  - FIO-8645: added tests and translations for validateRequiredDay
  - FIO-8537: Fixing the filter processor to handle nested component data properly
  - FIO-8597: fixed an issue with an empty array value for a number component with multiple values enabled
+ - FIO-8798: updated day component validation
 
 ## 2.3.0-rc.1
 ### Changed
