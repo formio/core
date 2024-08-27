@@ -79,7 +79,7 @@ export const isConditionallyHidden = (context: ConditionsContext): boolean => {
 export type ConditionallyHidden = (context: ConditionsContext) => boolean;
 
 export const conditionalProcess = (context: ConditionsContext, isHidden: ConditionallyHidden) => {
-    const { component, row, scope, path } = context;
+    const { component, scope, path } = context;
     if (!hasConditions(context)) {
         return;
     }
