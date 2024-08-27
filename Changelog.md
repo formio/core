@@ -16,6 +16,11 @@
  - FIO-8537: Fixing the filter processor to handle nested component data properly
  - FIO-8597: fixed an issue with an empty array value for a number component with multiple values enabled
  - FIO-8798: updated day component validation
+ - FIO-8885 & FIO-8886: use strict equality check for conditional component paths rather than Array.prototype.includes
+ - FIO-8810: fixed an issue where user unables to resubmit (change) the form with several levels of nested forms with required fields
+ - FIO-8848 fixed validation for TextArea with Save as Json
+ - FIO-8769 added check for the simpleConditional properties state
+ - FIO-8901: Fixed incorrect handling of excessive rows in nested array model
 
 ## 2.3.0-rc.1
 ### Changed
