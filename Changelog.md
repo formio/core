@@ -1,3 +1,8 @@
+## 2.2.2-rc.4
+### Changed
+ - FIO-8798: updated day component validation
+ - FIO-8901: Fixed incorrect handling of excessive rows in nested array model
+
 ## 2.2.2-rc.3
 ### Changed
  - FIO-8848 fixed validation for TextArea with Save as Json
