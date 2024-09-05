@@ -1,3 +1,7 @@
+## 2.2.2
+### Changed
+ - Official Release
+
 ## 2.2.2-rc.5
 ### Changed
  - FIO-8885 & FIO-8886: use strict equality check for conditional component paths rather than Array.prototype.includes
