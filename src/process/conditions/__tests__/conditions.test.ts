@@ -5,14 +5,15 @@ import { ConditionsScope, ProcessContext } from 'types';
 import { get } from 'lodash';
 
 const processForm = (form: any, submission: any) => {
-  const context: ProcessContext<ConditionsScope> = {
-    processors: [conditionProcessInfo],
-    components: form.components,
-    data: submission.data,
-    scope: {},
-  };
-  processSync(context);
-  return context;
+    const context: ProcessContext<ConditionsScope> = {
+        processors: [conditionProcessInfo],
+        components: form.components,
+        data: submission.data,
+        form,
+        scope: {}
+    };
+    processSync(context);
+    return context;
 };
 
 describe('Condition processor', () => {
