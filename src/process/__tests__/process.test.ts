@@ -2831,6 +2831,103 @@ describe('Process Tests', () => {
     });
   })
 
+  it('Should allow the submission to go through without errors if there is no the subform reference value', async () => {
+    const form =  {
+      _id: '66bc5cff7ca1729623a182db',
+      title: 'form2',
+      name: 'form2',
+      path: 'form2',
+      type: 'resource',
+      display: 'form',
+      owner: '637b2e6b48c1227e60b1f910',
+      components: [
+        {
+          label: 'Text Field - form2',
+          applyMaskOn: 'change',
+          tableView: true,
+          validate: { required: true },
+          validateWhenHidden: false,
+          key: 'textFieldForm2',
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Form',
+          tableView: true,
+          form: '66bc5ccd7ca1729623a18063',
+          useOriginalRevision: false,
+          key: 'form',
+          type: 'form',
+          input: true,
+          components: [
+            {
+              label: 'Text Field form1',
+              applyMaskOn: 'change',
+              tableView: true,
+              validate: { required: true },
+              validateWhenHidden: false,
+              key: 'textFieldForm1',
+              type: 'textfield',
+              input: true,
+            },
+            {
+              type: 'button',
+              label: 'Submit',
+              key: 'submit',
+              disableOnInvalid: true,
+              input: true,
+              tableView: false,
+            },
+          ],
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+      project: '669e1c67a40e327e67e7ce55',
+      _vid: 0,
+      esign: {},
+      created: '2024-08-14T07:30:07.953Z',
+      modified: '2024-08-14T10:09:13.201Z',
+      machineName: 'qzdhayddccjauyr:form2',
+      __v: 1,
+    };
+
+    const submission = {
+      data: { textFieldForm2: '1', form: { _id: '66c455fc0f00757fd4b0e79b' } },
+      owner: '637b2e6b48c1227e60b1f910',
+      access: [],
+      _fvid: 0,
+      state: 'submitted',
+      _id: '66c455fc0f00757fd4b0e79d',
+      form: '66bc5cff7ca1729623a182db',
+    };
+
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.equal(context.scope.errors.length, 0);
+    assert.deepEqual(context.data.form, { _id: '66c455fc0f00757fd4b0e79b', data: {} })
+  });
+
   describe('Required component validation in nested form in DataGrid/EditGrid', () => {
     const nestedForm = {
       key: 'form',
