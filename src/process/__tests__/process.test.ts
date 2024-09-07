@@ -3,7 +3,7 @@ import assert from 'node:assert'
 import type { ContainerComponent, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
 import { process, processSync, ProcessTargets } from '../index';
-import { clearOnHideWithCustomCondition, clearOnHideWithHiddenParent, skipValidForConditionallyHiddenComp, skipValidForLogicallyHiddenComp, skipValidWithHiddenParentComp  } from './fixtures'
+import { clearOnHideWithCustomCondition, clearOnHideWithHiddenParent, forDataGridRequired, skipValidForConditionallyHiddenComp, skipValidForLogicallyHiddenComp, skipValidWithHiddenParentComp  } from './fixtures'
 /*
 describe('Process Tests', () => {
     it('Should perform the processes using the processReduced method.', async () => {
@@ -3186,6 +3186,27 @@ describe('Process Tests', () => {
         candidates:[{candidate:{data:{section6:{}}}}],
         submit: true
       });
+    });
+
+    it('Should validate when all child components are empty in required Data Grid', async () => {
+      const { form, submission } = forDataGridRequired;
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: ProcessTargets.submission,
+        scope: {},
+        config: {
+          server: true,
+        },
+      };
+
+      processSync(context);
+      context.processors = ProcessTargets.evaluator;
+      processSync(context);
+
+      expect((context.scope as ValidationScope).errors).to.have.length(1);
     });
 
     describe('For EditGrid:', () => {
