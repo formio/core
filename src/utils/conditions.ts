@@ -50,11 +50,11 @@ export function checkCustomConditional(condition: string, context: ConditionsCon
 
 /**
  * Checks the legacy conditionals.
- * 
- * @param conditional 
- * @param context 
- * @param checkDefault 
- * @returns 
+ *
+ * @param conditional
+ * @param context
+ * @param checkDefault
+ * @returns
  */
 export function checkLegacyConditional(conditional: LegacyConditional, context: ConditionsContext): boolean | null {
     const { row, data, component } = context;
@@ -75,9 +75,9 @@ export function checkLegacyConditional(conditional: LegacyConditional, context: 
 
 /**
  * Checks the JSON Conditionals.
- * @param conditional 
+ * @param conditional
  * @param context
- * @returns 
+ * @returns
  */
 export function checkJsonConditional(conditional: JSONConditional, context: ConditionsContext): boolean | null {
     const { evalContext } = context;
@@ -90,9 +90,9 @@ export function checkJsonConditional(conditional: JSONConditional, context: Cond
 
 /**
  * Checks the simple conditionals.
- * @param conditional 
- * @param context 
- * @returns 
+ * @param conditional
+ * @param context
+ * @returns
  */
 export function checkSimpleConditional(conditional: SimpleConditional, context: ConditionsContext): boolean | null {
     const { component, data, row, instance, form, components = [] } = context;
@@ -116,7 +116,7 @@ export function checkSimpleConditional(conditional: SimpleConditional, context: 
 
         const ConditionOperator = ConditionOperators[operator];
         return ConditionOperator
-            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponent, conditionComponentPath })
+            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponent, conditionComponentPath, data})
             : true;
     }), (res) => (res !== null));
 
