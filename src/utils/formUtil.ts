@@ -1129,15 +1129,15 @@ export function findComponent(components: any, key: any, path: any, fn: any) {
   });
 }
 
-const isCheckboxComponent = (component: Component): component is CheckboxComponent => component.type === 'checkbox';
-const isDataGridComponent = (component: Component): component is DataGridComponent => component.type === 'datagrid';
-const isEditGridComponent = (component: Component): component is EditGridComponent => component.type === 'editgrid';
-const isDataTableComponent = (component: Component): component is DataTableComponent => component.type === 'datatable';
-const hasChildComponents = (component: any): component is HasChildComponents => component.components != null;
-const isDateTimeComponent = (component: Component): component is DateTimeComponent => component.type === 'datetime';
-const isSelectBoxesComponent = (component: Component): component is SelectBoxesComponent => component.type === 'selectboxes';
-const isTextAreaComponent = (component: Component): component is TextAreaComponent => component.type === 'textarea';
-const isTextFieldComponent = (component: Component): component is TextFieldComponent => component.type === 'textfield';
+const isCheckboxComponent = (component: any): component is CheckboxComponent => component?.type === 'checkbox';
+const isDataGridComponent = (component: any): component is DataGridComponent => component?.type === 'datagrid';
+const isEditGridComponent = (component: any): component is EditGridComponent => component?.type === 'editgrid';
+const isDataTableComponent = (component: any): component is DataTableComponent => component?.type === 'datatable';
+const hasChildComponents = (component: any): component is HasChildComponents => component?.components != null;
+const isDateTimeComponent = (component: any): component is DateTimeComponent => component?.type === 'datetime';
+const isSelectBoxesComponent = (component: any): component is SelectBoxesComponent => component?.type === 'selectboxes';
+const isTextAreaComponent = (component: any): component is TextAreaComponent => component?.type === 'textarea';
+const isTextFieldComponent = (component: any): component is TextFieldComponent => component?.type === 'textfield';
 
 export function getEmptyValue(component: Component) {
   switch (component.type) {

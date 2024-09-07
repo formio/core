@@ -133,7 +133,7 @@ export const getDateValidationFormat = (component: DayComponent) => {
 
 export const isPartialDay = (component: DayComponent, value: string | undefined) => {
     if (!value) {
-        return false;
+        return true;
     }
     const [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const values = value.split('/');
