@@ -120,9 +120,6 @@ export const MODEL_TYPES_OF_KNOWN_COMPONENTS: Record<string, string[]> = {
   object: [
     'container',
     'address',
-    // TODO: check on these
-    'survey',
-    'captcha',
   ],
   map: [
     'datamap',
@@ -141,9 +138,11 @@ export const MODEL_TYPES_OF_KNOWN_COMPONENTS: Record<string, string[]> = {
     'day',
     'datetime',
     'time',
+    'signature',
   ],
   number: [
-    'number'
+    'number',
+    'currency'
   ],
   boolean: [
     'checkbox',
@@ -158,9 +157,11 @@ export const MODEL_TYPES_OF_KNOWN_COMPONENTS: Record<string, string[]> = {
     'tabs'
   ],
   any: [
+    'survey',
+    'captcha',
+    'selectboxes',
     'tags',
     'select',
-    'selectboxes',
     'hidden',
   ],
 };
