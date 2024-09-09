@@ -104,59 +104,87 @@ export function uniqueName(name: string, template?: string, evalContext?: any) {
   return uniqueName;
 }
 
-export const MODEL_TYPES: Record<string, string[]> = {
+// TODO: bring in all component types (don't forget premium components)
+export const MODEL_TYPES_OF_KNOWN_COMPONENTS: Record<string, string[]> = {
   array: [
     'datagrid',
     'editgrid',
     'datatable',
     'dynamicWizard',
-    'tagpad'
+    'tagpad',
+    'file',
   ],
   dataObject: [
     'form'
   ],
   object: [
     'container',
-    'address'
+    'address',
+    // TODO: check on these
+    'survey',
+    'captcha',
   ],
   map: [
-    'datamap'
+    'datamap',
   ],
   content: [
     'htmlelement',
     'content'
   ],
-  layout: [
+  string: [
+    'textfield',
+    'textarea',
+    'password',
+    'email',
+    'url',
+    'phoneNumber',
+    'day',
+    'datetime',
+    'time',
+  ],
+  number: [
+    'number'
+  ],
+  boolean: [
+    'checkbox',
+    'radio',
+  ],
+  none: [
     'table',
-    'tabs',
     'well',
     'columns',
     'fieldset',
     'panel',
     'tabs'
   ],
+  any: [
+    'tags',
+    'select',
+    'selectboxes',
+    'hidden',
+  ],
 };
 
-export function getModelType(component: Component) {
-  if (isComponentNestedDataType(component)) {
-    if (isComponentModelType(component, 'dataObject')) {
-      return 'dataObject';
-    }
-    if (isComponentModelType(component, 'array')) {
-      return 'array';
-    }
-    if (isComponentModelType(component, 'map')) {
-      return 'map';
-    }
-    return 'object';
+export function getModelType(component: Component): keyof typeof MODEL_TYPES_OF_KNOWN_COMPONENTS {
+  // If the component JSON asserts a model type, use that.
+  if (component.modelType) {
+    return component.modelType;
   }
-  if ((component.input === false) || isComponentModelType(component, 'layout')) {
-    return 'inherit';
+
+  // Otherwise, check for known component types.
+  for (const type in MODEL_TYPES_OF_KNOWN_COMPONENTS) {
+    if (MODEL_TYPES_OF_KNOWN_COMPONENTS[type].includes(component.type)) {
+      return type as keyof typeof MODEL_TYPES_OF_KNOWN_COMPONENTS;
+    }
   }
-  if (getComponentKey(component)) {
-    return 'value';
+
+  // Otherwise check for components that assert no value.
+  if ((component.input === false)) {
+    return 'none';
   }
-  return 'inherit';
+
+  // Otherwise default to any.
+  return 'any';
 }
 
 export function getComponentAbsolutePath(component: Component) {
@@ -164,7 +192,7 @@ export function getComponentAbsolutePath(component: Component) {
   while (component.parent) {
     component = component.parent;
     // We only need to do this for nested forms because they reset the data contexts for the children.
-    if (isComponentModelType(component, 'dataObject')) {
+    if (getModelType(component) === 'dataObject') {
       paths[paths.length - 1] = `data.${paths[paths.length - 1]}`;
       paths.push(component.path);
     }
@@ -183,18 +211,14 @@ export function getComponentPath(component: Component, path: string) {
   if (path.match(new RegExp(`${key}$`))) {
     return path;
   }
-  return (getModelType(component) === 'inherit') ? `${path}.${key}` : path;
-}
-
-export function isComponentModelType(component: Component, modelType: string) {
-  return component.modelType === modelType || MODEL_TYPES[modelType].includes(component.type);
+  return (getModelType(component) === 'layout') ? `${path}.${key}` : path;
 }
 
 export function isComponentNestedDataType(component: any) {
-  return component.tree || isComponentModelType(component, 'array') ||
-    isComponentModelType(component, 'dataObject') ||
-    isComponentModelType(component, 'object') ||
-    isComponentModelType(component, 'map');
+  return component.tree || getModelType(component) === 'array' ||
+    getModelType(component) === 'dataObject' ||
+    getModelType(component) === 'object' ||
+    getModelType(component) === 'map';
 }
 
 export function componentPath(component: Component, parentPath?: string): string {
@@ -212,10 +236,10 @@ export const componentDataPath = (component: any, parentPath: string, path: stri
   path = path || componentPath(component, parentPath);
   // See if we are a nested component.
   if (component.components && Array.isArray(component.components)) {
-    if (isComponentModelType(component, 'dataObject')) {
+    if (getModelType(component) === 'dataObject') {
       return `${path}.data`;
     }
-    if (isComponentModelType(component, 'array')) {
+    if (getModelType(component) === 'array') {
       return `${path}[0]`;
     }
     if (isComponentNestedDataType(component)) {
@@ -229,7 +253,7 @@ export const componentDataPath = (component: any, parentPath: string, path: stri
 export const componentFormPath = (component: any, parentPath: string, path: string): string => {
   parentPath = component.parentPath || parentPath;
   path = path || componentPath(component, parentPath);
-  if (isComponentModelType(component, 'dataObject')) {
+  if (getModelType(component) === 'dataObject') {
     return `${path}.data`;
   }
   if (isComponentNestedDataType(component)) {
@@ -277,7 +301,7 @@ export const eachComponentDataAsync = async (
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
-        if (isComponentModelType(component, 'dataObject')) {
+        if (getModelType(component) === 'dataObject') {
           // No need to bother processing all the children data if there is no data for this form or the reference value has not been loaded.
           const nestedFormValue: any = get(data, component.path);
           const noReferenceAttached = nestedFormValue?._id && isEmpty(nestedFormValue.data) && !has(nestedFormValue, 'form');
@@ -333,7 +357,7 @@ export const eachComponentData = (
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
-        if (isComponentModelType(component, 'dataObject')) {
+        if (getModelType(component) === 'dataObject') {
           // No need to bother processing all the children data if there is no data for this form or the reference value has not been loaded.
           const nestedFormValue: any = get(data, component.path);
           const noReferenceAttached = nestedFormValue?._id && isEmpty(nestedFormValue.data) && !has(nestedFormValue, 'form');
@@ -385,8 +409,8 @@ export function componentInfo(component: any) {
   const hasColumns = component.columns && Array.isArray(component.columns);
   const hasRows = component.rows && Array.isArray(component.rows);
   const hasComps = component.components && Array.isArray(component.components);
-  const isContent = isComponentModelType(component, 'content');
-  const isLayout = isComponentModelType(component, 'layout');
+  const isContent = getModelType(component) === 'content';
+  const isLayout = getModelType(component) === 'layout';
   const isInput = !component.hasOwnProperty('input') || !!component.input;
   return {
     hasColumns,
