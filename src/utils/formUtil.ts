@@ -163,6 +163,10 @@ export const MODEL_TYPES_OF_KNOWN_COMPONENTS: Record<string, string[]> = {
     'tags',
     'select',
     'hidden',
+    'button',
+    'datasource',
+    'sketchpad',
+    'reviewpage'
   ],
 };
 
