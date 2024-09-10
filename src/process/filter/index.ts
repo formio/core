@@ -18,7 +18,7 @@ export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterC
           value: { data: {} }
         };
         break;
-      case 'array':
+      case 'nestedArray':
         scope.filter[absolutePath] = {
           compModelType: modelType,
           include: true,

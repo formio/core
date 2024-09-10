@@ -86,7 +86,7 @@ export const validateMultipleSync: RuleFnSync = (
 
   const shouldBeMultipleArray = !!component.multiple;
   const isRequired = !!component.validate?.required;
-  const underlyingValueShouldBeArray = getModelType(component) === 'array' || (isTagsComponent(component) && component.storeas === 'array');
+  const underlyingValueShouldBeArray = getModelType(component) === 'nestedArray' || (isTagsComponent(component) && component.storeas === 'array');
   const valueIsArray = Array.isArray(value);
 
   if (shouldBeMultipleArray) {
