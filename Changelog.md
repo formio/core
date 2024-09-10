@@ -1,3 +1,9 @@
+## 2.2.3-rc.1
+### Changed
+ - FIO-8810: fixed an issue where user unables to resubmit (change) the form with several levels of nested forms with required fields
+ - chore: fix formiojs tests
+ - FIO-8912: update validateMultiple to account for model types
+
 ## 2.2.2
 ### Changed
  - Official Release
