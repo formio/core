@@ -25,7 +25,7 @@ it("Should not filter empty array value for dataGrid component", async () => {
   const context: any = generateProcessorContext(dataGridComp, data);
   filterProcessSync(context);
   expect(context.scope.filter).to.deep.equal({
-    dataGrid: { compModelType: "array", include: true, value: [] },
+    dataGrid: { compModelType: "nestedArray", include: true, value: [] },
   });
 });
 
@@ -50,7 +50,7 @@ it("Should not filter empty array value for editGrid component", async () => {
   const context: any = generateProcessorContext(editGridComp, data);
   filterProcessSync(context);
   expect(context.scope.filter).to.deep.equal({
-    editGrid: { compModelType: "array", include: true, value: [] },
+    editGrid: { compModelType: "nestedArray", include: true, value: [] },
   });
 });
 
@@ -75,7 +75,7 @@ it("Should not filter empty array value for dataTable component", async () => {
   const context: any = generateProcessorContext(dataTableComp, data);
   filterProcessSync(context);
   expect(context.scope.filter).to.deep.equal({
-    dataTable: { compModelType: "array", include: true, value: [] },
+    dataTable: { compModelType: "nestedArray", include: true, value: [] },
   });
 });
 
