@@ -1,3 +1,7 @@
+## 2.2.3-rc.2
+### Changed
+ - FIO-8912-fix-for-upstream-tests
+
 ## 2.2.3-rc.1
 ### Changed
  - FIO-8810: fixed an issue where user unables to resubmit (change) the form with several levels of nested forms with required fields
