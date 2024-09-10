@@ -10,7 +10,7 @@ export const populateProcessSync: ProcessorFnSync<PopulateScope> = (context: Pop
     const compData: any = get(data, compDataPath);
     if (!scope.populated) scope.populated = [];
     switch (getModelType(component)) {
-        case 'array':
+        case 'nestedArray':
             if (!compData || !compData.length) {
                 set(data, compDataPath, [{}]);
                 scope.row = get(data, compDataPath)[0];
