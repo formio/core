@@ -21,6 +21,8 @@
  - FIO-8848 fixed validation for TextArea with Save as Json
  - FIO-8769 added check for the simpleConditional properties state
  - FIO-8901: Fixed incorrect handling of excessive rows in nested array model
+ - FIO-8912: update validateMultiple to account for model types
+ - fix formiojs tests
 
 ## 2.3.0-rc.1
 ### Changed
