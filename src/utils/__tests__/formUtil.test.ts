@@ -8,7 +8,6 @@ const components2 = JSON.parse(fs.readFileSync(__dirname + '/fixtures/components
 const components3 = JSON.parse(fs.readFileSync(__dirname + '/fixtures/components3.json').toString());
 const components4 = JSON.parse(fs.readFileSync(__dirname + '/fixtures/components4.json').toString());
 const components5 = JSON.parse(fs.readFileSync(__dirname + '/fixtures/components5.json').toString());
-const submission1 = JSON.parse(fs.readFileSync(__dirname + '/fixtures/submission1.json').toString());
 import {
     getContextualRowData,
     eachComponentDataAsync,
@@ -20,9 +19,10 @@ import {
     findComponents,
     getComponent,
     flattenComponents,
-    getComponentActualValue
+    getComponentActualValue,
+    hasCondition,
+    getModelType
 } from "../formUtil";
-import { fastCloneDeep } from 'utils/fastCloneDeep';
 
 describe('eachComponent', () => {
     it('should iterate through nested components in the right order', () => {
@@ -226,53 +226,53 @@ describe('eachComponent', () => {
     });
   });
 
-  describe('getComponent', () => {
-    it('should return the correct components', () => {
-      for (let n = 1; n <= 8; n += 1) {
-        const component = getComponent(components, writtenNumber(n));
-        expect(component).not.to.be.null;
-        expect(component).not.to.be.undefined;
-        expect(component).to.be.an('object');
-        expect((component as any).order).to.equal(n);
-        expect(component?.key).to.equal(writtenNumber(n));
-      }
-    });
+describe('getComponent', () => {
+it('should return the correct components', () => {
+    for (let n = 1; n <= 8; n += 1) {
+    const component = getComponent(components, writtenNumber(n));
+    expect(component).not.to.be.null;
+    expect(component).not.to.be.undefined;
+    expect(component).to.be.an('object');
+    expect((component as any).order).to.equal(n);
+    expect(component?.key).to.equal(writtenNumber(n));
+    }
+});
 
-    it('should work with a different this context', () => {
-      for (let n = 1; n <= 8; n += 1) {
-        const component = getComponent.call({}, components, writtenNumber(n));
-        expect(component).not.to.be.null;
-        expect(component).not.to.be.undefined;
-        expect(component).to.be.an('object');
-        expect((component as any).order).to.equal(n);
-        expect(component?.key).to.equal(writtenNumber(n));
-      }
-    });
-  });
+it('should work with a different this context', () => {
+    for (let n = 1; n <= 8; n += 1) {
+    const component = getComponent.call({}, components, writtenNumber(n));
+    expect(component).not.to.be.null;
+    expect(component).not.to.be.undefined;
+    expect(component).to.be.an('object');
+    expect((component as any).order).to.equal(n);
+    expect(component?.key).to.equal(writtenNumber(n));
+    }
+});
+});
 
-  describe('flattenComponents', () => {
-    it('should return an object of flattened components', () => {
-      const flattened = flattenComponents(components);
-      for (let n = 1; n <= 8; n += 1) {
-        const component = flattened[writtenNumber(n)];
-        expect(component).not.to.be.undefined;
-        expect(component).to.be.an('object');
-        expect((component as any).order).to.equal(n);
-        expect(component.key).to.equal(writtenNumber(n));
-      }
-    });
+describe('flattenComponents', () => {
+it('should return an object of flattened components', () => {
+    const flattened = flattenComponents(components);
+    for (let n = 1; n <= 8; n += 1) {
+    const component = flattened[writtenNumber(n)];
+    expect(component).not.to.be.undefined;
+    expect(component).to.be.an('object');
+    expect((component as any).order).to.equal(n);
+    expect(component.key).to.equal(writtenNumber(n));
+    }
+});
 
-    it('should work with a different this context', () => {
-      const flattened = flattenComponents.call({}, components);
-      for (let n = 1; n <= 8; n += 1) {
-        const component = flattened[writtenNumber(n)];
-        expect(component).not.to.be.undefined;
-        expect(component).to.be.an('object');
-        expect(component.order).to.equal(n);
-        expect(component.key).to.equal(writtenNumber(n));
-      }
-    });
-  });
+it('should work with a different this context', () => {
+    const flattened = flattenComponents.call({}, components);
+    for (let n = 1; n <= 8; n += 1) {
+    const component = flattened[writtenNumber(n)];
+    expect(component).not.to.be.undefined;
+    expect(component).to.be.an('object');
+    expect(component.order).to.equal(n);
+    expect(component.key).to.equal(writtenNumber(n));
+    }
+});
+});
 
 describe('getContextualRowData', () => {
     it('Should return the data at path without the last element given nested containers', () => {
@@ -1790,9 +1790,196 @@ describe('getComponentActualValue', () => {
         submit: true,
       };
       const row = { radio: 'yes', textArea: 'test' };
-  
+
       const value = getComponentActualValue(component, compPath, data, row);
       expect(value).to.equal('yes');
     });
-  });
-  
+});
+
+describe('hasCondition', () => {
+    it('Should return false if conditions is saved in invalid state', () => {
+        const component = {
+            label: 'Text Field',
+            hidden: true,
+            key: 'textField',
+            conditional: {
+              conjunction: 'all'
+            },
+            type: 'textfield',
+            input: true
+        }
+
+        const result = hasCondition(component as Component);
+        expect(result).to.equal(false);
+    })
+});
+
+describe('getModelType', () => {
+    it('Should return the correct model type for a component', () => {
+        const component = {
+            type: 'textfield',
+            input: true,
+            key: 'textField',
+        };
+        const actual = getModelType(component);
+        const expected = 'string';
+        expect(actual).to.equal(expected);
+    });
+
+    it('Should return the correct model type for a component with a number input type', () => {
+        const component = {
+            type: 'number',
+            input: true,
+            key: 'number',
+        };
+        const actual = getModelType(component);
+        const expected = 'number';
+        expect(actual).to.equal(expected);
+    });
+
+    it('Should return the correct model type for a component with a boolean input type', () => {
+        const component = {
+            type: 'checkbox',
+            input: true,
+            key: 'checkbox',
+        };
+        const actual = getModelType(component);
+        const expected = 'boolean';
+        expect(actual).to.equal(expected);
+    });
+
+    it('Should return the correct model type for a component with a datetime input type', () => {
+        const component = {
+            type: 'datetime',
+            input: true,
+            key: 'datetime',
+        };
+        const actual = getModelType(component);
+        const expected = 'string';
+        expect(actual).to.equal(expected);
+    });
+
+    it('Should return the correct model type for a component with a date input type', () => {
+        const component = {
+            type: 'datetime',
+            input: true,
+            key: 'date',
+            format: 'yyyy-MM-dd',
+        };
+        const actual = getModelType(component);
+        const expected = 'string';
+        expect(actual).to.equal(expected);
+    });
+
+    it('Should return the correct model type for a component with a time input type', () => {
+        const component = {
+            type: 'datetime',
+            input: true,
+            key: 'time',
+            format: 'HH:mm:ss',
+        };
+        const actual = getModelType(component);
+        const expected = 'string';
+        expect(actual).to.equal(expected);
+    });
+
+    it('Should return the correct model type for a component with a currency input type', () => {
+        const component = {
+            type: 'currency',
+            input: true,
+            key: 'currency',
+        };
+        const actual = getModelType(component);
+        const expected = 'number';
+        expect(actual).to.equal(expected);
+    });
+
+    it('Should return the correct model type for a component with a email input type', () => {
+        const component = {
+            type: 'email',
+            input: true,
+            key: 'email',
+        };
+        const actual = getModelType(component);
+        const expected = 'string';
+        expect(actual).to.equal(expected);
+    });
+
+    it('Should return the correct model type for a component with a phoneNumber input type', () => {
+        const component = {
+            type: 'phoneNumber',
+            input: true,
+            key: 'phoneNumber',
+        };
+        const actual = getModelType(component);
+        const expected = 'string';
+        expect(actual).to.equal(expected);
+    });
+
+    it('Should return the correct model type for a component with a url input type', () => {
+        const component = {
+            type: 'url',
+            input: true,
+            key: 'url',
+        };
+        const actual = getModelType(component);
+        const expected = 'string';
+        expect(actual).to.equal(expected);
+    });
+
+    it('Should return the correct model type for a component with a textarea input type', () => {
+        const component = {
+            type: 'textarea',
+            input: true,
+            key: 'textarea',
+        };
+        const actual = getModelType(component);
+        const expected = 'string';
+        expect(actual).to.equal(expected);
+    });
+
+    it('Should return the correct model type for a component with a signature input type', () => {
+        const component = {
+            type: 'signature',
+            input: true,
+            key: 'signature',
+        };
+        const actual = getModelType(component);
+        const expected = 'string';
+        expect(actual).to.equal(expected);
+    });
+
+    it('Should return the correct model type for a component with a select input type', () => {
+        const component = {
+            type: 'select',
+            input: true,
+            key: 'select',
+            data: {
+                values: [
+                    { label: 'foo', value: 'foo' },
+                    { label: 'bar', value: 'bar' },
+                ],
+            },
+        };
+        const actual = getModelType(component);
+        const expected = 'any';
+        expect(actual).to.equal(expected);
+    });
+
+    it('Should return the correct model type for a component with a selectboxes input type', () => {
+        const component = {
+            type: 'selectboxes',
+            input: true,
+            key: 'selectboxes',
+            data: {
+                values: [
+                    { label: 'foo', value: 'foo' },
+                    { label: 'bar', value: 'bar' },
+                ],
+            },
+        };
+        const actual = getModelType(component);
+        const expected = 'any';
+        expect(actual).to.equal(expected);
+    });
+});

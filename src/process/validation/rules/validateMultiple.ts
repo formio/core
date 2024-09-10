@@ -9,6 +9,7 @@ import {
   ValidationContext,
 } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
+import { getModelType } from 'utils/formUtil';
 
 export const isEligible = (component: Component) => {
   // TODO: would be nice if this was type safe
@@ -22,7 +23,8 @@ export const isEligible = (component: Component) => {
     case 'textarea':
       if (
         !(component as TextAreaComponent).as ||
-        (component as TextAreaComponent).as !== 'json'
+        (component as TextAreaComponent).as !== 'json' ||
+        ((component as TextAreaComponent).as === 'json' && !component.multiple)
       ) {
         return false;
       }
@@ -36,6 +38,10 @@ export const isEligible = (component: Component) => {
   }
 };
 
+const isTagsComponent = (component: any): component is TagsComponent => {
+  return component?.type === 'tags';
+}
+
 export const emptyValueIsArray = (component: Component) => {
   // TODO: How do we infer the data model of the compoennt given only its JSON? For now, we have to hardcode component types
   switch (component.type) {
@@ -48,11 +54,12 @@ export const emptyValueIsArray = (component: Component) => {
     case 'file':
       return true;
     case 'select':
+    case 'textfield':
       return !!component.multiple;
     case 'tags':
       return (component as TagsComponent).storeas !== 'string';
     default:
-      return false;
+      return true;
   }
 };
 
@@ -77,25 +84,36 @@ export const validateMultipleSync: RuleFnSync = (
     return null;
   }
 
-  const shouldBeArray = !!component.multiple;
+  const shouldBeMultipleArray = !!component.multiple;
   const isRequired = !!component.validate?.required;
-  const isArray = Array.isArray(value);
+  const underlyingValueShouldBeArray = getModelType(component) === 'array' || (isTagsComponent(component) && component.storeas === 'array');
+  const valueIsArray = Array.isArray(value);
 
-  if (shouldBeArray) {
-    if (isArray) {
-      return isRequired
-        ? value.length > 0
-          ? null
-          : new FieldError('array_nonempty', { ...context, setting: true })
-        : null;
+  if (shouldBeMultipleArray) {
+    if (valueIsArray && underlyingValueShouldBeArray) {
+      if (value.length === 0) {
+        return isRequired ? new FieldError('array_nonempty', { ...context, setting: true }) : null;
+      }
+
+      // TODO: We need to be permissive here for file components, which have an array model type but don't have an underlying array value
+      // (in other words, a file component's data object will always be a single array regardless of whether or not multiple is set)
+      // In the future, we could consider checking the underlying value's type to determine if it should be an array
+      // return Array.isArray(value[0]) ? null : new FieldError('array', { ...context, setting: true });
+      return null;
+    } else if (valueIsArray && !underlyingValueShouldBeArray) {
+      if (value.length === 0) {
+        return isRequired ? new FieldError('array_nonempty', { ...context, setting: true }) : null;
+      }
+
+      return Array.isArray(value[0]) ? new FieldError('nonarray', { ...context, setting: true }) : null;
     } else {
       const error = new FieldError('array', { ...context, setting: true });
       // Null/undefined is ok if this value isn't required; anything else should fail
       return isNil(value) ? (isRequired ? error : null) : error;
     }
   } else {
-    const canBeArray = emptyValueIsArray(component);
-    if (!canBeArray && isArray) {
+    const canBeArray = emptyValueIsArray(component) || underlyingValueShouldBeArray;
+    if (!canBeArray && valueIsArray) {
       return new FieldError('nonarray', { ...context, setting: false });
     }
     return null;
