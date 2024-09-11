@@ -1,3 +1,7 @@
+## [Unreleased: 2.3.0-rc.3]
+### Changed
+ - Increment minor version
+
 ## 2.2.3-rc.2
 ### Changed
  - FIO-8912-fix-for-upstream-tests
