@@ -1,3 +1,8 @@
+## [Unreleased: 2.2.3-rc.3]
+### Changed
+ - moved 2.2.3-rc.2 to new branch 2.3.x
+ - revert 2.2.x to version 2.2.2
+
 ## 2.2.2
 ### Changed
  - Official Release
