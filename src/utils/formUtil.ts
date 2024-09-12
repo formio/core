@@ -309,39 +309,60 @@ export const eachComponentDataAsync = async (
       if (isComponentNestedDataType(component)) {
         const value = get(data, compPath, data);
         if (Array.isArray(value)) {
-          const rowComponents = component.components || [];
-          const rowsCreated = has(rowComponents[0], 'rowIndex');
-          // Create a row components copy as each row components must be evaluated independently and do not refer to the same component object
-          const componentsCopy = fastCloneDeep(rowComponents);
-          for (let i = 0; i < value.length; i++) {
-            const isFirstRow = i === 0;
-            let components = [];
-            if (rowsCreated) {
-              // If raw componenet has already been created, just find the components for the particular row 
-              components = filter(rowComponents, comp => comp.rowIndex === i);
+            const rowsCreated = !!component.initialComponents;
+            const rowComponents = component.components || [];
+            Object.defineProperty(component, 'initialComponents', {
+              enumerable: false,
+              writable: true,
+              value: component.initialComponents || fastCloneDeep(rowComponents)
+            });
+            // Create a row components copy as each row components must be evaluated independently and do not refer to the same component object
+            for (let i = 0; i < value.length; i++) {
+              let newRow = false;
+              const isFirstRow = i === 0;
+              let components = [];
+              if (rowsCreated) {
+                // If raw componenet has already been created, just find the components for the particular row 
+                components = filter(rowComponents, comp => comp.rowIndex === i);
+                if (isEmpty(components)) {
+                  components = fastCloneDeep(component.initialComponents);
+                  each(components, comp => {
+                    Object.defineProperty(comp, 'rowIndex', {
+                      enumerable: false,
+                      writable: true,
+                      value: i
+                    });
+                   });
+                  newRow = true;
+                }
+              }
+              else {
+                components = isFirstRow ? rowComponents : fastCloneDeep(component.initialComponents);
+                each(components, comp => {
+                  Object.defineProperty(comp, 'rowIndex', {
+                    enumerable: false,
+                    writable: true,
+                    value: i
+                  });
+                });
+                newRow = true;
+              }
+  
+              await eachComponentDataAsync(
+                components,
+                data,
+                fn,
+                `${compPath}[${i}]`,
+                i,
+                component,
+                includeAll
+              );
+              if (!isFirstRow && newRow) {
+                // Add each row components to the parent components array so that parent component could have access to them (e.g. for setting hidden)
+                each(components, comp => (component.components || []).push(comp));
+              }
             }
-            else {
-              components = isFirstRow ? rowComponents : fastCloneDeep(componentsCopy);
-              each(components, comp => {
-                comp.rowIndex = i;
-              });
-            }
-
-            await eachComponentDataAsync(
-              components,
-              data,
-              fn,
-              `${compPath}[${i}]`,
-              i,
-              component,
-              includeAll
-            );
-            if (!isFirstRow && !rowsCreated) {
-              // Add each row components to the parent components array so that parent component could have access to them (e.g. for setting hidden)
-              each(components, comp => (component.components || []).push(comp));
-            }
-          }
-          return true;
+            return true;
         }
         else if (isEmpty(row) && !includeAll) {
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
@@ -395,22 +416,43 @@ export const eachComponentData = (
       if (isComponentNestedDataType(component)) {
         const value = get(data, compPath, data) as DataObject;
         if (Array.isArray(value)) {
+          const rowsCreated = !!component.initialComponents;
           const rowComponents = component.components || [];
-          const rowsCreated = has(rowComponents[0], 'rowIndex');
+          Object.defineProperty(component, 'initialComponents', {
+            enumerable: false,
+            writable: true,
+            value: component.initialComponents || fastCloneDeep(rowComponents)
+          });
           // Create a row components copy as each row components must be evaluated independently and do not refer to the same component object
-          const componentsCopy = fastCloneDeep(rowComponents);
           for (let i = 0; i < value.length; i++) {
+            let newRow = false;
             const isFirstRow = i === 0;
             let components = [];
             if (rowsCreated) {
               // If raw componenet has already been created, just find the components for the particular row 
               components = filter(rowComponents, comp => comp.rowIndex === i);
+              if (isEmpty(components)) {
+                components = fastCloneDeep(component.initialComponents);
+                each(components, comp => {
+                  Object.defineProperty(comp, 'rowIndex', {
+                    enumerable: false,
+                    writable: true,
+                    value: i
+                  });
+                });
+                newRow = true;
+              }
             }
             else {
-              components = isFirstRow ? rowComponents : fastCloneDeep(componentsCopy);
+              components = isFirstRow ? rowComponents : fastCloneDeep(component.initialComponents);
               each(components, comp => {
-                comp.rowIndex = i;
+                Object.defineProperty(comp, 'rowIndex', {
+                  enumerable: false,
+                  writable: true,
+                  value: i
+                });
               });
+              newRow = true;
             }
 
             eachComponentData(
@@ -422,7 +464,7 @@ export const eachComponentData = (
               component,
               includeAll
             );
-            if (!isFirstRow && !rowsCreated) {
+            if (!isFirstRow && newRow) {
               // Add each row components to the parent components array so that parent component could have access to them (e.g. for setting hidden)
               each(components, comp => (component.components || []).push(comp));
             }
