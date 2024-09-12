@@ -716,12 +716,28 @@ describe('eachComponentDataAsync', () => {
                         type: 'textfield',
                         key: 'nestedTextField',
                         label: 'Nested Text Field',
+                        rowIndex: 0,
                         input: true,
                     },
                     {
                         type: 'textarea',
                         key: 'nestedTextArea',
                         label: 'Nested Text Area',
+                        rowIndex: 0,
+                        input: true,
+                    },
+                    {
+                        type: 'textfield',
+                        key: 'nestedTextField',
+                        label: 'Nested Text Field',
+                        rowIndex: 1,
+                        input: true,
+                    },
+                    {
+                        type: 'textarea',
+                        key: 'nestedTextArea',
+                        label: 'Nested Text Area',
+                        rowIndex: 1,
                         input: true,
                     }
                 ]
@@ -742,6 +758,7 @@ describe('eachComponentDataAsync', () => {
                 type: 'textfield',
                 key: 'nestedTextField',
                 label: 'Nested Text Field',
+                rowIndex: 0,
                 input: true,
             },
             'world'
@@ -1672,12 +1689,28 @@ describe('eachComponentData', () => {
                         type: 'textfield',
                         key: 'nestedTextField',
                         label: 'Nested Text Field',
+                        rowIndex: 0,
                         input: true,
                     },
                     {
                         type: 'textarea',
                         key: 'nestedTextArea',
                         label: 'Nested Text Area',
+                        rowIndex: 0,
+                        input: true,
+                    },
+                    {
+                        type: 'textfield',
+                        key: 'nestedTextField',
+                        label: 'Nested Text Field',
+                        rowIndex: 1,
+                        input: true,
+                    },
+                    {
+                        type: 'textarea',
+                        key: 'nestedTextArea',
+                        label: 'Nested Text Area',
+                        rowIndex: 1,
                         input: true,
                     }
                 ]
@@ -1698,6 +1731,7 @@ describe('eachComponentData', () => {
                 type: 'textfield',
                 key: 'nestedTextField',
                 label: 'Nested Text Field',
+                rowIndex: 0,
                 input: true,
             },
             'world'

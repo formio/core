@@ -4,6 +4,7 @@ import type { ContainerComponent, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
 import { process, processSync, ProcessTargets } from '../index';
 import { clearOnHideWithCustomCondition, clearOnHideWithHiddenParent, forDataGridRequired, skipValidForConditionallyHiddenComp, skipValidForLogicallyHiddenComp, skipValidWithHiddenParentComp  } from './fixtures'
+import { fastCloneDeep } from 'utils';
 /*
 describe('Process Tests', () => {
     it('Should perform the processes using the processReduced method.', async () => {
@@ -968,8 +969,6 @@ describe('Process Tests', () => {
     submission.data = context.data;
     context.processors = ProcessTargets.evaluator;
     processSync(context);
-    console.log(context.scope.errors);
-
     assert.equal(context.scope.errors.length, 0);
   });
   it('should remove submission data not in a nested form definition', async function () {
@@ -2928,6 +2927,145 @@ describe('Process Tests', () => {
     assert.deepEqual(context.data.form, { _id: '66c455fc0f00757fd4b0e79b', data: {} })
   });
 
+  it('Should not unset conditionally visible data from editGrid second row, when this data is conditionally hidden in first row.', async () => {
+    const form = {
+      display: 'form',
+      components: [
+        {
+          label: 'Calculated Extra Columns',
+          hideLabel: true,
+          tableView: false,
+          templates: {
+            header:
+              '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (displayValue(component)) { %}\n          <div class="col-sm-4 font-weight-bold">{{ t(component.label) }}</div>\n        {% } %}\n      {% }) %}\n    </div>',
+            row: '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        {% if (displayValue(component)) { %}\n          <div class="col-sm-4">\n            {{ isVisibleInRow(component) ? getView(component, row[component.key]) : \'\'}}\n          </div>\n        {% } %}\n      {% }) %}\n      {% if (!instance.options.readOnly && !instance.disabled) { %}\n        <div class="col-sm-4">\n          <div class="btn-group pull-right">\n            <button class="btn btn-default btn-light btn-sm editRow"><i class="{{ iconClass(\'edit\') }}"></i></button>\n            {% if (!instance.hasRemoveButtons || instance.hasRemoveButtons()) { %}\n              <button class="btn btn-danger btn-sm removeRow"><i class="{{ iconClass(\'trash\') }}"></i></button>\n            {% } %}\n          </div>\n        </div>\n      {% } %}\n    </div>',
+          },
+          addAnother: 'Add Column',
+          redrawOn: 'reportingForms',
+          rowDrafts: false,
+          key: 'calculatedColumns',
+          type: 'editgrid',
+          displayAsTable: false,
+          input: true,
+          components: [
+            {
+              label: 'Operator',
+              widget: 'choicesjs',
+              tooltip: 'Select an operator to calculate the column value.',
+              tableView: true,
+              dataSrc: 'custom',
+              data: {
+                custom:
+                  'values = [{value:"sum" , label:"sum" }, {value:"divide" , label:"divide" }]\n',
+              },
+              valueProperty: 'value',
+              validateWhenHidden: false,
+              key: 'operator',
+              type: 'select',
+              input: true,
+            },
+            {
+              label: 'Arguments',
+              widget: 'choicesjs',
+              tableView: false,
+              dataSrc: 'custom',
+              data: {
+                custom:
+                  'values = [{label: "arg1", value:"arg1" }, {label: "arg2", value:"arg2" }]',
+              },
+              valueProperty: 'value',
+              validateWhenHidden: false,
+              key: 'args',
+              customConditional: "show = row.operator === 'sum';",
+              type: 'select',
+              input: true,
+            },
+            {
+              label: 'Columns',
+              columns: [
+                {
+                  components: [
+                    {
+                      label: 'Dividend',
+                      widget: 'choicesjs',
+                      tableView: false,
+                      dataSrc: 'custom',
+                      data: {
+                        custom:
+                          'values = [{label: "arg1", value:"arg1" }, {label: "arg2", value:"arg2" }]',
+                      },
+                      valueProperty: 'value',
+                      validateWhenHidden: false,
+                      key: 'dividend',
+                      type: 'select',
+                      input: true,
+                    },
+                  ],
+                  width: 6,
+                  offset: 0,
+                  push: 0,
+                  pull: 0,
+                  size: 'md',
+                  currentWidth: 6,
+                },
+                {
+                  components: [],
+                  width: 6,
+                  offset: 0,
+                  push: 0,
+                  pull: 0,
+                  size: 'md',
+                  currentWidth: 6,
+                },
+              ],
+              key: 'divideArgs',
+              customConditional: "show = row.operator === 'divide';",
+              type: 'columns',
+              input: false,
+              tableView: false,
+            },
+          ],
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ] 
+    };
+    const data = {
+      calculatedColumns: [
+        { operator: 'sum', args: 'arg1' },
+        { operator: 'divide', dividend: 'arg2' },
+      ],
+      submit: true,
+    };
+    const submission = {
+      data: fastCloneDeep(data),
+    };
+
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.deepEqual(context.data, data)
+  });
+
   describe('Required component validation in nested form in DataGrid/EditGrid', () => {
     const nestedForm = {
       key: 'form',
@@ -3275,13 +3413,12 @@ describe('Process Tests', () => {
         processSync(context);
         context.processors = ProcessTargets.evaluator;
         processSync(context);
-        console.log(JSON.stringify(context.data, null, 2));
-
         expect((context.scope as ValidationScope).errors).to.have.length(0);
          expect(context.data).to.deep.equal({
           editGrid: [{ form: { data: { textField: 'test' } } }],
         });
       });
+
       it('Should not validate required component when it is not filled out', async () => {
         const submission = {
           data: {
@@ -3313,7 +3450,6 @@ describe('Process Tests', () => {
         processSync(context);
         expect((context.scope as ValidationScope).errors).to.have.length(1);
       });
-
     });
   });
 

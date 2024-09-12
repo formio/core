@@ -15,7 +15,9 @@ import {
   isArray,
   isEqual,
   trim,
-  isBoolean
+  isBoolean,
+  filter,
+  each
 } from "lodash";
 import { compare, applyPatch } from 'fast-json-patch';
 import {
@@ -39,6 +41,7 @@ import {
   SimpleConditional,
 } from "types";
 import { Evaluator } from "./Evaluator";
+import { fastCloneDeep } from "./fastCloneDeep";
 
 /**
  * Flatten the form components for data manipulation.
@@ -306,9 +309,26 @@ export const eachComponentDataAsync = async (
       if (isComponentNestedDataType(component)) {
         const value = get(data, compPath, data);
         if (Array.isArray(value)) {
+          const rowComponents = component.components || [];
+          const rowsCreated = has(rowComponents[0], 'rowIndex');
+          // Create a row components copy as each row components must be evaluated independently and do not refer to the same component object
+          const componentsCopy = fastCloneDeep(rowComponents);
           for (let i = 0; i < value.length; i++) {
+            const isFirstRow = i === 0;
+            let components = [];
+            if (rowsCreated) {
+              // If raw componenet has already been created, just find the components for the particular row 
+              components = filter(rowComponents, comp => comp.rowIndex === i);
+            }
+            else {
+              components = isFirstRow ? rowComponents : fastCloneDeep(componentsCopy);
+              each(components, comp => {
+                comp.rowIndex = i;
+              });
+            }
+
             await eachComponentDataAsync(
-              component.components,
+              components,
               data,
               fn,
               `${compPath}[${i}]`,
@@ -316,9 +336,14 @@ export const eachComponentDataAsync = async (
               component,
               includeAll
             );
+            if (!isFirstRow && !rowsCreated) {
+              // Add each row components to the parent components array so that parent component could have access to them (e.g. for setting hidden)
+              each(components, comp => (component.components || []).push(comp));
+            }
           }
           return true;
-        } else if (isEmpty(row) && !includeAll) {
+        }
+        else if (isEmpty(row) && !includeAll) {
           // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
           return true;
         }
@@ -370,8 +395,37 @@ export const eachComponentData = (
       if (isComponentNestedDataType(component)) {
         const value = get(data, compPath, data) as DataObject;
         if (Array.isArray(value)) {
+          const rowComponents = component.components || [];
+          const rowsCreated = has(rowComponents[0], 'rowIndex');
+          // Create a row components copy as each row components must be evaluated independently and do not refer to the same component object
+          const componentsCopy = fastCloneDeep(rowComponents);
           for (let i = 0; i < value.length; i++) {
-            eachComponentData(component.components, data, fn, `${compPath}[${i}]`, i, component, includeAll);
+            const isFirstRow = i === 0;
+            let components = [];
+            if (rowsCreated) {
+              // If raw componenet has already been created, just find the components for the particular row 
+              components = filter(rowComponents, comp => comp.rowIndex === i);
+            }
+            else {
+              components = isFirstRow ? rowComponents : fastCloneDeep(componentsCopy);
+              each(components, comp => {
+                comp.rowIndex = i;
+              });
+            }
+
+            eachComponentData(
+              components,
+              data,
+              fn,
+              `${compPath}[${i}]`,
+              i,
+              component,
+              includeAll
+            );
+            if (!isFirstRow && !rowsCreated) {
+              // Add each row components to the parent components array so that parent component could have access to them (e.g. for setting hidden)
+              each(components, comp => (component.components || []).push(comp));
+            }
           }
           return true;
         } else if (isEmpty(row) && !includeAll) {
