@@ -76,13 +76,13 @@ export const validateDaySync: RuleFnSync = (context: ValidationContext) => {
         if (component.fields.month.hide) {
             DAY = DAY === 0 ? 0 : DAY - 1;
             YEAR = YEAR - 1;
-            day = values[DAY];
+            day = (component.fields.day.hide && day === 0) ? 0 : values[DAY];
             month = 0;
             year = values[YEAR];
         };
         if (component.fields.year.hide) {
-            day = values[DAY];
-            month = values[MONTH];
+            day = (component.fields.day.hide && day === 0) ? 0 : values[DAY];
+            month = (component.fields.month.hide && month === 0) ? 0 :values[MONTH];
             year = 0;
         };
     }
