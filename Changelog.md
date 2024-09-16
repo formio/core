@@ -23,6 +23,10 @@
  - FIO-8901: Fixed incorrect handling of excessive rows in nested array model
  - FIO-8912: update validateMultiple to account for model types
  - fix formiojs tests
+ - FIO-8798: update normalization for day component
+ - FIO-8986 fixed validation for Day component with two hidden fields
+ - FIO-8912: updates to model types, naming
+ - FIO-8414: Fix required validation not working in Data Grid
 
 ## 2.3.0-rc.1
 ### Changed
