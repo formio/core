@@ -86,20 +86,25 @@ const normalizeDayComponentValue = (component: DayComponent, form: any, value: a
     const [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const defaultValue = component.defaultValue ? component.defaultValue.split('/') : '';
 
-    const getNextPart = (shouldTake: boolean, defaultValue: string) =>
-        dateParts.push(shouldTake ? valueParts.shift() : defaultValue);
+    const getNextPart = (shouldTake: boolean, defaultValue: string) => {
+      // Only push the part if it's not an empty string
+      const part: string = shouldTake ? valueParts.shift() : defaultValue;
+      if (part !== '') {
+        dateParts.push(part);
+      }
+     }
 
     if (isDayFirst) {
-        getNextPart(showDay, defaultValue ? defaultValue[DAY] : '00');
+        getNextPart(showDay, defaultValue ? defaultValue[DAY] : '');
     }
 
-    getNextPart(showMonth, defaultValue ? defaultValue[MONTH] : '00');
+    getNextPart(showMonth, defaultValue ? defaultValue[MONTH] : '');
 
     if (!isDayFirst) {
-        getNextPart(showDay, defaultValue ? defaultValue[DAY] : '00');
+        getNextPart(showDay, defaultValue ? defaultValue[DAY] : '');
     }
 
-    getNextPart(showYear, defaultValue ? defaultValue[YEAR] : '0000');
+    getNextPart(showYear, defaultValue ? defaultValue[YEAR] : '');
 
     return dateParts.join('/');
 };
