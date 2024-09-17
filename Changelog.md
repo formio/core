@@ -1,5 +1,7 @@
-## [Unreleased: 2.3.0-rc.3]
+## 2.3.0-rc.3
 ### Changed
+ - FIO-8986 fixed validation for Day component with two hidden fields
+ - FIO-8798: update normalization for day component
  - Increment minor version
 
 ## 2.2.3-rc.2
