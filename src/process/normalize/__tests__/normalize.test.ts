@@ -305,3 +305,22 @@ it('Should normalize a day component with disabled components ', async () => {
   normalizeProcessSync(context);
   expect(context.data).to.deep.equal({ day: '01/2025' });
 });
+
+it('Should normalize a day component with disabled components and defaultValue', async () => {
+  const dayComp: DayComponent = {
+    type: 'day',
+    key: 'day',
+    label: 'Day',
+    input: true,
+    defaultValue: '01/2025',
+    fields: {
+      day: {hide: true},
+      month: {hide: false},
+      year: {hide: false}
+    }
+  };
+  const data = { day: '01/2025', };
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(dayComp, data);
+  normalizeProcessSync(context);
+  expect({ day: '01/2025' }).to.deep.equal({ day: '01/2025' });
+});
