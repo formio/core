@@ -83,10 +83,6 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
     if (!hasConditions(context)) {
         return;
     }
-    // Reset 'hidden' property to recalculate the conditions for every component
-    if (component.hidden) {
-        delete component.hidden;
-    }
     if (!scope.conditionals) {
         scope.conditionals = [];
     }
@@ -97,9 +93,6 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
     }
 
     conditionalComp.conditionallyHidden = conditionalComp.conditionallyHidden || isHidden(context);
-    if (conditionalComp.conditionallyHidden) {
-        set(component, 'hidden', true);
-    }
 };
 
 export const customConditionProcess: ProcessorFn<ConditionsScope> = async (context: ConditionsContext) => {

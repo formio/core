@@ -3682,7 +3682,7 @@ describe('Process Tests', () => {
       processSync(context);
 
       expect(context.data).to.deep.equal({
-        candidates:[{candidate:{data:{section6:{}}}}],
+        candidates:[{candidate:{data:{section6:{ "c":{}, "d":[]}}}}],
         submit: true
       });
     });

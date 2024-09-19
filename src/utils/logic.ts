@@ -69,7 +69,6 @@ export function setActionBooleanProperty(context: LogicContext, action: LogicAct
                     conditionallyHidden: !!component.hidden,
                 });
             }
-            set(component, 'hidden', !!component.hidden);
         }
         return true;
     }
@@ -140,10 +139,6 @@ export const applyActions = (context: LogicContext): boolean => {
     const { logic } = component;
     if (!logic || !logic.length) {
         return false;
-    }
-    // Reset 'hidden' property to recalculate the logic for every component
-    if (component.hidden) {
-        delete component.hidden
     }
     return logic.reduce((changed, logicItem) => {
         const { actions, trigger } = logicItem;
