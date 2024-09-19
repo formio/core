@@ -652,6 +652,7 @@ export function getComponentActualValue(component: Component, compPath: string, 
   //
   let parentInputComponent: any = null;
   let parent = component;
+  let rowPath = '';
 
   while (parent?.parent?.path && !parentInputComponent) {
     parent = parent.parent;
@@ -662,13 +663,13 @@ export function getComponentActualValue(component: Component, compPath: string, 
 
   if (parentInputComponent) {
     const parentCompPath = parentInputComponent.path.replace(/\[[0-9]+\]/g, '');
-    compPath = compPath.replace(parentCompPath, '');
-    compPath = trim(compPath, '. ');
+    rowPath = compPath.replace(parentCompPath, '');
+    rowPath = trim(rowPath, '. ');
   }
 
   let value = null;
-  if (row) {
-    value = get(row, compPath);
+  if (rowPath && row) {
+    value = get(row, rowPath);
   }
   if (data && isNil(value)) {
     value = get(data, compPath);
