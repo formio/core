@@ -19,14 +19,15 @@
  - FIO-8885 & FIO-8886: use strict equality check for conditional component paths rather than Array.prototype.includes
  - FIO-8810: fixed an issue where user unables to resubmit (change) the form with several levels of nested forms with required fields
  - FIO-8848 fixed validation for TextArea with Save as Json
- - FIO-8769 added check for the simpleConditional properties state
- - FIO-8901: Fixed incorrect handling of excessive rows in nested array model
+ - FIO-8769: added check for the simpleConditional properties state
+ - FIO-8901: fixed incorrect handling of excessive rows in nested array model
  - FIO-8912: update validateMultiple to account for model types
  - fix formiojs tests
  - FIO-8798: update normalization for day component
  - FIO-8986 fixed validation for Day component with two hidden fields
  - FIO-8912: updates to model types, naming
- - FIO-8414: Fix required validation not working in Data Grid
+ - FIO-8414: fixed required validation not working in Data Grid
+ - FIO-8986: fixed normalization for day with default value and hidden fields
 
 ## 2.3.0-rc.1
 ### Changed
