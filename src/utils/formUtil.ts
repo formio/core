@@ -668,11 +668,11 @@ export function getComponentActualValue(component: Component, compPath: string, 
   }
 
   let value = null;
-  if (rowPath && row) {
-    value = get(row, rowPath);
-  }
-  if (data && isNil(value)) {
+  if (data) {
     value = get(data, compPath);
+  }
+  if (rowPath && row && isNil(value)) {
+    value = get(row, rowPath);
   }
   if (isNil(value) || (isObject(value) && isEmpty(value))) {
     value = '';
