@@ -1,4 +1,4 @@
-import { get, set, isString, toString, isNil, isObject } from 'lodash';
+import { get, set, isString, toString, isNil, isObject, isNull } from 'lodash';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import {
@@ -86,6 +86,36 @@ const normalizeDayComponentValue = (component: DayComponent, form: any, value: a
     const [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];
     const defaultValue = component.defaultValue ? component.defaultValue.split('/') : '';
 
+    let defaultDay = '';
+    let defaultMonth = '';
+    let defaultYear = '';
+
+    const getDayWithHiddenFields = (parts: Array<string>) => {
+        let DAY, MONTH, YEAR
+        [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+        if (!showDay) {
+            MONTH = MONTH === 0 ? 0 : MONTH - 1;
+            YEAR = YEAR - 1;
+            DAY = null;
+        }
+        if (!showMonth) {
+            if (!isNull(DAY)) {
+                DAY = DAY === 0 ? 0 : DAY - 1;
+            }
+          YEAR = YEAR - 1;
+          MONTH = null;
+        }
+        if (!showYear) {
+          YEAR = null;
+        }
+
+        return {
+          month: isNull(MONTH) ? '' : parts[MONTH],
+          day: isNull(DAY) ? '' : parts[DAY],
+          year: isNull(YEAR) ? '' : parts[YEAR],
+        }
+    }
+
     const getNextPart = (shouldTake: boolean, defaultValue: string) => {
       // Only push the part if it's not an empty string
       const part: string = shouldTake ? valueParts.shift() : defaultValue;
@@ -94,17 +124,24 @@ const normalizeDayComponentValue = (component: DayComponent, form: any, value: a
       }
      }
 
-    if (isDayFirst) {
-        getNextPart(showDay, defaultValue ? defaultValue[DAY] : '');
+    if(defaultValue) {
+        const hasHiddenFields = defaultValue.length !==3;
+        defaultDay = hasHiddenFields ? getDayWithHiddenFields(defaultValue).day : defaultValue[DAY];
+        defaultMonth = hasHiddenFields ? getDayWithHiddenFields(defaultValue).month : defaultValue[MONTH];
+        defaultYear = hasHiddenFields ? getDayWithHiddenFields(defaultValue).year : defaultValue[YEAR];
     }
 
-    getNextPart(showMonth, defaultValue ? defaultValue[MONTH] : '');
+    if (isDayFirst) {
+        getNextPart(showDay, defaultDay);
+    }
+
+    getNextPart(showMonth, defaultMonth);
 
     if (!isDayFirst) {
-        getNextPart(showDay, defaultValue ? defaultValue[DAY] : '');
+        getNextPart(showDay, defaultDay);
     }
 
-    getNextPart(showYear, defaultValue ? defaultValue[YEAR] : '');
+    getNextPart(showYear, defaultYear);
 
     return dateParts.join('/');
 };
