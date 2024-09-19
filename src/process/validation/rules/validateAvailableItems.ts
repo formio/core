@@ -23,7 +23,7 @@ function isValidateableSelectComponent(component: any): component is SelectCompo
     );
 }
 
-function mapDynamicValues<T extends Record<string, any>>(component: SelectComponent, values: T[]) {
+export function mapDynamicValues<T extends Record<string, any>>(component: SelectComponent, values: T[]) {
     return values.map((value) => {
         if (component.valueProperty) {
             return value[component.valueProperty];
@@ -173,7 +173,7 @@ function getAvailableSelectValuesSync(component: SelectComponent, context: Valid
     }
 }
 
-function compareComplexValues(valueA: unknown, valueB: unknown, context: ValidationContext) {
+export function compareComplexValues(valueA: unknown, valueB: unknown, context: ValidationContext) {
     if (!isObject(valueA) || !isObject(valueB)) {
         return false;
     }
