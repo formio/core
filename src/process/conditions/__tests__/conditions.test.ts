@@ -53,8 +53,9 @@ describe('Condition processor', () => {
       form,
       submission
     );
-    expect(context.components[1]).to.haveOwnProperty('hidden');
-    expect(context.components[1].hidden).to.be.true;
+    expect(context.scope.conditionals).to.have.length(1);
+    expect(context.scope.conditionals?.[0].path).to.equal(form.components[1].key);
+    expect(context.scope.conditionals?.[0].conditionallyHidden).to.be.true;
   });
 
   it('Should not define a conditional component (that condition is based on selectBoxes value) as hidden', async () => {

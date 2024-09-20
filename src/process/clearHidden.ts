@@ -36,7 +36,7 @@ export const clearHiddenProcess: ProcessorFnSync<ClearHiddenScope> = (context) =
 
     const shouldClearValueWhenHidden = !component.hasOwnProperty('clearOnHide') || component.clearOnHide;
 
-    if (shouldClearValueWhenHidden && (isConditionallyHidden || isParentHidden(component))) {
+    if (shouldClearValueWhenHidden && (isConditionallyHidden || isParentHidden(component) || component.hidden)) {
         unset(data, path);
         scope.clearHidden[path] = true;
     }
