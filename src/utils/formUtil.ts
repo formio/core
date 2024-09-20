@@ -104,15 +104,30 @@ export function uniqueName(name: string, template?: string, evalContext?: any) {
   return uniqueName;
 }
 
-// TODO: bring in all component types (don't forget premium components)
-export const MODEL_TYPES_OF_KNOWN_COMPONENTS: Record<string, string[]> = {
-  array: [
+/**
+ * Defines model types for known components.
+ * For now, these will be the only model types supported by the @formio/core library.
+ *
+ * nestedArray: for components that store their data as an array and have nested components.
+ * array: for components that store their data as an array.
+ * dataObject: for components that store their data in a nested { data: {} } object.
+ * object: for components that store their data in an object.
+ * map: for components that store their data in a map.
+ * content: for components that do not store data.
+ * string: for components that store their data as a string.
+ * number: for components that store their data as a number.
+ * boolean: for components that store their data as a boolean.
+ * none: for components that do not store data and should not be included in the submission.
+ * any: for components that can store any type of data.
+ *
+ */
+export const MODEL_TYPES_OF_KNOWN_COMPONENTS = {
+  nestedArray: [
     'datagrid',
     'editgrid',
     'datatable',
     'dynamicWizard',
     'tagpad',
-    'file',
   ],
   dataObject: [
     'form'
@@ -166,7 +181,8 @@ export const MODEL_TYPES_OF_KNOWN_COMPONENTS: Record<string, string[]> = {
     'button',
     'datasource',
     'sketchpad',
-    'reviewpage'
+    'reviewpage',
+    'file',
   ],
 };
 
@@ -177,9 +193,9 @@ export function getModelType(component: Component): keyof typeof MODEL_TYPES_OF_
   }
 
   // Otherwise, check for known component types.
-  for (const type in MODEL_TYPES_OF_KNOWN_COMPONENTS) {
+  for (const type of Object.keys(MODEL_TYPES_OF_KNOWN_COMPONENTS) as (keyof typeof MODEL_TYPES_OF_KNOWN_COMPONENTS)[]) {
     if (MODEL_TYPES_OF_KNOWN_COMPONENTS[type].includes(component.type)) {
-      return type as keyof typeof MODEL_TYPES_OF_KNOWN_COMPONENTS;
+      return type;
     }
   }
 
@@ -216,11 +232,11 @@ export function getComponentPath(component: Component, path: string) {
   if (path.match(new RegExp(`${key}$`))) {
     return path;
   }
-  return (getModelType(component) === 'layout') ? `${path}.${key}` : path;
+  return (getModelType(component) === 'none') ? `${path}.${key}` : path;
 }
 
 export function isComponentNestedDataType(component: any) {
-  return component.tree || getModelType(component) === 'array' ||
+  return component.tree || getModelType(component) === 'nestedArray' ||
     getModelType(component) === 'dataObject' ||
     getModelType(component) === 'object' ||
     getModelType(component) === 'map';
@@ -244,7 +260,7 @@ export const componentDataPath = (component: any, parentPath: string, path: stri
     if (getModelType(component) === 'dataObject') {
       return `${path}.data`;
     }
-    if (getModelType(component) === 'array') {
+    if (getModelType(component) === 'nestedArray') {
       return `${path}[0]`;
     }
     if (isComponentNestedDataType(component)) {
@@ -415,7 +431,7 @@ export function componentInfo(component: any) {
   const hasRows = component.rows && Array.isArray(component.rows);
   const hasComps = component.components && Array.isArray(component.components);
   const isContent = getModelType(component) === 'content';
-  const isLayout = getModelType(component) === 'layout';
+  const isLayout = getModelType(component) === 'none';
   const isInput = !component.hasOwnProperty('input') || !!component.input;
   return {
     hasColumns,

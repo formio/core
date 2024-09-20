@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { TimeComponent, SelectBoxesComponent, ProcessorContext, ProcessorScope } from 'types';
+import { TimeComponent, SelectBoxesComponent, ProcessorContext, ProcessorScope, DayComponent } from 'types';
 import { normalizeProcessSync } from '../';
 import { generateProcessorContext } from '../../__tests__/fixtures/util';
 
@@ -285,4 +285,42 @@ it('Should normalize a number component value with a multiple values allowed', (
   const context: ProcessorContext<ProcessorScope> = generateProcessorContext(numberComp, data);
   normalizeProcessSync(context);
   expect(context.data).to.deep.equal({ number: [0.0123, 123] });
+});
+
+it('Should normalize a day component with disabled components ', async () => {
+  const dayComp: DayComponent = {
+    type: 'day',
+    key: 'day',
+    label: 'Day',
+    input: true,
+    defaultValue:'',
+    fields: {
+      day: {hide: true},
+      month: {hide: false},
+      year: {hide: false}
+    }
+  };
+  const data = { day: '01/2025', };
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(dayComp, data);
+  normalizeProcessSync(context);
+  expect(context.data).to.deep.equal({ day: '01/2025' });
+});
+
+it('Should normalize a day component with disabled components and defaultValue', async () => {
+  const dayComp: DayComponent = {
+    type: 'day',
+    key: 'day',
+    label: 'Day',
+    input: true,
+    defaultValue: '01/2025',
+    fields: {
+      day: {hide: true},
+      month: {hide: false},
+      year: {hide: false}
+    }
+  };
+  const data = { day: '01/2025', };
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(dayComp, data);
+  normalizeProcessSync(context);
+  expect({ day: '01/2025' }).to.deep.equal({ day: '01/2025' });
 });
