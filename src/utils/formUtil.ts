@@ -1236,11 +1236,12 @@ export function isComponentDataEmpty(component: Component, data: any, path: stri
   if (isCheckboxComponent(component)) {
     return isValueEmpty(component, value) || value === false;
   }
-
   else if (isAddressComponent(component)) {
-    return isValueEmpty(component, value);
+    if(Object.keys(value).length === 0) {
+      return true
+    }
+    return !Object.values(value).some(Boolean);
   }
-
   else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {
     if (component.components?.length) {
       let childrenEmpty = true;

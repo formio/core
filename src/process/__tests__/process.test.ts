@@ -3,7 +3,7 @@ import assert from 'node:assert'
 import type { ContainerComponent, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
 import { process, processSync, ProcessTargets } from '../index';
-import { clearOnHideWithCustomCondition, clearOnHideWithHiddenParent, forDataGridRequired, skipValidForConditionallyHiddenComp, skipValidForLogicallyHiddenComp, skipValidWithHiddenParentComp  } from './fixtures'
+import { addressComponentWithOtherCondComponents, clearOnHideWithCustomCondition, clearOnHideWithHiddenParent, forDataGridRequired, skipValidForConditionallyHiddenComp, skipValidForLogicallyHiddenComp, skipValidWithHiddenParentComp  } from './fixtures'
 /*
 describe('Process Tests', () => {
     it('Should perform the processes using the processReduced method.', async () => {
@@ -3384,6 +3384,28 @@ describe('Process Tests', () => {
     processSync(context);
     assert.equal(context.scope.errors.length, 0);
     assert.deepEqual(context.data.form, { _id: '66c455fc0f00757fd4b0e79b', data: {} })
+  });
+
+  it('Should not hide other components data from submission when address component is filled out', async () => {
+    const {form, submission} = addressComponentWithOtherCondComponents
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    expect(context.submission.data.number).to.be.equal(1);
+    expect(context.submission.data.textField).to.be.equal('some text');
   });
 
   describe('Required component validation in nested form in DataGrid/EditGrid', () => {
