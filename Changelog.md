@@ -1,3 +1,7 @@
+## [Unreleased: 2.2.3-rc.4]
+### Changed
+ - FIO-9055: separate rowPath from componentPath in getComponentActualValue fn
+
 ## 2.2.3-rc.3
 ### Changed
  - moved 2.2.3-rc.2 to new branch 2.3.x
