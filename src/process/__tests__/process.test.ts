@@ -2701,6 +2701,464 @@ describe('Process Tests', () => {
     });
   });
 
+  it('Should allow conditionally hidden components that depend on state outside of the contextual row data', async () => {
+    const form = {
+      display: 'form',
+      components: [
+        {
+          label: 'Select',
+          widget: 'choicesjs',
+          tableView: true,
+          data: {
+            values: [
+              {
+                label: 'Action1',
+                value: 'action1',
+              },
+              {
+                label: 'Custom',
+                value: 'custom',
+              },
+            ],
+          },
+          key: 'select',
+          type: 'select',
+          input: true,
+        },
+        {
+          label: 'Edit Grid',
+          tableView: false,
+          rowDrafts: false,
+          key: 'editGrid',
+          type: 'editgrid',
+          displayAsTable: false,
+          input: true,
+          components: [
+            {
+              label: 'Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              key: 'textField',
+              conditional: {
+                show: true,
+                conjunction: 'all',
+                conditions: [
+                  {
+                    component: 'select',
+                    operator: 'isEqual',
+                    value: 'custom',
+                  },
+                ],
+              },
+              type: 'textfield',
+              input: true,
+            },
+          ],
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        select: 'custom',
+        editGrid: [
+          {
+            textField: 'TEST',
+          },
+        ],
+      },
+    };
+
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    expect(context.data).to.deep.equal({
+      select: 'custom',
+      editGrid: [
+        {
+          textField: 'TEST',
+        },
+      ],
+    });
+  });
+
+  it('Should allow conditionally hidden components that depend on state outside of the contextual row data with nested structures', async () => {
+    const form = {
+      display: 'form',
+      components: [
+        {
+          key: 'container',
+          type: 'container',
+          components: [
+            {
+              label: 'Select',
+              widget: 'choicesjs',
+              tableView: true,
+              data: {
+                values: [
+                  {
+                    label: 'Action1',
+                    value: 'action1',
+                  },
+                  {
+                    label: 'Custom',
+                    value: 'custom',
+                  },
+                ],
+              },
+              key: 'select',
+              type: 'select',
+              input: true,
+            },
+          ],
+          input: true
+        },
+        {
+          label: 'Edit Grid',
+          tableView: false,
+          rowDrafts: false,
+          key: 'editGrid',
+          type: 'editgrid',
+          displayAsTable: false,
+          input: true,
+          components: [
+            {
+              label: 'Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              key: 'textField',
+              conditional: {
+                show: true,
+                conjunction: 'all',
+                conditions: [
+                  {
+                    component: 'container.select',
+                    operator: 'isEqual',
+                    value: 'custom',
+                  },
+                ],
+              },
+              type: 'textfield',
+              input: true,
+            },
+          ],
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        container: {
+          select: 'custom',
+        },
+        editGrid: [
+          {
+            textField: 'TEST',
+          },
+        ],
+      },
+    };
+
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    expect(context.data).to.deep.equal({
+      container: {
+        select: 'custom',
+      },
+      editGrid: [
+        {
+          textField: 'TEST',
+        },
+      ],
+    });
+  });
+
+  it('Should allow conditionally hidden components that depend on state outside of the contextual row data, with co-located component keys in the row that are not targets of conditions', async () => {
+    const form = {
+      display: 'form',
+      components: [
+        {
+          label: 'Select',
+          widget: 'choicesjs',
+          tableView: true,
+          data: {
+            values: [
+              {
+                label: 'Action1',
+                value: 'action1',
+              },
+              {
+                label: 'Custom',
+                value: 'custom',
+              },
+            ],
+          },
+          key: 'select',
+          type: 'select',
+          input: true,
+        },
+        {
+          label: 'Edit Grid',
+          tableView: false,
+          rowDrafts: false,
+          key: 'editGrid',
+          type: 'editgrid',
+          displayAsTable: false,
+          input: true,
+          components: [
+            {
+              label: 'Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              key: 'textField',
+              conditional: {
+                show: true,
+                conjunction: 'all',
+                conditions: [
+                  {
+                    component: 'select',
+                    operator: 'isEqual',
+                    value: 'custom',
+                  },
+                ],
+              },
+              type: 'textfield',
+              input: true,
+            },
+            {
+              label: 'Select',
+              widget: 'choicesjs',
+              tableView: true,
+              data: {
+                values: [
+                  {
+                    label: 'Action1',
+                    value: 'action1',
+                  },
+                  {
+                    label: 'Custom',
+                    value: 'custom',
+                  },
+                ],
+              },
+              key: 'select',
+              type: 'select',
+              input: true,
+            },
+          ]
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        select: 'custom',
+        editGrid: [
+          {
+            textField: 'TEST',
+            select: 'action1'
+          },
+        ],
+      },
+    };
+
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    expect(context.data).to.deep.equal({
+      select: 'custom',
+      editGrid: [
+        {
+          textField: 'TEST',
+          select: 'action1'
+        },
+      ],
+    });
+  });
+
+  it('Should allow conditionally hidden components that depend on state outside of the contextual row data, with nested and co-located component keys in the row that are not targets of conditions', async () => {
+    const form = {
+      display: 'form',
+      components: [
+        {
+          type: 'container',
+          key: 'container',
+          input: true,
+          components: [
+            {
+              label: 'Select',
+              widget: 'choicesjs',
+              tableView: true,
+              data: {
+                values: [
+                  {
+                    label: 'Action1',
+                    value: 'action1',
+                  },
+                  {
+                    label: 'Custom',
+                    value: 'custom',
+                  },
+                ],
+              },
+              key: 'select',
+              type: 'select',
+              input: true,
+            },
+            {
+              label: 'Edit Grid',
+              tableView: false,
+              rowDrafts: false,
+              key: 'editGrid',
+              type: 'editgrid',
+              displayAsTable: false,
+              input: true,
+              components: [
+                {
+                  label: 'Text Field',
+                  applyMaskOn: 'change',
+                  tableView: true,
+                  key: 'textField',
+                  conditional: {
+                    show: true,
+                    conjunction: 'all',
+                    conditions: [
+                      {
+                        component: 'container.select',
+                        operator: 'isEqual',
+                        value: 'custom',
+                      },
+                    ],
+                  },
+                  type: 'textfield',
+                  input: true,
+                },
+                {
+                  label: 'Select',
+                  widget: 'choicesjs',
+                  tableView: true,
+                  data: {
+                    values: [
+                      {
+                        label: 'Action1',
+                        value: 'action1',
+                      },
+                      {
+                        label: 'Custom',
+                        value: 'custom',
+                      },
+                    ],
+                  },
+                  key: 'select',
+                  type: 'select',
+                  input: true,
+                },
+              ]
+            },
+          ],
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        container: {
+          select: 'custom',
+          editGrid: [
+            {
+              textField: 'TEST',
+              select: 'action1'
+            },
+          ],
+        }
+      },
+    };
+
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    expect(context.data).to.deep.equal({
+      container: {
+        select: 'custom',
+        editGrid: [
+          {
+            textField: 'TEST',
+            select: 'action1'
+          },
+        ],
+      }
+    });
+  });
+
   it('Should include submission data for logically visible fields', async () => {
     const form = {
       display: 'form',
