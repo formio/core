@@ -37,6 +37,7 @@ import {
   LegacyConditional,
   JSONConditional,
   SimpleConditional,
+  AddressComponent,
 } from "types";
 import { Evaluator } from "./Evaluator";
 
@@ -1177,6 +1178,7 @@ export function findComponent(components: any, key: any, path: any, fn: any) {
 const isCheckboxComponent = (component: any): component is CheckboxComponent => component?.type === 'checkbox';
 const isDataGridComponent = (component: any): component is DataGridComponent => component?.type === 'datagrid';
 const isEditGridComponent = (component: any): component is EditGridComponent => component?.type === 'editgrid';
+const isAddressComponent = (component: any): component is AddressComponent => component?.type === 'address';
 const isDataTableComponent = (component: any): component is DataTableComponent => component?.type === 'datatable';
 const hasChildComponents = (component: any): component is HasChildComponents => component?.components != null;
 const isDateTimeComponent = (component: any): component is DateTimeComponent => component?.type === 'datetime';
@@ -1232,7 +1234,13 @@ export function isComponentDataEmpty(component: Component, data: any, path: stri
   const value = isNil(valueCond) ? get(data, path): valueCond;
   if (isCheckboxComponent(component)) {
     return isValueEmpty(component, value) || value === false;
-  } else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {
+  }
+
+  else if (isAddressComponent(component)) {
+    return isValueEmpty(component, value);
+  }
+
+  else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {
     if (component.components?.length) {
       let childrenEmpty = true;
       // wrap component in an array to let eachComponentData handle introspection to child components (e.g. this will be different
