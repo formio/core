@@ -1,3 +1,8 @@
+## 2.3.0-rc.4
+### Changed
+ - FIO-8986 fixed nornalization for day with default value and hidden fields
+ - FIO-9055: separate rowPath from componentPath in getComponentActualValue fn
+
 ## 2.3.0-rc.3
 ### Changed
  - FIO-8986 fixed validation for Day component with two hidden fields
