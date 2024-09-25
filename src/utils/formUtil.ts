@@ -667,10 +667,20 @@ export function getComponentActualValue(component: Component, compPath: string, 
     rowPath = trim(rowPath, '. ');
   }
 
+  const compPathModified = compPath.split(".");
+  if(compPathModified.length > 1) {
+    compPath = compPathModified[compPathModified.length-1];
+  }
+
   let value = null;
   if (data) {
     value = get(data, compPath);
   }
+  ///!!!!!///
+  if (row) {
+    value = get(row, compPath);
+  }
+
   if (rowPath && row && isNil(value)) {
     value = get(row, rowPath);
   }
