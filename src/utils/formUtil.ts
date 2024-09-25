@@ -110,6 +110,7 @@ export function uniqueName(name: string, template?: string, evalContext?: any) {
  * For now, these will be the only model types supported by the @formio/core library.
  *
  * nestedArray: for components that store their data as an array and have nested components.
+ * nestedDataArray: for components that store their data as an array and have nested components, but keeps the value of nested components inside 'data' property.
  * array: for components that store their data as an array.
  * dataObject: for components that store their data in a nested { data: {} } object.
  * object: for components that store their data in an object.
