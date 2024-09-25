@@ -19,7 +19,12 @@ export const hideChildrenProcessor: ProcessorFnSync<ConditionsScope> = (context)
     const isConditionallyHidden = scope.conditionals?.find((cond) => {
         return path === cond.path && cond.conditionallyHidden;
     });
-    if (component.hidden && isConditionallyHidden) {
+
+    if (!scope.conditionals) {
+        scope.conditionals = [];
+    }
+
+    if (isConditionallyHidden || component.hidden) {
         const info = componentInfo(component);
         if (info.hasColumns || info.hasComps || info.hasRows) {
             // If this is a container component, we need to make the mutation to all the child components as well.
@@ -27,17 +32,6 @@ export const hideChildrenProcessor: ProcessorFnSync<ConditionsScope> = (context)
                 if (comp !== component) {
                     // the path set here is not the absolute path, but the path relative to the parent component
                     (scope as ConditionsScope).conditionals?.push({ path: getComponentPath(comp, compPath), conditionallyHidden: true });
-                    set(comp, 'hidden', true);
-                }
-            });
-        }
-    } else if (component.hidden) {
-        const info = componentInfo(component);
-        if (info.hasColumns || info.hasComps || info.hasRows) {
-            // If this is a container component, we need to make the mutation to all the child components as well.
-            eachComponentData([component], row, (comp: Component, data: any, compRow: any, compPath: string) => {
-                if (comp !== component) {
-                    set(comp, 'hidden', true);
                 }
             });
         }
