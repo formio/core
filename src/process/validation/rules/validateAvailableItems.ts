@@ -1,16 +1,16 @@
 import { isEmpty, isUndefined} from 'lodash';
 import { FieldError, ProcessorError } from 'error';
 import { Evaluator } from 'utils';
-import { RadioComponent, SelectComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
+import { RadioComponent, SelectComponent, RuleFn, RuleFnSync, ValidationContext, FetchFn, SelectBoxesComponent } from 'types';
 import { isObject, isPromise } from '../util';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
+import { getErrorMessage } from 'utils/error';
 
 function isValidatableRadioComponent(component: any): component is RadioComponent {
     return (
         component &&
         component.type === 'radio' &&
-        !!component.validate?.onlyAvailableItems &&
-        component.dataSrc === 'values'
+        !!component.validate?.onlyAvailableItems
     );
 }
 
@@ -23,7 +23,16 @@ function isValidateableSelectComponent(component: any): component is SelectCompo
     );
 }
 
-export function mapDynamicValues<T extends Record<string, any>>(component: SelectComponent, values: T[]) {
+function isValidateableSelectBoxesComponent(component: any): component is SelectBoxesComponent {
+    return (
+        component &&
+        !!component.validate?.onlyAvailableItems &&
+        component.type === 'selectboxes' &&
+        component.dataSrc === 'url'
+    );
+}
+
+function mapDynamicValues<T extends Record<string, any>>(component: SelectComponent, values: T[]) {
     return values.map((value) => {
         if (component.valueProperty) {
             return value[component.valueProperty];
@@ -34,6 +43,29 @@ export function mapDynamicValues<T extends Record<string, any>>(component: Selec
 
 function mapStaticValues(values: { label: string; value: string }[]) {
     return values.map((obj) => obj.value);
+}
+
+const getAvailableDynamicValues = async (component: any, context: ValidationContext) => {
+    let _fetch: FetchFn | null = null;
+    try {
+        _fetch = context.fetch ? context.fetch : fetch;
+    }
+    catch (err) {
+        _fetch = null;
+    }
+    try {
+        if (!_fetch) {
+            console.log('You must provide a fetch interface to the fetch processor.');
+            return null;
+        }
+        const response = await _fetch((component as any).data.url, { method: 'GET' });
+        const data = await response.json();
+        return data ? mapDynamicValues(component, data) : null;
+    } 
+    catch (err) {
+        console.error(getErrorMessage(err));
+        return null;
+    }
 }
 
 async function getAvailableSelectValues(component: SelectComponent, context: ValidationContext) {
@@ -100,6 +132,8 @@ async function getAvailableSelectValues(component: SelectComponent, context: Val
                     'validate:validateAvailableItems'
                 );
             }
+        case 'url':
+            return await getAvailableDynamicValues(component, context);
         default:
             throw new ProcessorError(
                 `Failed to validate available values in select component '${component.key}': data source ${component.dataSrc} is not valid}`,
@@ -173,7 +207,7 @@ function getAvailableSelectValuesSync(component: SelectComponent, context: Valid
     }
 }
 
-export function compareComplexValues(valueA: unknown, valueB: unknown, context: ValidationContext) {
+function compareComplexValues(valueA: unknown, valueB: unknown, context: ValidationContext) {
     if (!isObject(valueA) || !isObject(valueB)) {
         return false;
     }
@@ -196,11 +230,15 @@ export const validateAvailableItems: RuleFn = async (context: ValidationContext)
                 return null;
             }
 
-            const values = component.values;
+            const values = component.dataSrc === 'url' ? await getAvailableDynamicValues(component, context) : component.values;
             if (values) {
-                return values.findIndex(({ value: optionValue }) => optionValue === value) !== -1
-                    ? null
-                    : error;
+                if (isObject(value)) {
+                    return values.find((optionValue) => compareComplexValues(optionValue, value, context)) !==
+                        undefined
+                        ? null
+                        : error;
+                }
+                return values.find((optionValue) => optionValue === value) !== undefined ? null : error;
             }
 
             return null;
@@ -209,6 +247,21 @@ export const validateAvailableItems: RuleFn = async (context: ValidationContext)
                 return null;
             }
             const values = await getAvailableSelectValues(component, context);
+            if (values) {
+                if (isObject(value)) {
+                    return values.find((optionValue) => compareComplexValues(optionValue, value, context)) !==
+                        undefined
+                        ? null
+                        : error;
+                }
+
+                return values.find((optionValue) => optionValue === value) !== undefined ? null : error;
+            }
+        } else if (isValidateableSelectBoxesComponent(component)) {
+            if (value == null || isEmpty(value)) {
+                return null;
+            }
+            const values = await getAvailableDynamicValues(component, context);
             if (values) {
                 if (isObject(value)) {
                     return values.find((optionValue) => compareComplexValues(optionValue, value, context)) !==
@@ -237,6 +290,9 @@ export const shouldValidate = (context: any) => {
     if (isValidateableSelectComponent(component)) {
         return true;
     }
+    if (isValidateableSelectBoxesComponent(component)) {
+        return true;
+    }
     return false;
 }
 
@@ -247,7 +303,7 @@ export const validateAvailableItemsSync: RuleFnSync = (context: ValidationContex
         if (!shouldValidate(context)) {
             return null;
         }
-        if (isValidatableRadioComponent(component)) {
+        if (isValidatableRadioComponent(component) && component.dataSrc !== 'url') {
             const values = component.values;
             if (values) {
                 return values.findIndex(({ value: optionValue }) => optionValue === value) !== -1

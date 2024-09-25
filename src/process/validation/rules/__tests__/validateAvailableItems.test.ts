@@ -10,7 +10,6 @@ import {
 } from './fixtures/components';
 import { generateProcessorContext } from './fixtures/util';
 import { validateAvailableItems, validateAvailableItemsSync } from '../validateAvailableItems';
-import { validateAvailableItemsUrl } from '../validateAvailableItemsUrl';
 
 it('Validating a component without the available items validation parameter will return null', async () => {
     const component = simpleTextField;
@@ -480,7 +479,7 @@ it('Validating a simple radio component with url data source with the available 
             json: () => Promise.resolve(['1', '2', '3'])
         });
     };
-    const result = await validateAvailableItemsUrl(context);
+    const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
 
@@ -505,7 +504,7 @@ it('Validating a simple radio component with url data source with the available 
             json: () => Promise.resolve(['1', '2', '3'])
         });
     };
-    const result = await validateAvailableItemsUrl(context);
+    const result = await validateAvailableItems(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('invalidOption');
 });
@@ -531,7 +530,7 @@ it('Validating a simple select component with url data source with the available
             json: () => Promise.resolve([{'id': 'opt_1', 'value': 1}, {'id': 'opt_2', 'value': 2}])
         });
     };
-    const result = await validateAvailableItemsUrl(context);
+    const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
 
@@ -556,7 +555,7 @@ it('Validating a simple select component with url data source with the available
             json: () => Promise.resolve([{'id': 'opt_1', 'value': 1}, {'id': 'opt_2', 'value': 2}])
         });
     };
-    const result = await validateAvailableItemsUrl(context);
+    const result = await validateAvailableItems(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('invalidOption');
 });
