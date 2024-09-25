@@ -86,6 +86,7 @@ it("Should not filter coordinates for Tagpad component", async () => {
     tableView: false,
     validateWhenHidden: false,
     key: 'tagpad',
+    path: 'tagpad',
     type: 'tagpad',
     input: true,
     components: [
