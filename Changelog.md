@@ -1,3 +1,8 @@
+## 2.3.0-rc.5
+### Changed
+ - FIO-9085: Fix components data removed from submission when conditional set for Address component value
+ - FIO-8414: Fix required validation not working in Data Grid
+
 ## 2.3.0-rc.4
 ### Changed
  - FIO-8986 fixed nornalization for day with default value and hidden fields
