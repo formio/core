@@ -193,6 +193,12 @@ export function getModelType(component: Component): keyof typeof MODEL_TYPES_OF_
     return component.modelType;
   }
 
+  switch (component.type) {
+    case 'textarea':
+      if (['json'].includes((component as any).as)) {
+        return 'any';
+      };
+  }
   // Otherwise, check for known component types.
   for (const type of Object.keys(MODEL_TYPES_OF_KNOWN_COMPONENTS) as (keyof typeof MODEL_TYPES_OF_KNOWN_COMPONENTS)[]) {
     if (MODEL_TYPES_OF_KNOWN_COMPONENTS[type].includes(component.type)) {
