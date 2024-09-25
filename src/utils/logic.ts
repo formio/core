@@ -53,7 +53,6 @@ export function setActionBooleanProperty(context: LogicContext, action: LogicAct
         // flag which will trigger the clearOnHide functionality.
         if (
             property === 'hidden' &&
-            component.hidden &&
             path
         ) {
             if (!(scope as ConditionsScope).conditionals) {
