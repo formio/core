@@ -110,6 +110,7 @@ export function uniqueName(name: string, template?: string, evalContext?: any) {
  * For now, these will be the only model types supported by the @formio/core library.
  *
  * nestedArray: for components that store their data as an array and have nested components.
+ * nestedDataArray: for components that store their data as an array and have nested components, but keeps the value of nested components inside 'data' property.
  * array: for components that store their data as an array.
  * dataObject: for components that store their data in a nested { data: {} } object.
  * object: for components that store their data in an object.
@@ -128,6 +129,8 @@ export const MODEL_TYPES_OF_KNOWN_COMPONENTS = {
     'editgrid',
     'datatable',
     'dynamicWizard',
+  ],
+  nestedDataArray: [
     'tagpad',
   ],
   dataObject: [
@@ -238,6 +241,7 @@ export function getComponentPath(component: Component, path: string) {
 
 export function isComponentNestedDataType(component: any) {
   return component.tree || getModelType(component) === 'nestedArray' ||
+    getModelType(component) === 'nestedDataArray' ||
     getModelType(component) === 'dataObject' ||
     getModelType(component) === 'object' ||
     getModelType(component) === 'map';
@@ -263,6 +267,9 @@ export const componentDataPath = (component: any, parentPath: string, path: stri
     }
     if (getModelType(component) === 'nestedArray') {
       return `${path}[0]`;
+    }
+    if (getModelType(component) === 'nestedDataArray') {
+      return `${path}[0].data`;
     }
     if (isComponentNestedDataType(component)) {
       return path;
@@ -308,11 +315,12 @@ export const eachComponentDataAsync = async (
         const value = get(data, compPath, data);
         if (Array.isArray(value)) {
           for (let i = 0; i < value.length; i++) {
+            const nestedComponentPath = getModelType(component) === 'nestedDataArray' ? `${compPath}[${i}].data` : `${compPath}[${i}]`;
             await eachComponentDataAsync(
               component.components,
               data,
               fn,
-              `${compPath}[${i}]`,
+              nestedComponentPath,
               i,
               component,
               includeAll
@@ -372,7 +380,8 @@ export const eachComponentData = (
         const value = get(data, compPath, data) as DataObject;
         if (Array.isArray(value)) {
           for (let i = 0; i < value.length; i++) {
-            eachComponentData(component.components, data, fn, `${compPath}[${i}]`, i, component, includeAll);
+          const nestedComponentPath = getModelType(component) === 'nestedDataArray' ? `${compPath}[${i}].data` : `${compPath}[${i}]`;
+            eachComponentData(component.components, data, fn, nestedComponentPath, i, component, includeAll);
           }
           return true;
         } else if (isEmpty(row) && !includeAll) {
