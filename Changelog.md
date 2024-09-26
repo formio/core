@@ -1,3 +1,7 @@
+## 2.3.0-rc.6
+### Changed
+ - FIO-9033 tagpad data is not saved
+
 ## 2.3.0-rc.5
 ### Changed
  - FIO-9085: Fix components data removed from submission when conditional set for Address component value
