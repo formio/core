@@ -83,6 +83,7 @@ export const validateRequiredSync: RuleFnSync = (context: ValidationContext) => 
 export const validateRequiredInfo: ProcessorInfo<ValidationContext, FieldError | null>  = {
     name: 'validateRequired',
     process: validateRequired,
+    emptyMultiValue: true,
     processSync: validateRequiredSync,
     shouldProcess: shouldValidate,
 };

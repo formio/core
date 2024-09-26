@@ -3386,6 +3386,167 @@ describe('Process Tests', () => {
     assert.deepEqual(context.data.form, { _id: '66c455fc0f00757fd4b0e79b', data: {} })
   });
 
+  it('Should validate required an empty array for multiple select', async () => {
+    const form =  {
+      _id: '66f4141e34ac6c4049cc5144',
+      title: 'required multiple',
+      name: 'requiredMultiple',
+      path: 'requiredmultiple',
+      type: 'form',
+      display: 'form',
+      owner: '637b2e6b48c1227e60b1f910',
+      components: [
+        {
+          label: 'Select',
+          widget: 'choicesjs',
+          tableView: true,
+          multiple: true,
+          data: {
+            values: [
+              {
+                label: 'a',
+                value: 'a',
+              },
+              {
+                label: 'b',
+                value: 'b',
+              },
+              {
+                label: 'c',
+                value: 'c',
+              },
+            ],
+          },
+          validate: {
+            required: true,
+          },
+          validateWhenHidden: false,
+          key: 'select',
+          type: 'select',
+          input: true,
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+      project: '66f26afae0c7ef9920ae59f6',
+    };
+
+    const submission = {
+      data: { select: [] },
+      owner: '637b2e6b48c1227e60b1f910',
+      access: [],
+      _fvid: 0,
+      state: 'submitted',
+      _id: '66c455fc0f00757fd4b0e79d',
+      form: '66bc5cff7ca1729623a182db',
+    };
+
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.equal(context.scope.errors.length, 1);
+    assert.equal(context.scope.errors[0].ruleName, 'required');
+  });
+
+  it('Should validate required an value for multiple select without errors', async () => {
+    const form =  {
+      _id: '66f4141e34ac6c4049cc5144',
+      title: 'required multiple',
+      name: 'requiredMultiple',
+      path: 'requiredmultiple',
+      type: 'form',
+      display: 'form',
+      owner: '637b2e6b48c1227e60b1f910',
+      components: [
+        {
+          label: 'Select',
+          widget: 'choicesjs',
+          tableView: true,
+          multiple: true,
+          data: {
+            values: [
+              {
+                label: 'a',
+                value: 'a',
+              },
+              {
+                label: 'b',
+                value: 'b',
+              },
+              {
+                label: 'c',
+                value: 'c',
+              },
+            ],
+          },
+          validate: {
+            required: true,
+          },
+          validateWhenHidden: false,
+          key: 'select',
+          type: 'select',
+          input: true,
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+      project: '66f26afae0c7ef9920ae59f6',
+    };
+
+    const submission = {
+      data: { select: ['a'] },
+      owner: '637b2e6b48c1227e60b1f910',
+      access: [],
+      _fvid: 0,
+      state: 'submitted',
+      _id: '66c455fc0f00757fd4b0e79d',
+      form: '66bc5cff7ca1729623a182db',
+    };
+
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.equal(context.scope.errors.length, 0);
+  });
+
   describe('Required component validation in nested form in DataGrid/EditGrid', () => {
     const nestedForm = {
       key: 'form',

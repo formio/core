@@ -2,6 +2,7 @@ export type ProcessCheckFn<ProcessorContext> = (context: ProcessorContext) => bo
 export type ProcessorInfo<ProcessorContext, ProcessorReturnType> = {
     name: string;
     fullValue?: boolean;
+    emptyMultiValue?: boolean
     process?: (context: ProcessorContext) => Promise<ProcessorReturnType>;
     processSync?: (context: ProcessorContext) => ProcessorReturnType;
     postProcess?: (context: ProcessorContext) => void;
