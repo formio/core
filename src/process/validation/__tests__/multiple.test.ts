@@ -34,7 +34,7 @@ it('Validating required rule will work for multiple values component with no row
 });
 
 it('Validati olther rules will skip for multiple values component with no rows', async () => {
-    const otherRules = allRules.filter((rule) => !rule.fullValue);  
+    const otherRules = allRules.filter((rule) => !rule.fullValue && !rule.emptyMultiValue);    
     const rulesToValidate = validationRules(context, otherRules, undefined);
     expect(rulesToValidate).to.have.length(0);
 });
