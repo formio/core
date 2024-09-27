@@ -86,7 +86,8 @@ export const validateMultipleSync: RuleFnSync = (
 
   const shouldBeMultipleArray = !!component.multiple;
   const isRequired = !!component.validate?.required;
-  const underlyingValueShouldBeArray = ['nestedArray', 'nestedDataArray'].indexOf(getModelType(component)) !== -1 || (isTagsComponent(component) && component.storeas === 'array');
+  const compModelType = getModelType(component);
+  const underlyingValueShouldBeArray = ['nestedArray', 'nestedDataArray'].indexOf(compModelType) !== -1 || (isTagsComponent(component) && component.storeas === 'array');
   const valueIsArray = Array.isArray(value);
 
   if (shouldBeMultipleArray) {
@@ -105,7 +106,7 @@ export const validateMultipleSync: RuleFnSync = (
         return isRequired ? new FieldError('array_nonempty', { ...context, setting: true }) : null;
       }
 
-      return Array.isArray(value[0]) ? new FieldError('nonarray', { ...context, setting: true }) : null;
+      return Array.isArray(value[0]) && compModelType !== 'any' ? new FieldError('nonarray', { ...context, setting: true }) : null;
     } else {
       const error = new FieldError('array', { ...context, setting: true });
       // Null/undefined is ok if this value isn't required; anything else should fail
