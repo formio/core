@@ -1947,7 +1947,7 @@ describe('getModelType', () => {
             key: 'textarea',
         };
         const actual = getModelType(component);
-        const expected = 'string';
+        const expected = 'any';
         expect(actual).to.equal(expected);
     });
 

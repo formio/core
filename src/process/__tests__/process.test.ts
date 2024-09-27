@@ -3408,6 +3408,79 @@ describe('Process Tests', () => {
     expect(context.submission.data.textField).to.be.equal('some text');
   });
 
+  it('Should not return validation error for multiple textarea with json data type when first value is array', async () => {
+    const form =   {
+      _id: '66f676f14b77db82b230a201',
+      title: 'teterter',
+      name: 'teterter',
+      path: 'teterter',
+      type: 'form',
+      display: 'form',
+      owner: '64b642526f32c9c544728ea8',
+      components: [
+        {
+          label: 'Text Area',
+          applyMaskOn: 'change',
+          editor: 'ace',
+          autoExpand: false,
+          tableView: true,
+          multiple: true,
+          validateWhenHidden: false,
+          key: 'textArea',
+          type: 'textarea',
+          as: 'json',
+          input: true,
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+      project: '66f27e5fcb2889b75ac52c6e',
+      created: '2024-09-27T09:12:17.478Z',
+      modified: '2024-09-27T09:15:07.820Z',
+      machineName: 'qcuzcnfwbclumuw:teterter',
+    };
+
+    const submission = {
+      form: '66f678ee5879bf08113d361c',
+      owner: '637b2e6b48c1227e60b1f910',
+      data: {
+        textAreaJson: [
+          [1, 2, 3],
+          [4, 5, 6],
+        ],
+        submit: true,
+      },
+      _id: '66f68c17481ea2ffbf5bb310',
+      project: '66f66c655879bf08113cf4ed',
+      state: 'submitted',
+    };
+
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.equal(context.scope.errors.length, 0);
+  });
+
+
   describe('Required component validation in nested form in DataGrid/EditGrid', () => {
     const nestedForm = {
       key: 'form',
