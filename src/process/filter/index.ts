@@ -25,6 +25,13 @@ export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterC
           value: []
         };
         break;
+      case 'nestedDataArray':
+        scope.filter[absolutePath] = {
+          compModelType: modelType,
+          include: true,
+          value: Array.isArray(value) ? value.map(v => ({...v, data: {}})) : [],
+        };
+        break;
       case 'object':
         scope.filter[absolutePath] = {
           compModelType: modelType,
