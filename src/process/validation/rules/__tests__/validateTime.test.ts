@@ -10,7 +10,8 @@ const timeField: TimeComponent = {
     key: 'time',
     label: 'Time',
     input: true,
-    dataFormat: 'HH:mm:ss'
+    dataFormat: 'HH:mm:ss',
+    format: 'HH:mm'
 };
 
 it('Should validate a time component with a valid time value', async () => {
