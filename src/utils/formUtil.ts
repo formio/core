@@ -149,7 +149,6 @@ export const MODEL_TYPES_OF_KNOWN_COMPONENTS = {
   ],
   string: [
     'textfield',
-    'textarea',
     'password',
     'email',
     'url',
@@ -178,6 +177,7 @@ export const MODEL_TYPES_OF_KNOWN_COMPONENTS = {
   any: [
     'survey',
     'captcha',
+    'textarea',
     'selectboxes',
     'tags',
     'select',

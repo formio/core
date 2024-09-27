@@ -1815,6 +1815,19 @@ describe('hasCondition', () => {
 });
 
 describe('getModelType', () => {
+    it('Should return the correct model type for taxtarea with JSON data type', () => {
+        const component = {
+            type: 'textarea',
+            input: true,
+            key: 'textField',
+            editor: 'ace',
+            as: 'json'
+        };
+        const actual = getModelType(component);
+        const expected = 'any';
+        expect(actual).to.equal(expected);
+    });
+
     it('Should return the correct model type for a component', () => {
         const component = {
             type: 'textfield',
@@ -1934,7 +1947,7 @@ describe('getModelType', () => {
             key: 'textarea',
         };
         const actual = getModelType(component);
-        const expected = 'string';
+        const expected = 'any';
         expect(actual).to.equal(expected);
     });
 
