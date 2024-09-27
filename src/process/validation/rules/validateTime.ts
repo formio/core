@@ -28,10 +28,7 @@ export const validateTimeSync: RuleFnSync = (context: ValidationContext) => {
     }
     try {
         if (!value || isComponentDataEmpty(component, data, path)) return null;
-        // Server side evaluations of validity should use the "dataFormat" vs the "format" which is used on the client.
-        const format = config?.server ?
-            ((component as TimeComponent).dataFormat || 'HH:mm:ss') :
-            ((component as TimeComponent).format || 'HH:mm');
+        const format = (component as TimeComponent).dataFormat || 'HH:mm:ss';
         const isValid = dayjs(String(value), format, true).isValid();
         return isValid ? null : new FieldError('time', context);
     }
