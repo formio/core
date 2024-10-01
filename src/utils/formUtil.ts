@@ -15,7 +15,8 @@ import {
   isArray,
   isEqual,
   trim,
-  isBoolean
+  isBoolean,
+  omit
 } from "lodash";
 import { compare, applyPatch } from 'fast-json-patch';
 import {
@@ -1242,6 +1243,7 @@ function isValueEmpty(component: Component, value: any) {
 
 export function isComponentDataEmpty(component: Component, data: any, path: string, valueCond?:any): boolean {
   const value = isNil(valueCond) ? get(data, path): valueCond;
+  const addressIgnoreProperties = ['mode', 'address'];
   if (isCheckboxComponent(component)) {
     return isValueEmpty(component, value) || value === false;
   }
@@ -1249,7 +1251,7 @@ export function isComponentDataEmpty(component: Component, data: any, path: stri
     if(Object.keys(value).length === 0) {
       return true
     }
-    return !Object.values(value).some(Boolean);
+    return !Object.values(omit(value, addressIgnoreProperties)).some(Boolean);
   }
   else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {
     if (component.components?.length) {
