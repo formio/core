@@ -1,4 +1,4 @@
-## [Unreleased: 2.3.0-rc.7]
+## 2.3.0-rc.7
 ### Changed
  - FIO-9059: fixed an issue where the string type returns for textarea with json type
  
