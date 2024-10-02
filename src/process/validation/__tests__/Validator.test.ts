@@ -15,6 +15,7 @@ it('Validator will throw the correct errors given a flat components array', asyn
         email: 'brendanb',
         url: 'htpigoogle',
         inputMask: 'hello, world',
+        time: ['12:00:00', '11:00'], // one of the values is provided in incorrect format (format instead dataFormat)
         submit: false,
     };
     for (let component of simpleForm.components) {
@@ -34,5 +35,5 @@ it('Validator will throw the correct errors given a flat components array', asyn
             errors = [...errors, ...scope.errors.map((error) => error.errorKeyOrMessage)];
         }
     }
-    expect(errors).to.have.length(6);
+    expect(errors).to.have.length(7);
 });
