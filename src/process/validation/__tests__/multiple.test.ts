@@ -25,6 +25,7 @@ const context = {
     data: {multiple_textfield: []},
     row: {multiple_textfield: []},
     scope: {errors: []},
+    parentState: {hide: false, narrow: false}
 };
 
 it('Validating required rule will work for multiple values component with no rows', async () => {
@@ -34,7 +35,7 @@ it('Validating required rule will work for multiple values component with no row
 });
 
 it('Validati olther rules will skip for multiple values component with no rows', async () => {
-    const otherRules = allRules.filter((rule) => !rule.fullValue);  
+    const otherRules = allRules.filter((rule) => !rule.fullValue);
     const rulesToValidate = validationRules(context, otherRules, undefined);
     expect(rulesToValidate).to.have.length(0);
 });

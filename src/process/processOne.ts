@@ -1,5 +1,5 @@
 import { get, set } from "lodash";
-import { Component, DataObject, ProcessorsContext, ProcessorType } from "types";
+import { Component, ProcessorsContext, ProcessorType } from "types";
 import { getComponentKey } from "utils/formUtil";
 
 export function dataValue(component: Component, row: any) {
@@ -33,7 +33,7 @@ export async function processOne<ProcessorScope>(context: ProcessorsContext<Proc
 }
 
 export function processOneSync<ProcessorScope>(context: ProcessorsContext<ProcessorScope>) {
-    const { processors, component } = context;
+    const { processors } = context;
     // Create a getter for `value` that is always derived from the current data object
     if (typeof context.value === 'undefined') {
         Object.defineProperty(context, 'value', {
@@ -52,7 +52,7 @@ export function processOneSync<ProcessorScope>(context: ProcessorsContext<Proces
     context.processor = ProcessorType.Custom;
     for (const processor of processors) {
         if (processor?.processSync) {
-            processor.processSync(context)
+            processor.processSync(context);
         }
     }
 }

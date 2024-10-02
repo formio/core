@@ -1,4 +1,3 @@
-import { FieldError, InterpolateErrorFn } from 'error';
 import { isBoolean, isString } from 'lodash';
 import { Component } from 'types';
 
@@ -44,4 +43,27 @@ export function unescapeHTML(str: string) {
 
   const doc = new window.DOMParser().parseFromString(str, 'text/html');
   return doc.documentElement.textContent;
+}
+
+export function registerEphermalState(component: Component, name: string, value: any) {
+  if (!component.ephermalState) {
+    Object.defineProperty(component, 'ephermalState', {
+      enumerable: false,
+      configurable: true,
+      writable: true,
+      value: {}
+    });
+  }
+  Object.defineProperty(component.ephermalState, name, {
+    enumerable: false,
+    writable: false,
+    configurable: true,
+    value
+  });
+}
+
+export function resetEphermalState(component: Component) {
+  if (component.ephermalState) {
+    delete component.ephermalState;
+  }
 }
