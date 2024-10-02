@@ -2290,6 +2290,15 @@ export const simpleForm = {
             id: 'e8vls3a',
             keyModified: true,
         },
+        {   
+            label: 'Time',
+            type: 'time',
+            key: 'time',
+            input: true,
+            dataFormat: 'HH:mm:ss',
+            format: 'HH:mm',
+            multiple: true,
+        },
         {
             type: 'button',
             label: 'Submit',
@@ -2297,7 +2306,7 @@ export const simpleForm = {
             disableOnInvalid: true,
             input: true,
             tableView: false,
-        },
+        }
     ],
     settings: {},
     properties: {},
