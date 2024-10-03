@@ -58,11 +58,11 @@ export function setActionBooleanProperty(context: LogicContext, action: LogicAct
             if (!(scope as ConditionsScope).conditionals) {
                 (scope as ConditionsScope).conditionals = [];
             }
-            const conditionalyHidden = (scope as ConditionsScope).conditionals?.find((cond: any) => {
+            const conditionallyHidden = (scope as ConditionsScope).conditionals?.find((cond: any) => {
                 return cond.path === path
             });
-            if (conditionalyHidden) {
-                conditionalyHidden.conditionallyHidden = !!component.hidden;
+            if (conditionallyHidden) {
+                conditionallyHidden.conditionallyHidden = !!component.hidden;
                 registerEphermalState(component, 'conditionallyHidden', !!component.hidden);
             }
             else {
