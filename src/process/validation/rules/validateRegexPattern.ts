@@ -15,7 +15,7 @@ export const shouldValidate = (context: ValidationContext) => {
     }
 
     const pattern = component.validate?.pattern;
-    if (!pattern) {
+    if (!pattern || !value || typeof value !== 'string') {
         return false;
     }
     return true;
