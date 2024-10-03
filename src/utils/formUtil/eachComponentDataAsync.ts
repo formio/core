@@ -36,8 +36,6 @@ export const eachComponentDataAsync = async (
       components,
       async (component: any, compPath: string, componentComponents: any, compParent: any) => {
         const row = getContextualRowData(component, compPath, data);
-        // If the component has ephermal state, then we need to reset the ephermal state in case this is e.g. a data grid, in which each row needs to be validated independently
-        resetEphermalState(component);
         if (await fn(component, data, row, compPath, componentComponents, index, compParent) === true) {
           return true;
         }

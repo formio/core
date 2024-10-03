@@ -21,7 +21,6 @@ export const eachComponentData = (
       components,
       (component, compPath, componentComponents, compParent) => {
         const row = getContextualRowData(component, compPath, data);
-        resetEphermalState(component);
         if (fn(component, data, row, compPath, componentComponents, index, compParent) === true) {
           return true;
         }
