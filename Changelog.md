@@ -1,3 +1,9 @@
+## 2.3.0-rc.8
+### Changed
+ - FIO-8723: Clear values from submission for hidden comp with clearOnHide flag
+ - FIO-8954: added Allow only available values validation for Data Source Type = URL
+ - FIO-9085: Fix address submission logic
+
 ## 2.3.0-rc.7
 ### Changed
  - FIO-9059: fixed an issue where the string type returns for textarea with json type
