@@ -963,7 +963,6 @@ describe('Process Tests', () => {
       config: {
         server: true,
       },
-      parentState: {hide: false, narrow: false}
     };
     processSync(context);
     submission.data = context.data;
