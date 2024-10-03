@@ -3,7 +3,7 @@ import assert from 'node:assert'
 import type { ContainerComponent, ProcessContext, ProcessorScope, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
 import { process, processSync, ProcessTargets } from '../index';
-import { addressComponentWithOtherCondComponents, clearOnHideWithCustomCondition, clearOnHideWithHiddenParent, forDataGridRequired, skipValidForConditionallyHiddenComp, skipValidForLogicallyHiddenComp, skipValidWithHiddenParentComp  } from './fixtures'
+import { addressComponentWithOtherCondComponents, addressComponentWithOtherCondComponents2, clearOnHideWithCustomCondition, clearOnHideWithHiddenParent, forDataGridRequired, skipValidForConditionallyHiddenComp, skipValidForLogicallyHiddenComp, skipValidWithHiddenParentComp  } from './fixtures'
 /*
 describe('Process Tests', () => {
     it('Should perform the processes using the processReduced method.', async () => {
@@ -3413,6 +3413,28 @@ describe('Process Tests', () => {
     processSync(context);
     expect(context.submission.data.number).to.be.equal(1);
     expect(context.submission.data.textField).to.be.equal('some text');
+  });
+
+  it('Should not hide other components data from submission when address component is not filled out and manual mode enabled', async () => {
+    const {form, submission} = addressComponentWithOtherCondComponents2
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    expect(context.submission.data.number1).to.be.equal(1);
+    expect(context.submission.data.number2).to.be.equal(2);
   });
 
   it('Should not return validation error for multiple textarea with json data type when first value is array', async () => {
