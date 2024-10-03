@@ -34,20 +34,17 @@ export function eachComponent(
         // Ensure we don't create infinite JSON structures.
         Object.defineProperty(component, 'parent', {
           enumerable: false,
-          writable: false,
-          configurable: true,
+          writable: true,
           value: JSON.parse(JSON.stringify(parent))
         });
         Object.defineProperty(component.parent, 'parent', {
           enumerable: false,
-          writable: false,
-          configurable: true,
+          writable: true,
           value: parent.parent
         });
         Object.defineProperty(component.parent, 'path', {
           enumerable: false,
-          writable: false,
-          configurable: true,
+          writable: true,
           value: parent.path
         });
         delete component.parent.components;
