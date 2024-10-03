@@ -457,3 +457,105 @@ it('Validating a simple JSON select component (nested actual JSON with valueProp
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
 });
+
+it('Validating a simple radio component with url data source with the available items validation parameter will return null if the item is valid', async () => {
+    const component: RadioComponent = {
+        ...simpleRadioField,
+        dataSrc: 'url',
+        data: {
+            url: 'http://localhost:8080/numbers',
+            headers: [],
+        },
+        validate: { onlyAvailableItems: true },
+    };
+    const data = {
+        component: '2',
+    };
+    
+    const context = generateProcessorContext(component, data);
+    context.fetch = (url: string, options?: RequestInit | undefined) => {
+        return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve(['1', '2', '3'])
+        });
+    };
+    const result = await validateAvailableItems(context);
+    expect(result).to.equal(null);
+});
+
+it('Validating a simple radio component with url data source with the available items validation parameter will return FieldError if the item is invalid', async () => {
+    const component: RadioComponent = {
+        ...simpleRadioField,
+        dataSrc: 'url',
+        data: {
+            url: 'http://localhost:8080/numbers',
+            headers: [],
+        },
+        validate: { onlyAvailableItems: true },
+    };
+    const data = {
+        component: '4',
+    };
+    
+    const context = generateProcessorContext(component, data);
+    context.fetch = (url: string, options?: RequestInit | undefined) => {
+        return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve(['1', '2', '3'])
+        });
+    };
+    const result = await validateAvailableItems(context);
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.errorKeyOrMessage).to.equal('invalidOption');
+});
+
+it('Validating a simple select component with url data source with the available items validation parameter will return null if the item is valid', async () => {
+    const component: SelectComponent = {
+        ...simpleSelectOptions,
+        dataSrc: 'url',
+        data: {
+            url: 'http://localhost:8080/numbers',
+            headers: [],
+        },
+        validate: { onlyAvailableItems: true },
+    };
+    const data = {
+        component: {'id': 'opt_1', 'value': 1},
+    };
+    
+    const context = generateProcessorContext(component, data);
+    context.fetch = (url: string, options?: RequestInit | undefined) => {
+        return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve([{'id': 'opt_1', 'value': 1}, {'id': 'opt_2', 'value': 2}])
+        });
+    };
+    const result = await validateAvailableItems(context);
+    expect(result).to.equal(null);
+});
+
+it('Validating a simple select component with url data source with the available items validation parameter will return FieldError if the item is invalid', async () => {
+    const component: SelectComponent = {
+        ...simpleSelectOptions,
+        dataSrc: 'url',
+        data: {
+            url: 'http://localhost:8080/numbers',
+            headers: [],
+        },
+        validate: { onlyAvailableItems: true },
+    };
+    const data = {
+        component: {'id': 'opt_3', 'value': 3},
+    };
+    
+    const context = generateProcessorContext(component, data);
+    context.fetch = (url: string, options?: RequestInit | undefined) => {
+        return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve([{'id': 'opt_1', 'value': 1}, {'id': 'opt_2', 'value': 2}])
+        });
+    };
+    const result = await validateAvailableItems(context);
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.errorKeyOrMessage).to.equal('invalidOption');
+});
