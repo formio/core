@@ -1,6 +1,6 @@
+import { reset } from 'fetch-mock';
 import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, ConditionsContext, SimpleConditional, JSONConditional, LegacyConditional, SimpleConditionalConditions, Component, NestedComponent, FilterScope } from 'types';
-import { set } from 'lodash';
-import { componentInfo, eachComponentData, getComponentPath } from 'utils/formUtil';
+import { registerEphermalState, resetEphermalState } from 'utils';
 import {
     checkCustomConditional,
     checkJsonConditional,
@@ -79,10 +79,11 @@ export const isConditionallyHidden = (context: ConditionsContext): boolean => {
 export type ConditionallyHidden = (context: ConditionsContext) => boolean;
 
 export const conditionalProcess = (context: ConditionsContext, isHidden: ConditionallyHidden) => {
-    const { component, row, scope, path } = context;
+    const { scope, path } = context;
     if (!hasConditions(context)) {
         return;
     }
+
     if (!scope.conditionals) {
         scope.conditionals = [];
     }
@@ -92,7 +93,10 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
         scope.conditionals.push(conditionalComp);
     }
 
-    conditionalComp.conditionallyHidden = conditionalComp.conditionallyHidden || isHidden(context);
+    conditionalComp.conditionallyHidden = conditionalComp.conditionallyHidden || isHidden(context) === true;
+    if (conditionalComp.conditionallyHidden) {
+        registerEphermalState(context.component, 'conditionallyHidden', true);
+    }
 };
 
 export const customConditionProcess: ProcessorFn<ConditionsScope> = async (context: ConditionsContext) => {

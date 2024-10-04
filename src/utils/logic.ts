@@ -3,6 +3,7 @@ import { checkCustomConditional, checkJsonConditional, checkLegacyConditional, c
 import { LogicActionCustomAction, LogicActionMergeComponentSchema, LogicActionProperty, LogicActionPropertyBoolean, LogicActionPropertyString, LogicActionValue } from "types/AdvancedLogic";
 import { get, set, clone, isEqual, assign } from 'lodash';
 import { evaluate, interpolate } from 'modules/jsonlogic';
+import { registerEphermalState } from "./utils";
 
 export const hasLogic = (context: LogicContext): boolean => {
     const { component } = context;
@@ -41,7 +42,7 @@ export const checkTrigger = (context: LogicContext, trigger: any): boolean => {
 };
 
 export function setActionBooleanProperty(context: LogicContext, action: LogicActionPropertyBoolean): boolean {
-    const { component, scope, path, row } = context;
+    const { component, scope, path } = context;
     const property = action.property.value;
     const currentValue = get(component, property, false).toString();
     const newValue = action.state.toString();
@@ -62,6 +63,7 @@ export function setActionBooleanProperty(context: LogicContext, action: LogicAct
             });
             if (conditionallyHidden) {
                 conditionallyHidden.conditionallyHidden = !!component.hidden;
+                registerEphermalState(component, 'conditionallyHidden', !!component.hidden);
             }
             else {
                 (scope as ConditionsScope).conditionals?.push({

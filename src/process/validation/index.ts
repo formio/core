@@ -7,7 +7,6 @@ import { getComponentAbsolutePath, getComponentPath } from "utils/formUtil";
 import { getErrorMessage } from "utils/error";
 import { FieldError } from "error";
 import { ConditionallyHidden, isConditionallyHidden, isCustomConditionallyHidden, isSimpleConditionallyHidden } from "processes/conditions";
-import { isParentHidden } from 'utils/isParentHidden';
 
 // Cleans up validation errors to remove unnessesary parts
 // and make them transferable to ivm.
@@ -98,10 +97,10 @@ export const _shouldSkipValidation = (context: ValidationContext, isConditionall
 
     if (
         (scope as ConditionsScope)?.conditionals &&
-        find((scope as ConditionsScope).conditionals, {
+        (find((scope as ConditionsScope).conditionals, {
             path: getComponentPath(component, path),
             conditionallyHidden: true
-        })
+        }) || component.ephermalState?.conditionallyHidden === true)
     ) {
         return true;
     }

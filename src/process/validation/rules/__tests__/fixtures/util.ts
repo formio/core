@@ -22,6 +22,6 @@ export const generateProcessorContext = (component: Component, data: DataObject,
                 text: () => Promise.resolve('')
             });
         },
-        processor: ProcessorType.Validate
+        processor: ProcessorType.Validate,
     };
 }
