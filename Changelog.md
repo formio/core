@@ -1,5 +1,6 @@
-## [Unreleased: 2.3.0-rc.9]
+## 2.3.0-rc.9
  - FIO-8731: Update fix to nested hidden components
+ - FIO-9002: fix issue with conditionally hidden duplicate nested form paths
 
 ## 2.3.0-rc.8
 ### Changed
