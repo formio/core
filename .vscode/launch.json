@@ -25,26 +25,72 @@
       ],
       "console": "integratedTerminal"
     },
+
+    {
+      "type": "node",
+      "args": [
+          "DEBUG=*",
+
+      ],
+      // "console": "integratedTerminal",
+      "request": "launch",
+      "name": "RESURSION",
+      "runtimeVersion": "20",
+      "skipFiles": [
+          "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}\\recursion.js"
+  },
     {
       "type": "node",
       "request": "launch",
       "name": "Mocha Tests",
-      "program": "${workspaceFolder}/node_modules/.bin/mocha",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
       "args": [
         "-r",
         "ts-node/register",
-        "-b",
-        "-t",
-        "0",
-        "-r",
-        "tsconfig-paths/register",
-        "-r",
-        "mock-local-storage",
-        "-r",
-        "jsdom-global/register",
-        "'src/**/__tests__/*.test.ts'"
+          // "-b",
+          // "-t",
+          // "0",
+          "-r",
+          "tsconfig-paths/register",
+          "-r",
+          "jsdom-global/register",
+          // "-r",
+          // "mock-local-storage",
+          "${workspaceFolder}/lib/**/__tests__/process.test.js",
+          "-t",
+          "3000000"
+
       ],
-      "console": "integratedTerminal"
-    }
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+
+
+    // {
+    //   "type": "node",
+    //   "request": "launch",
+    //   "name": "Mocha Tests",
+    //   "runtimeExecutable": "npx",
+    //   "runtimeArgs": [
+    //     "mocha",
+    //     "-r",
+    //     "ts-node/register",
+    //     "-b",
+    //     "-t",
+    //     "0",
+    //     "-r",
+    //     "tsconfig-paths/register",
+    //     "-r",
+    //     "mock-local-storage",
+    //     "-r",
+    //     "jsdom-global/register",
+    //     "src/**/__tests__/*.test.ts"
+    //   ],
+    //   "console": "integratedTerminal"
+    // }
   ]
 }

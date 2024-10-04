@@ -111,6 +111,31 @@ export function checkSimpleConditional(conditional: SimpleConditional, context: 
             return null;
         }
 
+        // const recursionFunc = (form:any)=> {
+        //     form.forEach((x:any)=> {
+        //         if(x.path){
+        //             x.path = x.path.replace(/\[[0-9]+\]/g, '');
+        //         }
+        //         let components:any = x.components;
+        //          while (components) {
+        //          components.forEach((element:any) => {
+        //              element.path = element.path.replace(/\[[0-9]+\]/g, '');
+        //              if(element.components) {
+        //                  recursionFunc(element.components)
+        //              }
+        //              else {
+        //                components = false
+        //              }
+        //          });
+        //        }
+        //        })
+
+
+        //   return form;
+        // }
+
+        // recursionFunc(form?.components || components);
+
         const conditionComponent = getComponent(form?.components || components, conditionComponentPath, true);
         const value = conditionComponent ? getComponentActualValue(conditionComponent, conditionComponentPath, data, row) : null;
 

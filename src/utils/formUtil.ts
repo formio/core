@@ -427,8 +427,8 @@ export function getContextualRowData(component: Component, path: string, data: a
 }
 
 export function componentInfo(component: any) {
-  const hasColumns = component.columns && Array.isArray(component.columns);
-  const hasRows = component.rows && Array.isArray(component.rows);
+  const hasColumns = component.columns && Array.isArray(component.columns)&& component?.component?.type !=="datagrid";
+  const hasRows = component.rows && Array.isArray(component.rows)&& component?.component?.type !=="datagrid";
   const hasComps = component.components && Array.isArray(component.components);
   const isContent = getModelType(component) === 'content';
   const isLayout = getModelType(component) === 'none';
@@ -654,6 +654,9 @@ export function getComponentActualValue(component: Component, compPath: string, 
   let parent = component;
   let rowPath = '';
 
+  const compPathModified = compPath.split(".");
+  rowPath = (compPathModified.length > 1)? compPathModified[compPathModified.length-1]: compPath
+
   while (parent?.parent?.path && !parentInputComponent) {
     parent = parent.parent;
     if (parent.input) {
@@ -667,18 +670,9 @@ export function getComponentActualValue(component: Component, compPath: string, 
     rowPath = trim(rowPath, '. ');
   }
 
-  const compPathModified = compPath.split(".");
-  if(compPathModified.length > 1) {
-    compPath = compPathModified[compPathModified.length-1];
-  }
-
   let value = null;
   if (data) {
     value = get(data, compPath);
-  }
-  ///!!!!!///
-  if (row) {
-    value = get(row, compPath);
   }
 
   if (rowPath && row && isNil(value)) {
