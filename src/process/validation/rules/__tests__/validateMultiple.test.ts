@@ -227,7 +227,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.instanceOf(FieldError);
             });
@@ -251,7 +251,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.null;
             });
@@ -274,7 +274,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.instanceOf(FieldError);
             });
@@ -297,7 +297,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.null;
             });
@@ -321,7 +321,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.null;
             });
@@ -344,7 +344,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.null;
             });
@@ -367,7 +367,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.null;
             });
@@ -390,7 +390,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.null;
             });
@@ -413,7 +413,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.null;
             });
@@ -438,7 +438,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.instanceOf(FieldError);
             });

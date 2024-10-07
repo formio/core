@@ -35,7 +35,7 @@ describe('interpolateErrors', () => {
                 path,
                 value: get(data, component.key),
                 processor: ProcessorType.Validate,
-                rules
+                rules,
             });
             result.set(path, interpolateErrors(scope.errors));
         }
@@ -81,7 +81,7 @@ describe('interpolateErrors', () => {
                 path,
                 value: get(data, path),
                 processor: ProcessorType.Validate,
-                rules
+                rules,
             });
             result.set(path, interpolateErrors(scope.errors));
         });
@@ -114,7 +114,7 @@ describe('interpolateErrors', () => {
                 path,
                 value: get(data, component.key),
                 processor: ProcessorType.Validate,
-                rules
+                rules,
             });
             result.set(path, interpolateErrors(scope.errors));
         }
@@ -139,7 +139,7 @@ describe('interpolateErrors', () => {
                 path,
                 value: get(data, component.key),
                 processor: ProcessorType.Validate,
-                rules
+                rules,
             });
             result.set(path, interpolateErrors(scope.errors));
         }
