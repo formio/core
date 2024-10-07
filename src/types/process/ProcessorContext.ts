@@ -1,5 +1,4 @@
 import { Component, DataObject, Form, PassedComponentInstance, ProcessorInfo, ProcessorScope, ProcessorType, Submission } from "types"
-import { ProcessorFn, ProcessorFnSync } from "./ProcessorFn";
 import { ProcessType } from "./ProcessType";
 
 export type ProcessorContext<ProcessorScope> = {
@@ -17,6 +16,7 @@ export type ProcessorContext<ProcessorScope> = {
     config?: Record<string, any>;
     index?: number;
     scope: ProcessorScope;
+    parent?: Component | null;
     evalContext?: (context: ProcessorContext<ProcessorScope>) => any;
 }
 

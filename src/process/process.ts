@@ -1,4 +1,5 @@
 import {
+  EachComponentDataCallback,
   ProcessContext,
   ProcessTarget,
   ProcessorInfo,
@@ -38,22 +39,21 @@ export async function process<ProcessScope>(
   await eachComponentDataAsync(
     components,
     data,
-    async (component, compData, row, path, components, index) => {
+    async (component, compData, row, path, components, index, parent) => {
       // Skip processing if row is null or undefined
       if (!row) {
         return;
       }
       await processOne<ProcessScope>({
         ...context,
-        ...{
-          data: compData,
-          component,
-          components,
-          path,
-          row,
-          index,
-          instance: instances ? instances[path] : undefined,
-        },
+        data: compData,
+        component,
+        components,
+        path,
+        row,
+        index,
+        instance: instances ? instances[path] : undefined,
+        parent
       });
       if (flat) {
         return true;
@@ -81,7 +81,7 @@ export function processSync<ProcessScope>(
   eachComponentData(
     components,
     data,
-    (component, compData, row, path, components, index) => {
+    (component, compData, row, path, components, index, parent) => {
       // Skip processing if row is null or undefined
       if (!row) {
         return;
@@ -95,6 +95,7 @@ export function processSync<ProcessScope>(
         row,
         index,
         instance: instances ? instances[path] : undefined,
+        parent
       });
       if (flat) {
         return true;

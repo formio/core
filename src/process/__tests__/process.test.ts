@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import assert from 'node:assert'
-import type { ContainerComponent, ValidationScope } from 'types';
+import type { ContainerComponent, ProcessContext, ProcessorScope, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
 import { process, processSync, ProcessTargets } from '../index';
 import { addressComponentWithOtherCondComponents, addressComponentWithOtherCondComponents2, clearOnHideWithCustomCondition, clearOnHideWithHiddenParent, forDataGridRequired, skipValidForConditionallyHiddenComp, skipValidForLogicallyHiddenComp, skipValidWithHiddenParentComp  } from './fixtures'
@@ -972,6 +972,7 @@ describe('Process Tests', () => {
 
     assert.equal(context.scope.errors.length, 0);
   });
+
   it('should remove submission data not in a nested form definition', async function () {
     const form = {
       _id: {},
@@ -1040,6 +1041,7 @@ describe('Process Tests', () => {
     });
     expect(context.data.child.data).to.not.have.property('invalid');
   });
+
   it('Should process nested form data correctly', async () => {
     const submission = {
       data: {
@@ -1051,33 +1053,6 @@ describe('Process Tests', () => {
           },
         },
       },
-      owner: '65df88d8a98df60a25008300',
-      access: [],
-      metadata: {
-        headers: {
-          'accept-language': 'en-US,en',
-          'cache-control': 'no-cache',
-          connection: 'keep-alive',
-          origin: 'http://localhost:3000',
-          pragma: 'no-cache',
-          referer: 'http://localhost:3000/',
-          'sec-fetch-dest': 'empty',
-          'sec-fetch-mode': 'cors',
-          'sec-fetch-site': 'same-origin',
-          'sec-gpc': '1',
-          'user-agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-          accept: 'application/json',
-          'content-type': 'application/json',
-          'sec-ch-ua':
-            '"Chromium";v="122", "Not(A:Brand";v="24", "Brave";v="122"',
-          'sec-ch-ua-mobile': '?0',
-          'sec-ch-ua-platform': '"macOS"',
-          host: 'localhost:3000',
-          'accept-encoding': 'gzip, deflate, br',
-          'content-length': '172',
-        },
-      },
       form: '65e74c65ef4451c9ede341e3',
     };
     const form = {
@@ -1086,101 +1061,6 @@ describe('Process Tests', () => {
       path: 'parentform',
       type: 'form',
       display: 'form',
-      tags: [],
-      deleted: null,
-      access: [
-        {
-          type: 'create_own',
-          roles: [],
-        },
-        {
-          type: 'create_all',
-          roles: [],
-        },
-        {
-          type: 'read_own',
-          roles: [],
-        },
-        {
-          type: 'read_all',
-          roles: [{}, {}, {}],
-        },
-        {
-          type: 'update_own',
-          roles: [],
-        },
-        {
-          type: 'update_all',
-          roles: [],
-        },
-        {
-          type: 'delete_own',
-          roles: [],
-        },
-        {
-          type: 'delete_all',
-          roles: [],
-        },
-        {
-          type: 'team_read',
-          roles: [],
-        },
-        {
-          type: 'team_write',
-          roles: [],
-        },
-        {
-          type: 'team_admin',
-          roles: [],
-        },
-      ],
-      submissionAccess: [
-        {
-          type: 'create_own',
-          roles: [],
-        },
-        {
-          type: 'create_all',
-          roles: [],
-        },
-        {
-          type: 'read_own',
-          roles: [],
-        },
-        {
-          type: 'read_all',
-          roles: [],
-        },
-        {
-          type: 'update_own',
-          roles: [],
-        },
-        {
-          type: 'update_all',
-          roles: [],
-        },
-        {
-          type: 'delete_own',
-          roles: [],
-        },
-        {
-          type: 'delete_all',
-          roles: [],
-        },
-        {
-          type: 'team_read',
-          roles: [],
-        },
-        {
-          type: 'team_write',
-          roles: [],
-        },
-        {
-          type: 'team_admin',
-          roles: [],
-        },
-      ],
-      owner: {},
       components: [
         {
           label: 'Child',
@@ -1230,20 +1110,6 @@ describe('Process Tests', () => {
           tableView: false,
         },
       ],
-      settings: {},
-      properties: {},
-      project: {},
-      controller: '',
-      revisions: '',
-      submissionRevisions: '',
-      _vid: 0,
-      created: '2024-03-05T16:46:29.859Z',
-      modified: '2024-03-05T18:50:08.638Z',
-      machineName: 'tzcuqutdtlpgicr:parentForm',
-      __v: 1,
-      config: {
-        appUrl: 'http://localhost:3000/tzcuqutdtlpgicr',
-      },
     };
     const context = {
       form,
@@ -1655,6 +1521,147 @@ describe('Process Tests', () => {
     assert.deepEqual(context.data.childC.data, {
       e: 'Five',
       f: 'Six',
+    });
+  });
+
+  // TODO: test case naming
+  it('Should not unset submission data of nested forms with identical keys', () => {
+    const parentForm = {
+      display: 'form',
+      tags: [],
+      deleted: null,
+      components: [
+        {
+          type: 'checkbox',
+          label: 'Show A',
+          key: 'showA',
+          input: true,
+        },
+        {
+          type: 'form',
+          form: '65e8786fc5dacf667eef12d2',
+          label: 'Child A',
+          key: 'childA',
+          input: true,
+          conditional: {
+            show: true,
+            when: 'showA',
+            eq: true,
+          },
+          components: [
+            {
+              type: 'form',
+              form: 'sharedChildFormId',
+              label: 'Grandchild',
+              key: 'grandchild',
+              input: true,
+              components: [
+                {
+                  type: 'textfield',
+                  label: 'A',
+                  key: 'a',
+                  input: true,
+                },
+                {
+                  type: 'textfield',
+                  label: 'B',
+                  key: 'b',
+                  input: true,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'form',
+          form: '65e8786fc5dacf667eef12e0',
+          label: 'Child B',
+          key: 'childB',
+          input: true,
+          conditional: {
+            show: true,
+            when: 'showA',
+            eq: false,
+          },
+          components: [
+            {
+              type: 'form',
+              form: 'sharedChildFormId',
+              label: 'Grandchild',
+              key: 'grandchild',
+              input: true,
+              components: [
+                {
+                  type: 'textfield',
+                  label: 'A',
+                  key: 'a',
+                  input: true,
+                },
+                {
+                  type: 'textfield',
+                  label: 'B',
+                  key: 'b',
+                  input: true,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const submission = {
+      data: {
+        showA: false,
+        childA: {
+          data: {
+            grandchild: {
+              data: {
+                a: 'foo',
+                b: 'bar',
+              }
+            }
+          },
+        },
+        childB: {
+          data: {
+            grandchild: {
+              data: {
+                a: 'baz',
+                b: 'biz',
+              }
+            }
+          },
+        },
+      },
+    };
+
+    const context = {
+      form: parentForm,
+      submission,
+      data: submission.data,
+      components: parentForm.components,
+      processors: ProcessTargets.submission,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.equal(context.data.showA, false);
+    assert(
+      !context.data.hasOwnProperty('childA'),
+      'The childA form should not be present.'
+    );
+    assert.deepEqual(context.data.childB.data, {
+      grandchild: {
+        data: {
+          a: 'baz',
+          b: 'biz',
+        }
+      }
     });
   });
 
@@ -2370,7 +2377,7 @@ describe('Process Tests', () => {
     assert.equal(context.scope.errors.length, 0);
   });
 
-  it('Ignores conditionally hidden fields in a panel', async () => {
+  it('Should ignore conditionally hidden fields in a panel during validation', async () => {
     const form = {
       components: [
         {
@@ -2617,12 +2624,12 @@ describe('Process Tests', () => {
               data: {
                 values: [
                   {
-                    label: 'Action1',
-                    value: 'action1',
+                    label: 'Hide',
+                    value: 'hide',
                   },
                   {
-                    label: 'Custom',
-                    value: 'custom',
+                    label: 'Show',
+                    value: 'show',
                   },
                 ],
               },
@@ -2642,7 +2649,7 @@ describe('Process Tests', () => {
                   {
                     component: 'editGrid.select',
                     operator: 'isEqual',
-                    value: 'custom',
+                    value: 'show',
                   },
                 ],
               },
@@ -2666,10 +2673,10 @@ describe('Process Tests', () => {
       data: {
         editGrid: [
           {
-            select: 'action1',
+            select: 'hide',
           },
           {
-            select: 'custom',
+            select: 'show',
             textField: 'TEST',
           },
         ],
@@ -2691,10 +2698,10 @@ describe('Process Tests', () => {
     expect(context.data).to.deep.equal({
       editGrid: [
         {
-          select: 'action1',
+          select: 'hide',
         },
         {
-          select: 'custom',
+          select: 'show',
           textField: 'TEST',
         },
       ],
@@ -3722,7 +3729,6 @@ describe('Process Tests', () => {
       context.processors = ProcessTargets.evaluator;
       processSync(context);
 
-
       expect(context.data).to.deep.equal({
         candidates:[{candidate:{data:{}}}],
         submit: true
@@ -3810,12 +3816,12 @@ describe('Process Tests', () => {
       processSync(context);
 
       expect(context.data).to.deep.equal({
-        candidates:[{candidate:{data:{section6:{ "c":{}, "d":[]}}}}],
+        candidates:[{candidate:{data:{section6:{}}}}],
         submit: true
       });
     });
 
-    it('Should not return fields from hidden containers, clearOnHide = false', async () => {
+    it('Should not validate fields from hidden containers, clearOnHide = false', async () => {
       const { form, submission } = clearOnHideWithHiddenParent;
       const context = {
         form,
@@ -3823,7 +3829,7 @@ describe('Process Tests', () => {
         data: submission.data,
         components: form.components,
         processors: ProcessTargets.submission,
-        scope: {},
+        scope: { errors: []},
         config: {
           server: true,
         },
@@ -3837,6 +3843,7 @@ describe('Process Tests', () => {
         candidates:[{candidate:{data:{section6:{}}}}],
         submit: true
       });
+      expect(context.scope.errors.length).to.equal(0);
     });
 
     it('Should not return fields from hidden containers, clearOnHide = true', async () => {
