@@ -3511,8 +3511,7 @@ describe('Process Tests', () => {
     assert.equal(context.scope.errors.length, 0);
   });
 
-
-  it('Should not unset values for conditionally visible fields with different formats of condtion based on selectboxes value', async () => {
+it('Should not unset values for conditionally visible fields with different formats of condtion based on selectboxes value', async () => {
     const form = {
       _id: '66ffa92ac25689df8702f283',
       title: 'cond NEW',
@@ -3658,7 +3657,109 @@ describe('Process Tests', () => {
     assert.deepEqual(context.data, data);
   });
 
-describe('Required component validation in nested form in DataGrid/EditGrid', () => {
+ it('Should not return error for the form with conditionals based on the Day component', () => {
+    const form = {
+      _id: '66ffe59b598a729e707869bf',
+      title: '9143 condition day',
+      name: '9143ConditionDay',
+      path: '9143conditionday',
+      type: 'form',
+      display: 'form',
+      components: [
+        {
+          label: 'Day',
+          hideInputLabels: false,
+          inputsLabelPosition: 'top',
+          useLocaleSettings: false,
+          tableView: false,
+          fields: {
+            day: {
+              hide: false
+            },
+            month: {
+              hide: false
+            },
+            year: {
+              hide: false
+            }
+          },
+          validateWhenHidden: false,
+          key: 'day',
+          type: 'day',
+          input: true
+        },
+        {
+          label: 'Text Field',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textField',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'day',
+                operator: 'isDateEqual',
+                value: '09/26/2024'
+              }
+            ]
+          },
+          type: 'textfield',
+          input: true
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false
+        }
+      ],
+      project: '63cead09be0090345b109e22',
+      created: '2024-10-04T12:54:51.161Z',
+      modified: '2024-10-07T07:47:25.189Z',
+      machineName: 'idwqwhclwioyqbw:9143ConditionDay'
+    };
+
+    const submission = {
+      form: '66ffe59b598a729e707869bf',
+      owner: '63ceaccebe0090345b109da7',
+      data: {
+        day: '09/26/2024',
+        submit: true,
+        textField: 'test'
+      },
+      _id: '6703a011275ca049014f7fab',
+      project: '63cead09be0090345b109e22',
+      state: 'submitted'
+    };
+
+    const errors: any = [];
+    const conditionals: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors, conditionals },
+      config: {
+        server: true,
+      },
+    };
+
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    expect(context.scope.conditionals).to.have.length(1);
+    expect(context.scope.conditionals?.[0].conditionallyHidden).to.be.false;
+    assert.equal(context.scope.errors.length, 0);
+  });
+
+  describe('Required component validation in nested form in DataGrid/EditGrid', () => {
     const nestedForm = {
       key: 'form',
       type: 'form',

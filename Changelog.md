@@ -34,6 +34,10 @@
  - FIO-9085: Fix components data removed from submission when conditional set for Address component value
  - FIO-9055: separate rowPath from componentPath in getComponentActualValue fn
  - FIO-8723: Clear values from submission for hidden comp with clearOnHide flag
+ - FIO-9143 fixed getValidationFormat error
+ - FIO-9002: fix issue with conditionally hidden duplicate nested form paths
+ - FIO-9085: Fix address submission logic
+ - FIO-8954: added Allow only available values validation for Data Source Type = URL
 
 ## 2.3.0-rc.1
 ### Changed
