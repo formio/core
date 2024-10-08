@@ -62,7 +62,7 @@ export const eachComponentData = (
                     column.components,
                     data,
                     fn,
-                    path,
+                    componentFormPath(columnsComponent, path, columnsComponent.path),
                     index,
                     component,
                   )
@@ -76,7 +76,7 @@ export const eachComponentData = (
                             row.components,
                             data,
                             fn,
-                            path,
+                            componentFormPath(rowsComponent, path, rowsComponent.path),
                             index,
                             component,
                         )
