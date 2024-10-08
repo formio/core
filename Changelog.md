@@ -1,7 +1,9 @@
-## [Unreleased: 2.3.0-rc.10]
+## 2.3.0-rc.10
+### Changed
  - FIO-9143 fixed getValidationFormat error
  
 ## 2.3.0-rc.9
+### Changed
  - FIO-8731: Update fix to nested hidden components
  - FIO-9002: fix issue with conditionally hidden duplicate nested form paths
 
