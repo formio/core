@@ -3,7 +3,9 @@ import assert from 'node:assert'
 import type { ContainerComponent, ProcessContext, ProcessorScope, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
 import { process, processSync, ProcessTargets } from '../index';
+import { fastCloneDeep } from 'utils';
 import { addressComponentWithOtherCondComponents, addressComponentWithOtherCondComponents2, clearOnHideWithCustomCondition, clearOnHideWithHiddenParent, forDataGridRequired, skipValidForConditionallyHiddenComp, skipValidForLogicallyHiddenComp, skipValidWithHiddenParentComp  } from './fixtures'
+
 /*
 describe('Process Tests', () => {
     it('Should perform the processes using the processReduced method.', async () => {
@@ -3509,7 +3511,153 @@ describe('Process Tests', () => {
     assert.equal(context.scope.errors.length, 0);
   });
 
-  it('Should not return error for the form with conditionals based on the Day component', () => {
+it('Should not unset values for conditionally visible fields with different formats of condtion based on selectboxes value', async () => {
+    const form = {
+      _id: '66ffa92ac25689df8702f283',
+      title: 'cond NEW',
+      name: 'condnew',
+      path: 'condnew',
+      type: 'form',
+      display: 'form',
+      owner: '637b2e6b48c1227e60b1f910',
+      components: [
+        {
+          label: 'Container',
+          tableView: false,
+          validateWhenHidden: false,
+          key: 'container',
+          type: 'container',
+          input: true,
+          components: [
+            {
+              label: 'Select Boxes',
+              optionsLabelPosition: 'right',
+              tableView: false,
+              values: [
+                {
+                  label: 'a',
+                  value: 'a',
+                  shortcut: '',
+                },
+                {
+                  label: 'b',
+                  value: 'b',
+                  shortcut: '',
+                },
+                {
+                  label: 'c',
+                  value: 'c',
+                  shortcut: '',
+                },
+              ],
+              validateWhenHidden: false,
+              key: 'selectBoxes',
+              type: 'selectboxes',
+              input: true,
+              inputType: 'checkbox',
+            },
+          ],
+        },
+        {
+          label: 'Text Field',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textField',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'container.selectBoxes',
+                operator: 'isEqual',
+                value: 'a',
+              },
+            ],
+          },
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Text Field new wrong format',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textFieldNewWrong',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'container.selectBoxes.a',
+                operator: 'isEqual',
+                value: 'true',
+              },
+            ],
+          },
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Text Field Old Format',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textFieldOldFormat',
+          conditional: {
+            show: true,
+            eq: 'true',
+            when: 'container.selectBoxes.a',
+          },
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Submit',
+          showValidations: false,
+          tableView: false,
+          key: 'submit',
+          type: 'button',
+          input: true,
+          saveOnEnter: false,
+        },
+      ]
+    };
+    const data= {
+      textField: 'correct condition',
+      textFieldNewWrong: 'new condition with wrong format',
+      textFieldOldFormat: 'legacy condtion',
+      container: { selectBoxes: { a: true, b: false, c: false } },
+      submit: true,
+    }
+
+    const submission = {
+      data: fastCloneDeep(data),
+      _id: '66f68c17481ea2ffbf5bb310',
+      state: 'submitted',
+    };
+
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    (context.scope as any).conditionals.forEach((v: any) => assert.equal(v.conditionallyHidden, false))
+    assert.deepEqual(context.data, data);
+  });
+
+ it('Should not return error for the form with conditionals based on the Day component', () => {
     const form = {
       _id: '66ffe59b598a729e707869bf',
       title: '9143 condition day',
@@ -3609,8 +3757,7 @@ describe('Process Tests', () => {
     expect(context.scope.conditionals).to.have.length(1);
     expect(context.scope.conditionals?.[0].conditionallyHidden).to.be.false;
     assert.equal(context.scope.errors.length, 0);
-  })
-
+  });
 
   describe('Required component validation in nested form in DataGrid/EditGrid', () => {
     const nestedForm = {
