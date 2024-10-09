@@ -11,9 +11,9 @@ export default class DateGeaterThan extends ConditionOperator {
     }
 
     getFormattedDates({ value, comparedValue, conditionTriggerComponent }) {
-        const hasValidationFormat = conditionTriggerComponent && conditionTriggerComponent.component.type === 'day' ? getDateValidationFormat(conditionTriggerComponent.component) : null;
-        const date = hasValidationFormat ? moment(value, conditionTriggerComponent.getValidationFormat()) : moment(value);
-        const comparedDate = hasValidationFormat ? moment(comparedValue, conditionTriggerComponent.getValidationFormat()) : moment(comparedValue);
+        const validationFormat = conditionTriggerComponent && conditionTriggerComponent.component.type === 'day' ? getDateValidationFormat(conditionTriggerComponent.component) : null;
+        const date = validationFormat ? moment(value, validationFormat) : moment(value);
+        const comparedDate = validationFormat ? moment(comparedValue, validationFormat) : moment(comparedValue);
 
         return { date, comparedDate };
     }

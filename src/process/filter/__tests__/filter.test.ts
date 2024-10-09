@@ -79,6 +79,84 @@ it("Should not filter empty array value for dataTable component", async () => {
   });
 });
 
+it("Should not filter coordinates for Tagpad component", async () => {
+  const tagpadComp = {
+    label: 'Tagpad',
+    imageUrl: 'https://onetreeplanted.org/cdn/shop/articles/nature_facts_1600x.jpg?v=1705008496',
+    tableView: false,
+    validateWhenHidden: false,
+    key: 'tagpad',
+    path: 'tagpad',
+    type: 'tagpad',
+    input: true,
+    components: [
+      {
+        label: 'Text Field',
+        applyMaskOn: 'change',
+        tableView: true,
+        validateWhenHidden: false,
+        key: 'textField',
+        type: 'textfield',
+        input: true,
+      },
+    ],
+  };
+  const data = {
+    tagpad: [
+      {
+        coordinate: {
+          x: 83,
+          y: 61,
+          width: 280,
+          height: 133,
+        },
+        data: {
+          textField: 'test1',
+        },
+      },
+      {
+        coordinate: {
+          x: 194,
+          y: 93,
+          width: 280,
+          height: 133,
+        },
+        data: {
+          textField: 'test2',
+        },
+      },
+    ],
+  };
+  const context: any = generateProcessorContext(tagpadComp, data);
+  filterProcessSync(context);
+  expect(context.scope.filter).to.deep.equal({
+    tagpad: {
+      compModelType: 'nestedDataArray',
+      include: true,
+      value: [
+        {
+          coordinate: {
+            x: 83,
+            y: 61,
+            width: 280,
+            height: 133,
+          },
+          data: {},
+        },
+        {
+          coordinate: {
+            x: 194,
+            y: 93,
+            width: 280,
+            height: 133,
+          },
+          data: {},
+        },
+      ],
+    },
+  });
+});
+
 it("Should not filter the datamap component", async () => {
   const dataMapComp = {
     label: "Data Map",
