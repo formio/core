@@ -1,4 +1,4 @@
-## [Unreleased: 2.3.0-rc.11]
+## 2.3.0-rc.11
 ### Changed
  - FIO-9160: added support of different condition formats for selectboxes
    
