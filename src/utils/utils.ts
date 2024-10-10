@@ -45,16 +45,16 @@ export function unescapeHTML(str: string) {
   return doc.documentElement.textContent;
 }
 
-export function registerEphermalState(component: Component, name: keyof NonNullable<BaseComponent['ephermalState']>, value: any) {
-  if (!component.ephermalState) {
-    Object.defineProperty(component, 'ephermalState', {
+export function registerEphemeralState(component: Component, name: keyof NonNullable<BaseComponent['ephemeralState']>, value: any) {
+  if (!component.ephemeralState) {
+    Object.defineProperty(component, 'ephemeralState', {
       enumerable: false,
       configurable: true,
       writable: true,
       value: {}
     });
   }
-  Object.defineProperty(component.ephermalState, name, {
+  Object.defineProperty(component.ephemeralState, name, {
     enumerable: false,
     writable: false,
     configurable: true,
@@ -62,8 +62,8 @@ export function registerEphermalState(component: Component, name: keyof NonNulla
   });
 }
 
-export function resetEphermalState(component: Component) {
-  if (component.ephermalState) {
-    delete component.ephermalState;
+export function resetEphemeralState(component: Component) {
+  if (component.ephemeralState) {
+    delete component.ephemeralState;
   }
 }

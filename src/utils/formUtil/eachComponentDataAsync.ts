@@ -17,7 +17,6 @@ import {
     componentFormPath
 } from './index';
 import { eachComponentAsync } from './eachComponentAsync';
-import { resetEphermalState } from '../utils';
 
 // Async each component data.
 export const eachComponentDataAsync = async (

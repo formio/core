@@ -6,7 +6,7 @@ import {
     ConditionsScope,
     ProcessorFn,
 } from "types";
-import { registerEphermalState } from "utils";
+import { registerEphemeralState } from "utils";
 
 /**
  * This processor function checks components for the `hidden` property and, if children are present, sets them to hidden as well.
@@ -22,8 +22,8 @@ export const hideChildrenProcessor: ProcessorFnSync<ConditionsScope> = (context)
         scope.conditionals = [];
     }
 
-    if (isConditionallyHidden || component.hidden || parent?.ephermalState?.conditionallyHidden) {
-        registerEphermalState(component, 'conditionallyHidden', true);
+    if (isConditionallyHidden || component.hidden || parent?.ephemeralState?.conditionallyHidden) {
+        registerEphemeralState(component, 'conditionallyHidden', true);
     }
 }
 

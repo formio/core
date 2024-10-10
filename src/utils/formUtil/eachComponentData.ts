@@ -3,7 +3,6 @@ import { isEmpty, get, set, has } from "lodash";
 import { Component, DataObject, EachComponentDataCallback, HasChildComponents, HasColumns, HasRows } from "types";
 import { getContextualRowData, isComponentNestedDataType, getModelType, componentDataPath, componentInfo, componentFormPath } from "./index";
 import { eachComponent } from "./eachComponent";
-import { resetEphermalState } from "../utils";
 
 export const eachComponentData = (
     components: Component[],
