@@ -1,3 +1,7 @@
+## [Unreleased: 2.3.0-rc.11]
+### Changed
+ - FIO-9160: added support of different condition formats for selectboxes
+   
 ## 2.3.0-rc.10
 ### Changed
  - FIO-9143 fixed getValidationFormat error
