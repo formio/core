@@ -23,7 +23,7 @@ export type BaseComponent = {
     unique?: boolean;
     persistent?: boolean | string;
     hidden?: boolean;
-    ephermalState?: {
+    ephemeralState?: {
         conditionallyHidden?: boolean;
     }
     clearOnHide?: boolean;

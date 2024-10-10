@@ -1,7 +1,7 @@
 import { get, set } from "lodash";
 import { Component, ProcessorsContext, ProcessorType } from "types";
 import { getComponentKey } from "utils/formUtil";
-import { resetEphermalState } from "utils";
+import { resetEphemeralState } from "utils";
 
 export function dataValue(component: Component, row: any) {
     const key = getComponentKey(component);
@@ -22,8 +22,8 @@ export async function processOne<ProcessorScope>(context: ProcessorsContext<Proc
             }
         });
     }
-    // If the component has ephermal state, then we need to reset the ephermal state in case this is e.g. a data grid, in which each row needs to be validated independently
-    resetEphermalState(component);
+    // If the component has ephemeral state, then we need to reset the ephemeral state in case this is e.g. a data grid, in which each row needs to be validated independently
+    resetEphemeralState(component);
     if (!context.row) {
         return;
     }
@@ -49,8 +49,8 @@ export function processOneSync<ProcessorScope>(context: ProcessorsContext<Proces
             }
         });
     }
-    // If the component has ephermal state, then we need to reset the ephermal state in case this is e.g. a data grid, in which each row needs to be validated independently
-    resetEphermalState(component);
+    // If the component has ephemeral state, then we need to reset the ephemeral state in case this is e.g. a data grid, in which each row needs to be validated independently
+    resetEphemeralState(component);
     if (!context.row) {
         return;
     }

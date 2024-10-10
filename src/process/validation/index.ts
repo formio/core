@@ -100,7 +100,7 @@ export const _shouldSkipValidation = (context: ValidationContext, isConditionall
         (find((scope as ConditionsScope).conditionals, {
             path: getComponentPath(component, path),
             conditionallyHidden: true
-        }) || component.ephermalState?.conditionallyHidden === true)
+        }) || component.ephemeralState?.conditionallyHidden === true)
     ) {
         return true;
     }

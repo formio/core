@@ -1,6 +1,5 @@
-import { reset } from 'fetch-mock';
 import { ProcessorFn, ProcessorFnSync, ConditionsScope, ProcessorInfo, ConditionsContext, SimpleConditional, JSONConditional, LegacyConditional, SimpleConditionalConditions, Component, NestedComponent, FilterScope } from 'types';
-import { registerEphermalState, resetEphermalState } from 'utils';
+import { registerEphemeralState } from 'utils';
 import {
     checkCustomConditional,
     checkJsonConditional,
@@ -95,7 +94,7 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
 
     conditionalComp.conditionallyHidden = conditionalComp.conditionallyHidden || isHidden(context) === true;
     if (conditionalComp.conditionallyHidden) {
-        registerEphermalState(context.component, 'conditionallyHidden', true);
+        registerEphemeralState(context.component, 'conditionallyHidden', true);
     }
 };
 
