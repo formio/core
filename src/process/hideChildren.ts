@@ -15,7 +15,7 @@ export const hideChildrenProcessor: ProcessorFnSync<ConditionsScope> = (context)
     const { component, path, parent, scope } = context;
     // Check if there's a conditional set for the component and if it's marked as conditionally hidden
     const isConditionallyHidden = scope.conditionals?.find((cond) => {
-        return path.includes(cond.path) && cond.conditionallyHidden;
+        return path === cond.path && cond.conditionallyHidden;
     });
 
     if (!scope.conditionals) {
