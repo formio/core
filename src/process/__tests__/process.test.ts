@@ -3759,6 +3759,157 @@ it('Should not unset values for conditionally visible fields with different form
     assert.equal(context.scope.errors.length, 0);
   });
 
+  it('Should not unset value of the component inside fieldset inside wizard', () => {
+    const form = {
+      _id: '67063bc6094b45c5f33ade96',
+      title: '8802newOne',
+      name: '8802NewOne',
+      path: '8802newone',
+      type: 'form',
+      display: 'wizard',
+      owner: '6707a2f60c037c924c716b54',
+      components: [
+        {
+          title: 'Basic & Advanced',
+          breadcrumbClickable: true,
+          buttonSettings: {
+            previous: true,
+            cancel: true,
+            next: true,
+          },
+          navigateOnEnter: false,
+          saveOnEnter: false,
+          scrollToTop: false,
+          collapsible: false,
+          key: 'page1',
+          type: 'panel',
+          label: 'Page 1',
+          input: false,
+          tableView: false,
+          components: [
+            {
+              label: 'Text Field',
+              description: 'Hide Text Area when Text Field is Empty',
+              applyMaskOn: 'change',
+              tableView: true,
+              validateWhenHidden: false,
+              key: 'textField',
+              type: 'textfield',
+              input: true,
+            },
+            {
+              label: 'Text Area',
+              applyMaskOn: 'change',
+              autoExpand: false,
+              tableView: true,
+              validateWhenHidden: false,
+              key: 'textArea',
+              conditional: {
+                show: false,
+                conjunction: 'all',
+                conditions: [
+                  {
+                    component: 'textField',
+                    operator: 'isEmpty',
+                  },
+                ],
+              },
+              type: 'textarea',
+              input: true,
+            },
+          ],
+        },
+        {
+          title: 'Advanced & Layout',
+          breadcrumbClickable: true,
+          buttonSettings: {
+            previous: true,
+            cancel: true,
+            next: true,
+          },
+          navigateOnEnter: false,
+          saveOnEnter: false,
+          scrollToTop: false,
+          collapsible: false,
+          key: 'page2',
+          type: 'panel',
+          label: 'Page 2',
+          input: false,
+          tableView: false,
+          components: [
+            {
+              key: 'fieldSet',
+              type: 'fieldset',
+              label: 'Field Set',
+              input: false,
+              tableView: false,
+              components: [
+                {
+                  label: 'Url',
+                  applyMaskOn: 'change',
+                  tableView: true,
+                  validateWhenHidden: false,
+                  key: 'url',
+                  conditional: {
+                    show: true,
+                    conjunction: 'all',
+                    conditions: [
+                      {
+                        component: 'textAreaFieldSet',
+                        operator: 'isEmpty',
+                      },
+                    ],
+                  },
+                  type: 'url',
+                  input: true,
+                },
+                {
+                  label: 'Text Area - Field set',
+                  description: 'Show URL when Text Area - Field set is empty',
+                  applyMaskOn: 'change',
+                  autoExpand: false,
+                  tableView: true,
+                  validateWhenHidden: false,
+                  key: 'textAreaFieldSet',
+                  type: 'textarea',
+                  input: true,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    const submission = {
+      data: { textField: '', textAreaFieldSet: 'test' },
+      state: 'submitted',
+    };
+
+    const errors: any = [];
+    const conditionals: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors, conditionals },
+      config: {
+        server: true,
+      },
+    };
+
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.deepEqual(context.data, { textField: '', textAreaFieldSet: 'test' })
+    context.scope.conditionals.forEach((cond: any) => {
+      expect(cond.conditionallyHidden).to.be.true;
+    })
+  });
+
   describe('Required component validation in nested form in DataGrid/EditGrid', () => {
     const nestedForm = {
       key: 'form',
