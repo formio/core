@@ -94,12 +94,14 @@ export type HasChildComponents = BaseComponent & {
 }
 
 export type HasRows = BaseComponent & {
+    path: string,
     rows: {
         components: Component[];
     }[][];
 };
 
 export type HasColumns = BaseComponent & {
+    path: string;
     columns: {
         components: Component[];
     }[];
