@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { TimeComponent, SelectBoxesComponent } from 'types';
+import { TimeComponent, SelectBoxesComponent, ProcessorContext, ProcessorScope, DayComponent } from 'types';
 import { normalizeProcessSync } from '../';
 import { generateProcessorContext } from '../../__tests__/fixtures/util';
 
@@ -13,7 +13,7 @@ it('Should normalize a time component with a valid time value that doees not mat
     dataFormat: 'HH:mm:ss',
   };
   const data = { time: '12:00' };
-  const context = generateProcessorContext(timeComp, data);
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(timeComp, data);
   normalizeProcessSync(context);
   expect(context.data).to.deep.equal({ time: '12:00:00' });
 });
@@ -33,7 +33,7 @@ it('Should normalize a select boxes component with an incorrect data model', () 
   const data = {
     selectBoxes: '',
   };
-  const context = generateProcessorContext(selectBoxesComp, data);
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(selectBoxesComp, data);
   normalizeProcessSync(context);
   expect(context.data).to.deep.equal({ selectBoxes: {} });
 });
@@ -48,7 +48,7 @@ it('Should normalize an email component value', () => {
   const data = {
     email: 'BrendanBond@Gmail.com',
   };
-  const context = generateProcessorContext(emailComp, data);
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(emailComp, data);
   normalizeProcessSync(context);
   expect(context.data).to.deep.equal({ email: 'brendanbond@gmail.com' });
 });
@@ -73,7 +73,7 @@ it('Should normalize a radio component with a string value', () => {
   const data = {
     radio: 'true',
   };
-  const context = generateProcessorContext(radioComp, data);
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(radioComp, data);
   normalizeProcessSync(context);
   expect(context.data).to.deep.equal({ radio: true });
 });
@@ -97,7 +97,7 @@ it('Should normalize a radio component with a string value of false', () => {
   const data = {
     radio: 'false',
   };
-  const context = generateProcessorContext(radioComp, data);
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(radioComp, data);
   normalizeProcessSync(context);
   expect(context.data).to.deep.equal({ radio: false });
 });
@@ -122,7 +122,7 @@ it('Should normalize a radio component value with a number', () => {
   const data = {
     radio: '0',
   };
-  const context = generateProcessorContext(radioComp, data);
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(radioComp, data);
   normalizeProcessSync(context);
   expect(context.data).to.deep.equal({ radio: 0 });
 });
@@ -148,7 +148,7 @@ it('Should normalize a radio component value with a string if storage type is se
   const data = {
     radio: 0,
   };
-  const context = generateProcessorContext(radioComp, data);
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(radioComp, data);
   normalizeProcessSync(context);
   expect(context.data).to.deep.equal({ radio: '0' });
 });
@@ -173,7 +173,7 @@ it('Should normalize a radio component value with a number if storage type is se
   const data = {
     radio: 1,
   };
-  const context = generateProcessorContext(radioComp, data);
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(radioComp, data);
   normalizeProcessSync(context);
   expect(context.data).to.deep.equal({ radio: 1 });
 });
@@ -198,7 +198,7 @@ it('Should normalize a radio component value with a boolean if storage type is s
   const data = {
     radio: true,
   };
-  const context = generateProcessorContext(radioComp, data);
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(radioComp, data);
   normalizeProcessSync(context);
   expect(context.data).to.deep.equal({ radio: true });
 });
@@ -223,7 +223,7 @@ it('Should normalize a radio component value with a false boolean if storage typ
   const data = {
     radio: 'false',
   };
-  const context = generateProcessorContext(radioComp, data);
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(radioComp, data);
   normalizeProcessSync(context);
   expect(context.data).to.deep.equal({ radio: false });
 });
@@ -249,7 +249,7 @@ it('Should normalize a radio component value with an object  if storage type is 
   const data = {
     radio: { test: 'test' },
   };
-  const context = generateProcessorContext(radioComp, data);
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(radioComp, data);
   normalizeProcessSync(context);
   expect(context.data).to.deep.equal({
     radio: JSON.stringify({ test: 'test' }),
@@ -266,7 +266,7 @@ it('Should normalize a number component value with a string value', () => {
   const data = {
     number: '000123',
   };
-  const context = generateProcessorContext(numberComp, data);
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(numberComp, data);
   normalizeProcessSync(context);
   expect(context.data).to.deep.equal({ number: 123 });
 });
@@ -282,7 +282,45 @@ it('Should normalize a number component value with a multiple values allowed', (
   const data = {
     number: ['000.0123', '123'],
   };
-  const context = generateProcessorContext(numberComp, data);
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(numberComp, data);
   normalizeProcessSync(context);
   expect(context.data).to.deep.equal({ number: [0.0123, 123] });
+});
+
+it('Should normalize a day component with disabled components ', async () => {
+  const dayComp: DayComponent = {
+    type: 'day',
+    key: 'day',
+    label: 'Day',
+    input: true,
+    defaultValue:'',
+    fields: {
+      day: {hide: true},
+      month: {hide: false},
+      year: {hide: false}
+    }
+  };
+  const data = { day: '01/2025', };
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(dayComp, data);
+  normalizeProcessSync(context);
+  expect(context.data).to.deep.equal({ day: '01/2025' });
+});
+
+it('Should normalize a day component with disabled components and defaultValue', async () => {
+  const dayComp: DayComponent = {
+    type: 'day',
+    key: 'day',
+    label: 'Day',
+    input: true,
+    defaultValue: '01/2025',
+    fields: {
+      day: {hide: true},
+      month: {hide: false},
+      year: {hide: false}
+    }
+  };
+  const data = { day: '01/2025', };
+  const context: ProcessorContext<ProcessorScope> = generateProcessorContext(dayComp, data);
+  normalizeProcessSync(context);
+  expect({ day: '01/2025' }).to.deep.equal({ day: '01/2025' });
 });

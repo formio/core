@@ -152,7 +152,7 @@ export function NestedArrayModel(props: any = {}) : ModelDecoratorInterface {
 
                     // Remove superfluous rows.
                     if (dataValue.length > value.length) {
-                        for (let i = value.length; i < dataValue.length; i++) {
+                        for (let i = dataValue.length - 1; i >= value.length; i--) {
                             this.removeRow(i);
                         }
                     }

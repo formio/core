@@ -86,3 +86,33 @@ it('Validating a mutil-mask component should return null if the value matches th
     result = await validateMask(context);
     expect(result).to.equal(null);
 });
+
+it('Validating a mask component should return null if the instance contains a skipMaskValidation property', async () => {
+    const component = { ...simpleTextField, inputMask: '999-999-9999' };
+    const data = {
+        component: '1234',
+    };
+    const context = generateProcessorContext(component, data);
+    let result = await validateMask(context);
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.errorKeyOrMessage).to.equal('mask');
+    (context as any).instance = { skipMaskValidation: true };
+    result = await validateMask(context);
+    expect(result).to.equal(null);
+});
+
+it('Validating a mask component should return null if the validate object contains a skipMaskValidation', async () => {
+    const component = {
+        ...simpleTextField,
+        inputMask: '999-999-9999',
+        validate: {
+            skipMaskValidation: true,
+        },
+    };
+    const data = {
+        component: '1234',
+    };
+    const context = generateProcessorContext(component, data);
+    const result = await validateMask(context);
+    expect(result).to.equal(null);
+});

@@ -34,7 +34,7 @@ describe('validateMultiple', () => {
             expect(isEligible(component)).to.be.true;
         });
 
-        it('should return false for textArea component with as !== json', () => {
+        it('should return false for textArea component with as !== json if multiple', () => {
             const component: TextAreaComponent = {
                 type: 'textarea',
                 as: 'text',
@@ -50,9 +50,9 @@ describe('validateMultiple', () => {
             expect(isEligible(component)).to.be.false;
         });
 
-        it('should return true for textArea component with as === json', () => {
+        it('should return true for textArea component with as === json if multiple', () => {
             const component: TextAreaComponent = {
-                type: 'textArea',
+                type: 'textarea',
                 as: 'json',
                 input: true,
                 key: 'textAreaJson',
@@ -64,6 +64,21 @@ describe('validateMultiple', () => {
                 inputFormat: 'plain',
             };
             expect(isEligible(component)).to.be.true;
+        });
+
+        it('should return false for textArea component with as === json if not multiple', () => {
+            const component: TextAreaComponent = {
+                type: 'textarea',
+                as: 'json',
+                input: true,
+                key: 'textAreaJson',
+                rows: 4,
+                wysiwyg: true,
+                editor: 'ace',
+                fixedSize: true,
+                inputFormat: 'plain',
+            };
+            expect(isEligible(component)).to.be.false;
         });
 
         it('should return true for other component types', () => {
@@ -212,7 +227,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.instanceOf(FieldError);
             });
@@ -236,7 +251,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.null;
             });
@@ -259,7 +274,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.instanceOf(FieldError);
             });
@@ -282,7 +297,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.null;
             });
@@ -306,7 +321,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.null;
             });
@@ -329,7 +344,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.null;
             });
@@ -352,7 +367,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.null;
             });
@@ -375,7 +390,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.null;
             });
@@ -398,7 +413,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.null;
             });
@@ -423,7 +438,7 @@ describe('validateMultiple', () => {
                     scope: {
                         errors: []
                     },
-                    path: component.key
+                    path: component.key,
                 };
                 expect(validateMultipleSync(context)).to.be.instanceOf(FieldError);
             });

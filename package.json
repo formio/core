@@ -14,7 +14,7 @@
     "./error": "./lib/error/index.js"
   },
   "scripts": {
-    "test": "TEST=1 nyc --reporter=lcov --reporter=text --reporter=text-summary mocha -r ts-node/register -r tsconfig-paths/register -r mock-local-storage -r jsdom-global/register -t 0 'src/**/__tests__/*.test.ts'",
+    "test": "TEST=1 nyc --reporter=lcov --reporter=text --reporter=text-summary mocha -b -r ts-node/register -r tsconfig-paths/register -r mock-local-storage -r jsdom-global/register -t 0 'src/**/__tests__/*.test.ts'",
     "lib": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "lib:watch": "tsc -w & tsc-alias -w",
     "replace": "node -r tsconfig-paths/register -r ts-node/register ./lib/base/array/ArrayComponent.js",
@@ -94,14 +94,14 @@
   "dependencies": {
     "@types/json-logic-js": "^2.0.7",
     "browser-cookies": "^1.2.0",
-    "core-js": "^3.37.1",
-    "dayjs": "^1.11.11",
-    "dompurify": "^3.1.4",
+    "core-js": "^3.38.0",
+    "dayjs": "^1.11.12",
+    "dompurify": "^3.1.6",
     "eventemitter3": "^5.0.0",
     "fast-json-patch": "^3.1.1",
     "fetch-ponyfill": "^7.1.0",
-    "inputmask": "5.0.8",
-    "json-logic-js": "^2.0.2",
+    "inputmask": "5.0.9",
+    "json-logic-js": "^2.0.5",
     "lodash": "^4.17.21",
     "moment": "^2.29.4"
   },

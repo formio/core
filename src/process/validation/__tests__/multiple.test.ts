@@ -7,7 +7,7 @@ import { shouldValidate as shouldValidateRequired } from '../rules/validateRequi
 
 const allRules = [...rules, ...serverRules];
 
-const textFiledComponent = {
+const textFieldComponent = {
     type: 'textfield',
     key: 'multiple_textfield',
     label: 'Multiple Textfield',
@@ -49,7 +49,7 @@ const selectComponent = {
 };
 
 const context: ValidationContext = {
-    component: textFiledComponent,
+    component: textFieldComponent,
     value: [],
     path: 'multiple_textfield',
     data: {multiple_textfield: []},

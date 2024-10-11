@@ -1,6 +1,6 @@
 import { RulesLogic } from "json-logic-js";
 import { AdvancedLogic } from "./AdvancedLogic";
-
+import { getModelType } from "utils/formUtil";
 export type JSONConditional = { json: RulesLogic; };
 export type LegacyConditional = { show: boolean | string | null; when: string | null; eq: boolean | string };
 export type SimpleConditionalConditions = { component: string; operator: string; value?: any}[];
@@ -23,6 +23,9 @@ export type BaseComponent = {
     unique?: boolean;
     persistent?: boolean | string;
     hidden?: boolean;
+    ephemeralState?: {
+        conditionallyHidden?: boolean;
+    }
     clearOnHide?: boolean;
     refreshOn?: string;
     redrawOn?: string;
@@ -47,7 +50,7 @@ export type BaseComponent = {
     logic?: AdvancedLogic[];
     validateOn?: string;
     validateWhenHidden?: boolean;
-    modelType?: "array" | "value" | "object" | "dataObject" | "inherit" | "value";
+    modelType?: ReturnType<typeof getModelType>;
     parentPath?: string;
     validate?: {
         required?: boolean;

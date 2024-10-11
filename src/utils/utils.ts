@@ -1,6 +1,5 @@
-import { FieldError, InterpolateErrorFn } from 'error';
 import { isBoolean, isString } from 'lodash';
-import { Component } from 'types';
+import { BaseComponent, Component } from 'types';
 
 /**
  * Escapes RegEx characters in provided String value.
@@ -44,4 +43,27 @@ export function unescapeHTML(str: string) {
 
   const doc = new window.DOMParser().parseFromString(str, 'text/html');
   return doc.documentElement.textContent;
+}
+
+export function registerEphemeralState(component: Component, name: keyof NonNullable<BaseComponent['ephemeralState']>, value: any) {
+  if (!component.ephemeralState) {
+    Object.defineProperty(component, 'ephemeralState', {
+      enumerable: false,
+      configurable: true,
+      writable: true,
+      value: {}
+    });
+  }
+  Object.defineProperty(component.ephemeralState, name, {
+    enumerable: false,
+    writable: false,
+    configurable: true,
+    value
+  });
+}
+
+export function resetEphemeralState(component: Component) {
+  if (component.ephemeralState) {
+    delete component.ephemeralState;
+  }
 }

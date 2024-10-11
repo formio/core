@@ -1,7 +1,7 @@
 import { ConditionsContext, JSONConditional, LegacyConditional, SimpleConditional } from "types";
 import { EvaluatorFn, evaluate, JSONLogicEvaluator } from 'modules/jsonlogic';
-import { getComponent, getComponentActualValue } from "./formUtil";
-import { has, isObject, map, every, some, find, filter } from 'lodash';
+import { flattenComponents, getComponent, getComponentActualValue } from "./formUtil";
+import { has, isObject, map, every, some, find, filter, isBoolean, split } from 'lodash';
 import ConditionOperators from './operators';
 
 export const isJSONConditional = (conditional: any): conditional is JSONConditional => {
@@ -17,7 +17,7 @@ export const isSimpleConditional = (conditional: any): conditional is SimpleCond
 }
 
 export function conditionallyHidden(context: ConditionsContext) {
-    const { scope, component, path } = context;
+    const { scope, path } = context;
     if (scope.conditionals && path) {
         const hidden = find(scope.conditionals, (conditional) => {
             return conditional.path === path;
@@ -50,11 +50,11 @@ export function checkCustomConditional(condition: string, context: ConditionsCon
 
 /**
  * Checks the legacy conditionals.
- * 
- * @param conditional 
- * @param context 
- * @param checkDefault 
- * @returns 
+ *
+ * @param conditional
+ * @param context
+ * @param checkDefault
+ * @returns
  */
 export function checkLegacyConditional(conditional: LegacyConditional, context: ConditionsContext): boolean | null {
     const { row, data, component } = context;
@@ -75,9 +75,9 @@ export function checkLegacyConditional(conditional: LegacyConditional, context: 
 
 /**
  * Checks the JSON Conditionals.
- * @param conditional 
+ * @param conditional
  * @param context
- * @returns 
+ * @returns
  */
 export function checkJsonConditional(conditional: JSONConditional, context: ConditionsContext): boolean | null {
     const { evalContext } = context;
@@ -89,10 +89,26 @@ export function checkJsonConditional(conditional: JSONConditional, context: Cond
 }
 
 /**
+ * Checks if condition can potentially have a value path instead of component path.
+ * @param condition
+ * @returns {boolean}
+ */
+function isConditionPotentiallyBasedOnValuePath(condition: any = {}) {
+    let comparedValue;
+    try {
+        comparedValue = JSON.parse(condition.value);
+    }
+    catch(e) {
+        comparedValue = condition.value;
+    }
+    return isBoolean(comparedValue) && (condition.component || '').split('.').length > 1 && condition.operator === 'isEqual';
+}
+
+/**
  * Checks the simple conditionals.
- * @param conditional 
- * @param context 
- * @returns 
+ * @param conditional
+ * @param context
+ * @returns
  */
 export function checkSimpleConditional(conditional: SimpleConditional, context: ConditionsContext): boolean | null {
     const { component, data, row, instance, form } = context;
@@ -105,18 +121,43 @@ export function checkSimpleConditional(conditional: SimpleConditional, context: 
     }
 
     const conditionsResult = filter(map(conditions, (cond) => {
-        const { value: comparedValue, operator, component: conditionComponentPath } = cond;
+        let { value: comparedValue, operator, component: conditionComponentPath } = cond;
         if (!conditionComponentPath) {
             // Ignore conditions if there is no component path.
             return null;
         }
+        const formComponents = form?.components || [];
+        let conditionComponent = getComponent(formComponents, conditionComponentPath, true);
+        // If condition componenet is not found, check if conditionComponentPath is value path.
+        // Need to handle condtions like:
+        //   { 
+        //     "component": "selectBoxes.a",
+        //     "operator": "isEqual",
+        //     "value": "true"
+        //   } 
+        if (!conditionComponent && isConditionPotentiallyBasedOnValuePath(cond) && formComponents.length) {
+            const flattenedComponents = flattenComponents(formComponents, true);
+            const pathParts = split(conditionComponentPath, '.');
+            const valuePathParts = [];
 
-        const conditionComp = getComponent(form?.components || [], conditionComponentPath, true);
-        const value = conditionComp ? getComponentActualValue(conditionComp, conditionComponentPath, data, row) : null;
+            while (!conditionComponent && pathParts.length) {
+                conditionComponent = flattenedComponents[`${pathParts.join('.')}`];
+                if (!conditionComponent) {
+                    valuePathParts.unshift(pathParts.pop());
+                }
+            }
+            if (conditionComponent && conditionComponent.type === 'selectboxes' && valuePathParts.length) {
+                console.warn('Condition based on selectboxes has wrong format. Resave the form in the form builder to fix it.');
+                conditionComponentPath = pathParts.join('.');
+                comparedValue = valuePathParts.join('.');
+            }
+        }
+
+        const value = conditionComponent ? getComponentActualValue(conditionComponent, conditionComponentPath, data, row) : null;
 
         const ConditionOperator = ConditionOperators[operator];
         return ConditionOperator
-            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponent, conditionComponentPath, data})
             : true;
     }), (res) => (res !== null));
 

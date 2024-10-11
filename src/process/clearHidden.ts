@@ -6,7 +6,6 @@ import {
     ProcessorFnSync,
     ConditionsScope,
 } from "types";
-import { isParentHidden } from 'utils/isParentHidden';
 
 type ClearHiddenScope = ProcessorScope & {
     clearHidden: {
@@ -31,12 +30,12 @@ export const clearHiddenProcess: ProcessorFnSync<ClearHiddenScope> = (context) =
 
     // Check if there's a conditional set for the component and if it's marked as conditionally hidden
     const isConditionallyHidden = (scope as ConditionsScope).conditionals?.find((cond) => {
-        return path.includes(cond.path) && cond.conditionallyHidden;
+        return path === cond.path && cond.conditionallyHidden;
     });
 
     const shouldClearValueWhenHidden = !component.hasOwnProperty('clearOnHide') || component.clearOnHide;
 
-    if (shouldClearValueWhenHidden && (isConditionallyHidden || isParentHidden(component))) {
+    if (shouldClearValueWhenHidden && (isConditionallyHidden || component.hidden || component.ephemeralState?.conditionallyHidden)) {
         unset(data, path);
         scope.clearHidden[path] = true;
     }

@@ -7,7 +7,7 @@ import {
     AddressComponent,
     DayComponent
 } from 'types';
-import { isEmptyObject } from '../util';
+import { isEmptyObject, doesArrayDataHaveValue } from '../util';
 import { isComponentNestedDataType } from 'utils/formUtil';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
@@ -47,12 +47,16 @@ const valueIsPresent = (value: any, considerFalseTruthy: boolean, isNestedDataty
     else if (typeof value === 'object' && !isNestedDatatype) {
         return Object.values(value).some((val) => valueIsPresent(val, considerFalseTruthy, isNestedDatatype));
     }
+    // If value is an array, check it's children have value
+    else if (Array.isArray(value) && value.length) {
+       return doesArrayDataHaveValue(value);
+    }
     return true;
 }
 
 export const shouldValidate = (context: ValidationContext) => {
     const { component } = context;
-    if (component.validate?.required && !component.hidden) {
+    if (component.validate?.required && !(component.hidden || component.ephemeralState?.conditionallyHidden)) {
         return true;
     }
     return false;
