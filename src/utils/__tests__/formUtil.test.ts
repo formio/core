@@ -1,22 +1,8 @@
 import * as fs from 'fs';
 import get from 'lodash/get';
 import { expect } from 'chai';
-import writtenNumber from 'written-number';
 
 import { Component, HasChildComponents, TableComponent } from 'types';
-const components = JSON.parse(fs.readFileSync(__dirname + '/fixtures/components.json').toString());
-const components2 = JSON.parse(
-  fs.readFileSync(__dirname + '/fixtures/components2.json').toString(),
-);
-const components3 = JSON.parse(
-  fs.readFileSync(__dirname + '/fixtures/components3.json').toString(),
-);
-const components4 = JSON.parse(
-  fs.readFileSync(__dirname + '/fixtures/components4.json').toString(),
-);
-const components5 = JSON.parse(
-  fs.readFileSync(__dirname + '/fixtures/components5.json').toString(),
-);
 import {
   getContextualRowData,
   eachComponentDataAsync,
@@ -32,6 +18,42 @@ import {
   hasCondition,
   getModelType,
 } from '../formUtil';
+
+const components = JSON.parse(fs.readFileSync(__dirname + '/fixtures/components.json').toString());
+const components2 = JSON.parse(
+  fs.readFileSync(__dirname + '/fixtures/components2.json').toString(),
+);
+const components3 = JSON.parse(
+  fs.readFileSync(__dirname + '/fixtures/components3.json').toString(),
+);
+const components4 = JSON.parse(
+  fs.readFileSync(__dirname + '/fixtures/components4.json').toString(),
+);
+const components5 = JSON.parse(
+  fs.readFileSync(__dirname + '/fixtures/components5.json').toString(),
+);
+const writtenNumber = (n: number | null) => {
+  switch (n) {
+    case 1:
+      return 'one';
+    case 2:
+      return 'two';
+    case 3:
+      return 'three';
+    case 4:
+      return 'four';
+    case 5:
+      return 'five';
+    case 6:
+      return 'six';
+    case 7:
+      return 'seven';
+    case 8:
+      return 'eight';
+    default:
+      throw new Error('Written number does not support numbers > 8 or < 1');
+  }
+};
 
 describe('formUtil', function () {
   describe('eachComponent', function () {

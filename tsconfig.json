@@ -91,6 +91,6 @@
       "template/*": ["src/experimental/template/*"]
     }
   },
-  "include": ["src/*.ts", "src/*.ejs", "src/**/*.ts", "src/**/*.ejs", "src/server/**/*.js"],
+  "include": ["src/*.ts", "src/*.ejs", "src/**/*.ts", "src/**/*.ejs", "src/server/**/*.js", "global.d.ts"],
   "exclude": ["node_modules", "gulpfile.js", "dist", "**/*.spec.ts"]
 }
