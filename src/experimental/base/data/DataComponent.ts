@@ -1,5 +1,5 @@
 import { Components } from '../Components';
-import { NestedDataModel, ModelDecoratorInterface,  ModelInterface } from '../../model';
+import { NestedDataModel, ModelDecoratorInterface, ModelInterface } from '../../model';
 import { NestedComponent } from '../nested/NestedComponent';
 
 /**
@@ -16,16 +16,16 @@ import { NestedComponent } from '../nested/NestedComponent';
  *   }
  * }
  */
-export function DataComponent(props: any = {}) : ModelDecoratorInterface {
-    if (!props.type) {
-        props.type = 'data';
-    }
-    if (!props.model) {
-        props.model = NestedDataModel;
-    }
-    return function(BaseClass?: ModelInterface) : ModelInterface {
-        return class ExtendedDataComponent extends NestedComponent(props)(BaseClass) {}
-    }
+export function DataComponent(props: any = {}): ModelDecoratorInterface {
+  if (!props.type) {
+    props.type = 'data';
+  }
+  if (!props.model) {
+    props.model = NestedDataModel;
+  }
+  return function (BaseClass?: ModelInterface): ModelInterface {
+    return class ExtendedDataComponent extends NestedComponent(props)(BaseClass) {};
+  };
 }
 
 Components.addDecorator(DataComponent, 'data');

@@ -25,7 +25,9 @@
     "clean": "rm -rf lib && rm -rf dist && rm -rf docs",
     "build": "npm run clean && gulp templates && npm run docs && npm run lib && npm run build:dev && npm run build:prod",
     "prepublish": "npm run build && npm run test",
-    "show-coverage": "open coverage/lcov-report/index.html"
+    "show-coverage": "open coverage/lcov-report/index.html",
+    "lint": "eslint src",
+    "format": "prettier --write ."
   },
   "repository": {
     "type": "git",
@@ -53,6 +55,7 @@
   ],
   "homepage": "https://github.com/formio/core#readme",
   "devDependencies": {
+    "@eslint/js": "^9.12.0",
     "@types/chai": "^4.3.16",
     "@types/chance": "^1.1.6",
     "@types/dompurify": "^3.0.5",
@@ -67,7 +70,10 @@
     "@types/uuid": "^9.0.8",
     "chai": "4.4.1",
     "chance": "^1.1.8",
+    "eslint": "^9.12.0",
+    "eslint-plugin-mocha": "^10.5.0",
     "fetch-mock": "^9.11.0",
+    "globals": "^15.11.0",
     "gulp": "^5.0.0",
     "gulp-insert": "^0.5.0",
     "gulp-rename": "^2.0.0",
@@ -79,6 +85,7 @@
     "mock-local-storage": "^1.1.20",
     "nyc": "^15.1.0",
     "power-assert": "^1.6.1",
+    "prettier": "^3.3.3",
     "sinon": "^17.0.2",
     "ts-loader": "^9.5.0",
     "ts-node": "^10.5.0",
@@ -87,6 +94,7 @@
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typedoc": "^0.25.13",
     "typescript": "^5.4.5",
+    "typescript-eslint": "^8.8.1",
     "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4",
     "written-number": "^0.11.1"

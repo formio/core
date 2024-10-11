@@ -1,29 +1,34 @@
 import ConditionOperator from './ConditionOperator';
-import { isString, isObject, isEqual, get } from 'lodash';
+import { isString, isEqual, get } from 'lodash';
 
 export default class IsEqualTo extends ConditionOperator {
-    static get operatorKey() {
-        return 'isEqual';
+  static get operatorKey() {
+    return 'isEqual';
+  }
+
+  static get displayedName() {
+    return 'Is Equal To';
+  }
+
+  execute({ value, comparedValue, conditionComponent }) {
+    // special check for select boxes
+    if (conditionComponent?.type === 'selectboxes') {
+      return get(value, comparedValue, false);
     }
 
-    static get displayedName() {
-        return 'Is Equal To';
+    if (
+      value &&
+      comparedValue &&
+      typeof value !== typeof comparedValue &&
+      isString(comparedValue)
+    ) {
+      try {
+        comparedValue = JSON.parse(comparedValue);
+      } catch (ignoreErr) {
+        // do nothing
+      }
     }
 
-    execute({ value, comparedValue, conditionComponent }) {
-        // special check for select boxes
-        if (conditionComponent?.type === 'selectboxes') {
-            return get(value, comparedValue, false);
-        }
-        
-        if (value && comparedValue && typeof value !== typeof comparedValue && isString(comparedValue)) {
-            try {
-                comparedValue = JSON.parse(comparedValue);
-            }
-            // eslint-disable-next-line no-empty
-            catch (e) {}
-        }
-
-        return isEqual(value, comparedValue);
-    }
+    return isEqual(value, comparedValue);
+  }
 }
