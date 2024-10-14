@@ -90,6 +90,21 @@ export type ContainerComponent = NestedComponent & {
 
 export type HasChildComponents = BaseComponent & {
     components: Component[];
+    path: string;
+}
+
+export type HasRows = BaseComponent & {
+    path: string,
+    rows: {
+        components: Component[];
+    }[][];
+};
+
+export type HasColumns = BaseComponent & {
+    path: string;
+    columns: {
+        components: Component[];
+    }[];
 }
 
 export type AddressComponent = ContainerComponent & {

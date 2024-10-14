@@ -1,4 +1,4 @@
-## [Unreleased: 2.3.0-rc.2]
+## [Unreleased: 2.3.1-rc.1]
 ### Changed
  - Regression | Nested Form | Components in Nested forms should not validate hidden components without Validate When Hidden = true
  - FIO-8807: fixed an issue where conditionals based on selectBoxes component do not work
@@ -28,6 +28,16 @@
  - FIO-8912: updates to model types, naming
  - FIO-8414: fixed required validation not working in Data Grid
  - FIO-8986: fixed normalization for day with default value and hidden fields
+ - FIO-9059: fixed an issue where the string type returns for textarea with json type
+ - FIO-9033 tagpad data is not saved
+ - FIO-9028: update README
+ - FIO-9085: Fix components data removed from submission when conditional set for Address component value
+ - FIO-9055: separate rowPath from componentPath in getComponentActualValue fn
+ - FIO-8723: Clear values from submission for hidden comp with clearOnHide flag
+ - FIO-9143 fixed getValidationFormat error
+ - FIO-9002: fix issue with conditionally hidden duplicate nested form paths
+ - FIO-9085: Fix address submission logic
+ - FIO-8954: added Allow only available values validation for Data Source Type = URL
 
 ## 2.3.0-rc.1
 ### Changed

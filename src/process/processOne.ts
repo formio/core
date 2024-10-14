@@ -1,6 +1,7 @@
 import { get, set } from "lodash";
-import { Component, DataObject, ProcessorsContext, ProcessorType } from "types";
+import { Component, ProcessorsContext, ProcessorType } from "types";
 import { getComponentKey } from "utils/formUtil";
+import { resetEphemeralState } from "utils";
 
 export function dataValue(component: Component, row: any) {
     const key = getComponentKey(component);
@@ -8,7 +9,7 @@ export function dataValue(component: Component, row: any) {
 }
 
 export async function processOne<ProcessorScope>(context: ProcessorsContext<ProcessorScope>) {
-    const { processors } = context;
+    const { processors, component } = context;
     // Create a getter for `value` that is always derived from the current data object
     if (typeof context.value === 'undefined') {
         Object.defineProperty(context, 'value', {
@@ -21,6 +22,8 @@ export async function processOne<ProcessorScope>(context: ProcessorsContext<Proc
             }
         });
     }
+    // If the component has ephemeral state, then we need to reset the ephemeral state in case this is e.g. a data grid, in which each row needs to be validated independently
+    resetEphemeralState(component);
     if (!context.row) {
         return;
     }
@@ -46,13 +49,15 @@ export function processOneSync<ProcessorScope>(context: ProcessorsContext<Proces
             }
         });
     }
+    // If the component has ephemeral state, then we need to reset the ephemeral state in case this is e.g. a data grid, in which each row needs to be validated independently
+    resetEphemeralState(component);
     if (!context.row) {
         return;
     }
     context.processor = ProcessorType.Custom;
     for (const processor of processors) {
         if (processor?.processSync) {
-            processor.processSync(context)
+            processor.processSync(context);
         }
     }
 }

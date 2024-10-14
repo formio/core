@@ -15,11 +15,12 @@ import {
   isArray,
   isEqual,
   trim,
-  isBoolean
+  isBoolean,
+  omit
 } from "lodash";
 import { compare, applyPatch } from 'fast-json-patch';
+
 import {
-  AsyncComponentDataCallback,
   CheckboxComponent,
   DataGridComponent,
   EditGridComponent,
@@ -30,15 +31,19 @@ import {
   HasChildComponents,
   SelectBoxesComponent,
   Component,
-  ComponentDataCallback,
   DataObject,
   ColumnsComponent,
   TableComponent,
   LegacyConditional,
   JSONConditional,
   SimpleConditional,
+  AddressComponent,
 } from "types";
-import { Evaluator } from "./Evaluator";
+import { Evaluator } from "../Evaluator";
+import { eachComponent } from "./eachComponent";
+import { eachComponentData } from './eachComponentData';
+import { eachComponentAsync } from "./eachComponentAsync";
+import { eachComponentDataAsync } from "./eachComponentDataAsync";
 
 /**
  * Flatten the form components for data manipulation.
@@ -109,6 +114,7 @@ export function uniqueName(name: string, template?: string, evalContext?: any) {
  * For now, these will be the only model types supported by the @formio/core library.
  *
  * nestedArray: for components that store their data as an array and have nested components.
+ * nestedDataArray: for components that store their data as an array and have nested components, but keeps the value of nested components inside 'data' property.
  * array: for components that store their data as an array.
  * dataObject: for components that store their data in a nested { data: {} } object.
  * object: for components that store their data in an object.
@@ -127,6 +133,8 @@ export const MODEL_TYPES_OF_KNOWN_COMPONENTS = {
     'editgrid',
     'datatable',
     'dynamicWizard',
+  ],
+  nestedDataArray: [
     'tagpad',
   ],
   dataObject: [
@@ -145,7 +153,6 @@ export const MODEL_TYPES_OF_KNOWN_COMPONENTS = {
   ],
   string: [
     'textfield',
-    'textarea',
     'password',
     'email',
     'url',
@@ -174,6 +181,7 @@ export const MODEL_TYPES_OF_KNOWN_COMPONENTS = {
   any: [
     'survey',
     'captcha',
+    'textarea',
     'selectboxes',
     'tags',
     'select',
@@ -235,8 +243,9 @@ export function getComponentPath(component: Component, path: string) {
   return (getModelType(component) === 'none') ? `${path}.${key}` : path;
 }
 
-export function isComponentNestedDataType(component: any) {
+export function isComponentNestedDataType(component: any): component is HasChildComponents {
   return component.tree || getModelType(component) === 'nestedArray' ||
+    getModelType(component) === 'nestedDataArray' ||
     getModelType(component) === 'dataObject' ||
     getModelType(component) === 'object' ||
     getModelType(component) === 'map';
@@ -263,6 +272,9 @@ export const componentDataPath = (component: any, parentPath: string, path: stri
     if (getModelType(component) === 'nestedArray') {
       return `${path}[0]`;
     }
+    if (getModelType(component) === 'nestedDataArray') {
+      return `${path}[0].data`;
+    }
     if (isComponentNestedDataType(component)) {
       return path;
     }
@@ -283,128 +295,6 @@ export const componentFormPath = (component: any, parentPath: string, path: stri
   return parentPath;
 }
 
-// Async each component data.
-export const eachComponentDataAsync = async (
-  components: Component[],
-  data: DataObject,
-  fn: AsyncComponentDataCallback,
-  path = "",
-  index?: number,
-  parent?: Component,
-  includeAll: boolean = false
-) => {
-  if (!components || !data) {
-    return;
-  }
-  return await eachComponentAsync(
-    components,
-    async (component: any, compPath: string, componentComponents: any, compParent: any) => {
-      const row = getContextualRowData(component, compPath, data);
-      if (await fn(component, data, row, compPath, componentComponents, index, compParent) === true) {
-        return true;
-      }
-      if (isComponentNestedDataType(component)) {
-        const value = get(data, compPath, data);
-        if (Array.isArray(value)) {
-          for (let i = 0; i < value.length; i++) {
-            await eachComponentDataAsync(
-              component.components,
-              data,
-              fn,
-              `${compPath}[${i}]`,
-              i,
-              component,
-              includeAll
-            );
-          }
-          return true;
-        } else if (isEmpty(row) && !includeAll) {
-          // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
-          return true;
-        }
-        if (getModelType(component) === 'dataObject') {
-          // No need to bother processing all the children data if there is no data for this form or the reference value has not been loaded.
-          const nestedFormValue: any = get(data, component.path);
-          const noReferenceAttached = nestedFormValue?._id && isEmpty(nestedFormValue.data) && !has(nestedFormValue, 'form');
-          const shouldProcessNestedFormData = nestedFormValue?._id ? !noReferenceAttached : has(data, component.path);
-          if (shouldProcessNestedFormData) {
-            // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
-            const childPath: string = componentDataPath(component, path, compPath);
-            const childData: any = get(data, childPath, null);
-            await eachComponentDataAsync(component.components, childData, fn, '', index, component, includeAll);
-            set(data, childPath, childData);
-          }
-        }
-        else {
-          await eachComponentDataAsync(component.components, data, fn, componentDataPath(component, path, compPath), index, component, includeAll);
-        }
-        return true;
-      }
-      return false;
-    },
-    true,
-    path,
-    parent
-  );
-};
-
-export const eachComponentData = (
-  components: Component[],
-  data: DataObject,
-  fn: ComponentDataCallback,
-  path = "",
-  index?: number,
-  parent?: Component,
-  includeAll: boolean = false
-) => {
-  if (!components || !data) {
-    return;
-  }
-  return eachComponent(
-    components,
-    (component: any, compPath: string, componentComponents: any, compParent: any) => {
-      const row = getContextualRowData(component, compPath, data);
-      if (fn(component, data, row, compPath, componentComponents, index, compParent) === true) {
-        return true;
-      }
-      if (isComponentNestedDataType(component)) {
-        const value = get(data, compPath, data) as DataObject;
-        if (Array.isArray(value)) {
-          for (let i = 0; i < value.length; i++) {
-            eachComponentData(component.components, data, fn, `${compPath}[${i}]`, i, component, includeAll);
-          }
-          return true;
-        } else if (isEmpty(row) && !includeAll) {
-          // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
-          return true;
-        }
-        if (getModelType(component) === 'dataObject') {
-          // No need to bother processing all the children data if there is no data for this form or the reference value has not been loaded.
-          const nestedFormValue: any = get(data, component.path);
-          const noReferenceAttached = nestedFormValue?._id && isEmpty(nestedFormValue.data) && !has(nestedFormValue, 'form');
-          const shouldProcessNestedFormData = nestedFormValue?._id ? !noReferenceAttached : has(data, component.path);
-          if (shouldProcessNestedFormData) {
-            // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
-            const childPath: string = componentDataPath(component, path, compPath);
-            const childData: any = get(data, childPath, {});
-            eachComponentData(component.components, childData, fn, '', index, component, includeAll);
-            set(data, childPath, childData);
-          }
-        }
-        else {
-          eachComponentData(component.components, data, fn, componentDataPath(component, path, compPath), index, component, includeAll);
-        }
-        return true;
-      }
-
-      return false
-    },
-    true,
-    path,
-    parent
-  );
-};
-
 export function getComponentKey(component: Component) {
   if (
     component.type === 'checkbox' &&
@@ -419,7 +309,6 @@ export function getComponentKey(component: Component) {
 export function getContextualRowPath(component: Component, path: string): string {
   return path.replace(new RegExp(`\.?${getComponentKey(component)}$`), '');
 }
-
 
 export function getContextualRowData(component: Component, path: string, data: any): any {
   const rowPath = getContextualRowPath(component, path);
@@ -439,191 +328,6 @@ export function componentInfo(component: any) {
     hasComps,
     layout: hasColumns || hasRows || (hasComps && !isInput) || isLayout || isContent,
     iterable: hasColumns || hasRows || hasComps || isContent,
-  }
-}
-
-/**
- * Iterate through each component within a form.
- *
- * @param {Object} components
- *   The components to iterate.
- * @param {Function} fn
- *   The iteration function to invoke for each component.
- * @param {Boolean} includeAll
- *   Whether or not to include layout components.
- * @param {String} path
- *   The current data path of the element. Example: data.user.firstName
- * @param {Object} parent
- *   The parent object.
- */
-export function eachComponent(
-  components: any,
-  fn: any,
-  includeAll?: boolean,
-  path?: string,
-  parent?: any
-) {
-  if (!components) return;
-  path = path || "";
-  components.forEach((component: any) => {
-    if (!component) {
-      return;
-    }
-    const info = componentInfo(component);
-    let noRecurse = false;
-    // Keep track of parent references.
-    if (parent) {
-      // Ensure we don't create infinite JSON structures.
-      Object.defineProperty(component, 'parent', {
-        enumerable: false,
-        writable: true,
-        value: JSON.parse(JSON.stringify(parent))
-      });
-      Object.defineProperty(component.parent, 'parent', {
-        enumerable: false,
-        writable: true,
-        value: parent.parent
-      });
-      Object.defineProperty(component.parent, 'path', {
-        enumerable: false,
-        writable: true,
-        value: parent.path
-      });
-      delete component.parent.components;
-      delete component.parent.componentMap;
-      delete component.parent.columns;
-      delete component.parent.rows;
-    }
-
-    Object.defineProperty(component, 'path', {
-      enumerable: false,
-      writable: true,
-      value: componentPath(component, path)
-    });
-
-    if (includeAll || component.tree || !info.layout) {
-      noRecurse = fn(component, component.path, components, parent);
-    }
-
-    if (!noRecurse) {
-      if (info.hasColumns) {
-        component.columns.forEach((column: any) =>
-          eachComponent(
-            column.components,
-            fn,
-            includeAll,
-            path,
-            parent ? component : null
-          )
-        );
-      } else if (info.hasRows) {
-        component.rows.forEach((row: any) => {
-          if (Array.isArray(row)) {
-            row.forEach((column) =>
-              eachComponent(
-                column.components,
-                fn,
-                includeAll,
-                path,
-                parent ? component : null
-              )
-            );
-          }
-        });
-      } else if (info.hasComps) {
-        eachComponent(
-          component.components,
-          fn,
-          includeAll,
-          componentFormPath(component, path, component.path),
-          parent ? component : null
-        );
-      }
-    }
-  });
-}
-
-// Async each component.
-export async function eachComponentAsync(
-  components: any[],
-  fn: any,
-  includeAll = false,
-  path = "",
-  parent?: any
-) {
-  if (!components) return;
-  for (let i = 0; i < components.length; i++) {
-    if (!components[i]) {
-      continue;
-    }
-    let component = components[i];
-    const info = componentInfo(component);
-    // Keep track of parent references.
-    if (parent) {
-      // Ensure we don't create infinite JSON structures.
-      Object.defineProperty(component, 'parent', {
-        enumerable: false,
-        writable: true,
-        value: JSON.parse(JSON.stringify(parent))
-      });
-      Object.defineProperty(component.parent, 'parent', {
-        enumerable: false,
-        writable: true,
-        value: parent.parent
-      });
-      Object.defineProperty(component.parent, 'path', {
-        enumerable: false,
-        writable: true,
-        value: parent.path
-      });
-      delete component.parent.components;
-      delete component.parent.componentMap;
-      delete component.parent.columns;
-      delete component.parent.rows;
-    }
-    Object.defineProperty(component, 'path', {
-      enumerable: false,
-      writable: true,
-      value: componentPath(component, path)
-    });
-    if (includeAll || component.tree || !info.layout) {
-      if (await fn(component, component.path, components, parent)) {
-        continue;
-      }
-    }
-    if (info.hasColumns) {
-      for (let j = 0; j < component.columns.length; j++) {
-        await eachComponentAsync(
-          component.columns[j]?.components,
-          fn,
-          includeAll,
-          path,
-          parent ? component : null
-        );
-      }
-    } else if (info.hasRows) {
-      for (let j = 0; j < component.rows.length; j++) {
-        let row = component.rows[j];
-        if (Array.isArray(row)) {
-          for (let k = 0; k < row.length; k++) {
-            await eachComponentAsync(
-              row[k]?.components,
-              fn, includeAll,
-              path,
-              parent ? component : null
-            );
-          }
-        }
-      }
-    } else if (info.hasComps) {
-      await eachComponentAsync(
-        component.components,
-        fn,
-        includeAll,
-        componentFormPath(component, path, component.path),
-        parent ? component : null
-      );
-    }
   }
 }
 
@@ -1182,6 +886,7 @@ export function findComponent(components: any, key: any, path: any, fn: any) {
 const isCheckboxComponent = (component: any): component is CheckboxComponent => component?.type === 'checkbox';
 const isDataGridComponent = (component: any): component is DataGridComponent => component?.type === 'datagrid';
 const isEditGridComponent = (component: any): component is EditGridComponent => component?.type === 'editgrid';
+const isAddressComponent = (component: any): component is AddressComponent => component?.type === 'address';
 const isDataTableComponent = (component: any): component is DataTableComponent => component?.type === 'datatable';
 const hasChildComponents = (component: any): component is HasChildComponents => component?.components != null;
 const isDateTimeComponent = (component: any): component is DateTimeComponent => component?.type === 'datetime';
@@ -1235,9 +940,17 @@ function isValueEmpty(component: Component, value: any) {
 
 export function isComponentDataEmpty(component: Component, data: any, path: string, valueCond?:any): boolean {
   const value = isNil(valueCond) ? get(data, path): valueCond;
+  const addressIgnoreProperties = ['mode', 'address'];
   if (isCheckboxComponent(component)) {
     return isValueEmpty(component, value) || value === false;
-  } else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {
+  }
+  else if (isAddressComponent(component)) {
+    if(Object.keys(value).length === 0) {
+      return true
+    }
+    return !Object.values(omit(value, addressIgnoreProperties)).some(Boolean);
+  }
+  else if (isDataGridComponent(component) || isEditGridComponent(component) || isDataTableComponent(component) || hasChildComponents(component)) {
     if (component.components?.length) {
       let childrenEmpty = true;
       // wrap component in an array to let eachComponentData handle introspection to child components (e.g. this will be different
@@ -1273,3 +986,5 @@ export function isComponentDataEmpty(component: Component, data: any, path: stri
   }
   return isValueEmpty(component, value);
 }
+
+export { eachComponent, eachComponentData, eachComponentAsync, eachComponentDataAsync };

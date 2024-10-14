@@ -28,7 +28,7 @@ it('Validator will throw the correct errors given a flat components array', asyn
             path,
             value: get(data, component.key),
             processor: ProcessorType.Validate,
-            rules
+            rules,
         });
         if (scope.errors) {
             errors = [...errors, ...scope.errors.map((error) => error.errorKeyOrMessage)];
