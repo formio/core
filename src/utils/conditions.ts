@@ -3,6 +3,7 @@ import { EvaluatorFn, evaluate, JSONLogicEvaluator } from 'modules/jsonlogic';
 import { getComponent, getComponentActualValue } from "./formUtil";
 import { has, isObject, map, every, some, find, filter } from 'lodash';
 import ConditionOperators from './operators';
+import _ from 'lodash';
 
 export const isJSONConditional = (conditional: any): conditional is JSONConditional => {
     return conditional && conditional.json && isObject(conditional.json);
@@ -88,6 +89,51 @@ export function checkJsonConditional(conditional: JSONConditional, context: Cond
     return JSONLogicEvaluator.evaluate(conditional.json, evalContextValue);
 }
 
+function getConditionalPathsRecursive(conditionPaths: any, data: any): any {
+    let currentGlobalIndex = 0;
+    const conditionalPathsArray: string[] = [];
+
+    const getConditionalPaths = (data: any, currentPath = '', localIndex = 0) => {
+        currentPath = currentPath.replace(/^\.+|\.+$/g, '');
+        const currentLocalIndex = localIndex;
+        const currentData = _.get(data, currentPath);
+
+        if (Array.isArray(currentData) && currentData.filter(Boolean).length > 0) {
+            if (currentData.some(element => typeof element !== 'object')) {
+                return;
+            }
+
+            const hasInnerDataArray = currentData.find(x => Array.isArray(x[conditionPaths[currentLocalIndex]]));
+
+            if (hasInnerDataArray) {
+                currentData.forEach((_, indexOutside) => {
+                    const innerCompDataPath = `${currentPath}[${indexOutside}].${conditionPaths[currentLocalIndex]}`;
+                    getConditionalPaths(data, innerCompDataPath, currentLocalIndex + 1);
+                });
+            }
+            else {
+                currentData.forEach((x, index) => {
+                    if (!_.isNil(x[conditionPaths[currentLocalIndex]])) {
+                        const compDataPath = `${currentPath}[${index}].${conditionPaths[currentLocalIndex]}`;
+                        conditionalPathsArray.push(compDataPath);
+                    }
+                });
+            }
+        }
+        else {
+            if (!conditionPaths[currentGlobalIndex]) {
+                return;
+            }
+            currentGlobalIndex = currentGlobalIndex + 1;
+            getConditionalPaths(data, `${currentPath}.${conditionPaths[currentGlobalIndex - 1]}`, currentGlobalIndex);
+        }
+    };
+
+    getConditionalPaths(data);
+
+    return conditionalPathsArray;
+}
+
 /**
  * Checks the simple conditionals.
  * @param conditional
@@ -99,59 +145,76 @@ export function checkSimpleConditional(conditional: SimpleConditional, context: 
     if (!conditional || !isSimpleConditional(conditional)) {
         return null;
     }
-    const { conditions = [], conjunction = 'all', show = true } = conditional;
-    if (!conditions.length) {
-        return null;
-    }
+    // @ts-ignore
+    if (conditional.when) {
+        // @ts-ignore
+        const value = getComponentActualValue(conditional!.when, data, row);
+        // @ts-ignore
+        const eq = String(conditional.eq);
+        const show = String(conditional.show);
 
-    const conditionsResult = filter(map(conditions, (cond) => {
-        const { value: comparedValue, operator, component: conditionComponentPath } = cond;
-        if (!conditionComponentPath) {
-            // Ignore conditions if there is no component path.
+        // Special check for selectboxes component.
+        // @ts-ignore
+        if (_.isObject(value) && _.has(value, conditional.eq)) {
+            // @ts-ignore
+            return String(value[conditional.eq]) === show;
+        }
+        // FOR-179 - Check for multiple values.
+        if (Array.isArray(value) && value.map(String).includes(eq)) {
+            return show === 'true';
+        }
+
+        return (String(value) === eq) === (show === 'true');
+    }
+    else {
+        const { conditions = [], conjunction = 'all', show = true } = conditional;
+        if (!conditions.length) {
             return null;
         }
 
-        // const recursionFunc = (form:any)=> {
-        //     form.forEach((x:any)=> {
-        //         if(x.path){
-        //             x.path = x.path.replace(/\[[0-9]+\]/g, '');
-        //         }
-        //         let components:any = x.components;
-        //          while (components) {
-        //          components.forEach((element:any) => {
-        //              element.path = element.path.replace(/\[[0-9]+\]/g, '');
-        //              if(element.components) {
-        //                  recursionFunc(element.components)
-        //              }
-        //              else {
-        //                components = false
-        //              }
-        //          });
-        //        }
-        //        })
+        const conditionsResult = filter(map(conditions, (cond) => {
+            const { value: comparedValue, operator, component: conditionComponentPath } = cond;
+            if (!conditionComponentPath) {
+                // Ignore conditions if there is no component path.
+                return null;
+            }
+            const conditionComponent = getComponent(form?.components || components, conditionComponentPath, true);
+
+            const splittedConditionPath = conditionComponentPath.split('.');
+            // @ts-ignore
+            const conditionalPaths = instance?.parent?.type === 'datagrid' || instance?.parent?.type === 'editgrid' ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
 
 
-        //   return form;
-        // }
+            if (conditionalPaths.length > 0) {
+                return conditionalPaths.map((path: string) => {
+                    const value = getComponentActualValue(conditionComponent, path, data, row);
 
-        // recursionFunc(form?.components || components);
+                    const ConditionOperator = ConditionOperators[operator];
+                    return ConditionOperator
+                        ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+                        : true;
+                });
+            }
 
-        const conditionComponent = getComponent(form?.components || components, conditionComponentPath, true);
-        const value = conditionComponent ? getComponentActualValue(conditionComponent, conditionComponentPath, data, row) : null;
+            else {
 
-        const ConditionOperator = ConditionOperators[operator];
-        return ConditionOperator
-            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponent, conditionComponentPath, data})
-            : true;
-    }), (res) => (res !== null));
+                const value = getComponentActualValue(conditionComponent, conditionComponentPath, data, row);
+                const СonditionOperator = ConditionOperators[operator];
+                return СonditionOperator
+                    ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+                    : true;
 
-    let result = false;
-    switch (conjunction) {
-        case 'any':
-            result = some(conditionsResult, res => !!res);
-            break;
-        default:
-            result = every(conditionsResult, res => !!res);
+            }
+        }), (res) => (res !== null));
+
+        let result = false;
+        switch (conjunction) {
+            case 'any':
+                result = some(conditionsResult.flat(), res => !!res);
+                break;
+            default:
+                result = every(conditionsResult.flat(), res => !!res);
+        }
+        return show ? result : !result;
     }
-    return show ? result : !result;
 }

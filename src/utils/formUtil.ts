@@ -640,7 +640,7 @@ export function getComponentData(components: Component[], data: DataObject, path
   return compData;
 }
 
-export function getComponentActualValue(component: Component, compPath: string, data: any, row: any) {
+export function getComponentActualValue(component: Component | undefined, compPath: string, data: any, row: any) {
   // The compPath here will NOT contain the indexes for DataGrids and EditGrids.
   //
   //   a[0].b[2].c[3].d
