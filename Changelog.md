@@ -1,3 +1,6 @@
+## [Unreleased: 2.3.0-rc.13]
+ - FIO-8632: Fixes an issue where required validation is not triggered for multiple value components like Select if it has no values added
+
 ## 2.3.0-rc.12
 ### Changed
  - FIO-9086: use for validation only dataFormat (data storage format)
