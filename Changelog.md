@@ -1,5 +1,6 @@
-## [Unreleased: 2.3.0-rc.12]
+## 2.3.0-rc.12
 ### Changed
+ - FIO-9086: use for validation only dataFormat (data storage format)
  - FIO-9202: fixed an issue where the data for the component inside fieldset insdie wizard is lost after submission
  - FIO-9220: remove hiddenChildren
    
