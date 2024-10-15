@@ -1,4 +1,7 @@
-## [Unreleased: 2.3.0-rc.13]
+## 2.3.0-rc.13
+### Changed
+ - FIO-9186: fixed an issue where front-end validation is skipped for the components inside layout component inside editGrid
+
  - FIO-8632: Fixes an issue where required validation is not triggered for multiple value components like Select if it has no values added
 
 ## 2.3.0-rc.12
