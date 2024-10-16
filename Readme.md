@@ -31,54 +31,54 @@ To run a suite of processor functions on a form and a submission, the `process` 
 import { processSync } from '@formio/core';
 
 const form = {
-    display: 'form',
-    components: [
-        {
-            type: 'textfield',
-            key: 'firstName',
-            label: 'First Name',
-            input: true,
-        },
-        {
-            type: 'textfield',
-            key: 'lastName',
-            label: 'Last Name',
-            input: true,
-        },
-        {
-            type: 'button',
-            key: 'submit',
-            action: 'submit',
-            label: 'Submit',
-        },
-    ],
+  display: 'form',
+  components: [
+    {
+      type: 'textfield',
+      key: 'firstName',
+      label: 'First Name',
+      input: true,
+    },
+    {
+      type: 'textfield',
+      key: 'lastName',
+      label: 'Last Name',
+      input: true,
+    },
+    {
+      type: 'button',
+      key: 'submit',
+      action: 'submit',
+      label: 'Submit',
+    },
+  ],
 };
 
 const submission = {
-    data: {
-        firstName: 'John',
-        lastName: 'Doe',
-    },
+  data: {
+    firstName: 'John',
+    lastName: 'Doe',
+  },
 };
 
 const addExclamationSync = (context) => {
-    const { component, data, scope, path, value } = context;
+  const { component, data, scope, path, value } = context;
 
-    if (!scope.addExclamation) scope.addExclamation = {};
-    let newValue = `${value}!`;
+  if (!scope.addExclamation) scope.addExclamation = {};
+  let newValue = `${value}!`;
 
-    // The scope is a rolling "results" object that tracks which components have been operated on by which processor functions
-    scope.addExclamation[path] = true;
-    _.set(data, path, newValue);
-    return;
+  // The scope is a rolling "results" object that tracks which components have been operated on by which processor functions
+  scope.addExclamation[path] = true;
+  _.set(data, path, newValue);
+  return;
 };
 
 // The context object is mutated depending on which component is being processed; after `processSync` it will contain the processed components and data
 const context = {
-    components: form.components,
-    data: submission.data,
-    processors: [{ processSync: addExclamationSync }],
-    scope: {},
+  components: form.components,
+  data: submission.data,
+  processors: [{ processSync: addExclamationSync }],
+  scope: {},
 };
 
 // The `process` family of functions returns the scope object
@@ -114,8 +114,8 @@ Next, you can create a new component as follows.
 ```js
 import { Components } from '@formio/core/experimental';
 Components.addComponent({
-    type: 'h3',
-    template: (ctx) => `<h3>${ctx.component.header}</h3>`
+  type: 'h3',
+  template: (ctx) => `<h3>${ctx.component.header}</h3>`,
 });
 ```
 
@@ -123,10 +123,10 @@ And now this component will render using the following.
 
 ```js
 const header = Components.createComponent({
-    type: 'h3',
-    header: 'This is a test',
+  type: 'h3',
+  header: 'This is a test',
 });
-console.log(header.render());  // Outputs <h3>This is a test</h3>
+console.log(header.render()); // Outputs <h3>This is a test</h3>
 ```
 
 You can also use this library by including it in your webpage scripts by including the following.
@@ -138,26 +138,31 @@ You can also use this library by including it in your webpage scripts by includi
 After you do this, you can then do the following to create a Data Table in your website.
 
 ```js
-FormioCore.render(document.getElementById('data-table'), {
+FormioCore.render(
+  document.getElementById('data-table'),
+  {
     type: 'datatable',
     key: 'customers',
     components: [
-        {
-            type: 'datavalue',
-            key: 'firstName',
-            label: 'First Name'
-        },
-        {
-            type: 'datavalue',
-            key: 'lastName',
-            label: 'First Name'
-        }
-    ]
-}, {}, {
+      {
+        type: 'datavalue',
+        key: 'firstName',
+        label: 'First Name',
+      },
+      {
+        type: 'datavalue',
+        key: 'lastName',
+        label: 'First Name',
+      },
+    ],
+  },
+  {},
+  {
     customers: [
-        {firstName: 'Joe', lastName: 'Smith'},
-        {firstName: 'Sally', lastName: 'Thompson'},
-        {firstName: 'Mary', lastName: 'Bono'}
-    ]
-});
+      { firstName: 'Joe', lastName: 'Smith' },
+      { firstName: 'Sally', lastName: 'Thompson' },
+      { firstName: 'Mary', lastName: 'Bono' },
+    ],
+  },
+);
 ```

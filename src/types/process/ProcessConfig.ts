@@ -1,7 +1,7 @@
-import { Evaluator, Database } from "utils";
+import { Evaluator, Database } from 'utils';
 
 export type ProcessConfig = {
-    database?: Database;
-    evaluator?: Evaluator;
-    token?: string;
-}
+  database?: Database;
+  evaluator?: Evaluator;
+  token?: string;
+};

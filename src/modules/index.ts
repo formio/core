@@ -1,4 +1,2 @@
 import { JSONLogicModule } from './jsonlogic';
-export default [
-    JSONLogicModule
-];
+export default [JSONLogicModule];

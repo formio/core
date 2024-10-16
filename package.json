@@ -23,9 +23,12 @@
     "build:dev": "npx webpack --config config/webpack.config.js",
     "build:prod": "npx webpack --config config/webpack.prod.js",
     "clean": "rm -rf lib && rm -rf dist && rm -rf docs",
-    "build": "npm run clean && gulp templates && npm run docs && npm run lib && npm run build:dev && npm run build:prod",
-    "prepublish": "npm run build && npm run test",
-    "show-coverage": "open coverage/lcov-report/index.html"
+    "build": "yarn clean && gulp templates && yarn docs && yarn lib && yarn build:dev && yarn build:prod",
+    "prepublish": "yarn lint && yarn format && yarn build && yarn test",
+    "show-coverage": "open coverage/lcov-report/index.html",
+    "lint": "eslint src",
+    "format": "prettier --write .",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -53,12 +56,14 @@
   ],
   "homepage": "https://github.com/formio/core#readme",
   "devDependencies": {
+    "@eslint/js": "^9.12.0",
     "@types/chai": "^4.3.16",
     "@types/chance": "^1.1.6",
     "@types/dompurify": "^3.0.5",
     "@types/fetch-mock": "^7.3.8",
     "@types/flatpickr": "^3.1.2",
     "@types/inputmask": "^5.0.7",
+    "@types/json-logic-js": "^2.0.7",
     "@types/lodash": "^4.17.4",
     "@types/lodash.template": "^4.5.3",
     "@types/mocha": "^10.0.4",
@@ -67,18 +72,24 @@
     "@types/uuid": "^9.0.8",
     "chai": "4.4.1",
     "chance": "^1.1.8",
+    "eslint": "^9.12.0",
+    "eslint-plugin-mocha": "^10.5.0",
     "fetch-mock": "^9.11.0",
+    "globals": "^15.11.0",
     "gulp": "^5.0.0",
     "gulp-insert": "^0.5.0",
     "gulp-rename": "^2.0.0",
     "gulp-template": "^5.0.0",
+    "husky": ">=6",
     "jsdom": "22.1.0",
     "jsdom-global": "^3.0.2",
+    "lint-staged": ">=10",
     "mocha": "^10.4.0",
     "mocha-jsdom": "^2.0.0",
     "mock-local-storage": "^1.1.20",
     "nyc": "^15.1.0",
     "power-assert": "^1.6.1",
+    "prettier": "^3.3.3",
     "sinon": "^17.0.2",
     "ts-loader": "^9.5.0",
     "ts-node": "^10.5.0",
@@ -87,12 +98,11 @@
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typedoc": "^0.25.13",
     "typescript": "^5.4.5",
+    "typescript-eslint": "^8.8.1",
     "webpack": "^5.91.0",
-    "webpack-cli": "^5.1.4",
-    "written-number": "^0.11.1"
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@types/json-logic-js": "^2.0.7",
     "browser-cookies": "^1.2.0",
     "core-js": "^3.38.0",
     "dayjs": "^1.11.12",
@@ -122,5 +132,9 @@
       "src/types/**/*.ts"
     ],
     "all": true
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts}": "eslint src --cache --fix",
+    "*.{js,mjs,cjs,ts,css,md}": "prettier --write"
   }
 }

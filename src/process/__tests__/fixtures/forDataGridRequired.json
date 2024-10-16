@@ -13,9 +13,7 @@
         "enableRowGroups": false,
         "initEmpty": false,
         "tableView": false,
-        "defaultValue": [
-          {}
-        ],
+        "defaultValue": [{}],
         "validate": {
           "required": true
         },
@@ -78,14 +76,12 @@
   },
   "submission": {
     "data": {
-
-        "dataGrid": [
-            {
-                "textField": ""
-            }
-        ],
-        "submit": true
+      "dataGrid": [
+        {
+          "textField": ""
+        }
+      ],
+      "submit": true
     }
-
-   }
+  }
 }

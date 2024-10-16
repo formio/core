@@ -1,263 +1,312 @@
 <html>
-
-<head>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://pagecdn.io/lib/ace/1.4.12/ace.js"></script>
-  <script src="dist/formio.full.min.js"></script>
-  <style>
-      .editor {height: 150px;}
-  </style>
-  <script type="text/javascript">
-    function editor(type) {
-        var instance = ace.edit(type + "-edit");
-        instance.getSession().setMode("ace/mode/javascript");
+  <head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://pagecdn.io/lib/ace/1.4.12/ace.js"></script>
+    <script src="dist/formio.full.min.js"></script>
+    <style>
+      .editor {
+        height: 150px;
+      }
+    </style>
+    <script type="text/javascript">
+      function editor(type) {
+        var instance = ace.edit(type + '-edit');
+        instance.getSession().setMode('ace/mode/javascript');
         instance.setValue(document.getElementById(type + '-script').innerHTML.trim(), -1);
-    }
-  </script>
-</head>
+      }
+    </script>
+  </head>
 
-<body>
-  <div class="p-5 text-center bg-light">
-    <h1 class="mb-3">Form.io Core Framework</h1>
-    <h4 class="mb-3">A lightweight (15kB gzipped) and plain JavaScript JSON rendering framework and SDK for the Form.io platform.</h4>
-  </div>
-  <div class="container">
+  <body>
+    <div class="p-5 text-center bg-light">
+      <h1 class="mb-3">Form.io Core Framework</h1>
+      <h4 class="mb-3">
+        A lightweight (15kB gzipped) and plain JavaScript JSON rendering framework and SDK for the
+        Form.io platform.
+      </h4>
+    </div>
+    <div class="container">
       <div class="mt-3 mb-3 p-3 bg-light">
         <h3>Documentation</h3>
         <p>For the complete SDK documentation for this library:</p>
         <a class="btn btn-primary" href="docs">SDK Documentation</a>
       </div>
-      <p>The Form.io Core Framework provides two plain JavaScript libraries described as the following.</p>
+      <p>
+        The Form.io Core Framework provides two plain JavaScript libraries described as the
+        following.
+      </p>
       <div class="card">
         <h5 class="card-header">JavaScript SDK</h5>
         <div class="card-body">
-          <p class="card-text">This is a library which allows JavaScript access to the Form.io API's.</p>
-          <div class="container p-3 mb-2 bg-secondary text-white text-center"><pre class="m-0">&lt;script src="https://cdn.jsdelivr.net/npm/@formio/base@latest/dist/formio.min.js"&gt;&lt;/script&gt;</pre></div>
+          <p class="card-text">
+            This is a library which allows JavaScript access to the Form.io API's.
+          </p>
+          <div class="container p-3 mb-2 bg-secondary text-white text-center">
+            <pre class="m-0">
+&lt;script src="https://cdn.jsdelivr.net/npm/@formio/base@latest/dist/formio.min.js"&gt;&lt;/script&gt;</pre
+            >
+          </div>
           <h5>Example</h5>
-          <div id="sdk-edit" class='editor'></div>
+          <div id="sdk-edit" class="editor"></div>
           <script type="text/javascript" id="sdk-script">
-var formio = new Formio('https://examples.form.io/example');
-formio.loadForm().then(function(form) {
-    console.log(form); // Prints the JSON of this form.
-    formio.loadSubmissions().then(function(submissions) {
-        console.log(submissions); // Prints the submissions within this form.
-    });
-});
-</script>
-          <script type="text/javascript">editor('sdk')</script>
-          <a href="docs/classes/formio.formio-1.html" class="btn btn-primary mt-3">JavaScript SDK Documentation</a>
+            var formio = new Formio('https://examples.form.io/example');
+            formio.loadForm().then(function (form) {
+              console.log(form); // Prints the JSON of this form.
+              formio.loadSubmissions().then(function (submissions) {
+                console.log(submissions); // Prints the submissions within this form.
+              });
+            });
+          </script>
+          <script type="text/javascript">
+            editor('sdk');
+          </script>
+          <a href="docs/classes/formio.formio-1.html" class="btn btn-primary mt-3"
+            >JavaScript SDK Documentation</a
+          >
         </div>
       </div>
       <div class="card mt-5">
         <h5 class="card-header">JSON Rendering Framework</h5>
         <div class="card-body">
-          <p class="card-text">This library provides a framework for rendering JSON schemas within a web application.</p>
-          <div class="container p-3 mb-2 bg-secondary text-white text-center"><pre class="m-0">&lt;script src="https://cdn.jsdelivr.net/npm/@formio/core@latest/dist/formio.core.min.js"&gt;&lt;/script&gt;</pre></div>
-          <a class="btn btn-primary" href="docs/index.html">JSON Rendering Framework Documentation</a>
+          <p class="card-text">
+            This library provides a framework for rendering JSON schemas within a web application.
+          </p>
+          <div class="container p-3 mb-2 bg-secondary text-white text-center">
+            <pre class="m-0">
+&lt;script src="https://cdn.jsdelivr.net/npm/@formio/core@latest/dist/formio.core.min.js"&gt;&lt;/script&gt;</pre
+            >
+          </div>
+          <a class="btn btn-primary" href="docs/index.html"
+            >JSON Rendering Framework Documentation</a
+          >
           <table class="table table-responsive table-bordered mt-3">
             <thead class="table-light">
-                <th>Examples</th>
-                <th>Demo</th>
+              <th>Examples</th>
+              <th>Demo</th>
             </thead>
             <tbody>
-                <tr>
-                    <td>
-                        <h4>Simple HTML Rendering</h4>
-                        <p>You can render a simple HTML element as follows:</p>
-                        <div id="simple-edit" class='editor'></div>
-                    </td>
-                    <td>
-                        <div id="simple"></div>
-                        <script type="text/javascript" id="simple-script">
-    Formio.render(document.getElementById('simple'), {
-        type: 'html',
-        content: 'Testing',
-        tag: 'button',
-        attrs: {
-            class: 'btn btn-primary'
-        }
-    });
-    </script>
-                        <script type="text/javascript">editor('simple')</script>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h4>Nested HTML Components</h4>
-                        <p>This allows you to created Nested HTML Components</p>
-                        <div id="nested-html-edit" class='editor'></div>
-                    </td>
-                    <td>
-                        <div id="nested-html"></div>
-                        <script type="text/javascript" id="nested-html-script">
-    Formio.render(document.getElementById('nested-html'), {
-        type: 'htmlcontainer',
-        tag: 'ul',
-        attrs: {
-            class: 'list-group'
-        },
-        components: [
-            {
-                type: 'html',
-                tag: 'li',
-                content: 'Apples',
-                attrs: {
-                    class: 'list-group-item'
-                }
-            },
-            {
-                type: 'html',
-                tag: 'li',
-                content: 'Oranges',
-                attrs: {
-                    class: 'list-group-item'
-                }
-            }
-        ]
-    });
-    </script>
-                        <script type="text/javascript">editor('nested-html')</script>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h4>Data Table Component</h4>
-                        <p>Provides an easy way to render a data table.</p>
-                        <div id="data-table-edit" class='editor'></div>
-                    </td>
-                    <td>
-                        <div id="data-table"></div>
-                        <script type="text/javascript" id="data-table-script">
-    Formio.render(document.getElementById('data-table'), {
-        type: 'datatable',
-        key: 'customers',
-        components: [
-            {
-                type: 'datavalue',
-                key: 'firstName',
-                label: 'First Name'
-            },
-            {
-                type: 'datavalue',
-                key: 'lastName',
-                label: 'First Name'
-            }
-        ]
-    }, {}, {
-        customers: [
-            {firstName: 'Joe', lastName: 'Smith'},
-            {firstName: 'Sally', lastName: 'Thompson'},
-            {firstName: 'Mary', lastName: 'Bono'}
-        ]
-    });
-    </script>
-                        <script type="text/javascript">editor('data-table')</script>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h4>Input Component</h4>
-                        <p>Provides an easy way to add input components.</p>
-                        <div id="input-edit" class='editor'></div>
-                    </td>
-                    <td>
-                        <div id="input"></div>
-                        <script type="text/javascript" id="input-script">
-    Formio.render(document.getElementById('input'), {
-        type: 'input',
-        key: 'firstName',
-        attrs: {
-            class: 'form-control',
-            placeholder: 'Enter your first name'
-        }
-    });
-                        </script>
-                        <script type="text/javascript">editor('input')</script>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h4>Input with Label</h4>
-                        <p>You can create an input with label by providing an htmlcontainer + html + input component.</p>
-                        <div id="inputlabel-edit" class='editor'></div>
-                    </td>
-                    <td>
-                        <div id="inputlabel"></div>
-                        <script type="text/javascript" id="inputlabel-script">
-    Formio.render(document.getElementById('inputlabel'), {
-        type: 'htmlcontainer',
-        components: [
-            {
-                type: 'html',
-                tag: 'label',
-                content: 'First Name',
-                attrs: {
-                    class: 'form-label',
-                    for: 'input-firstname'
-                }
-            },
-            {
-                type: 'input',
-                key: 'firstName',
-                attrs: {
-                    class: 'form-control',
-                    placeholder: 'Enter your first name'
-                }
-            },
-            {
-                type: 'html',
-                tag: 'label',
-                content: 'Last Name',
-                attrs: {
-                    class: 'form-label',
-                    for: 'input-firstname'
-                }
-            },
-            {
-                type: 'input',
-                key: 'lastName',
-                attrs: {
-                    class: 'form-control',
-                    placeholder: 'Enter your last name'
-                }
-            }
-        ]
-    }).then(function(comp) {
-        comp.setValue({
-            firstName: 'Joe',
-            lastName: 'Smith'
-        });
-    });
-                        </script>
-                        <script type="text/javascript">editor('inputlabel')</script>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h4>Custom Component</h4>
-                        <p>Provides an easy way to create your own components.</p>
-                        <div id="custom-edit" class='editor'></div>
-                    </td>
-                    <td>
-                        <div id="custom"></div>
-                        <script type="text/javascript" id="custom-script">
-    Formio.Components.addComponent({
-        type: 'h3',
-        template: function(ctx) { return '<h3>' + ctx.component.header + '</h3>'; }
-    });
-    Formio.render(document.getElementById('custom'), {
-        type: 'h3',
-        header: 'This is a test!'
-    });
-                        </script>
-                        <script type="text/javascript">editor('custom')</script>
-                    </td>
-                </tr>
+              <tr>
+                <td>
+                  <h4>Simple HTML Rendering</h4>
+                  <p>You can render a simple HTML element as follows:</p>
+                  <div id="simple-edit" class="editor"></div>
+                </td>
+                <td>
+                  <div id="simple"></div>
+                  <script type="text/javascript" id="simple-script">
+                    Formio.render(document.getElementById('simple'), {
+                      type: 'html',
+                      content: 'Testing',
+                      tag: 'button',
+                      attrs: {
+                        class: 'btn btn-primary',
+                      },
+                    });
+                  </script>
+                  <script type="text/javascript">
+                    editor('simple');
+                  </script>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h4>Nested HTML Components</h4>
+                  <p>This allows you to created Nested HTML Components</p>
+                  <div id="nested-html-edit" class="editor"></div>
+                </td>
+                <td>
+                  <div id="nested-html"></div>
+                  <script type="text/javascript" id="nested-html-script">
+                    Formio.render(document.getElementById('nested-html'), {
+                      type: 'htmlcontainer',
+                      tag: 'ul',
+                      attrs: {
+                        class: 'list-group',
+                      },
+                      components: [
+                        {
+                          type: 'html',
+                          tag: 'li',
+                          content: 'Apples',
+                          attrs: {
+                            class: 'list-group-item',
+                          },
+                        },
+                        {
+                          type: 'html',
+                          tag: 'li',
+                          content: 'Oranges',
+                          attrs: {
+                            class: 'list-group-item',
+                          },
+                        },
+                      ],
+                    });
+                  </script>
+                  <script type="text/javascript">
+                    editor('nested-html');
+                  </script>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h4>Data Table Component</h4>
+                  <p>Provides an easy way to render a data table.</p>
+                  <div id="data-table-edit" class="editor"></div>
+                </td>
+                <td>
+                  <div id="data-table"></div>
+                  <script type="text/javascript" id="data-table-script">
+                    Formio.render(
+                      document.getElementById('data-table'),
+                      {
+                        type: 'datatable',
+                        key: 'customers',
+                        components: [
+                          {
+                            type: 'datavalue',
+                            key: 'firstName',
+                            label: 'First Name',
+                          },
+                          {
+                            type: 'datavalue',
+                            key: 'lastName',
+                            label: 'First Name',
+                          },
+                        ],
+                      },
+                      {},
+                      {
+                        customers: [
+                          { firstName: 'Joe', lastName: 'Smith' },
+                          { firstName: 'Sally', lastName: 'Thompson' },
+                          { firstName: 'Mary', lastName: 'Bono' },
+                        ],
+                      },
+                    );
+                  </script>
+                  <script type="text/javascript">
+                    editor('data-table');
+                  </script>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h4>Input Component</h4>
+                  <p>Provides an easy way to add input components.</p>
+                  <div id="input-edit" class="editor"></div>
+                </td>
+                <td>
+                  <div id="input"></div>
+                  <script type="text/javascript" id="input-script">
+                    Formio.render(document.getElementById('input'), {
+                      type: 'input',
+                      key: 'firstName',
+                      attrs: {
+                        class: 'form-control',
+                        placeholder: 'Enter your first name',
+                      },
+                    });
+                  </script>
+                  <script type="text/javascript">
+                    editor('input');
+                  </script>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h4>Input with Label</h4>
+                  <p>
+                    You can create an input with label by providing an htmlcontainer + html + input
+                    component.
+                  </p>
+                  <div id="inputlabel-edit" class="editor"></div>
+                </td>
+                <td>
+                  <div id="inputlabel"></div>
+                  <script type="text/javascript" id="inputlabel-script">
+                    Formio.render(document.getElementById('inputlabel'), {
+                      type: 'htmlcontainer',
+                      components: [
+                        {
+                          type: 'html',
+                          tag: 'label',
+                          content: 'First Name',
+                          attrs: {
+                            class: 'form-label',
+                            for: 'input-firstname',
+                          },
+                        },
+                        {
+                          type: 'input',
+                          key: 'firstName',
+                          attrs: {
+                            class: 'form-control',
+                            placeholder: 'Enter your first name',
+                          },
+                        },
+                        {
+                          type: 'html',
+                          tag: 'label',
+                          content: 'Last Name',
+                          attrs: {
+                            class: 'form-label',
+                            for: 'input-firstname',
+                          },
+                        },
+                        {
+                          type: 'input',
+                          key: 'lastName',
+                          attrs: {
+                            class: 'form-control',
+                            placeholder: 'Enter your last name',
+                          },
+                        },
+                      ],
+                    }).then(function (comp) {
+                      comp.setValue({
+                        firstName: 'Joe',
+                        lastName: 'Smith',
+                      });
+                    });
+                  </script>
+                  <script type="text/javascript">
+                    editor('inputlabel');
+                  </script>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h4>Custom Component</h4>
+                  <p>Provides an easy way to create your own components.</p>
+                  <div id="custom-edit" class="editor"></div>
+                </td>
+                <td>
+                  <div id="custom"></div>
+                  <script type="text/javascript" id="custom-script">
+                    Formio.Components.addComponent({
+                      type: 'h3',
+                      template: function (ctx) {
+                        return '<h3>' + ctx.component.header + '</h3>';
+                      },
+                    });
+                    Formio.render(document.getElementById('custom'), {
+                      type: 'h3',
+                      header: 'This is a test!',
+                    });
+                  </script>
+                  <script type="text/javascript">
+                    editor('custom');
+                  </script>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
-  </div>
-</body>
-
+    </div>
+  </body>
 </html>

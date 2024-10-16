@@ -40,7 +40,7 @@ export const isEligible = (component: Component) => {
 
 const isTagsComponent = (component: any): component is TagsComponent => {
   return component?.type === 'tags';
-}
+};
 
 export const emptyValueIsArray = (component: Component) => {
   // TODO: How do we infer the data model of the compoennt given only its JSON? For now, we have to hardcode component types
@@ -75,9 +75,7 @@ export const validateMultiple: RuleFn = async (context: ValidationContext) => {
   return validateMultipleSync(context);
 };
 
-export const validateMultipleSync: RuleFnSync = (
-  context: ValidationContext
-) => {
+export const validateMultipleSync: RuleFnSync = (context: ValidationContext) => {
   const { component, value } = context;
   // Skip multiple validation if the component tells us to
   if (!isEligible(component)) {
@@ -87,7 +85,9 @@ export const validateMultipleSync: RuleFnSync = (
   const shouldBeMultipleArray = !!component.multiple;
   const isRequired = !!component.validate?.required;
   const compModelType = getModelType(component);
-  const underlyingValueShouldBeArray = ['nestedArray', 'nestedDataArray'].indexOf(compModelType) !== -1 || (isTagsComponent(component) && component.storeas === 'array');
+  const underlyingValueShouldBeArray =
+    ['nestedArray', 'nestedDataArray'].indexOf(compModelType) !== -1 ||
+    (isTagsComponent(component) && component.storeas === 'array');
   const valueIsArray = Array.isArray(value);
 
   if (shouldBeMultipleArray) {
@@ -106,7 +106,9 @@ export const validateMultipleSync: RuleFnSync = (
         return isRequired ? new FieldError('array_nonempty', { ...context, setting: true }) : null;
       }
 
-      return Array.isArray(value[0]) && compModelType !== 'any' ? new FieldError('nonarray', { ...context, setting: true }) : null;
+      return Array.isArray(value[0]) && compModelType !== 'any'
+        ? new FieldError('nonarray', { ...context, setting: true })
+        : null;
     } else {
       const error = new FieldError('array', { ...context, setting: true });
       // Null/undefined is ok if this value isn't required; anything else should fail
@@ -121,10 +123,7 @@ export const validateMultipleSync: RuleFnSync = (
   }
 };
 
-export const validateMultipleInfo: ProcessorInfo<
-  ValidationContext,
-  FieldError | null
-> = {
+export const validateMultipleInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
   name: 'validateMultiple',
   process: validateMultiple,
   fullValue: true,
