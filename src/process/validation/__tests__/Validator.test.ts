@@ -16,6 +16,7 @@ describe('Validator', function () {
       email: 'brendanb',
       url: 'htpigoogle',
       inputMask: 'hello, world',
+      time: ['12:00:00', '11:00'], // one of the values is provided in incorrect format (format instead dataFormat)
       submit: false,
     };
     for (const component of simpleForm.components) {
