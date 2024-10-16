@@ -134,7 +134,7 @@
     "all": true
   },
   "lint-staged": {
-    "*.{js,mjs,cjs,ts}": "eslint src --cache --fix",
+    "*.{js,mjs,cjs,ts}": "eslint src --fix",
     "*.{js,mjs,cjs,ts,css,md}": "prettier --write"
   }
 }
