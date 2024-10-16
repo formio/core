@@ -134,7 +134,7 @@
     "all": true
   },
   "lint-staged": {
-    "src/**/*.{js,mjs,cjs,ts}": "eslint src --fix",
+    "src/**/*.{js,mjs,cjs,ts}": "eslint --fix",
     "*.{js,mjs,cjs,ts,css,md}": "prettier --write"
   }
 }
