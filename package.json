@@ -27,7 +27,8 @@
     "prepublish": "yarn lint && yarn format && yarn build && yarn test",
     "show-coverage": "open coverage/lcov-report/index.html",
     "lint": "eslint src",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -62,6 +63,7 @@
     "@types/fetch-mock": "^7.3.8",
     "@types/flatpickr": "^3.1.2",
     "@types/inputmask": "^5.0.7",
+    "@types/json-logic-js": "^2.0.7",
     "@types/lodash": "^4.17.4",
     "@types/lodash.template": "^4.5.3",
     "@types/mocha": "^10.0.4",
@@ -78,8 +80,10 @@
     "gulp-insert": "^0.5.0",
     "gulp-rename": "^2.0.0",
     "gulp-template": "^5.0.0",
+    "husky": ">=6",
     "jsdom": "22.1.0",
     "jsdom-global": "^3.0.2",
+    "lint-staged": ">=10",
     "mocha": "^10.4.0",
     "mocha-jsdom": "^2.0.0",
     "mock-local-storage": "^1.1.20",
@@ -99,7 +103,6 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@types/json-logic-js": "^2.0.7",
     "browser-cookies": "^1.2.0",
     "core-js": "^3.38.0",
     "dayjs": "^1.11.12",
@@ -129,5 +132,9 @@
       "src/types/**/*.ts"
     ],
     "all": true
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts}": "eslint src --cache --fix",
+    "*.{js,mjs,cjs,ts,css,md}": "prettier --write"
   }
 }
