@@ -78,6 +78,16 @@ it('Should not validate a hidden component that has the hidden property set to t
     expect(context.scope.errors.length).to.equal(0);
 });
 
+it('Should validate a hidden component that has the `validateWhenHidden` property set to true.', async () => {
+    const component = { ...hiddenRequiredField };
+    component.validateWhenHidden = true;
+    const data = {};
+    const context = generateProcessorContext(component, data) as ProcessorsContext<ValidationScope>;
+    context.processors = [validateProcessInfo];
+    await processOne(context);
+    expect(context.scope.errors.length).to.equal(1);
+})
+
 it('Validating a simple component that is required but conditionally hidden', async () => {
     const component = {...simpleTextField};
     component.validate = { required: true };

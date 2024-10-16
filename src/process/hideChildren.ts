@@ -22,8 +22,12 @@ export const hideChildrenProcessor: ProcessorFnSync<ConditionsScope> = (context)
         scope.conditionals = [];
     }
 
-    if (isConditionallyHidden || component.hidden || parent?.ephemeralState?.conditionallyHidden) {
+    if (isConditionallyHidden || parent?.ephemeralState?.conditionallyHidden) {
         registerEphemeralState(component, 'conditionallyHidden', true);
+    }
+
+    if ((component.hasOwnProperty('hidden') && !!component.hidden) || parent?.ephemeralState?.intentionallyHidden) {
+        registerEphemeralState(component, 'intentionallyHidden', true);
     }
 }
 
