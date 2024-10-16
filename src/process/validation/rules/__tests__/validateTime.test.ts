@@ -11,6 +11,7 @@ const timeField: TimeComponent = {
   label: 'Time',
   input: true,
   dataFormat: 'HH:mm:ss',
+  format: 'HH:mm',
 };
 
 describe('validateTime', function () {

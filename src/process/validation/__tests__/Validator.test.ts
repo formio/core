@@ -35,6 +35,6 @@ describe('Validator', function () {
         errors = [...errors, ...scope.errors.map((error) => error.errorKeyOrMessage)];
       }
     }
-    expect(errors).to.have.length(6);
+    expect(errors).to.have.length(7);
   });
 });
