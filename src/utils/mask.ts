@@ -1,4 +1,4 @@
-import { isRegExp } from 'lodash'
+import { isRegExp } from 'lodash';
 
 /**
  * Returns an input mask that is compatible with the input mask library.
@@ -57,7 +57,7 @@ export function matchInputMask(value: any, inputMask: any) {
     const char = value[i];
     const charPart = inputMask[i];
 
-    if (!(isRegExp(charPart) && charPart.test(char) || charPart === char)) {
+    if (!((isRegExp(charPart) && charPart.test(char)) || charPart === char)) {
       return false;
     }
   }

@@ -1,6 +1,6 @@
-import { ProcessorContext } from "../ProcessorContext";
-import { CalculationScope } from "./CalculationScope";
+import { ProcessorContext } from '../ProcessorContext';
+import { CalculationScope } from './CalculationScope';
 export type CalculationProcessContext = {
-    value?: any;
+  value?: any;
 };
 export type CalculationContext = ProcessorContext<CalculationScope> & CalculationProcessContext;

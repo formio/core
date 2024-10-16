@@ -19,14 +19,12 @@ export function escapeRegExCharacters(value: string) {
  * @param value
  * @return {boolean}
  */
- export function boolValue(value: any) {
+export function boolValue(value: any) {
   if (isBoolean(value)) {
     return value;
-  }
-  else if (isString(value)) {
-    return (value.toLowerCase() === 'true');
-  }
-  else {
+  } else if (isString(value)) {
+    return value.toLowerCase() === 'true';
+  } else {
     return !!value;
   }
 }
@@ -45,20 +43,24 @@ export function unescapeHTML(str: string) {
   return doc.documentElement.textContent;
 }
 
-export function registerEphemeralState(component: Component, name: keyof NonNullable<BaseComponent['ephemeralState']>, value: any) {
+export function registerEphemeralState(
+  component: Component,
+  name: keyof NonNullable<BaseComponent['ephemeralState']>,
+  value: any,
+) {
   if (!component.ephemeralState) {
     Object.defineProperty(component, 'ephemeralState', {
       enumerable: false,
       configurable: true,
       writable: true,
-      value: {}
+      value: {},
     });
   }
   Object.defineProperty(component.ephemeralState, name, {
     enumerable: false,
     writable: false,
     configurable: true,
-    value
+    value,
   });
 }
 

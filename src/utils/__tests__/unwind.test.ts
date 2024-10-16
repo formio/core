@@ -1,8 +1,8 @@
-const assert = require('assert');
+import assert from 'assert';
 import { unwind, rewind } from '../unwind';
 
-describe('Test Unwinder', () => {
-  it('Should unwind a form with datagrid and submission data', () => {
+describe('Test Unwinder', function () {
+  it('Should unwind a form with datagrid and submission data', function () {
     const form = {
       components: [
         {
@@ -16,8 +16,8 @@ describe('Test Unwinder', () => {
               label: 'A',
               overlay: {
                 width: '100px',
-                height: '20px'
-              }
+                height: '20px',
+              },
             },
             {
               type: 'textfield',
@@ -25,12 +25,12 @@ describe('Test Unwinder', () => {
               label: 'B',
               overlay: {
                 width: '100px',
-                height: '20px'
-              }
-            }
-          ]
-        }
-      ]
+                height: '20px',
+              },
+            },
+          ],
+        },
+      ],
     };
 
     const submission = {
@@ -38,18 +38,18 @@ describe('Test Unwinder', () => {
         units: [
           {
             a: 'one',
-            b: 'two'
+            b: 'two',
           },
           {
             a: 'three',
-            b: 'four'
+            b: 'four',
           },
           {
             a: 'five',
-            b: 'six'
-          }
-        ]
-      }
+            b: 'six',
+          },
+        ],
+      },
     };
 
     const submissions = unwind(form, submission);
@@ -61,34 +61,35 @@ describe('Test Unwinder', () => {
         units: [
           {
             a: 'one',
-            b: 'two'
-          }
-        ]
-      }
+            b: 'two',
+          },
+        ],
+      },
     });
     assert.deepEqual(submissions[1], {
       data: {
         units: [
           {
             a: 'three',
-            b: 'four'
-          }
-        ]
-      }
+            b: 'four',
+          },
+        ],
+      },
     });
     assert.deepEqual(submissions[2], {
       data: {
         units: [
           {
             a: 'five',
-            b: 'six'
-          }
-        ]
-      }
+            b: 'six',
+          },
+        ],
+      },
     });
     assert.deepEqual(rewind(submissions), submission);
   });
-  it('Should unwind a form with nested datagrids and submission data', () => {
+
+  it('Should unwind a form with nested datagrids and submission data', function () {
     const form = {
       components: [
         {
@@ -102,8 +103,8 @@ describe('Test Unwinder', () => {
               label: 'A',
               overlay: {
                 width: '100px',
-                height: '20px'
-              }
+                height: '20px',
+              },
             },
             {
               type: 'textfield',
@@ -111,8 +112,8 @@ describe('Test Unwinder', () => {
               label: 'B',
               overlay: {
                 width: '100px',
-                height: '20px'
-              }
+                height: '20px',
+              },
             },
             {
               type: 'datagrid',
@@ -125,14 +126,14 @@ describe('Test Unwinder', () => {
                   label: 'C',
                   overlay: {
                     width: '100px',
-                    height: '20px'
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
+                    height: '20px',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
     };
 
     const submission = {
@@ -143,28 +144,28 @@ describe('Test Unwinder', () => {
             b: 'two',
             subunits: [
               {
-                c: 'three'
+                c: 'three',
               },
               {
-                c: 'four'
-              }
-            ]
+                c: 'four',
+              },
+            ],
           },
           {
             a: 'five',
             b: 'six',
             subunits: [
               {
-                c: 'seven'
-              }
-            ]
+                c: 'seven',
+              },
+            ],
           },
           {
             a: 'eight',
-            b: 'nine'
-          }
-        ]
-      }
+            b: 'nine',
+          },
+        ],
+      },
     };
 
     const submissions = unwind(form, submission);
@@ -177,12 +178,12 @@ describe('Test Unwinder', () => {
             b: 'two',
             subunits: [
               {
-                c: 'three'
-              }
-            ]
-          }
-        ]
-      }
+                c: 'three',
+              },
+            ],
+          },
+        ],
+      },
     });
     assert.deepEqual(submissions[1], {
       data: {
@@ -192,12 +193,12 @@ describe('Test Unwinder', () => {
             b: 'two',
             subunits: [
               {
-                c: 'four'
-              }
-            ]
-          }
-        ]
-      }
+                c: 'four',
+              },
+            ],
+          },
+        ],
+      },
     });
     assert.deepEqual(submissions[2], {
       data: {
@@ -207,26 +208,27 @@ describe('Test Unwinder', () => {
             b: 'six',
             subunits: [
               {
-                c: 'seven'
-              }
-            ]
-          }
-        ]
-      }
+                c: 'seven',
+              },
+            ],
+          },
+        ],
+      },
     });
     assert.deepEqual(submissions[3], {
       data: {
         units: [
           {
             a: 'eight',
-            b: 'nine'
-          }
-        ]
-      }
+            b: 'nine',
+          },
+        ],
+      },
     });
     assert.deepEqual(rewind(submissions), submission);
   });
-  it('Should unwind a form with deep nested datagrids and submission data', () => {
+
+  it('Should unwind a form with deep nested datagrids and submission data', function () {
     const form = {
       components: [
         {
@@ -240,8 +242,8 @@ describe('Test Unwinder', () => {
               label: 'A',
               overlay: {
                 width: '100px',
-                height: '20px'
-              }
+                height: '20px',
+              },
             },
             {
               type: 'textfield',
@@ -249,8 +251,8 @@ describe('Test Unwinder', () => {
               label: 'B',
               overlay: {
                 width: '100px',
-                height: '20px'
-              }
+                height: '20px',
+              },
             },
             {
               type: 'datagrid',
@@ -263,8 +265,8 @@ describe('Test Unwinder', () => {
                   label: 'C',
                   overlay: {
                     width: '100px',
-                    height: '20px'
-                  }
+                    height: '20px',
+                  },
                 },
                 {
                   type: 'datagrid',
@@ -277,16 +279,16 @@ describe('Test Unwinder', () => {
                       label: 'd',
                       overlay: {
                         width: '100px',
-                        height: '20px'
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
+                        height: '20px',
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     };
 
     const submission = {
@@ -300,18 +302,18 @@ describe('Test Unwinder', () => {
                 c: 'three',
                 deepgrid: [
                   {
-                    d: 'four'
+                    d: 'four',
                   },
                   {
-                    d: 'five'
-                  }
-                ]
+                    d: 'five',
+                  },
+                ],
               },
               {
                 c: 'six',
-                deepgrid: []
-              }
-            ]
+                deepgrid: [],
+              },
+            ],
           },
           {
             a: 'seven',
@@ -321,29 +323,29 @@ describe('Test Unwinder', () => {
                 c: 'nine',
                 deepgrid: [
                   {
-                    d: 'ten'
+                    d: 'ten',
                   },
                   {
-                    d: 'eleven'
+                    d: 'eleven',
                   },
                   {
-                    d: 'twelve'
-                  }
-                ]
-              }
-            ]
+                    d: 'twelve',
+                  },
+                ],
+              },
+            ],
           },
           {
             a: 'thirteen',
             b: 'fourteen',
             subunits: [
               {
-                c: 'fiveteen'
-              }
-            ]
-          }
-        ]
-      }
+                c: 'fiveteen',
+              },
+            ],
+          },
+        ],
+      },
     };
 
     const submissions = unwind(form, submission);
@@ -359,14 +361,14 @@ describe('Test Unwinder', () => {
                 c: 'three',
                 deepgrid: [
                   {
-                    d: 'four'
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: 'four',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
     assert.deepEqual(submissions[1], {
       data: {
@@ -379,14 +381,14 @@ describe('Test Unwinder', () => {
                 c: 'three',
                 deepgrid: [
                   {
-                    d: 'five'
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: 'five',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
     assert.deepEqual(submissions[2], {
       data: {
@@ -397,12 +399,12 @@ describe('Test Unwinder', () => {
             subunits: [
               {
                 c: 'six',
-                deepgrid: []
-              }
-            ]
-          }
-        ]
-      }
+                deepgrid: [],
+              },
+            ],
+          },
+        ],
+      },
     });
     assert.deepEqual(submissions[3], {
       data: {
@@ -415,14 +417,14 @@ describe('Test Unwinder', () => {
                 c: 'nine',
                 deepgrid: [
                   {
-                    d: 'ten'
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: 'ten',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
     assert.deepEqual(submissions[4], {
       data: {
@@ -435,14 +437,14 @@ describe('Test Unwinder', () => {
                 c: 'nine',
                 deepgrid: [
                   {
-                    d: 'eleven'
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: 'eleven',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
     assert.deepEqual(submissions[5], {
       data: {
@@ -455,14 +457,14 @@ describe('Test Unwinder', () => {
                 c: 'nine',
                 deepgrid: [
                   {
-                    d: 'twelve'
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: 'twelve',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
     assert.deepEqual(submissions[6], {
       data: {
@@ -472,16 +474,17 @@ describe('Test Unwinder', () => {
             b: 'fourteen',
             subunits: [
               {
-                c: 'fiveteen'
-              }
-            ]
-          }
-        ]
-      }
+                c: 'fiveteen',
+              },
+            ],
+          },
+        ],
+      },
     });
     assert.deepEqual(rewind(submissions), submission);
   });
-  it('Should also handle fields with the multiple setting.', () => {
+
+  it('Should also handle fields with the multiple setting.', function () {
     const form = {
       components: [
         {
@@ -495,8 +498,8 @@ describe('Test Unwinder', () => {
               label: 'A',
               overlay: {
                 width: '100px',
-                height: '20px'
-              }
+                height: '20px',
+              },
             },
             {
               type: 'textfield',
@@ -504,8 +507,8 @@ describe('Test Unwinder', () => {
               label: 'B',
               overlay: {
                 width: '100px',
-                height: '20px'
-              }
+                height: '20px',
+              },
             },
             {
               type: 'datagrid',
@@ -518,8 +521,8 @@ describe('Test Unwinder', () => {
                   label: 'C',
                   overlay: {
                     width: '100px',
-                    height: '20px'
-                  }
+                    height: '20px',
+                  },
                 },
                 {
                   type: 'datagrid',
@@ -533,16 +536,16 @@ describe('Test Unwinder', () => {
                       multiple: true,
                       overlay: {
                         width: '100px',
-                        height: '20px'
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
+                        height: '20px',
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     };
 
     const submission = {
@@ -556,18 +559,18 @@ describe('Test Unwinder', () => {
                 c: '3',
                 deepgrid: [
                   {
-                    d: ['4', '5']
+                    d: ['4', '5'],
                   },
                   {
-                    d: ['6', '7', '8']
-                  }
-                ]
+                    d: ['6', '7', '8'],
+                  },
+                ],
               },
               {
                 c: '9',
-                deepgrid: []
-              }
-            ]
+                deepgrid: [],
+              },
+            ],
           },
           {
             a: '10',
@@ -577,37 +580,37 @@ describe('Test Unwinder', () => {
                 c: '12',
                 deepgrid: [
                   {
-                    d: ['13', '14']
+                    d: ['13', '14'],
                   },
                   {
-                    d: ['15']
+                    d: ['15'],
                   },
                   {
-                    d: ['16', '17', '18']
-                  }
-                ]
+                    d: ['16', '17', '18'],
+                  },
+                ],
               },
               {
                 c: '19',
                 deepgrid: [
                   {
-                    d: ['20']
-                  }
-                ]
-              }
-            ]
+                    d: ['20'],
+                  },
+                ],
+              },
+            ],
           },
           {
             a: '21',
             b: '22',
             subunits: [
               {
-                c: '23'
-              }
-            ]
-          }
-        ]
-      }
+                c: '23',
+              },
+            ],
+          },
+        ],
+      },
     };
 
     const submissions = unwind(form, submission);
@@ -623,14 +626,14 @@ describe('Test Unwinder', () => {
                 c: '3',
                 deepgrid: [
                   {
-                    d: ['4']
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: ['4'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
 
     assert.deepEqual(submissions[1], {
@@ -644,14 +647,14 @@ describe('Test Unwinder', () => {
                 c: '3',
                 deepgrid: [
                   {
-                    d: ['5']
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: ['5'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
 
     assert.deepEqual(submissions[2], {
@@ -665,14 +668,14 @@ describe('Test Unwinder', () => {
                 c: '3',
                 deepgrid: [
                   {
-                    d: ['6']
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: ['6'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
 
     assert.deepEqual(submissions[3], {
@@ -686,14 +689,14 @@ describe('Test Unwinder', () => {
                 c: '3',
                 deepgrid: [
                   {
-                    d: ['7']
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: ['7'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
 
     assert.deepEqual(submissions[4], {
@@ -707,14 +710,14 @@ describe('Test Unwinder', () => {
                 c: '3',
                 deepgrid: [
                   {
-                    d: ['8']
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: ['8'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
 
     assert.deepEqual(submissions[5], {
@@ -726,12 +729,12 @@ describe('Test Unwinder', () => {
             subunits: [
               {
                 c: '9',
-                deepgrid: []
-              }
-            ]
-          }
-        ]
-      }
+                deepgrid: [],
+              },
+            ],
+          },
+        ],
+      },
     });
 
     assert.deepEqual(submissions[6], {
@@ -745,14 +748,14 @@ describe('Test Unwinder', () => {
                 c: '12',
                 deepgrid: [
                   {
-                    d: ['13']
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: ['13'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
 
     assert.deepEqual(submissions[7], {
@@ -766,14 +769,14 @@ describe('Test Unwinder', () => {
                 c: '12',
                 deepgrid: [
                   {
-                    d: ['14']
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: ['14'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
 
     assert.deepEqual(submissions[8], {
@@ -787,14 +790,14 @@ describe('Test Unwinder', () => {
                 c: '12',
                 deepgrid: [
                   {
-                    d: ['15']
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: ['15'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
 
     assert.deepEqual(submissions[9], {
@@ -808,14 +811,14 @@ describe('Test Unwinder', () => {
                 c: '12',
                 deepgrid: [
                   {
-                    d: ['16']
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: ['16'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
 
     assert.deepEqual(submissions[10], {
@@ -829,14 +832,14 @@ describe('Test Unwinder', () => {
                 c: '12',
                 deepgrid: [
                   {
-                    d: ['17']
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: ['17'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
 
     assert.deepEqual(submissions[11], {
@@ -850,14 +853,14 @@ describe('Test Unwinder', () => {
                 c: '12',
                 deepgrid: [
                   {
-                    d: ['18']
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: ['18'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
 
     assert.deepEqual(submissions[12], {
@@ -871,14 +874,14 @@ describe('Test Unwinder', () => {
                 c: '19',
                 deepgrid: [
                   {
-                    d: ['20']
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    d: ['20'],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     });
 
     assert.deepEqual(submissions[13], {
@@ -889,16 +892,17 @@ describe('Test Unwinder', () => {
             b: '22',
             subunits: [
               {
-                c: '23'
-              }
-            ]
-          }
-        ]
-      }
+                c: '23',
+              },
+            ],
+          },
+        ],
+      },
     });
     assert.deepEqual(rewind(submissions), submission);
   });
-  it('Should allow the path variable within the components.', () => {
+
+  it('Should allow the path variable within the components.', function () {
     const form = {
       components: [
         {
@@ -906,62 +910,62 @@ describe('Test Unwinder', () => {
           key: 'a1',
           label: 'a1',
           properties: {
-            dataPath: 'units[0].a'
+            dataPath: 'units[0].a',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
+            height: '20px',
+          },
         },
         {
           type: 'textfield',
           key: 'a2',
           label: 'a2',
           properties: {
-            dataPath: 'units[1].a'
+            dataPath: 'units[1].a',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
+            height: '20px',
+          },
         },
         {
           type: 'textfield',
           key: 'b1',
           label: 'b1',
           properties: {
-            dataPath: 'units[0].b'
+            dataPath: 'units[0].b',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
+            height: '20px',
+          },
         },
         {
           type: 'textfield',
           key: 'b2',
           label: 'b2',
           properties: {
-            dataPath: 'units[1].b'
+            dataPath: 'units[1].b',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
-        }
-      ]
+            height: '20px',
+          },
+        },
+      ],
     };
 
     const submission = {
       data: {
         units: [
-          {a: '1', b: '2'},
-          {a: '3', b: '4'},
-          {a: '5', b: '6'},
-          {a: '7', b: '8'},
-          {a: '9', b: '10'}
-        ]
-      }
+          { a: '1', b: '2' },
+          { a: '3', b: '4' },
+          { a: '5', b: '6' },
+          { a: '7', b: '8' },
+          { a: '9', b: '10' },
+        ],
+      },
     };
 
     const submissions = unwind(form, submission);
@@ -973,29 +977,28 @@ describe('Test Unwinder', () => {
     assert.deepEqual(submissions[0], {
       data: {
         units: [
-          {a: '1', b: '2'},
-          {a: '3', b: '4'}
-        ]
-      }
+          { a: '1', b: '2' },
+          { a: '3', b: '4' },
+        ],
+      },
     });
     assert.deepEqual(submissions[1], {
       data: {
         units: [
-          {a: '5', b: '6'},
-          {a: '7', b: '8'}
-        ]
-      }
+          { a: '5', b: '6' },
+          { a: '7', b: '8' },
+        ],
+      },
     });
     assert.deepEqual(submissions[2], {
       data: {
-        units: [
-          {a: '9', b: '10'}
-        ]
-      }
+        units: [{ a: '9', b: '10' }],
+      },
     });
     assert.deepEqual(rewind(submissions), submission);
   });
-  it('Should allow complex path variables within the components.', () => {
+
+  it('Should allow complex path variables within the components.', function () {
     const form = {
       components: [
         {
@@ -1003,175 +1006,183 @@ describe('Test Unwinder', () => {
           key: 'a1',
           label: 'a1',
           properties: {
-            dataPath: 'units[0].a'
+            dataPath: 'units[0].a',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
+            height: '20px',
+          },
         },
         {
           type: 'textfield',
           key: 'sub1c1',
           label: 'sub1c1',
           properties: {
-            dataPath: 'units[0].sub[0].c'
+            dataPath: 'units[0].sub[0].c',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
+            height: '20px',
+          },
         },
         {
           type: 'textfield',
           key: 'sub1c2',
           label: 'sub1c2',
           properties: {
-            dataPath: 'units[0].sub[1].c'
+            dataPath: 'units[0].sub[1].c',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
+            height: '20px',
+          },
         },
         {
           type: 'textfield',
           key: 'sub1d1',
           label: 'sub1d1',
           properties: {
-            dataPath: 'units[0].sub[0].d'
+            dataPath: 'units[0].sub[0].d',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
+            height: '20px',
+          },
         },
         {
           type: 'textfield',
           key: 'sub1d2',
           label: 'sub1d2',
           properties: {
-            dataPath: 'units[0].sub[1].d'
+            dataPath: 'units[0].sub[1].d',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
+            height: '20px',
+          },
         },
         {
           type: 'textfield',
           key: 'a2',
           label: 'a2',
           properties: {
-            dataPath: 'units[1].a'
+            dataPath: 'units[1].a',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
+            height: '20px',
+          },
         },
         {
           type: 'textfield',
           key: 'sub2c1',
           label: 'sub2c1',
           properties: {
-            dataPath: 'units[1].sub[0].c'
+            dataPath: 'units[1].sub[0].c',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
+            height: '20px',
+          },
         },
         {
           type: 'textfield',
           key: 'sub2c2',
           label: 'sub2c2',
           properties: {
-            dataPath: 'units[1].sub[1].c'
+            dataPath: 'units[1].sub[1].c',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
+            height: '20px',
+          },
         },
         {
           type: 'textfield',
           key: 'sub2d1',
           label: 'sub2d1',
           properties: {
-            dataPath: 'units[1].sub[0].d'
+            dataPath: 'units[1].sub[0].d',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
+            height: '20px',
+          },
         },
         {
           type: 'textfield',
           key: 'sub2d2',
           label: 'sub2d2',
           properties: {
-            dataPath: 'units[1].sub[1].d'
+            dataPath: 'units[1].sub[1].d',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
+            height: '20px',
+          },
         },
         {
           type: 'textfield',
           key: 'b1',
           label: 'b1',
           properties: {
-            dataPath: 'units[0].b'
+            dataPath: 'units[0].b',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
+            height: '20px',
+          },
         },
         {
           type: 'textfield',
           key: 'b2',
           label: 'b2',
           properties: {
-            dataPath: 'units[1].b'
+            dataPath: 'units[1].b',
           },
           overlay: {
             width: '100px',
-            height: '20px'
-          }
-        }
-      ]
+            height: '20px',
+          },
+        },
+      ],
     };
 
     const submission = {
       data: {
         units: [
-          {a: '1', b: '2', sub: [
-            {c: '3', d: '4'},
-            {c: '5', d: '6'},
-            {c: '7', d: '8'}
-          ]},
-          {a: '9', b: '10', sub: [
-            {c: '11', d: '12'},
-            {c: '13', d: '14'},
-            {c: '15', d: '16'}
-          ]},
-          {a: '15', b: '16', sub: [
-            {c: '17'}
-          ]},
-          {a: '18', b: '19', sub: [
-            {c: '20', d: '21'}
-          ]},
-          {a: '22', b: '23', sub: [
-            {c: '24', d: '25'},
-            {c: '26', d: '27'},
-            {c: '28', d: '29'},
-            {c: '30', d: '31'}
-          ]}
-        ]
-      }
+          {
+            a: '1',
+            b: '2',
+            sub: [
+              { c: '3', d: '4' },
+              { c: '5', d: '6' },
+              { c: '7', d: '8' },
+            ],
+          },
+          {
+            a: '9',
+            b: '10',
+            sub: [
+              { c: '11', d: '12' },
+              { c: '13', d: '14' },
+              { c: '15', d: '16' },
+            ],
+          },
+          { a: '15', b: '16', sub: [{ c: '17' }] },
+          { a: '18', b: '19', sub: [{ c: '20', d: '21' }] },
+          {
+            a: '22',
+            b: '23',
+            sub: [
+              { c: '24', d: '25' },
+              { c: '26', d: '27' },
+              { c: '28', d: '29' },
+              { c: '30', d: '31' },
+            ],
+          },
+        ],
+      },
     };
 
     const submissions = unwind(form, submission);
@@ -1179,60 +1190,68 @@ describe('Test Unwinder', () => {
     assert.deepEqual(submissions[0], {
       data: {
         units: [
-          {a: '1', b: '2', sub: [
-            {c: '3', d: '4'},
-            {c: '5', d: '6'}
-          ]},
-          {a: '9', b: '10', sub: [
-            {c: '11', d: '12'},
-            {c: '13', d: '14'}
-          ]}
-        ]
-      }
+          {
+            a: '1',
+            b: '2',
+            sub: [
+              { c: '3', d: '4' },
+              { c: '5', d: '6' },
+            ],
+          },
+          {
+            a: '9',
+            b: '10',
+            sub: [
+              { c: '11', d: '12' },
+              { c: '13', d: '14' },
+            ],
+          },
+        ],
+      },
     });
     assert.deepEqual(submissions[1], {
       data: {
         units: [
-          {a: '1', b: '2', sub: [
-            {c: '7', d: '8'}
-          ]},
-          {a: '9', b: '10', sub: [
-            {c: '15', d: '16'}
-          ]}
-        ]
-      }
+          { a: '1', b: '2', sub: [{ c: '7', d: '8' }] },
+          { a: '9', b: '10', sub: [{ c: '15', d: '16' }] },
+        ],
+      },
     });
     assert.deepEqual(submissions[2], {
       data: {
         units: [
-          {a: '15', b: '16', sub: [
-            {c: '17'}
-          ]},
-          {a: '18', b: '19', sub: [
-            {c: '20', d: '21'}
-          ]}
-        ]
-      }
+          { a: '15', b: '16', sub: [{ c: '17' }] },
+          { a: '18', b: '19', sub: [{ c: '20', d: '21' }] },
+        ],
+      },
     });
     assert.deepEqual(submissions[3], {
       data: {
         units: [
-          {a: '22', b: '23', sub: [
-            {c: '24', d: '25'},
-            {c: '26', d: '27'}
-          ]}
-        ]
-      }
+          {
+            a: '22',
+            b: '23',
+            sub: [
+              { c: '24', d: '25' },
+              { c: '26', d: '27' },
+            ],
+          },
+        ],
+      },
     });
     assert.deepEqual(submissions[4], {
       data: {
         units: [
-          {a: '22', b: '23', sub: [
-            {c: '28', d: '29'},
-            {c: '30', d: '31'}
-          ]}
-        ]
-      }
+          {
+            a: '22',
+            b: '23',
+            sub: [
+              { c: '28', d: '29' },
+              { c: '30', d: '31' },
+            ],
+          },
+        ],
+      },
     });
     assert.deepEqual(rewind(submissions), submission);
   });

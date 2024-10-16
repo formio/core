@@ -6,49 +6,51 @@ import { generateProcessorContext } from './fixtures/util';
 import { validateNumber } from '../validateNumber';
 import { validateMultiple } from '../validateMultiple';
 
-it('Validating a valid number will return null', async () => {
+describe('validateNumber', function () {
+  it('Validating a valid number will return null', async function () {
     const component = simpleNumberField;
     const data = {
-        component: 45,
+      component: 45,
     };
     const context = generateProcessorContext(component, data);
     const result = await validateNumber(context);
     expect(result).to.equal(null);
-});
+  });
 
-it('Validating an invalid number will return a FieldError', async () => {
+  it('Validating an invalid number will return a FieldError', async function () {
     const component = simpleNumberField;
     const data = {
-        component: 'text',
+      component: 'text',
     };
     const context = generateProcessorContext(component, data);
     const result = await validateNumber(context);
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.contain('number');
-});
+  });
 
-it('Validating a multiple number with a blank value will return null', async () => {
+  it('Validating a multiple number with a blank value will return null', async function () {
     const component = {
-        ...simpleNumberField,
-        multiple: true
+      ...simpleNumberField,
+      multiple: true,
     };
     const data = {
-        component: [null],
+      component: [null],
     };
     const context = generateProcessorContext(component, data);
     const result = await validateMultiple(context);
     expect(result).to.equal(null);
-});
+  });
 
-it('Validating a multiple number with an empty array value will return null', async () => {
+  it('Validating a multiple number with an empty array value will return null', async function () {
     const component = {
-        ...simpleNumberField,
-        multiple: true
+      ...simpleNumberField,
+      multiple: true,
     };
     const data = {
-        component: [],
+      component: [],
     };
     const context = generateProcessorContext(component, data);
     const result = await validateMultiple(context);
     expect(result).to.equal(null);
+  });
 });
