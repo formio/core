@@ -3910,7 +3910,137 @@ it('Should not unset values for conditionally visible fields with different form
     })
   });
 
-  describe('Required component validation in nested form in DataGrid/EditGrid', () => {
+  it('Should not unset value of the conditionally visible component when condtiion is based on select resource with save as ref', function () {
+    const form = {
+      _id: '670f638c362eca5264b5dc94',
+      title: 'test fire',
+      name: 'testFire',
+      path: 'testfire',
+      type: 'form',
+      display: 'form',
+      owner: '637b2e6b48c1227e60b1f910',
+      components: [
+        {
+          label: 'Select',
+          widget: 'choicesjs',
+          tableView: true,
+          dataSrc: 'resource',
+          data: {
+            resource: '670f62df362eca5264b5d812',
+          },
+          template: '<span>{{ item.data.textField }}</span>',
+          validateWhenHidden: false,
+          key: 'select',
+          type: 'select',
+          input: true,
+          noRefreshOnScroll: false,
+          addResource: false,
+          reference: true,
+        },
+        {
+          label: 'Text Field Show on test1',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textFieldShowOnTest1',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'select',
+                operator: 'isEqual',
+                value: {
+                  data: {
+                    textField: 'test1',
+                  },
+                },
+              },
+            ],
+          },
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Text Area Not Show on test1',
+          applyMaskOn: 'change',
+          autoExpand: false,
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textAreaNotShowOnTest1',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'select',
+                operator: 'isNotEqual',
+                value: {
+                  data: {
+                    textField: 'test1',
+                  },
+                },
+              },
+            ],
+          },
+          type: 'textarea',
+          input: true,
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+      project: '66f66c655879bf08113cf465',
+    };
+
+    const submission = {
+      data: {
+        select: {
+          _id: '670f62e5362eca5264b5daf9',
+          form: '670f62df362eca5264b5d812',
+          owner: '637b2e6b48c1227e60b1f910',
+          data: { textField: 'test1', submit: true },
+          project: '66f66c655879bf08113cf465',
+          state: 'submitted',
+          created: '2024-10-16T06:53:25.603Z',
+          modified: '2024-10-16T06:53:25.604Z',
+        },
+        submit: true,
+        textFieldShowOnTest1: 'test',
+      },
+    };
+
+    const errors: any = [];
+    const conditionals: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors, conditionals },
+      config: {
+        server: true,
+      },
+    };
+
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    console.log(111, context.data, context.scope.conditionals);
+    assert.deepEqual(context.data.textFieldShowOnTest1, 'test');
+    context.scope.conditionals.forEach((cond: any) => {
+      assert.equal(cond.conditionallyHidden, cond.path !== 'textFieldShowOnTest1');
+    });
+  });
+
+  describe('Required component validation in nested form in DataGrid/EditGrid', function () {
     const nestedForm = {
       key: 'form',
       type: 'form',
