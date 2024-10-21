@@ -115,6 +115,26 @@ describe('Condition processor', () => {
           input: true,
         },
         {
+          label: 'Text Hide When Is Not Equal',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textFieldHideWhenIsNotEqual',
+          conditional: {
+            show: false,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'selectBoxes',
+                operator: 'isNotEqual',
+                value: '3'
+              }
+            ]
+          },
+          type: 'textfield',
+          input: true,
+        },
+        {
           type: 'button',
           label: 'Submit',
           key: 'submit',
@@ -133,6 +153,7 @@ describe('Condition processor', () => {
           '3': true,
         },
         textField: 'test',
+        textFieldHideWhenIsNotEqual: 'test',
         submit: true,
       },
     };
@@ -142,8 +163,8 @@ describe('Condition processor', () => {
       submission1
     );
 
-    expect(get(context, 'scope.conditionals[0].conditionallyHidden')).to.be
-      .false;
+    expect(get(context, 'scope.conditionals[0].conditionallyHidden')).to.equal(false);
+    expect(get(context, 'scope.conditionals[1].conditionallyHidden')).to.equal(false);
   });
 
   it('Should always add components keyed by absolute path to conditional scope (simple components)', async () => {
