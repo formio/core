@@ -1,5 +1,5 @@
 import { Components } from '../Components';
-import { NestedArrayModel, ModelDecoratorInterface,  ModelInterface } from '../../model';
+import { NestedArrayModel, ModelDecoratorInterface, ModelInterface } from '../../model';
 import { NestedComponent } from '../nested/NestedComponent';
 /**
  * An array data type component. This provides a nested component that creates "rows" of data
@@ -38,15 +38,15 @@ import { NestedComponent } from '../nested/NestedComponent';
  * ```
  */
 export function ArrayComponent(props: any = {}): ModelDecoratorInterface {
-    if (!props.type) {
-        props.type = 'array';
-    }
-    if (!props.model) {
-        props.model = NestedArrayModel;
-    }
-    return function(BaseClass?: ModelInterface) : ModelInterface {
-        return class ExtendedArrayComponent extends NestedComponent(props)(BaseClass) {}
-    };
+  if (!props.type) {
+    props.type = 'array';
+  }
+  if (!props.model) {
+    props.model = NestedArrayModel;
+  }
+  return function (BaseClass?: ModelInterface): ModelInterface {
+    return class ExtendedArrayComponent extends NestedComponent(props)(BaseClass) {};
+  };
 }
 
 Components.addDecorator(ArrayComponent, 'array');

@@ -1,5 +1,5 @@
 module.exports = {
-    save: require('./save/save'),
-    login: require('./login/login'),
-    role: require('./role/role')
+  save: require('./save/save'),
+  login: require('./login/login'),
+  role: require('./role/role'),
 };
