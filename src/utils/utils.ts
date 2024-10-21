@@ -1,5 +1,5 @@
 import { isBoolean, isString } from 'lodash';
-import { BaseComponent, Component } from 'types';
+import { BaseComponent, Component, ResourceToDomOptions } from 'types';
 
 /**
  * Escapes RegEx characters in provided String value.
@@ -61,6 +61,63 @@ export function registerEphemeralState(
     writable: false,
     configurable: true,
     value,
+  });
+}
+
+export function attachResourceToDom(options: ResourceToDomOptions) {
+  let { src, name, formio, onload, rootElement } = options;
+  src = Array.isArray(src) ? src : [src];
+  src.forEach((lib: any) => {
+    let attrs: any = {};
+    let elementType = '';
+    if (typeof lib === 'string') {
+      lib = {
+        type: 'script',
+        src: lib,
+      };
+    }
+    switch (lib.type) {
+      case 'script':
+        elementType = 'script';
+        attrs = {
+          src: lib.src,
+          type: 'text/javascript',
+          defer: true,
+          async: true,
+          referrerpolicy: 'origin',
+        };
+        break;
+      case 'styles':
+        elementType = 'link';
+        attrs = {
+          href: lib.src,
+          rel: 'stylesheet',
+        };
+        break;
+    }
+
+    // Add the script to the top of the page.
+    const element = document.createElement(elementType);
+    if (element.setAttribute) {
+      for (const attr in attrs) {
+        element.setAttribute(attr, attrs[attr]);
+      }
+    }
+
+    if (rootElement) {
+      rootElement.insertAdjacentElement('afterend', element);
+      return;
+    }
+
+    if (onload) {
+      element.addEventListener('load', () => {
+        formio.libraries[name].loaded = true;
+        onload(formio.libraries[name].ready);
+      });
+    }
+
+    const { head } = document;
+    head.appendChild(element);
   });
 }
 
