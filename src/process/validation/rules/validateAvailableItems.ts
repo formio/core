@@ -249,7 +249,7 @@ export const validateAvailableItems: RuleFn = async (context: ValidationContext)
             ? null
             : error;
         }
-        return values.find((optionValue) => optionValue === value) !== undefined ? null : error;
+        return values.find(({ value: optionValue }) => optionValue === value) !== undefined ? null : error;
       }
 
       return null;
