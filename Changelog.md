@@ -1,4 +1,4 @@
-## [Unreleased: 2.3.0-rc.14]
+## 2.3.0-rc.14
 ### Changed
  - FIO-9189: fixed an issue where data is lost after submission for the conditionally visible field when the condition is based on select resource
  - FIO-9219: condition is not equal to based on select box
