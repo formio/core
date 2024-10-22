@@ -65,7 +65,8 @@ export function registerEphemeralState(
 }
 
 export function attachResourceToDom(options: ResourceToDomOptions) {
-  let { src, name, formio, onload, rootElement } = options;
+  const { name, formio, onload, rootElement } = options;
+  let { src } = options;
   src = Array.isArray(src) ? src : [src];
   src.forEach((lib: any) => {
     let attrs: any = {};
@@ -103,21 +104,20 @@ export function attachResourceToDom(options: ResourceToDomOptions) {
         element.setAttribute(attr, attrs[attr]);
       }
     }
-
-    if (rootElement) {
-      rootElement.insertAdjacentElement('afterend', element);
-      return;
-    }
-
     if (onload) {
       element.addEventListener('load', () => {
         formio.libraries[name].loaded = true;
         onload(formio.libraries[name].ready);
       });
     }
-
+    if (rootElement) {
+      rootElement.insertAdjacentElement('afterend', element);
+      return;
+    }
     const { head } = document;
-    head.appendChild(element);
+    if (head) {
+      head.appendChild(element);
+    }
   });
 }
 

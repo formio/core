@@ -2379,6 +2379,8 @@ export class Formio {
       rootElement
     }
 
+    let hasResourceBeenAdded = false
+
     if (!Formio.libraries.hasOwnProperty(name)) {
       Formio.libraries[name] = {};
       Formio.libraries[name].ready = new Promise((resolve, reject) => {
@@ -2399,6 +2401,7 @@ export class Formio {
       }
       else {
         attachResourceToDom(resourceToDomOptions)
+        hasResourceBeenAdded = true;
 
         // if no callback is provided, then check periodically for the script.
         if (polling) {
@@ -2415,7 +2418,7 @@ export class Formio {
 
     const lib = Formio.libraries[name];
 
-    if(rootElement) {
+    if(rootElement && !hasResourceBeenAdded) {
       attachResourceToDom(resourceToDomOptions);
     }
 
