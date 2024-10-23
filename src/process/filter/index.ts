@@ -1,11 +1,11 @@
-import { FilterContext, FilterScope, ProcessorFn, ProcessorFnSync, ProcessorInfo } from "types";
+import { FilterContext, FilterScope, ProcessorFn, ProcessorFnSync, ProcessorInfo } from 'types';
 import { set } from 'lodash';
-import { Utils } from "utils";
-import { get, isObject } from "lodash";
-import { getComponentAbsolutePath } from "utils/formUtil";
+import { Utils } from 'utils';
+import { get, isObject } from 'lodash';
+import { getComponentAbsolutePath } from 'utils/formUtil';
 export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterContext) => {
   const { scope, component } = context;
-  let { value } = context;
+  const { value } = context;
   const absolutePath = getComponentAbsolutePath(component);
   if (!scope.filter) scope.filter = {};
   if (value !== undefined) {
@@ -15,28 +15,28 @@ export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterC
         scope.filter[absolutePath] = {
           compModelType: modelType,
           include: true,
-          value: { data: {} }
+          value: { data: {} },
         };
         break;
       case 'nestedArray':
         scope.filter[absolutePath] = {
           compModelType: modelType,
           include: true,
-          value: []
+          value: [],
         };
         break;
       case 'nestedDataArray':
         scope.filter[absolutePath] = {
           compModelType: modelType,
           include: true,
-          value: Array.isArray(value) ? value.map(v => ({...v, data: {}})) : [],
+          value: Array.isArray(value) ? value.map((v) => ({ ...v, data: {} })) : [],
         };
         break;
       case 'object':
         scope.filter[absolutePath] = {
           compModelType: modelType,
           include: true,
-          value: (component.type === 'address') ? false : {}
+          value: component.type === 'address' ? false : {},
         };
         break;
       default:
@@ -62,8 +62,7 @@ export const filterPostProcess: ProcessorFnSync<FilterScope> = (context: FilterC
       if (scope.filter[path].value) {
         if (isObject(value) && scope.filter[path].value?.data) {
           value = { ...value, ...scope.filter[path].value };
-        }
-        else {
+        } else {
           value = scope.filter[path].value;
         }
       }
@@ -78,5 +77,5 @@ export const filterProcessInfo: ProcessorInfo<FilterContext, void> = {
   process: filterProcess,
   processSync: filterProcessSync,
   postProcess: filterPostProcess,
-  shouldProcess: (context: FilterContext) => true,
+  shouldProcess: () => true,
 };

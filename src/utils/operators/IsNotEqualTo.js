@@ -5,9 +5,9 @@ export default class IsNotEqualTo extends IsEqualTo {
     return 'isNotEqual';
   }
 
-    static get displayedName() {
-        return 'Is Not Equal To';
-    }
+  static get displayedName() {
+    return 'Is Not Equal To';
+  }
 
   execute(options) {
     return !super.execute(options);

@@ -1,6 +1,6 @@
 // Use only immutable useful functions from Lodash.
 // Visit https://lodash.com/docs for more info.
-import { 
+import {
   chunk,
   compact,
   concat,
@@ -244,7 +244,7 @@ import {
   stubTrue,
   times,
   toPath,
-  uniqueId
+  uniqueId,
 } from 'lodash';
 export const _: any = {
   chunk,
@@ -489,6 +489,5 @@ export const _: any = {
   stubTrue,
   times,
   toPath,
-  uniqueId
+  uniqueId,
 };
-

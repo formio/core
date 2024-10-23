@@ -1,7 +1,7 @@
-import { ProcessorScope } from "..";
+import { ProcessorScope } from '..';
 export type CalculationScope = {
-    calculated?: Array<{
-        path: string;
-        value: any;
-    }>;
+  calculated?: Array<{
+    path: string;
+    value: any;
+  }>;
 } & ProcessorScope;
