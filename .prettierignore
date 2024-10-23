@@ -1,0 +1,11 @@
+/node_modules/
+/dist/
+/build/
+/lib/
+/artifacts/
+/coverage/
+/docs/
+.git/
+.nyc_output/
+.vscode/
+yarn.lock

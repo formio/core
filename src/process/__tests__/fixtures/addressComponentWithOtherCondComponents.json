@@ -125,10 +125,7 @@
           {
             "long_name": "India",
             "short_name": "IN",
-            "types": [
-              "country",
-              "political"
-            ]
+            "types": ["country", "political"]
           }
         ],
         "formatted_address": "India",
@@ -145,10 +142,7 @@
           }
         },
         "place_id": "ChIJkbeSa_BfYzARphNChaFPjNc",
-        "types": [
-          "country",
-          "political"
-        ],
+        "types": ["country", "political"],
         "formattedPlace": "India"
       },
       "submit": true,
