@@ -1,5 +1,9 @@
+## [Unreleased: 2.3.0-rc.16]
+### Changed
+ - FIO-9201: Fix DataTable in quick inline embed issues
+   
 ## 2.3.0-rc.15
-### Chanaged
+### Changed
  - FIO-9244: fixed an issue where Radio component with Allow only available values checked does not submit
 
 ## 2.3.0-rc.14
