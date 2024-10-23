@@ -10,3 +10,4 @@ export * from './process';
 export * from './DataObject';
 export * from './formUtil';
 export * from './PassedComponentInstance';
+export * from './ResourceToDomOptions';
