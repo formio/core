@@ -1,3 +1,7 @@
+## [Unreleased: 2.3.0-rc.15]
+### Chanaged
+ - FIO-9244: fixed an issue where Radio component with Allow only available values checked does not submit
+
 ## 2.3.0-rc.14
 ### Changed
  - FIO-9189: fixed an issue where data is lost after submission for the conditionally visible field when the condition is based on select resource
