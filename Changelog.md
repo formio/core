@@ -1,4 +1,4 @@
-## [Unreleased: 2.3.0-rc.15]
+## 2.3.0-rc.15
 ### Chanaged
  - FIO-9244: fixed an issue where Radio component with Allow only available values checked does not submit
 
