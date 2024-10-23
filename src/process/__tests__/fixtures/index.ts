@@ -10,4 +10,16 @@ import data1a from './data1a.json';
 import form1 from './form1.json';
 import subs from './subs.json';
 
-export { addressComponentWithOtherCondComponents, addressComponentWithOtherCondComponents2, clearOnHideWithCustomCondition, clearOnHideWithHiddenParent, skipValidForLogicallyHiddenComp,  skipValidForConditionallyHiddenComp, skipValidWithHiddenParentComp, forDataGridRequired, data1a, form1, subs };
+export {
+  addressComponentWithOtherCondComponents,
+  addressComponentWithOtherCondComponents2,
+  clearOnHideWithCustomCondition,
+  clearOnHideWithHiddenParent,
+  skipValidForLogicallyHiddenComp,
+  skipValidForConditionallyHiddenComp,
+  skipValidWithHiddenParentComp,
+  forDataGridRequired,
+  data1a,
+  form1,
+  subs,
+};

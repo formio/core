@@ -15,7 +15,7 @@ dayjs.extend(customParseFormat);
  * @return {string}
  */
 export function currentTimezone(): string {
-    return dayjs.tz.guess();
+  return dayjs.tz.guess();
 }
 
 /**
@@ -24,17 +24,19 @@ export function currentTimezone(): string {
  * @return {string}
  */
 export function convertFormatToMoment(format: string) {
-    return format
-        // Year conversion.
-        .replace(/y/g, 'Y')
-        // Day in month.
-        .replace(/d/g, 'D')
-        // Day in week.
-        .replace(/E/g, 'd')
-        // AM/PM marker
-        .replace(/a/g, 'A')
-        // Unix Timestamp
-        .replace(/U/g, 'X');
+  return (
+    format
+      // Year conversion.
+      .replace(/y/g, 'Y')
+      // Day in month.
+      .replace(/d/g, 'D')
+      // Day in week.
+      .replace(/E/g, 'd')
+      // AM/PM marker
+      .replace(/a/g, 'A')
+      // Unix Timestamp
+      .replace(/U/g, 'X')
+  );
 }
 
 /**
@@ -46,14 +48,14 @@ export function convertFormatToMoment(format: string) {
  * @return {*}
  */
 export function momentDate(value: any, format: any, timezone: any): any {
-    const momentDate = dayjs(value);
-    if (timezone === 'UTC') {
-        return dayjs.utc();
-    }
-    if (timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) {
-        return momentDate.tz(timezone);
-    }
-    return momentDate;
+  const momentDate = dayjs(value);
+  if (timezone === 'UTC') {
+    return dayjs.utc();
+  }
+  if (timezone !== currentTimezone() || (format && format.match(/\s(z$|z\s)/))) {
+    return momentDate.tz(timezone);
+  }
+  return momentDate;
 }
 
 /**
@@ -65,14 +67,14 @@ export function momentDate(value: any, format: any, timezone: any): any {
  * @return {string}
  */
 export function formatDate(value: any, format: any, timezone: any): string {
-    const momentDate = dayjs(value);
-    if (timezone === 'UTC') {
-        return `${dayjs.utc().format(convertFormatToMoment(format))} UTC`;
-    }
-    if (timezone) {
-        return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
-    }
-    return momentDate.format(convertFormatToMoment(format));
+  const momentDate = dayjs(value);
+  if (timezone === 'UTC') {
+    return `${dayjs.utc().format(convertFormatToMoment(format))} UTC`;
+  }
+  if (timezone) {
+    return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
+  }
+  return momentDate.format(convertFormatToMoment(format));
 }
 
 /**
@@ -82,62 +84,58 @@ export function formatDate(value: any, format: any, timezone: any): string {
  * @return {(null|Date)}
  */
 export function getDateSetting(date: any) {
-    if (isNil(date) || isNaN(date) || date === '') {
-      return null;
-    }
+  if (isNil(date) || isNaN(date) || date === '') {
+    return null;
+  }
 
-    if (date instanceof Date) {
-      return date;
-    }
-    else if (typeof date.toDate === 'function') {
-      return date.isValid() ? date.toDate() : null;
-    }
+  if (date instanceof Date) {
+    return date;
+  } else if (typeof date.toDate === 'function') {
+    return date.isValid() ? date.toDate() : null;
+  }
 
-    let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? dayjs(date) : null;
-    if (dateSetting && dateSetting.isValid()) {
-      return dateSetting.toDate();
-    }
-
-    dateSetting = null;
-    try {
-      const value = Evaluator.evaluator(`return ${date};`, 'moment')(dayjs);
-      if (typeof value === 'string') {
-        dateSetting = dayjs(value);
-      }
-      else if (typeof value.toDate === 'function') {
-        dateSetting = dayjs(value.toDate().toUTCString());
-      }
-      else if (value instanceof Date) {
-        dateSetting = dayjs(value);
-      }
-    }
-    catch (e) {
-      return null;
-    }
-
-    if (!dateSetting) {
-      return null;
-    }
-
-    // Ensure this is a date.
-    if (!dateSetting.isValid()) {
-      return null;
-    }
-
+  let dateSetting = typeof date !== 'string' || date.indexOf('moment(') === -1 ? dayjs(date) : null;
+  if (dateSetting && dateSetting.isValid()) {
     return dateSetting.toDate();
+  }
+
+  dateSetting = null;
+  try {
+    const value = Evaluator.evaluator(`return ${date};`, 'moment')(dayjs);
+    if (typeof value === 'string') {
+      dateSetting = dayjs(value);
+    } else if (typeof value.toDate === 'function') {
+      dateSetting = dayjs(value.toDate().toUTCString());
+    } else if (value instanceof Date) {
+      dateSetting = dayjs(value);
+    }
+  } catch (ignoreError) {
+    return null;
+  }
+
+  if (!dateSetting) {
+    return null;
+  }
+
+  // Ensure this is a date.
+  if (!dateSetting.isValid()) {
+    return null;
+  }
+
+  return dateSetting.toDate();
 }
 
 export const getDateValidationFormat = (component: DayComponent) => {
-    return component.dayFirst ? 'DD-MM-YYYY' : 'MM-DD-YYYY';
+  return component.dayFirst ? 'DD-MM-YYYY' : 'MM-DD-YYYY';
 };
 
 export const isPartialDay = (component: DayComponent, value: string | undefined) => {
-    if (!value) {
-        return true;
-    }
-    const [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];
-    const values = value.split('/');
-    return values[DAY] === '00' || values[MONTH] === '00' || values[YEAR] === '0000';
+  if (!value) {
+    return true;
+  }
+  const [DAY, MONTH, YEAR] = component.dayFirst ? [0, 1, 2] : [1, 0, 2];
+  const values = value.split('/');
+  return values[DAY] === '00' || values[MONTH] === '00' || values[YEAR] === '0000';
 };
 
 export { dayjs };

@@ -1,4 +1,13 @@
-import { calculateProcessInfo, conditionProcessInfo, defaultValueProcessInfo, fetchProcessInfo, filterProcessInfo, logicProcessInfo, populateProcessInfo, validateProcessInfo } from 'processes';
+import {
+  calculateProcessInfo,
+  conditionProcessInfo,
+  defaultValueProcessInfo,
+  fetchProcessInfo,
+  filterProcessInfo,
+  logicProcessInfo,
+  populateProcessInfo,
+  validateProcessInfo,
+} from 'processes';
 import { ProcessorInfo } from './ProcessorInfo';
 
 export * from './ProcessType';
@@ -21,14 +30,14 @@ export * from './populate';
 export * from './logic';
 
 export const processes = {
-    calculation: calculateProcessInfo,
-    conditions: conditionProcessInfo,
-    defaultValue: defaultValueProcessInfo,
-    fetch: fetchProcessInfo,
-    filter: filterProcessInfo,
-    logic: logicProcessInfo,
-    populate: populateProcessInfo,
-    validation: validateProcessInfo
-}
+  calculation: calculateProcessInfo,
+  conditions: conditionProcessInfo,
+  defaultValue: defaultValueProcessInfo,
+  fetch: fetchProcessInfo,
+  filter: filterProcessInfo,
+  logic: logicProcessInfo,
+  populate: populateProcessInfo,
+  validation: validateProcessInfo,
+};
 
 export type ProcessTarget = Record<string, ProcessorInfo<any, any>[]>;

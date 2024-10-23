@@ -1,4 +1,4 @@
-import { ProcessorScope } from "..";
+import { ProcessorScope } from '..';
 export type FetchScope = {
-  fetched?:  Record<string, boolean>;
+  fetched?: Record<string, boolean>;
 } & ProcessorScope;
