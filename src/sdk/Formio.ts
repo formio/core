@@ -7,6 +7,7 @@ import EventEmitter from 'eventemitter3';
 import cookies from 'browser-cookies';
 const { fetch, Headers } = fetchPonyfill();
 import Plugins from './Plugins';
+import { attachResourceToDom } from 'utils';
 declare const OktaAuth: any;
 
 /**
@@ -2366,15 +2367,21 @@ export class Formio {
    * @param {string} property - The name of the global property that will be added to the global namespace once the library has been loaded. This is used to check to see if the property exists before resolving the promise that the library is ready for use.
    * @param {string} src - The URL of the library to lazy load.
    * @param {boolean} polling - Determines if polling should be used to determine if they library is ready to use. If set to false, then it will rely on a global callback called ${name}Callback where "name" is the first property passed to this method. When this is called, that will indicate when the library is ready. In most cases, you will want to pass true to this parameter to initiate a polling method to check for the library availability in the global context.
+   * @param {HTMLElement} rootElement - The element after which the resource would be attached (useful when requiring resources from ShadowRoot).
    * @return {Promise<object>} - A promise that will resolve when the plugin is ready to be used.
    */
-  static requireLibrary(
-    name: string,
-    property: string,
-    src: string | Array<string>,
-    polling: boolean = false,
-    onload?: (ready: Promise<any>) => void,
-  ) {
+  static requireLibrary(name: string, property: string, src: string | Array<string>, polling: boolean = false, onload?: (ready: Promise<any>) => void, rootElement?: HTMLElement ) {
+
+    const resourceToDomOptions = {
+      name,
+      src,
+      formio:Formio,
+      onload,
+      rootElement
+    }
+
+    let hasResourceBeenAdded = false
+
     if (!Formio.libraries.hasOwnProperty(name)) {
       Formio.libraries[name] = {};
       Formio.libraries[name].ready = new Promise((resolve, reject) => {
@@ -2392,55 +2399,10 @@ export class Formio {
       const plugin = get(window, property);
       if (plugin) {
         Formio.libraries[name].resolve(plugin);
-      } else {
-        src = Array.isArray(src) ? src : [src];
-        src.forEach((lib: any) => {
-          let attrs: any = {};
-          let elementType = '';
-          if (typeof lib === 'string') {
-            lib = {
-              type: 'script',
-              src: lib,
-            };
-          }
-          switch (lib.type) {
-            case 'script':
-              elementType = 'script';
-              attrs = {
-                src: lib.src,
-                type: 'text/javascript',
-                defer: true,
-                async: true,
-                referrerpolicy: 'origin',
-              };
-              break;
-            case 'styles':
-              elementType = 'link';
-              attrs = {
-                href: lib.src,
-                rel: 'stylesheet',
-              };
-              break;
-          }
-
-          // Add the script to the top of the page.
-          const element = document.createElement(elementType);
-          if (element.setAttribute) {
-            for (const attr in attrs) {
-              element.setAttribute(attr, attrs[attr]);
-            }
-          }
-          if (onload) {
-            element.addEventListener('load', () => {
-              Formio.libraries[name].loaded = true;
-              onload(Formio.libraries[name].ready);
-            });
-          }
-          const { head } = document;
-          if (head) {
-            head.appendChild(element);
-          }
-        });
+      }
+      else {
+        attachResourceToDom(resourceToDomOptions)
+        hasResourceBeenAdded = true;
 
         // if no callback is provided, then check periodically for the script.
         if (polling) {
@@ -2456,6 +2418,11 @@ export class Formio {
     }
 
     const lib = Formio.libraries[name];
+
+    if(rootElement && !hasResourceBeenAdded) {
+      attachResourceToDom(resourceToDomOptions);
+    }
+
     return onload && lib.loaded ? onload(lib.ready) : lib.ready;
   }
 
