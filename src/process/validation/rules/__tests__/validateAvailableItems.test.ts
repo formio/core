@@ -473,11 +473,15 @@ it('Validating a simple radio component with url data source with the available 
     };
     
     const context = generateProcessorContext(component, data);
-    context.fetch = (url: string, options?: RequestInit | undefined) => {
-        return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(['1', '2', '3'])
-        });
+    context.fetch = () => {
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve([
+          { label: '1', value: '1' },
+          { label: '2', value: '2' },
+          { label: '3', value: '3' },
+        ]),
+      });
     };
     const result = await validateAvailableItems(context);
     expect(result).to.equal(null);
@@ -498,11 +502,15 @@ it('Validating a simple radio component with url data source with the available 
     };
     
     const context = generateProcessorContext(component, data);
-    context.fetch = (url: string, options?: RequestInit | undefined) => {
-        return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(['1', '2', '3'])
-        });
+    context.fetch = () => {
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve([
+          { label: '1', value: '1' },
+          { label: '2', value: '2' },
+          { label: '3', value: '3' },
+        ]),
+      });
     };
     const result = await validateAvailableItems(context);
     expect(result).to.be.instanceOf(FieldError);

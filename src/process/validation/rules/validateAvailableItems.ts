@@ -230,16 +230,22 @@ export const validateAvailableItems: RuleFn = async (context: ValidationContext)
                 return null;
             }
 
-            const values = component.dataSrc === 'url' ? await getAvailableDynamicValues(component, context) : component.values;
-            if (values) {
-                if (isObject(value)) {
-                    return values.find((optionValue) => compareComplexValues(optionValue, value, context)) !==
-                        undefined
-                        ? null
-                        : error;
-                }
-                return values.find((optionValue) => optionValue === value) !== undefined ? null : error;
-            }
+      const values =
+        component.dataSrc === 'url'
+          ? await getAvailableDynamicValues(component, context)
+          : component.values;
+      if (values) {
+        if (isObject(value)) {
+          return values.find((optionValue) => compareComplexValues(optionValue, value, context)) !==
+            undefined
+            ? null
+            : error;
+        }
+        return values.find((optionValue) => optionValue.value === value || optionValue === value) !==
+          undefined
+          ? null
+          : error;
+      }
 
             return null;
         } else if (isValidateableSelectComponent(component)) {
