@@ -173,6 +173,9 @@ function handleError(error: FieldError | null, context: ValidationContext) {
   const absolutePath = getComponentAbsolutePath(component);
   if (error) {
     const cleanedError = cleanupValidationError(error);
+    if (component.parent) {
+      cleanedError.context.path = absolutePath;
+    }
     cleanedError.context.path = absolutePath;
     if (
       !find(scope.errors, {

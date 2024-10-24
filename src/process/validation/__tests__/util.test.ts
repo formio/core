@@ -89,6 +89,9 @@ describe('interpolateErrors', function () {
           processor: ProcessorType.Validate,
           rules,
         });
+        if (scope.errors[0]) {
+          expect(scope.errors[0]?.context?.path).to.equal(path);
+        }
         result.set(path, interpolateErrors(scope.errors));
       },
     );
