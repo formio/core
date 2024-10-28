@@ -425,12 +425,15 @@ export function getComponent(
   eachComponent(
     components,
     (component: Component, path: any) => {
-      if (path === key || component.path === key || (component.input && component.key === key)) {
+      if (path === key || (component.input && component.key === key)) {
         result = component;
         return true;
       }
     },
     includeAll,
+    undefined,
+    undefined,
+    true,
   );
   return result;
 }

@@ -14,6 +14,8 @@ import { componentInfo, componentPath, componentFormPath } from './index';
  *   The current data path of the element. Example: data.user.firstName
  * @param {Object} parent
  *   The parent object.
+ * @param {Boolean} runClean
+ *   Whether or not to add properties (e.g. path/parent) to the component object
  */
 export function eachComponent(
   components: Component[],
@@ -21,6 +23,7 @@ export function eachComponent(
   includeAll?: boolean,
   path: string = '',
   parent?: Component,
+  runClean?: boolean,
 ) {
   if (!components) return;
   components.forEach((component: any) => {
@@ -30,7 +33,7 @@ export function eachComponent(
     const info = componentInfo(component);
     let noRecurse = false;
     // Keep track of parent references.
-    if (parent) {
+    if (parent && !runClean) {
       // Ensure we don't create infinite JSON structures.
       Object.defineProperty(component, 'parent', {
         enumerable: false,
@@ -53,26 +56,44 @@ export function eachComponent(
       delete component.parent.rows;
     }
 
-    Object.defineProperty(component, 'path', {
-      enumerable: false,
-      writable: true,
-      value: componentPath(component, path),
-    });
+    const compPath = componentPath(component, path);
+
+    if (!runClean) {
+      Object.defineProperty(component, 'path', {
+        enumerable: false,
+        writable: true,
+        value: compPath,
+      });
+    }
 
     if (includeAll || component.tree || !info.layout) {
-      noRecurse = !!fn(component, component.path, components, parent);
+      noRecurse = !!fn(component, compPath, components, parent);
     }
 
     if (!noRecurse) {
       if (info.hasColumns) {
         component.columns.forEach((column: any) =>
-          eachComponent(column.components, fn, includeAll, path, parent ? component : null),
+          eachComponent(
+            column.components,
+            fn,
+            includeAll,
+            path,
+            parent ? component : null,
+            runClean,
+          ),
         );
       } else if (info.hasRows) {
         component.rows.forEach((row: any) => {
           if (Array.isArray(row)) {
             row.forEach((column) =>
-              eachComponent(column.components, fn, includeAll, path, parent ? component : null),
+              eachComponent(
+                column.components,
+                fn,
+                includeAll,
+                path,
+                parent ? component : null,
+                runClean,
+              ),
             );
           }
         });
@@ -81,8 +102,9 @@ export function eachComponent(
           component.components,
           fn,
           includeAll,
-          componentFormPath(component, path, component.path),
+          componentFormPath(component, path, compPath),
           parent ? component : null,
+          runClean,
         );
       }
     }

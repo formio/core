@@ -972,8 +972,6 @@ describe('Process Tests', function () {
     submission.data = context.data;
     context.processors = ProcessTargets.evaluator;
     processSync(context);
-    console.log(context.scope.errors);
-
     assert.equal(context.scope.errors.length, 0);
   });
 
@@ -4033,10 +4031,374 @@ describe('Process Tests', function () {
     submission.data = context.data;
     context.processors = ProcessTargets.evaluator;
     processSync(context);
-    console.log(111, context.data, context.scope.conditionals);
     assert.deepEqual(context.data.textFieldShowOnTest1, 'test');
     context.scope.conditionals.forEach((cond: any) => {
       assert.equal(cond.conditionallyHidden, cond.path !== 'textFieldShowOnTest1');
+    });
+  });
+
+  it('Should not unset values of deeply nested form when some components in other forms have conditional components', function () {
+    const form = {
+      _id: '6718a657d064efa63512550e',
+      title: 'eSubmissionsExt',
+      name: 'eSubmissionsExt',
+      path: 'esubmissionsext',
+      type: 'form',
+      display: 'wizard',
+      tags: [],
+      deleted: null,
+      owner: '6718e9edf62d8a6fd8104211',
+      components: [
+        {
+          title: 'eSubmissions',
+          breadcrumbClickable: true,
+          buttonSettings: {
+            previous: true,
+            cancel: true,
+            next: true,
+          },
+          navigateOnEnter: false,
+          saveOnEnter: false,
+          scrollToTop: false,
+          collapsible: false,
+          key: 'eSubmissions',
+          type: 'panel',
+          label: 'Page 1',
+          components: [
+            {
+              label: 'Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              validateWhenHidden: false,
+              key: 'textField',
+              type: 'textfield',
+              input: true,
+            },
+            {
+              label: 'PMTA',
+              tableView: true,
+              form: '6718a657d064efa6351254eb',
+              useOriginalRevision: false,
+              reference: false,
+              key: 'pmta',
+              conditional: {
+                show: true,
+                conjunction: 'all',
+                conditions: [
+                  {
+                    component: 'textField',
+                    operator: 'isEqual',
+                    value: '5',
+                  },
+                ],
+              },
+              type: 'form',
+              input: true,
+              components: [
+                {
+                  type: 'button',
+                  label: 'Submit',
+                  key: 'submit',
+                  disableOnInvalid: true,
+                  input: true,
+                  tableView: false,
+                },
+                {
+                  title: 'Section I - Applicant Identification',
+                  breadcrumbClickable: true,
+                  buttonSettings: {
+                    previous: true,
+                    cancel: true,
+                    next: true,
+                  },
+                  navigateOnEnter: false,
+                  saveOnEnter: false,
+                  scrollToTop: false,
+                  collapsible: false,
+                  key: 'section1',
+                  type: 'panel',
+                  label: 'Page 6',
+                  input: false,
+                  tableView: false,
+                  components: [
+                    {
+                      label: 'Identification Information',
+                      tableView: true,
+                      form: '6718a657d064efa6351254e4',
+                      useOriginalRevision: false,
+                      reference: false,
+                      clearOnHide: false,
+                      key: 'contacts',
+                      type: 'form',
+                      input: true,
+                      components: [
+                        {
+                          title: 'Part A: Applicant Identification',
+                          breadcrumbClickable: true,
+                          buttonSettings: {
+                            previous: true,
+                            cancel: true,
+                            next: true,
+                          },
+                          navigateOnEnter: false,
+                          saveOnEnter: false,
+                          scrollToTop: false,
+                          collapsible: false,
+                          key: 'section1A',
+                          type: 'panel',
+                          label: 'Page 1',
+                          components: [
+                            {
+                              label: 'Applicant Organization',
+                              tableView: true,
+                              form: '6718a657d064efa6351254c8',
+                              useOriginalRevision: false,
+                              reference: false,
+                              clearOnHide: false,
+                              key: 'applicantOrganization',
+                              type: 'form',
+                              lazyLoad: true,
+                              input: true,
+                              components: [
+                                {
+                                  label: 'Address',
+                                  tableView: true,
+                                  form: '6718f5a4f62d8a6fd8110a41',
+                                  useOriginalRevision: false,
+                                  reference: false,
+                                  clearOnHide: false,
+                                  key: 'address',
+                                  type: 'form',
+                                  input: true,
+                                  components: [
+                                    {
+                                      label: 'Country',
+                                      widget: 'choicesjs',
+                                      tableView: true,
+                                      data: {
+                                        values: [
+                                          { label: 'a', value: 'a' },
+                                          { label: 'b', value: 'b' },
+                                        ],
+                                        resource: '6718a657d064efa635125495',
+                                      },
+                                      clearOnHide: false,
+                                      validateWhenHidden: false,
+                                      key: 'country',
+                                      type: 'select',
+                                      input: true,
+                                    },
+                                    {
+                                      label: 'Zip Code',
+                                      displayMask: '99999-9999',
+                                      applyMaskOn: 'change',
+                                      tableView: true,
+                                      clearOnHide: false,
+                                      validateOn: 'blur',
+                                      validateWhenHidden: false,
+                                      key: 'zipCode',
+                                      conditional: {
+                                        show: true,
+                                        conjunction: 'all',
+                                        conditions: [
+                                          {
+                                            component: 'country',
+                                            operator: 'isEqual',
+                                            value: 'a',
+                                          },
+                                        ],
+                                      },
+                                      type: 'textfield',
+                                      input: true,
+                                    },
+                                    {
+                                      label: 'Postal Code',
+                                      applyMaskOn: 'change',
+                                      tableView: true,
+                                      clearOnHide: false,
+                                      validateWhenHidden: false,
+                                      key: 'postalCode',
+                                      conditional: {
+                                        show: true,
+                                        conjunction: 'all',
+                                        conditions: [
+                                          {
+                                            component: 'country',
+                                            operator: 'isNotEqual',
+                                            value: 'a',
+                                          },
+                                        ],
+                                      },
+                                      type: 'textfield',
+                                      input: true,
+                                    },
+                                    {
+                                      type: 'button',
+                                      label: 'Submit',
+                                      key: 'submit',
+                                      disableOnInvalid: true,
+                                      input: true,
+                                      tableView: false,
+                                    },
+                                  ],
+                                },
+                                {
+                                  type: 'button',
+                                  label: 'Submit',
+                                  key: 'submit',
+                                  disableOnInvalid: true,
+                                  input: true,
+                                  tableView: false,
+                                },
+                              ],
+                            },
+                          ],
+                          input: false,
+                          tableView: false,
+                        },
+                        {
+                          title: 'Part B: Authorized Representative or U.S. Agent Information',
+                          breadcrumbClickable: true,
+                          buttonSettings: {
+                            previous: true,
+                            cancel: true,
+                            next: true,
+                          },
+                          navigateOnEnter: false,
+                          saveOnEnter: false,
+                          scrollToTop: false,
+                          collapsible: false,
+                          key: 'section1B',
+                          properties: { subsection: '1' },
+                          type: 'panel',
+                          label: 'Page 1',
+                          components: [
+                            {
+                              label: 'Authorized Representative',
+                              tableView: true,
+                              form: '6718a657d064efa6351254d6',
+                              useOriginalRevision: false,
+                              reference: false,
+                              clearOnHide: false,
+                              key: 'authorizedRepresentative',
+                              type: 'form',
+                              lazyLoad: true,
+                              input: true,
+                              components: [
+                                {
+                                  label: 'Organization',
+                                  tableView: true,
+                                  form: '6718a657d064efa6351254b0',
+                                  useOriginalRevision: false,
+                                  reference: false,
+                                  key: 'organization',
+                                  type: 'form',
+                                  input: true,
+                                  clearOnHide: false,
+                                  components: [
+                                    {
+                                      label: 'Organization Name',
+                                      applyMaskOn: 'change',
+                                      tableView: true,
+                                      clearOnHide: false,
+                                      validateWhenHidden: false,
+                                      key: 'organizationName',
+                                      type: 'textfield',
+                                      input: true,
+                                    },
+                                    {
+                                      type: 'button',
+                                      label: 'Submit',
+                                      key: 'submit',
+                                      disableOnInvalid: true,
+                                      input: true,
+                                      tableView: false,
+                                    },
+                                  ],
+                                },
+                                {
+                                  type: 'button',
+                                  label: 'Submit',
+                                  key: 'submit',
+                                  disableOnInvalid: true,
+                                  input: true,
+                                  tableView: false,
+                                },
+                              ],
+                            },
+                          ],
+                          input: false,
+                          tableView: false,
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          input: false,
+          tableView: false,
+        },
+      ],
+      created: '2024-10-23T07:31:35.235Z',
+      modified: '2024-10-23T13:14:44.389Z',
+    };
+
+    const data = {
+      textField: '5',
+      pmta: {
+        data: {
+          contacts: {
+            data: {
+              applicantOrganization: {
+                data: {
+                  address: {
+                    data: { country: 'a', zipCode: '555555555', postalCode: '' },
+                    metadata: { selectData: { country: { label: 'a' } } },
+                  },
+                },
+                metadata: {},
+              },
+              authorizedRepresentative: {
+                data: {
+                  organization: {
+                    data: { organizationName: '66666' },
+                    metadata: {},
+                  },
+                },
+                metadata: {},
+              },
+            },
+          },
+        },
+      },
+    };
+    const submission = {
+      data: fastCloneDeep(data),
+    };
+
+    const errors: any = [];
+    const conditionals: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors, conditionals },
+      config: {
+        server: true,
+      },
+    };
+
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.deepEqual(context.data, data);
+    context.scope.conditionals.forEach((cond: any) => {
+      assert.equal(cond.conditionallyHidden, cond.path === 'postalCode');
     });
   });
 
