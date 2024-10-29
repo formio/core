@@ -290,8 +290,8 @@ export function getContextualRowData(component: Component, path: string, data: a
 }
 
 export function componentInfo(component: any) {
-  const hasColumns = component.columns && Array.isArray(component.columns);
-  const hasRows = component.rows && Array.isArray(component.rows);
+  const hasColumns = component.columns && Array.isArray(component.columns)&& component?.component?.type !=="datagrid";
+  const hasRows = component.rows && Array.isArray(component.rows)
   const hasComps = component.components && Array.isArray(component.components);
   const isContent = getModelType(component) === 'content';
   const isLayout = getModelType(component) === 'none';
@@ -323,7 +323,7 @@ export function getComponentData(components: Component[], data: DataObject, path
 }
 
 export function getComponentActualValue(
-  component: Component,
+  component: Component | undefined,
   compPath: string,
   data: any,
   row: any,
@@ -341,6 +341,9 @@ export function getComponentActualValue(
   let parent = component;
   let rowPath = '';
 
+  const compPathModified = compPath.split(".");
+  rowPath = (compPathModified.length > 1)? compPathModified[compPathModified.length-1]: compPath;
+
   while (parent?.parent?.path && !parentInputComponent) {
     parent = parent.parent;
     if (parent.input) {
@@ -357,6 +360,13 @@ export function getComponentActualValue(
   let value = null;
   if (data) {
     value = get(data, compPath);
+    if(component?.type === 'address') {
+      const addressIgnoreProperties = ['mode', 'address'];
+      const result = Object.values(omit(value, addressIgnoreProperties)).some(Boolean);
+      if(!result) {
+        value = ''
+      }
+    }
   }
   if (rowPath && row && isNil(value)) {
     value = get(row, rowPath);
