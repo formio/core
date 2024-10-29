@@ -355,6 +355,13 @@ export function getComponentActualValue(component: Component | undefined, compPa
   let value = null;
   if (data) {
     value = get(data, compPath);
+    if(component?.type === 'address') {
+      const addressIgnoreProperties = ['mode', 'address'];
+      const result = Object.values(omit(value, addressIgnoreProperties)).some(Boolean);
+      if(!result) {
+        value = ''
+      }
+    }
   }
 
   if (rowPath && row && isNil(value)) {

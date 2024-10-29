@@ -182,24 +182,24 @@ export function checkSimpleConditional(
   }
   // @ts-ignore
   if (conditional.when) {
-    // @ts-ignore
-    const value = getComponentActualValue(conditional!.when, data, row);
-    // @ts-ignore
-    const eq = String(conditional.eq);
-    const show = String(conditional.show);
+    // // @ts-ignore
+    // const value = getComponentActualValue(conditional!.when, data, row);
+    // // @ts-ignore
+    // const eq = String(conditional.eq);
+    // const show = String(conditional.show);
 
-    // Special check for selectboxes component.
-    // @ts-ignore
-    if (_.isObject(value) && _.has(value, conditional.eq)) {
-      // @ts-ignore
-      return String(value[conditional.eq]) === show;
-    }
-    // FOR-179 - Check for multiple values.
-    if (Array.isArray(value) && value.map(String).includes(eq)) {
-      return show === 'true';
-    }
+    // // Special check for selectboxes component.
+    // // @ts-ignore
+    // if (_.isObject(value) && _.has(value, conditional.eq)) {
+    //   // @ts-ignore
+    //   return String(value[conditional.eq]) === show;
+    // }
+    // // FOR-179 - Check for multiple values.
+    // if (Array.isArray(value) && value.map(String).includes(eq)) {
+    //   return show === 'true';
+    // }
 
-    return (String(value) === eq) === (show === 'true');
+    // return (String(value) === eq) === (show === 'true');
   }
   else {
     const { conditions = [], conjunction = 'all', show = true } = conditional;
@@ -254,9 +254,13 @@ export function checkSimpleConditional(
 
         const splittedConditionPath = conditionComponentPath.split('.');
         // @ts-ignore
-        const conditionalPaths = instance?.parent?.type === 'datagrid' || instance?.parent?.type === 'editgrid' ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
+        const conditionalPaths = (component?.parent?.type || instance?.parent?.type) === 'datagrid' || (component?.parent?.type || instance?.parent?.type) === 'editgrid' ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
 
-
+        if(conditionComponent?.component?.type === "checkbox") {
+          if(typeof comparedValue === 'string') {
+            comparedValue = comparedValue === 'true'? true: false  //!!!! replace just on:  compared = compared === 'value'
+          }
+        }
         if (conditionalPaths.length > 0) {
           return conditionalPaths.map((path: string) => {
             const value = getComponentActualValue(conditionComponent, path, data, row);
@@ -273,7 +277,7 @@ export function checkSimpleConditional(
           const value = getComponentActualValue(conditionComponent, conditionComponentPath, data, row);
           const СonditionOperator = ConditionOperators[operator];
           return СonditionOperator
-            ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+            ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath, conditionComponent })
             : true;
 
         }
