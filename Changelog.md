@@ -1,3 +1,9 @@
+## [Unreleased: 2.3.0-rc.17]
+
+### Changed
+
+ - FIO-9201: Fix DataTable in quick inline embed issues
+
 ## 2.3.0-rc.16
 
 ### Changed
