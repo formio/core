@@ -1,3 +1,9 @@
+## 2.3.0-rc.18
+
+### Changed
+
+- FIO-9261: fixed an issue where empty multiple value for url and datetime causes validation errors
+
 ## 2.3.0-rc.17
 
 ### Changed
