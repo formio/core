@@ -35,10 +35,10 @@ export default class IsEqualTo extends ConditionOperator {
 
     if (
       conditionComponent &&
-      isSelectResourceWithObjectValue(conditionComponent.component) &&
-      conditionComponent?.component?.template
+      isSelectResourceWithObjectValue(conditionComponent) &&
+      conditionComponent?.template
     ) {
-      return compareSelectResourceWithObjectTypeValues(value, comparedValue, conditionComponent.component);
+      return compareSelectResourceWithObjectTypeValues(value, comparedValue, conditionComponent);
     }
 
     return isEqual(value, comparedValue);

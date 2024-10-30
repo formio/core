@@ -16,6 +16,7 @@ export type SimpleConditional = {
 
 export type BaseComponent = {
   input: boolean;
+  component?: BaseComponent
   type: string;
   key: string;
   path?: string;
