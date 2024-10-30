@@ -126,3 +126,7 @@ export function resetEphemeralState(component: Component) {
     delete component.ephemeralState;
   }
 }
+
+export function checkComponentType(component: Component | undefined, type:string) {
+  return component?.type === type;
+}

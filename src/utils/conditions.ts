@@ -4,6 +4,7 @@ import { flattenComponents, getComponent, getComponentActualValue } from './form
 import { has, isObject, map, every, some, find, filter, isBoolean, split } from 'lodash';
 import ConditionOperators from './operators';
 import _ from 'lodash';
+import { checkComponentType } from './utils';
 
 export const isJSONConditional = (conditional: any): conditional is JSONConditional => {
   return conditional && conditional.json && isObject(conditional.json);
@@ -118,7 +119,7 @@ function isConditionPotentiallyBasedOnValuePath(condition: any = {}) {
   );
 }
 
-function getConditionalPathsRecursive(conditionPaths: any, data: any): any {
+function getConditionalPathsRecursive(conditionPaths: string[], data: any): any {
   let currentGlobalIndex = 0;
   const conditionalPathsArray: string[] = [];
   const getConditionalPaths = (data: any, currentPath = '', localIndex = 0) => {
@@ -225,12 +226,12 @@ export function checkSimpleConditional(
       const isParentGrid = (component?.parent?.type || instance?.parent?.type) === 'datagrid' || (component?.parent?.type || instance?.parent?.type) === 'editgrid'
       const conditionalPaths = isParentGrid ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
 
-      if (conditionComponent?.component?.type === "checkbox") {
+      if (checkComponentType(conditionComponent, "checkbox")) {
         if (typeof comparedValue === 'string') {
           comparedValue = comparedValue === 'true'
         }
       }
-      if (conditionComponent?.type === 'select') {
+      if (checkComponentType(conditionComponent, "select")) {
         conditionComponent = conditionComponent?.component || conditionComponent;
       }
       if (conditionalPaths.length > 0) {

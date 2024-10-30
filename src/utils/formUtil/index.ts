@@ -46,6 +46,7 @@ import { eachComponent } from './eachComponent';
 import { eachComponentData } from './eachComponentData';
 import { eachComponentAsync } from './eachComponentAsync';
 import { eachComponentDataAsync } from './eachComponentDataAsync';
+import { checkComponentType } from 'utils/utils';
 
 /**
  * Flatten the form components for data manipulation.
@@ -360,7 +361,7 @@ export function getComponentActualValue(
   let value = null;
   if (data) {
     value = get(data, compPath);
-    if(component?.type === 'address') {
+    if(checkComponentType(component, "address")) {
       const addressIgnoreProperties = ['mode', 'address'];
       const result = Object.values(omit(value, addressIgnoreProperties)).some(Boolean);
       if(!result) {
