@@ -4040,6 +4040,97 @@ describe('Process Tests', function () {
     });
   });
 
+  it('Should not return errors for empty multiple values for url and dateTime', function () {
+    const form = {
+      _id: '671f7fbeaf87b0e2a26e4212',
+      title: 'form2',
+      name: 'form2',
+      path: 'form2',
+      type: 'form',
+      display: 'form',
+      components: [
+        {
+          label: 'Url',
+          applyMaskOn: 'change',
+          tableView: true,
+          multiple: true,
+          validateWhenHidden: false,
+          key: 'url',
+          type: 'url',
+          input: true,
+        },
+        {
+          label: 'Date / Time',
+          tableView: false,
+          datePicker: {
+            disableWeekends: false,
+            disableWeekdays: false,
+          },
+          multiple: true,
+          enableMinDateInput: false,
+          enableMaxDateInput: false,
+          validateWhenHidden: false,
+          key: 'dateTime',
+          type: 'datetime',
+          input: true,
+          widget: {
+            type: 'calendar',
+            displayInTimezone: 'viewer',
+            locale: 'en',
+            useLocaleSettings: false,
+            allowInput: true,
+            mode: 'single',
+            enableTime: true,
+            noCalendar: false,
+            format: 'yyyy-MM-dd hh:mm a',
+            hourIncrement: 1,
+            minuteIncrement: 1,
+            time_24hr: false,
+            minDate: null,
+            disableWeekends: false,
+            disableWeekdays: false,
+            maxDate: null,
+          },
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+      created: '2024-10-28T12:12:46.715Z',
+      modified: '2024-10-29T10:18:00.534Z',
+    };
+
+    const submission = {
+      data: { url: [], dateTime: [], submit: true },
+      state: 'submitted',
+    };
+
+    const errors: any = [];
+    const conditionals: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors, conditionals },
+      config: {
+        server: true,
+      },
+    };
+
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.deepEqual(context.scope.errors.length, 0);
+  });
+
   describe('Required component validation in nested form in DataGrid/EditGrid', function () {
     const nestedForm = {
       key: 'form',
