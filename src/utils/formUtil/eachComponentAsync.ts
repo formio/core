@@ -7,7 +7,7 @@ export async function eachComponentAsync(
   includeAll = false,
   path = '',
   parent?: any,
-  runClean?: boolean,
+  noComponentChange?: boolean,
 ) {
   if (!components) return;
   for (let i = 0; i < components.length; i++) {
@@ -17,7 +17,7 @@ export async function eachComponentAsync(
     const component = components[i];
     const info = componentInfo(component);
     // Keep track of parent references.
-    if (parent && !runClean) {
+    if (parent && !noComponentChange) {
       // Ensure we don't create infinite JSON structures.
       Object.defineProperty(component, 'parent', {
         enumerable: false,
@@ -41,7 +41,7 @@ export async function eachComponentAsync(
     }
     const compPath = componentPath(component, path);
 
-    if (!runClean) {
+    if (!noComponentChange) {
       Object.defineProperty(component, 'path', {
         enumerable: false,
         writable: true,
@@ -61,7 +61,7 @@ export async function eachComponentAsync(
           includeAll,
           path,
           parent ? component : null,
-          runClean,
+          noComponentChange,
         );
       }
     } else if (info.hasRows) {
@@ -75,7 +75,7 @@ export async function eachComponentAsync(
               includeAll,
               path,
               parent ? component : null,
-              runClean,
+              noComponentChange,
             );
           }
         }
@@ -87,7 +87,7 @@ export async function eachComponentAsync(
         includeAll,
         componentFormPath(component, path, compPath),
         parent ? component : null,
-        runClean,
+        noComponentChange,
       );
     }
   }

@@ -14,7 +14,7 @@ import { componentInfo, componentPath, componentFormPath } from './index';
  *   The current data path of the element. Example: data.user.firstName
  * @param {Object} parent
  *   The parent object.
- * @param {Boolean} runClean
+ * @param {Boolean} noComponentChange
  *   Whether or not to add properties (e.g. path/parent) to the component object
  */
 export function eachComponent(
@@ -23,7 +23,7 @@ export function eachComponent(
   includeAll?: boolean,
   path: string = '',
   parent?: Component,
-  runClean?: boolean,
+  noComponentChange?: boolean,
 ) {
   if (!components) return;
   components.forEach((component: any) => {
@@ -33,7 +33,7 @@ export function eachComponent(
     const info = componentInfo(component);
     let noRecurse = false;
     // Keep track of parent references.
-    if (parent && !runClean) {
+    if (parent && !noComponentChange) {
       // Ensure we don't create infinite JSON structures.
       Object.defineProperty(component, 'parent', {
         enumerable: false,
@@ -58,7 +58,7 @@ export function eachComponent(
 
     const compPath = componentPath(component, path);
 
-    if (!runClean) {
+    if (!noComponentChange) {
       Object.defineProperty(component, 'path', {
         enumerable: false,
         writable: true,
@@ -79,7 +79,7 @@ export function eachComponent(
             includeAll,
             path,
             parent ? component : null,
-            runClean,
+            noComponentChange,
           ),
         );
       } else if (info.hasRows) {
@@ -92,7 +92,7 @@ export function eachComponent(
                 includeAll,
                 path,
                 parent ? component : null,
-                runClean,
+                noComponentChange,
               ),
             );
           }
@@ -104,7 +104,7 @@ export function eachComponent(
           includeAll,
           componentFormPath(component, path, compPath),
           parent ? component : null,
-          runClean,
+          noComponentChange,
         );
       }
     }
