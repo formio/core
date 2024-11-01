@@ -2370,17 +2370,23 @@ export class Formio {
    * @param {HTMLElement} rootElement - The element after which the resource would be attached (useful when requiring resources from ShadowRoot).
    * @return {Promise<object>} - A promise that will resolve when the plugin is ready to be used.
    */
-  static requireLibrary(name: string, property: string, src: string | Array<string>, polling: boolean = false, onload?: (ready: Promise<any>) => void, rootElement?: HTMLElement ) {
-
+  static requireLibrary(
+    name: string,
+    property: string,
+    src: string | Array<string>,
+    polling: boolean = false,
+    onload?: (ready: Promise<any>) => void,
+    rootElement?: HTMLElement,
+  ) {
     const resourceToDomOptions = {
       name,
       src,
-      formio:Formio,
+      formio: Formio,
       onload,
-      rootElement
-    }
+      rootElement,
+    };
 
-    let hasResourceBeenAdded = false
+    let hasResourceBeenAdded = false;
 
     if (!Formio.libraries.hasOwnProperty(name)) {
       Formio.libraries[name] = {};
@@ -2399,9 +2405,8 @@ export class Formio {
       const plugin = get(window, property);
       if (plugin) {
         Formio.libraries[name].resolve(plugin);
-      }
-      else {
-        attachResourceToDom(resourceToDomOptions)
+      } else {
+        attachResourceToDom(resourceToDomOptions);
         hasResourceBeenAdded = true;
 
         // if no callback is provided, then check periodically for the script.
@@ -2419,7 +2424,7 @@ export class Formio {
 
     const lib = Formio.libraries[name];
 
-    if(rootElement && !hasResourceBeenAdded) {
+    if (rootElement && !hasResourceBeenAdded) {
       attachResourceToDom(resourceToDomOptions);
     }
 

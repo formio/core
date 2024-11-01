@@ -7,6 +7,7 @@ export async function eachComponentAsync(
   includeAll = false,
   path = '',
   parent?: any,
+  noComponentChange?: boolean,
 ) {
   if (!components) return;
   for (let i = 0; i < components.length; i++) {
@@ -16,7 +17,7 @@ export async function eachComponentAsync(
     const component = components[i];
     const info = componentInfo(component);
     // Keep track of parent references.
-    if (parent) {
+    if (parent && !noComponentChange) {
       // Ensure we don't create infinite JSON structures.
       Object.defineProperty(component, 'parent', {
         enumerable: false,
@@ -38,13 +39,17 @@ export async function eachComponentAsync(
       delete component.parent.columns;
       delete component.parent.rows;
     }
-    Object.defineProperty(component, 'path', {
-      enumerable: false,
-      writable: true,
-      value: componentPath(component, path),
-    });
+    const compPath = componentPath(component, path);
+
+    if (!noComponentChange) {
+      Object.defineProperty(component, 'path', {
+        enumerable: false,
+        writable: true,
+        value: compPath,
+      });
+    }
     if (includeAll || component.tree || !info.layout) {
-      if (await fn(component, component.path, components, parent)) {
+      if (await fn(component, compPath, components, parent)) {
         continue;
       }
     }
@@ -56,6 +61,7 @@ export async function eachComponentAsync(
           includeAll,
           path,
           parent ? component : null,
+          noComponentChange,
         );
       }
     } else if (info.hasRows) {
@@ -69,6 +75,7 @@ export async function eachComponentAsync(
               includeAll,
               path,
               parent ? component : null,
+              noComponentChange,
             );
           }
         }
@@ -78,8 +85,9 @@ export async function eachComponentAsync(
         component.components,
         fn,
         includeAll,
-        componentFormPath(component, path, component.path),
+        componentFormPath(component, path, compPath),
         parent ? component : null,
+        noComponentChange,
       );
     }
   }
