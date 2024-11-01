@@ -124,9 +124,9 @@ describe('Condition processor', function () {
               {
                 component: 'selectBoxes',
                 operator: 'isNotEqual',
-                value: '3'
-              }
-            ]
+                value: '3',
+              },
+            ],
           },
           type: 'textfield',
           input: true,

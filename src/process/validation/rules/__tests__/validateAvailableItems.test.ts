@@ -476,11 +476,12 @@ describe('validateAvailableItems', function () {
     context.fetch = () => {
       return Promise.resolve({
         ok: true,
-        json: () => Promise.resolve([
-          { label: '1', value: '1' },
-          { label: '2', value: '2' },
-          { label: '3', value: '3' },
-        ]),
+        json: () =>
+          Promise.resolve([
+            { label: '1', value: '1' },
+            { label: '2', value: '2' },
+            { label: '3', value: '3' },
+          ]),
       });
     };
     const result = await validateAvailableItems(context);
@@ -505,11 +506,12 @@ describe('validateAvailableItems', function () {
     context.fetch = () => {
       return Promise.resolve({
         ok: true,
-        json: () => Promise.resolve([
-          { label: '1', value: '1' },
-          { label: '2', value: '2' },
-          { label: '3', value: '3' },
-        ]),
+        json: () =>
+          Promise.resolve([
+            { label: '1', value: '1' },
+            { label: '2', value: '2' },
+            { label: '3', value: '3' },
+          ]),
       });
     };
     const result = await validateAvailableItems(context);
