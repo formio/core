@@ -1,3 +1,9 @@
+## [Unreleased: 2.3.0-rc.19]
+
+### Changed
+
+ - FIO-9255: fixed an issue where nested forms lose data after submission if some parent has conditional components
+
 ## 2.3.0-rc.18
 
 ### Changed
