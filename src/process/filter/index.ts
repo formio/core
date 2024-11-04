@@ -4,9 +4,9 @@ import { Utils } from 'utils';
 import { get, isObject } from 'lodash';
 import { getComponentAbsolutePath } from 'utils/formUtil';
 export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterContext) => {
-  const { scope, component } = context;
+  const { scope, component, path } = context;
   const { value } = context;
-  const absolutePath = getComponentAbsolutePath(component);
+  const absolutePath = getComponentAbsolutePath(component) || path;
   if (!scope.filter) scope.filter = {};
   if (value !== undefined) {
     const modelType = Utils.getModelType(component);

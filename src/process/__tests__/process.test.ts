@@ -14,6 +14,7 @@ import {
   skipValidForLogicallyHiddenComp,
   skipValidWithHiddenParentComp,
 } from './fixtures';
+import { get } from 'lodash';
 
 describe('Process Tests', function () {
   it('Should submit data within a nested form.', async function () {
@@ -910,6 +911,148 @@ describe('Process Tests', function () {
     context.processors = ProcessTargets.evaluator;
     processSync(context);
     assert.equal(context.scope.errors.length, 0);
+  });
+
+  it('Should allow data from a Conditionally shown nested form when another nested form is conditionally not shown.', async function () {
+    const form = {
+      components: [
+        {
+          label: 'Radio',
+          values: [
+            {
+              label: 'Show A',
+              value: 'a',
+              shortcut: '',
+            },
+            {
+              label: 'Show B',
+              value: 'b',
+              shortcut: '',
+            },
+          ],
+          key: 'radio',
+          type: 'radio',
+          input: true,
+        },
+        {
+          label: 'Form',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'radio',
+                operator: 'isEqual',
+                value: 'a',
+              },
+            ],
+          },
+          type: 'form',
+          key: 'form',
+          input: true,
+          components: [
+            {
+              label: 'Form',
+              key: 'form',
+              type: 'form',
+              input: true,
+              components: [
+                {
+                  label: 'Text Field',
+                  validate: {
+                    required: true,
+                  },
+                  key: 'textField',
+                  type: 'textfield',
+                  input: true,
+                },
+                {
+                  label: 'Text Field',
+                  key: 'textField1',
+                  type: 'textfield',
+                  input: true,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'Form',
+          key: 'form1',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'radio',
+                operator: 'isEqual',
+                value: 'b',
+              },
+            ],
+          },
+          type: 'form',
+          input: true,
+          components: [
+            {
+              label: 'Form',
+              key: 'form',
+              type: 'form',
+              input: true,
+              components: [
+                {
+                  label: 'Text Field',
+                  validate: {
+                    required: true,
+                  },
+                  key: 'textField',
+                  type: 'textfield',
+                  input: true,
+                },
+                {
+                  label: 'Text Field',
+                  key: 'textField1',
+                  type: 'textfield',
+                  input: true,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const submission = {
+      data: {
+        radio: 'b',
+        form1: {
+          data: {
+            form: {
+              data: {
+                textField: 'one 1',
+                textField1: 'two 2',
+              },
+            },
+          },
+        },
+      },
+    };
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.equal(get(context.submission.data, 'form1.data.form.data.textField'), 'one 1');
+    assert.equal(get(context.submission.data, 'form1.data.form.data.textField1'), 'two 2');
   });
 
   it('should remove submission data not in a nested form definition', async function () {
@@ -4335,7 +4478,10 @@ describe('Process Tests', function () {
     processSync(context);
     assert.deepEqual(context.data, data);
     context.scope.conditionals.forEach((cond: any) => {
-      assert.equal(cond.conditionallyHidden, cond.path === 'postalCode');
+      assert.equal(
+        cond.conditionallyHidden,
+        cond.path === 'pmta.data.contacts.data.applicantOrganization.data.address.data.postalCode',
+      );
     });
   });
 
