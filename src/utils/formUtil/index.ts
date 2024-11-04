@@ -431,9 +431,6 @@ export function getComponent(
       }
     },
     includeAll,
-    undefined,
-    undefined,
-    true,
   );
   return result;
 }
