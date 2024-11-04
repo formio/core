@@ -15,7 +15,7 @@ import { evaluationRules, rules, serverRules } from './rules';
 import find from 'lodash/find';
 import get from 'lodash/get';
 import pick from 'lodash/pick';
-import { getComponentAbsolutePath, getComponentPath } from 'utils/formUtil';
+import { getComponentAbsolutePath } from 'utils/formUtil';
 import { getErrorMessage } from 'utils/error';
 import { FieldError } from 'error';
 import {
@@ -107,11 +107,12 @@ export const _shouldSkipValidation = (
   isConditionallyHidden: ConditionallyHidden,
 ) => {
   const { component, scope, path } = context;
+  const absolutePath = getComponentAbsolutePath(component) || path;
 
   if (
     (scope as ConditionsScope)?.conditionals &&
     (find((scope as ConditionsScope).conditionals, {
-      path: getComponentPath(component, path),
+      path: absolutePath,
       conditionallyHidden: true,
     }) ||
       component.ephemeralState?.conditionallyHidden === true)
@@ -169,8 +170,8 @@ export function shouldValidateServer(context: ValidationContext): boolean {
 }
 
 function handleError(error: FieldError | null, context: ValidationContext) {
-  const { scope, component } = context;
-  const absolutePath = getComponentAbsolutePath(component);
+  const { scope, component, path } = context;
+  const absolutePath = getComponentAbsolutePath(component) || path;
   if (error) {
     const cleanedError = cleanupValidationError(error);
     cleanedError.context.path = absolutePath;
