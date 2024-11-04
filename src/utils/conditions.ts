@@ -1,6 +1,11 @@
 import { ConditionsContext, JSONConditional, LegacyConditional, SimpleConditional } from 'types';
 import { EvaluatorFn, evaluate, JSONLogicEvaluator } from 'modules/jsonlogic';
-import { flattenComponents, getComponent, getComponentActualValue } from './formUtil';
+import {
+  flattenComponents,
+  getComponent,
+  getComponentAbsolutePath,
+  getComponentActualValue,
+} from './formUtil';
 import { has, isObject, map, every, some, find, filter, isBoolean, split } from 'lodash';
 import ConditionOperators from './operators';
 
@@ -17,10 +22,11 @@ export const isSimpleConditional = (conditional: any): conditional is SimpleCond
 };
 
 export function conditionallyHidden(context: ConditionsContext) {
-  const { scope, path } = context;
-  if (scope.conditionals && path) {
+  const { scope, path, component } = context;
+  const absolutePath = getComponentAbsolutePath(component) || path;
+  if (scope.conditionals && absolutePath) {
     const hidden = find(scope.conditionals, (conditional) => {
-      return conditional.path === path;
+      return conditional.path === absolutePath;
     });
     return hidden?.conditionallyHidden;
   }

@@ -18,6 +18,7 @@ import {
 import { get, set, clone, isEqual, assign } from 'lodash';
 import { evaluate, interpolate } from 'modules/jsonlogic';
 import { registerEphermalState } from './utils';
+import { getComponentAbsolutePath } from './formUtil';
 
 export const hasLogic = (context: LogicContext): boolean => {
   const { component } = context;
@@ -69,6 +70,7 @@ export function setActionBooleanProperty(
   action: LogicActionPropertyBoolean,
 ): boolean {
   const { component, scope, path } = context;
+  const absolutePath = getComponentAbsolutePath(component) || path;
   const property = action.property.value;
   const currentValue = get(component, property, false).toString();
   const newValue = action.state.toString();
@@ -77,19 +79,19 @@ export function setActionBooleanProperty(
 
     // If this is "logic" forcing a component to set hidden property, then we will set the "conditionallyHidden"
     // flag which will trigger the clearOnHide functionality.
-    if (property === 'hidden' && path) {
+    if (property === 'hidden' && absolutePath) {
       if (!(scope as ConditionsScope).conditionals) {
         (scope as ConditionsScope).conditionals = [];
       }
       const conditionallyHidden = (scope as ConditionsScope).conditionals?.find((cond: any) => {
-        return cond.path === path;
+        return cond.path === absolutePath;
       });
       if (conditionallyHidden) {
         conditionallyHidden.conditionallyHidden = !!component.hidden;
         registerEphermalState(component, 'conditionallyHidden', !!component.hidden);
       } else {
         (scope as ConditionsScope).conditionals?.push({
-          path,
+          path: absolutePath,
           conditionallyHidden: !!component.hidden,
         });
       }
