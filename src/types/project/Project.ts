@@ -28,7 +28,7 @@ export type Project = {
     protect: boolean;
     settings?: ProjectSettings;
     remoteSecret?: string;
-
+    builderConfig?: any;
     formDefaults: {
         revisions?: 'current' | 'original';
     };
@@ -44,6 +44,11 @@ export type Project = {
     created: Date | string;
     modified: Date | string;
     deleted: Date | string;
+};
+
+export type ProjectRef = {
+    _id?: ProjectId;
+    name?: string;
 };
 
 export type ProjectType = 'project' | 'stage' | 'tenant';
@@ -103,4 +108,25 @@ export type ProjectApiCalls = {
     limit: ProjectUsage;
     used: ProjectUsage;
     reset: Date | string;
+};
+
+export type ProjectRole = {
+    _id: string;
+    title: string;
+    default: boolean;
+    admin: boolean;
+};
+
+export type FormAccessInfo = {
+    _id: string;
+    name: string;
+    path: string;
+    title: string;
+    access: Record<string, Access>;
+    submissionAccess: Record<string, Access>;
+};
+
+export type ProjectAccessInfo = {
+    roles: Record<string, ProjectRole>;
+    forms: Record<string, FormAccessInfo>;
 };
