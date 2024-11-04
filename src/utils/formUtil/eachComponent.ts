@@ -14,8 +14,6 @@ import { componentInfo, componentPath, componentFormPath } from './index';
  *   The current data path of the element. Example: data.user.firstName
  * @param {Object} parent
  *   The parent object.
- * @param {Boolean} noComponentChange
- *   Whether or not to add properties (e.g. path/parent) to the component object
  */
 export function eachComponent(
   components: Component[],
@@ -23,7 +21,6 @@ export function eachComponent(
   includeAll?: boolean,
   path: string = '',
   parent?: Component,
-  noComponentChange?: boolean,
 ) {
   if (!components) return;
   components.forEach((component: any) => {
@@ -33,7 +30,7 @@ export function eachComponent(
     const info = componentInfo(component);
     let noRecurse = false;
     // Keep track of parent references.
-    if (parent && !noComponentChange) {
+    if (parent) {
       // Ensure we don't create infinite JSON structures.
       Object.defineProperty(component, 'parent', {
         enumerable: false,
@@ -58,14 +55,6 @@ export function eachComponent(
 
     const compPath = componentPath(component, path);
 
-    if (!noComponentChange) {
-      Object.defineProperty(component, 'path', {
-        enumerable: false,
-        writable: true,
-        value: compPath,
-      });
-    }
-
     if (includeAll || component.tree || !info.layout) {
       noRecurse = !!fn(component, compPath, components, parent);
     }
@@ -73,27 +62,13 @@ export function eachComponent(
     if (!noRecurse) {
       if (info.hasColumns) {
         component.columns.forEach((column: any) =>
-          eachComponent(
-            column.components,
-            fn,
-            includeAll,
-            path,
-            parent ? component : null,
-            noComponentChange,
-          ),
+          eachComponent(column.components, fn, includeAll, path, parent ? component : null),
         );
       } else if (info.hasRows) {
         component.rows.forEach((row: any) => {
           if (Array.isArray(row)) {
             row.forEach((column) =>
-              eachComponent(
-                column.components,
-                fn,
-                includeAll,
-                path,
-                parent ? component : null,
-                noComponentChange,
-              ),
+              eachComponent(column.components, fn, includeAll, path, parent ? component : null),
             );
           }
         });
@@ -104,7 +79,6 @@ export function eachComponent(
           includeAll,
           componentFormPath(component, path, compPath),
           parent ? component : null,
-          noComponentChange,
         );
       }
     }

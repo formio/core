@@ -1,3 +1,9 @@
+## [Unreleased: 2.3.0-rc.21]
+
+### Changed
+
+- FIO-9299: ensure eachComponent does not mutate a component's path
+
 ## 2.3.0-rc.20
 
 ### Changed
