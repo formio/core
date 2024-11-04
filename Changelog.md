@@ -1,4 +1,8 @@
-## [Unreleased: 2.3.0-rc.21]
+## 2.3.0-rc.21
+
+### Changed
+
+- FIO-9280 updated validation of value property
 
 ### Changed
 
