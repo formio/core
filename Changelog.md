@@ -1,4 +1,4 @@
-## [Unreleased: 2.3.0-rc.20]
+## 2.3.0-rc.20
 
 ### Changed
 
