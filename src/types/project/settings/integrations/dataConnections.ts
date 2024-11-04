@@ -1,16 +1,16 @@
 export type ProjectGoogleDriveConfig = {
-    clientId: string;
-    cskey: string;
-    refreshtoken: string;
+  clientId: string;
+  cskey: string;
+  refreshtoken: string;
 };
 
 export type ProjectKickboxConfig = {
-    apikey: string;
+  apikey: string;
 };
 
 export type ProjectSQLConnectorConfig = {
-    host: string;
-    password: string;
-    type: 'mysql' | 'mssql' | 'postgres';
-    user: string;
+  host: string;
+  password: string;
+  type: 'mysql' | 'mssql' | 'postgres';
+  user: string;
 };

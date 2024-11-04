@@ -1,31 +1,24 @@
+import { isComponentDataEmpty } from 'utils/formUtil';
 import ConditionOperator from './ConditionOperator';
-import { isEmpty } from 'lodash';
 
 export default class IsEmptyValue extends ConditionOperator {
-    static get operatorKey() {
-        return 'isEmpty';
-    }
+  static get operatorKey() {
+    return 'isEmpty';
+  }
 
-    static get displayedName() {
-        return 'Is Empty';
-    }
+  static get displayedName() {
+    return 'Is Empty';
+  }
 
-    static get requireValue() {
-        return false;
-    }
+  static get requireValue() {
+    return false;
+  }
 
-    execute({ value, instance, conditionComponentPath }) {
-        const isEmptyValue = isEmpty(value);
+  execute({ value, conditionComponentPath, data, conditionComponent }) {
+    return isComponentDataEmpty(conditionComponent, data, conditionComponentPath, value);
+  }
 
-        if (instance && instance.root) {
-            const conditionTriggerComponent = instance.root.getComponent(conditionComponentPath);
-            return conditionTriggerComponent ? conditionTriggerComponent.isEmpty() : isEmptyValue;
-        }
-
-        return  isEmptyValue;
-    }
-
-    getResult(options) {
-        return this.execute(options);
-    }
+  getResult(options) {
+    return this.execute(options);
+  }
 }

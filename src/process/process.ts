@@ -1,9 +1,4 @@
-import {
-  ProcessContext,
-  ProcessTarget,
-  ProcessorInfo,
-  ProcessorScope,
-} from 'types';
+import { ProcessContext, ProcessTarget, ProcessorInfo, ProcessorScope } from 'types';
 import { eachComponentData, eachComponentDataAsync } from 'utils/formUtil';
 import { processOne, processOneSync } from './processOne';
 import {
@@ -31,29 +26,28 @@ import { clearHiddenProcessInfo } from './clearHidden';
 import { hideChildrenProcessorInfo } from './hideChildren';
 
 export async function process<ProcessScope>(
-  context: ProcessContext<ProcessScope>
+  context: ProcessContext<ProcessScope>,
 ): Promise<ProcessScope> {
   const { instances, components, data, scope, flat, processors } = context;
 
   await eachComponentDataAsync(
     components,
     data,
-    async (component, compData, row, path, components, index) => {
+    async (component, compData, row, path, components, index, parent) => {
       // Skip processing if row is null or undefined
       if (!row) {
         return;
       }
       await processOne<ProcessScope>({
         ...context,
-        ...{
-          data: compData,
-          component,
-          components,
-          path,
-          row,
-          index,
-          instance: instances ? instances[path] : undefined,
-        },
+        data: compData,
+        component,
+        components,
+        path,
+        row,
+        index,
+        instance: instances ? instances[path] : undefined,
+        parent,
       });
       if (flat) {
         return true;
@@ -62,7 +56,7 @@ export async function process<ProcessScope>(
         (scope as ProcessorScope).noRecurse = false;
         return true;
       }
-    }
+    },
   );
   for (let i = 0; i < processors?.length; i++) {
     const processor = processors[i];
@@ -73,15 +67,13 @@ export async function process<ProcessScope>(
   return scope;
 }
 
-export function processSync<ProcessScope>(
-  context: ProcessContext<ProcessScope>
-): ProcessScope {
+export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>): ProcessScope {
   const { instances, components, data, scope, flat, processors } = context;
 
   eachComponentData(
     components,
     data,
-    (component, compData, row, path, components, index) => {
+    (component, compData, row, path, components, index, parent) => {
       // Skip processing if row is null or undefined
       if (!row) {
         return;
@@ -95,6 +87,7 @@ export function processSync<ProcessScope>(
         row,
         index,
         instance: instances ? instances[path] : undefined,
+        parent,
       });
       if (flat) {
         return true;
@@ -103,7 +96,7 @@ export function processSync<ProcessScope>(
         (scope as ProcessorScope).noRecurse = false;
         return true;
       }
-    }
+    },
   );
   for (let i = 0; i < processors?.length; i++) {
     const processor = processors[i];
@@ -131,7 +124,7 @@ export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
   validate: validateProcessInfo,
   validateCustom: validateCustomProcessInfo,
   validateServer: validateServerProcessInfo,
-  hideChildren: hideChildrenProcessorInfo
+  hideChildren: hideChildrenProcessorInfo,
 };
 
 export const ProcessTargets: ProcessTarget = {

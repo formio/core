@@ -9,14 +9,15 @@ const processForm = (form: any, submission: any) => {
     processors: [conditionProcessInfo],
     components: form.components,
     data: submission.data,
+    form,
     scope: {},
   };
   processSync(context);
   return context;
 };
 
-describe('Condition processor', () => {
-  it('Should modify component\'s "hidden" property when conditionally visible is false', async () => {
+describe('Condition processor', function () {
+  it('Should modify component\'s "hidden" property when conditionally visible is false', async function () {
     const form = {
       components: [
         {
@@ -48,15 +49,13 @@ describe('Condition processor', () => {
       },
     };
 
-    const context: ProcessContext<ConditionsScope> = processForm(
-      form,
-      submission
-    );
-    expect(context.components[1]).to.haveOwnProperty('hidden');
-    expect(context.components[1].hidden).to.be.true;
+    const context: ProcessContext<ConditionsScope> = processForm(form, submission);
+    expect(context.scope.conditionals).to.have.length(1);
+    expect(context.scope.conditionals?.[0].path).to.equal(form.components[1].key);
+    expect(context.scope.conditionals?.[0].conditionallyHidden).to.equal(true);
   });
 
-  it('Should not define a conditional component (that condition is based on selectBoxes value) as hidden', async () => {
+  it('Should not define a conditional component (that condition is based on selectBoxes value) as hidden', async function () {
     const form1 = {
       components: [
         {
@@ -113,6 +112,26 @@ describe('Condition processor', () => {
           input: true,
         },
         {
+          label: 'Text Hide When Is Not Equal',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textFieldHideWhenIsNotEqual',
+          conditional: {
+            show: false,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'selectBoxes',
+                operator: 'isNotEqual',
+                value: '3',
+              },
+            ],
+          },
+          type: 'textfield',
+          input: true,
+        },
+        {
           type: 'button',
           label: 'Submit',
           key: 'submit',
@@ -131,20 +150,18 @@ describe('Condition processor', () => {
           '3': true,
         },
         textField: 'test',
+        textFieldHideWhenIsNotEqual: 'test',
         submit: true,
       },
     };
 
-    const context: ProcessContext<ConditionsScope> = processForm(
-      form1,
-      submission1
-    );
+    const context: ProcessContext<ConditionsScope> = processForm(form1, submission1);
 
-    expect(get(context, 'scope.conditionals[0].conditionallyHidden')).to.be
-      .false;
+    expect(get(context, 'scope.conditionals[0].conditionallyHidden')).to.equal(false);
+    expect(get(context, 'scope.conditionals[1].conditionallyHidden')).to.equal(false);
   });
 
-  it('Should always add components keyed by absolute path to conditional scope (simple components)', async () => {
+  it('Should always add components keyed by absolute path to conditional scope (simple components)', async function () {
     const form = {
       components: [
         {
@@ -176,15 +193,12 @@ describe('Condition processor', () => {
       },
     };
 
-    const context: ProcessContext<ConditionsScope> = processForm(
-      form,
-      submission
-    );
+    const context: ProcessContext<ConditionsScope> = processForm(form, submission);
     expect(context.scope.conditionals).to.have.length(1);
     expect(context.scope.conditionals?.[0].path).to.equal('b');
   });
 
-  it('Should always add components keyed by absolute data path to conditional scope (data grid components)', async () => {
+  it('Should always add components keyed by absolute data path to conditional scope (data grid components)', async function () {
     const form = {
       components: [
         {
@@ -251,20 +265,13 @@ describe('Condition processor', () => {
       },
     };
 
-    const context: ProcessContext<ConditionsScope> = processForm(
-      form,
-      submission
-    );
+    const context: ProcessContext<ConditionsScope> = processForm(form, submission);
     expect(context.scope.conditionals).to.have.length(2);
-    expect(context.scope.conditionals?.[0].path).to.equal(
-      'dataGrid[0].textField'
-    );
-    expect(context.scope.conditionals?.[1].path).to.equal(
-      'dataGrid[1].textField'
-    );
+    expect(context.scope.conditionals?.[0].path).to.equal('dataGrid[0].textField');
+    expect(context.scope.conditionals?.[1].path).to.equal('dataGrid[1].textField');
   });
 
-  it('Should always add components keyed by absolute data path to conditional scope (edit grid components)', async () => {
+  it('Should always add components keyed by absolute data path to conditional scope (edit grid components)', async function () {
     const form = {
       components: [
         {
@@ -331,20 +338,13 @@ describe('Condition processor', () => {
       },
     };
 
-    const context: ProcessContext<ConditionsScope> = processForm(
-      form,
-      submission
-    );
+    const context: ProcessContext<ConditionsScope> = processForm(form, submission);
     expect(context.scope.conditionals).to.have.length(2);
-    expect(context.scope.conditionals?.[0].path).to.equal(
-      'editGrid[0].textField'
-    );
-    expect(context.scope.conditionals?.[1].path).to.equal(
-      'editGrid[1].textField'
-    );
+    expect(context.scope.conditionals?.[0].path).to.equal('editGrid[0].textField');
+    expect(context.scope.conditionals?.[1].path).to.equal('editGrid[1].textField');
   });
 
-  it('Should always add components keyed by absolute data path to conditional scope (container components)', async () => {
+  it('Should always add components keyed by absolute data path to conditional scope (container components)', async function () {
     const form = {
       components: [
         {
@@ -404,17 +404,12 @@ describe('Condition processor', () => {
       },
     };
 
-    const context: ProcessContext<ConditionsScope> = processForm(
-      form,
-      submission
-    );
+    const context: ProcessContext<ConditionsScope> = processForm(form, submission);
     expect(context.scope.conditionals).to.have.length(1);
-    expect(context.scope.conditionals?.[0].path).to.equal(
-      'container.textField'
-    );
+    expect(context.scope.conditionals?.[0].path).to.equal('container.textField');
   });
 
-  it('Should always add components keyed by absolute data path to conditional scope (layout components)', async () => {
+  it('Should always add components keyed by absolute data path to conditional scope (layout components)', async function () {
     const form = {
       components: [
         {
@@ -474,16 +469,13 @@ describe('Condition processor', () => {
       },
     };
 
-    const context: ProcessContext<ConditionsScope> = processForm(
-      form,
-      submission
-    );
+    const context: ProcessContext<ConditionsScope> = processForm(form, submission);
     expect(context.scope.conditionals).to.have.length(1);
     // Panel components are layout components, so are not pathed
     expect(context.scope.conditionals?.[0].path).to.equal('textField');
   });
 
-  it('Should always add components keyed by absolute data path to conditional scope (deeply nested components)', async () => {
+  it('Should always add components keyed by absolute data path to conditional scope (deeply nested components)', async function () {
     const form = {
       components: [
         {
@@ -636,13 +628,10 @@ describe('Condition processor', () => {
       },
     };
 
-    const context: ProcessContext<ConditionsScope> = processForm(
-      form,
-      submission
-    );
+    const context: ProcessContext<ConditionsScope> = processForm(form, submission);
     expect(context.scope.conditionals).to.have.length(1);
     expect(context.scope.conditionals?.[0].path).to.equal(
-      'outerDataGrid[0].outerContainer.innerContainer.innerDataGrid[0].textField'
+      'outerDataGrid[0].outerContainer.innerContainer.innerDataGrid[0].textField',
     );
   });
 });

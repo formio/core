@@ -1,9 +1,20 @@
 import { expect } from 'chai';
-import assert from 'node:assert'
+import assert from 'node:assert';
 import type { ContainerComponent, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
 import { process, processSync, ProcessTargets } from '../index';
-import { clearOnHideWithCustomCondition, clearOnHideWithHiddenParent, skipValidForConditionallyHiddenComp, skipValidForLogicallyHiddenComp, skipValidWithHiddenParentComp  } from './fixtures'
+import { fastCloneDeep } from 'utils';
+import {
+  addressComponentWithOtherCondComponents,
+  addressComponentWithOtherCondComponents2,
+  clearOnHideWithCustomCondition,
+  clearOnHideWithHiddenParent,
+  forDataGridRequired,
+  skipValidForConditionallyHiddenComp,
+  skipValidForLogicallyHiddenComp,
+  skipValidWithHiddenParentComp,
+} from './fixtures';
+
 /*
 describe('Process Tests', () => {
     it('Should perform the processes using the processReduced method.', async () => {
@@ -66,8 +77,8 @@ describe('Process Tests', () => {
 });
 */
 
-describe('Process Tests', () => {
-  it('Should submit data within a nested form.', async () => {
+describe('Process Tests', function () {
+  it('Should submit data within a nested form.', async function () {
     const form = {
       _id: {},
       title: 'parent-fio-8023',
@@ -423,8 +434,7 @@ describe('Process Tests', () => {
                           key: 'address1',
                           type: 'textfield',
                           input: true,
-                          customConditional:
-                            "show = _.get(instance, 'parent.manualMode', false);",
+                          customConditional: "show = _.get(instance, 'parent.manualMode', false);",
                         },
                         {
                           label: 'Address 2',
@@ -432,8 +442,7 @@ describe('Process Tests', () => {
                           key: 'address2',
                           type: 'textfield',
                           input: true,
-                          customConditional:
-                            "show = _.get(instance, 'parent.manualMode', false);",
+                          customConditional: "show = _.get(instance, 'parent.manualMode', false);",
                         },
                         {
                           label: 'City',
@@ -441,8 +450,7 @@ describe('Process Tests', () => {
                           key: 'city',
                           type: 'textfield',
                           input: true,
-                          customConditional:
-                            "show = _.get(instance, 'parent.manualMode', false);",
+                          customConditional: "show = _.get(instance, 'parent.manualMode', false);",
                         },
                         {
                           label: 'State',
@@ -450,8 +458,7 @@ describe('Process Tests', () => {
                           key: 'state',
                           type: 'textfield',
                           input: true,
-                          customConditional:
-                            "show = _.get(instance, 'parent.manualMode', false);",
+                          customConditional: "show = _.get(instance, 'parent.manualMode', false);",
                         },
                         {
                           label: 'Country',
@@ -459,8 +466,7 @@ describe('Process Tests', () => {
                           key: 'country',
                           type: 'textfield',
                           input: true,
-                          customConditional:
-                            "show = _.get(instance, 'parent.manualMode', false);",
+                          customConditional: "show = _.get(instance, 'parent.manualMode', false);",
                         },
                         {
                           label: 'Zip Code',
@@ -468,8 +474,7 @@ describe('Process Tests', () => {
                           key: 'zip',
                           type: 'textfield',
                           input: true,
-                          customConditional:
-                            "show = _.get(instance, 'parent.manualMode', false);",
+                          customConditional: "show = _.get(instance, 'parent.manualMode', false);",
                         },
                       ],
                     },
@@ -830,7 +835,6 @@ describe('Process Tests', () => {
               'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
             pathName: '/',
             onLine: true,
-
           },
           data: {
             number: 23,
@@ -968,10 +972,9 @@ describe('Process Tests', () => {
     submission.data = context.data;
     context.processors = ProcessTargets.evaluator;
     processSync(context);
-    console.log(context.scope.errors);
-
     assert.equal(context.scope.errors.length, 0);
   });
+
   it('should remove submission data not in a nested form definition', async function () {
     const form = {
       _id: {},
@@ -1040,7 +1043,8 @@ describe('Process Tests', () => {
     });
     expect(context.data.child.data).to.not.have.property('invalid');
   });
-  it('Should process nested form data correctly', async () => {
+
+  it('Should process nested form data correctly', async function () {
     const submission = {
       data: {
         submit: true,
@@ -1051,33 +1055,6 @@ describe('Process Tests', () => {
           },
         },
       },
-      owner: '65df88d8a98df60a25008300',
-      access: [],
-      metadata: {
-        headers: {
-          'accept-language': 'en-US,en',
-          'cache-control': 'no-cache',
-          connection: 'keep-alive',
-          origin: 'http://localhost:3000',
-          pragma: 'no-cache',
-          referer: 'http://localhost:3000/',
-          'sec-fetch-dest': 'empty',
-          'sec-fetch-mode': 'cors',
-          'sec-fetch-site': 'same-origin',
-          'sec-gpc': '1',
-          'user-agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-          accept: 'application/json',
-          'content-type': 'application/json',
-          'sec-ch-ua':
-            '"Chromium";v="122", "Not(A:Brand";v="24", "Brave";v="122"',
-          'sec-ch-ua-mobile': '?0',
-          'sec-ch-ua-platform': '"macOS"',
-          host: 'localhost:3000',
-          'accept-encoding': 'gzip, deflate, br',
-          'content-length': '172',
-        },
-      },
       form: '65e74c65ef4451c9ede341e3',
     };
     const form = {
@@ -1086,101 +1063,6 @@ describe('Process Tests', () => {
       path: 'parentform',
       type: 'form',
       display: 'form',
-      tags: [],
-      deleted: null,
-      access: [
-        {
-          type: 'create_own',
-          roles: [],
-        },
-        {
-          type: 'create_all',
-          roles: [],
-        },
-        {
-          type: 'read_own',
-          roles: [],
-        },
-        {
-          type: 'read_all',
-          roles: [{}, {}, {}],
-        },
-        {
-          type: 'update_own',
-          roles: [],
-        },
-        {
-          type: 'update_all',
-          roles: [],
-        },
-        {
-          type: 'delete_own',
-          roles: [],
-        },
-        {
-          type: 'delete_all',
-          roles: [],
-        },
-        {
-          type: 'team_read',
-          roles: [],
-        },
-        {
-          type: 'team_write',
-          roles: [],
-        },
-        {
-          type: 'team_admin',
-          roles: [],
-        },
-      ],
-      submissionAccess: [
-        {
-          type: 'create_own',
-          roles: [],
-        },
-        {
-          type: 'create_all',
-          roles: [],
-        },
-        {
-          type: 'read_own',
-          roles: [],
-        },
-        {
-          type: 'read_all',
-          roles: [],
-        },
-        {
-          type: 'update_own',
-          roles: [],
-        },
-        {
-          type: 'update_all',
-          roles: [],
-        },
-        {
-          type: 'delete_own',
-          roles: [],
-        },
-        {
-          type: 'delete_all',
-          roles: [],
-        },
-        {
-          type: 'team_read',
-          roles: [],
-        },
-        {
-          type: 'team_write',
-          roles: [],
-        },
-        {
-          type: 'team_admin',
-          roles: [],
-        },
-      ],
-      owner: {},
       components: [
         {
           label: 'Child',
@@ -1230,20 +1112,6 @@ describe('Process Tests', () => {
           tableView: false,
         },
       ],
-      settings: {},
-      properties: {},
-      project: {},
-      controller: '',
-      revisions: '',
-      submissionRevisions: '',
-      _vid: 0,
-      created: '2024-03-05T16:46:29.859Z',
-      modified: '2024-03-05T18:50:08.638Z',
-      machineName: 'tzcuqutdtlpgicr:parentForm',
-      __v: 1,
-      config: {
-        appUrl: 'http://localhost:3000/tzcuqutdtlpgicr',
-      },
     };
     const context = {
       form,
@@ -1260,7 +1128,7 @@ describe('Process Tests', () => {
     expect(context.data.child.data.output).to.equal(20);
   });
 
-  it('Should process nested data correctly.', async () => {
+  it('Should process nested data correctly.', async function () {
     const form = {
       _id: {},
       title: 'parent',
@@ -1462,7 +1330,7 @@ describe('Process Tests', () => {
     });
   });
 
-  it('Should allow the submission to go through if the subform is conditionally hidden', async () => {
+  it('Should allow the submission to go through if the subform is conditionally hidden', async function () {
     const form = {
       _id: {},
       title: 'parent',
@@ -1644,10 +1512,7 @@ describe('Process Tests', () => {
     assert.equal(context.data.showA, false);
     assert.equal(context.data.showB, true);
     assert.equal(context.data.showC, true);
-    assert(
-      !context.data.hasOwnProperty('childA'),
-      'The childA form should not be present.'
-    );
+    assert(!context.data.hasOwnProperty('childA'), 'The childA form should not be present.');
     assert.deepEqual(context.data.childB.data, {
       c: 'Three',
       d: 'Four',
@@ -1658,7 +1523,145 @@ describe('Process Tests', () => {
     });
   });
 
-  it('Should process data within a fieldset properly.', async () => {
+  // TODO: test case naming
+  it('Should not unset submission data of nested forms with identical keys', function () {
+    const parentForm = {
+      display: 'form',
+      tags: [],
+      deleted: null,
+      components: [
+        {
+          type: 'checkbox',
+          label: 'Show A',
+          key: 'showA',
+          input: true,
+        },
+        {
+          type: 'form',
+          form: '65e8786fc5dacf667eef12d2',
+          label: 'Child A',
+          key: 'childA',
+          input: true,
+          conditional: {
+            show: true,
+            when: 'showA',
+            eq: true,
+          },
+          components: [
+            {
+              type: 'form',
+              form: 'sharedChildFormId',
+              label: 'Grandchild',
+              key: 'grandchild',
+              input: true,
+              components: [
+                {
+                  type: 'textfield',
+                  label: 'A',
+                  key: 'a',
+                  input: true,
+                },
+                {
+                  type: 'textfield',
+                  label: 'B',
+                  key: 'b',
+                  input: true,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'form',
+          form: '65e8786fc5dacf667eef12e0',
+          label: 'Child B',
+          key: 'childB',
+          input: true,
+          conditional: {
+            show: true,
+            when: 'showA',
+            eq: false,
+          },
+          components: [
+            {
+              type: 'form',
+              form: 'sharedChildFormId',
+              label: 'Grandchild',
+              key: 'grandchild',
+              input: true,
+              components: [
+                {
+                  type: 'textfield',
+                  label: 'A',
+                  key: 'a',
+                  input: true,
+                },
+                {
+                  type: 'textfield',
+                  label: 'B',
+                  key: 'b',
+                  input: true,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const submission = {
+      data: {
+        showA: false,
+        childA: {
+          data: {
+            grandchild: {
+              data: {
+                a: 'foo',
+                b: 'bar',
+              },
+            },
+          },
+        },
+        childB: {
+          data: {
+            grandchild: {
+              data: {
+                a: 'baz',
+                b: 'biz',
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const context = {
+      form: parentForm,
+      submission,
+      data: submission.data,
+      components: parentForm.components,
+      processors: ProcessTargets.submission,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.equal(context.data.showA, false);
+    assert(!context.data.hasOwnProperty('childA'), 'The childA form should not be present.');
+    assert.deepEqual(context.data.childB.data, {
+      grandchild: {
+        data: {
+          a: 'baz',
+          b: 'biz',
+        },
+      },
+    });
+  });
+
+  it('Should process data within a fieldset properly.', async function () {
     const submission = {
       data: {
         firstName: 'Joe',
@@ -1702,7 +1705,7 @@ describe('Process Tests', () => {
     expect(context.data.lastName).to.equal('Smith');
   });
 
-  it('Requires a conditionally visible field', async () => {
+  it('Requires a conditionally visible field', async function () {
     const form = {
       components: [
         {
@@ -1788,7 +1791,7 @@ describe('Process Tests', () => {
     assert.equal(context.scope.errors[0].context.path, 'requiredField');
   });
 
-  it("Doesn't require a conditionally hidden field", async () => {
+  it("Doesn't require a conditionally hidden field", async function () {
     const form = {
       components: [
         {
@@ -1877,7 +1880,7 @@ describe('Process Tests', () => {
     assert.equal(context.scope.errors.length, 0);
   });
 
-  it('Allows a conditionally required field', async () => {
+  it('Allows a conditionally required field', async function () {
     const form = {
       components: [
         {
@@ -1967,7 +1970,7 @@ describe('Process Tests', () => {
     assert.equal(context.scope.errors.length, 0);
   });
 
-  it('Ignores conditionally hidden fields', async () => {
+  it('Ignores conditionally hidden fields', async function () {
     const form = {
       components: [
         {
@@ -2058,7 +2061,7 @@ describe('Process Tests', () => {
     assert.equal(context.scope.errors.length, 0);
   });
 
-  it('Requires a conditionally visible field in a panel', async () => {
+  it('Requires a conditionally visible field in a panel', async function () {
     const form = {
       components: [
         {
@@ -2163,7 +2166,7 @@ describe('Process Tests', () => {
     assert.equal(context.scope.errors[0].context.path, 'requiredField');
   });
 
-  it("Doesn't require a conditionally hidden field in a panel", async () => {
+  it("Doesn't require a conditionally hidden field in a panel", async function () {
     const form = {
       components: [
         {
@@ -2266,7 +2269,7 @@ describe('Process Tests', () => {
     assert.equal(context.scope.errors.length, 0);
   });
 
-  it('Allows a conditionally required field in a panel', async () => {
+  it('Allows a conditionally required field in a panel', async function () {
     const form = {
       components: [
         {
@@ -2370,7 +2373,7 @@ describe('Process Tests', () => {
     assert.equal(context.scope.errors.length, 0);
   });
 
-  it('Ignores conditionally hidden fields in a panel', async () => {
+  it('Should ignore conditionally hidden fields in a panel during validation', async function () {
     const form = {
       components: [
         {
@@ -2475,7 +2478,7 @@ describe('Process Tests', () => {
     assert.equal(context.scope.errors.length, 0);
   });
 
-  it('Should not include submission data for conditionally hidden fields', async () => {
+  it('Should not include submission data for conditionally hidden fields', async function () {
     const form = {
       display: 'form',
       components: [
@@ -2526,7 +2529,7 @@ describe('Process Tests', () => {
     expect(context.data).to.deep.equal({ textField: '' });
   });
 
-  it('Should not include submission data for logically hidden fields', async () => {
+  it('Should not include submission data for logically hidden fields', async function () {
     const form = {
       display: 'form',
       components: [
@@ -2597,7 +2600,7 @@ describe('Process Tests', () => {
     expect(context.data).to.deep.equal({ textField: '' });
   });
 
-  it('Should allow conditionally hidden text fields within DataGrid and EditGrids', async () => {
+  it('Should allow conditionally hidden text fields within DataGrid and EditGrids', async function () {
     const form = {
       display: 'form',
       components: [
@@ -2617,12 +2620,12 @@ describe('Process Tests', () => {
               data: {
                 values: [
                   {
-                    label: 'Action1',
-                    value: 'action1',
+                    label: 'Hide',
+                    value: 'hide',
                   },
                   {
-                    label: 'Custom',
-                    value: 'custom',
+                    label: 'Show',
+                    value: 'show',
                   },
                 ],
               },
@@ -2642,7 +2645,7 @@ describe('Process Tests', () => {
                   {
                     component: 'editGrid.select',
                     operator: 'isEqual',
-                    value: 'custom',
+                    value: 'show',
                   },
                 ],
               },
@@ -2666,10 +2669,10 @@ describe('Process Tests', () => {
       data: {
         editGrid: [
           {
-            select: 'action1',
+            select: 'hide',
           },
           {
-            select: 'custom',
+            select: 'show',
             textField: 'TEST',
           },
         ],
@@ -2691,17 +2694,475 @@ describe('Process Tests', () => {
     expect(context.data).to.deep.equal({
       editGrid: [
         {
-          select: 'action1',
+          select: 'hide',
         },
         {
-          select: 'custom',
+          select: 'show',
           textField: 'TEST',
         },
       ],
     });
   });
 
-  it('Should include submission data for logically visible fields', async () => {
+  it('Should allow conditionally hidden components that depend on state outside of the contextual row data', async function () {
+    const form = {
+      display: 'form',
+      components: [
+        {
+          label: 'Select',
+          widget: 'choicesjs',
+          tableView: true,
+          data: {
+            values: [
+              {
+                label: 'Action1',
+                value: 'action1',
+              },
+              {
+                label: 'Custom',
+                value: 'custom',
+              },
+            ],
+          },
+          key: 'select',
+          type: 'select',
+          input: true,
+        },
+        {
+          label: 'Edit Grid',
+          tableView: false,
+          rowDrafts: false,
+          key: 'editGrid',
+          type: 'editgrid',
+          displayAsTable: false,
+          input: true,
+          components: [
+            {
+              label: 'Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              key: 'textField',
+              conditional: {
+                show: true,
+                conjunction: 'all',
+                conditions: [
+                  {
+                    component: 'select',
+                    operator: 'isEqual',
+                    value: 'custom',
+                  },
+                ],
+              },
+              type: 'textfield',
+              input: true,
+            },
+          ],
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        select: 'custom',
+        editGrid: [
+          {
+            textField: 'TEST',
+          },
+        ],
+      },
+    };
+
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    expect(context.data).to.deep.equal({
+      select: 'custom',
+      editGrid: [
+        {
+          textField: 'TEST',
+        },
+      ],
+    });
+  });
+
+  it('Should allow conditionally hidden components that depend on state outside of the contextual row data with nested structures', async function () {
+    const form = {
+      display: 'form',
+      components: [
+        {
+          key: 'container',
+          type: 'container',
+          components: [
+            {
+              label: 'Select',
+              widget: 'choicesjs',
+              tableView: true,
+              data: {
+                values: [
+                  {
+                    label: 'Action1',
+                    value: 'action1',
+                  },
+                  {
+                    label: 'Custom',
+                    value: 'custom',
+                  },
+                ],
+              },
+              key: 'select',
+              type: 'select',
+              input: true,
+            },
+          ],
+          input: true,
+        },
+        {
+          label: 'Edit Grid',
+          tableView: false,
+          rowDrafts: false,
+          key: 'editGrid',
+          type: 'editgrid',
+          displayAsTable: false,
+          input: true,
+          components: [
+            {
+              label: 'Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              key: 'textField',
+              conditional: {
+                show: true,
+                conjunction: 'all',
+                conditions: [
+                  {
+                    component: 'container.select',
+                    operator: 'isEqual',
+                    value: 'custom',
+                  },
+                ],
+              },
+              type: 'textfield',
+              input: true,
+            },
+          ],
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        container: {
+          select: 'custom',
+        },
+        editGrid: [
+          {
+            textField: 'TEST',
+          },
+        ],
+      },
+    };
+
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    expect(context.data).to.deep.equal({
+      container: {
+        select: 'custom',
+      },
+      editGrid: [
+        {
+          textField: 'TEST',
+        },
+      ],
+    });
+  });
+
+  it('Should allow conditionally hidden components that depend on state outside of the contextual row data, with co-located component keys in the row that are not targets of conditions', async function () {
+    const form = {
+      display: 'form',
+      components: [
+        {
+          label: 'Select',
+          widget: 'choicesjs',
+          tableView: true,
+          data: {
+            values: [
+              {
+                label: 'Action1',
+                value: 'action1',
+              },
+              {
+                label: 'Custom',
+                value: 'custom',
+              },
+            ],
+          },
+          key: 'select',
+          type: 'select',
+          input: true,
+        },
+        {
+          label: 'Edit Grid',
+          tableView: false,
+          rowDrafts: false,
+          key: 'editGrid',
+          type: 'editgrid',
+          displayAsTable: false,
+          input: true,
+          components: [
+            {
+              label: 'Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              key: 'textField',
+              conditional: {
+                show: true,
+                conjunction: 'all',
+                conditions: [
+                  {
+                    component: 'select',
+                    operator: 'isEqual',
+                    value: 'custom',
+                  },
+                ],
+              },
+              type: 'textfield',
+              input: true,
+            },
+            {
+              label: 'Select',
+              widget: 'choicesjs',
+              tableView: true,
+              data: {
+                values: [
+                  {
+                    label: 'Action1',
+                    value: 'action1',
+                  },
+                  {
+                    label: 'Custom',
+                    value: 'custom',
+                  },
+                ],
+              },
+              key: 'select',
+              type: 'select',
+              input: true,
+            },
+          ],
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        select: 'custom',
+        editGrid: [
+          {
+            textField: 'TEST',
+            select: 'action1',
+          },
+        ],
+      },
+    };
+
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    expect(context.data).to.deep.equal({
+      select: 'custom',
+      editGrid: [
+        {
+          textField: 'TEST',
+          select: 'action1',
+        },
+      ],
+    });
+  });
+
+  it('Should allow conditionally hidden components that depend on state outside of the contextual row data, with nested and co-located component keys in the row that are not targets of conditions', async function () {
+    const form = {
+      display: 'form',
+      components: [
+        {
+          type: 'container',
+          key: 'container',
+          input: true,
+          components: [
+            {
+              label: 'Select',
+              widget: 'choicesjs',
+              tableView: true,
+              data: {
+                values: [
+                  {
+                    label: 'Action1',
+                    value: 'action1',
+                  },
+                  {
+                    label: 'Custom',
+                    value: 'custom',
+                  },
+                ],
+              },
+              key: 'select',
+              type: 'select',
+              input: true,
+            },
+            {
+              label: 'Edit Grid',
+              tableView: false,
+              rowDrafts: false,
+              key: 'editGrid',
+              type: 'editgrid',
+              displayAsTable: false,
+              input: true,
+              components: [
+                {
+                  label: 'Text Field',
+                  applyMaskOn: 'change',
+                  tableView: true,
+                  key: 'textField',
+                  conditional: {
+                    show: true,
+                    conjunction: 'all',
+                    conditions: [
+                      {
+                        component: 'container.select',
+                        operator: 'isEqual',
+                        value: 'custom',
+                      },
+                    ],
+                  },
+                  type: 'textfield',
+                  input: true,
+                },
+                {
+                  label: 'Select',
+                  widget: 'choicesjs',
+                  tableView: true,
+                  data: {
+                    values: [
+                      {
+                        label: 'Action1',
+                        value: 'action1',
+                      },
+                      {
+                        label: 'Custom',
+                        value: 'custom',
+                      },
+                    ],
+                  },
+                  key: 'select',
+                  type: 'select',
+                  input: true,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        container: {
+          select: 'custom',
+          editGrid: [
+            {
+              textField: 'TEST',
+              select: 'action1',
+            },
+          ],
+        },
+      },
+    };
+
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    expect(context.data).to.deep.equal({
+      container: {
+        select: 'custom',
+        editGrid: [
+          {
+            textField: 'TEST',
+            select: 'action1',
+          },
+        ],
+      },
+    });
+  });
+
+  it('Should include submission data for logically visible fields', async function () {
     const form = {
       display: 'form',
       components: [
@@ -2770,46 +3231,48 @@ describe('Process Tests', () => {
       },
     };
     processSync(context);
-    expect((context.scope as any).conditionals).to.deep.equal([{
-      path: 'textArea',
-      conditionallyHidden: false,
-    }]);
+    expect((context.scope as any).conditionals).to.deep.equal([
+      {
+        path: 'textArea',
+        conditionallyHidden: false,
+      },
+    ]);
     expect(context.data).to.deep.equal({
       textArea: 'should be conditionally visible',
       textField: 'not empty',
     });
   });
 
-  it('Should not filter a simple datamap compoennt', async () => {
+  it('Should not filter a simple datamap compoennt', async function () {
     const form = {
       display: 'form',
       components: [
         {
-          label: "Data Map",
+          label: 'Data Map',
           tableView: false,
           validateWhenHidden: false,
-          key: "dataMap",
-          type: "datamap",
-          path: "dataMap",
+          key: 'dataMap',
+          type: 'datamap',
+          path: 'dataMap',
           input: true,
           valueComponent: {
-            type: "textfield",
-            key: "value",
-            label: "Value",
+            type: 'textfield',
+            key: 'value',
+            label: 'Value',
             input: true,
             hideLabel: true,
             tableView: true,
           },
-        }
-      ]
+        },
+      ],
     };
     const submission = {
       data: {
         dataMap: {
-          key1: "value1",
-          key2: "value2"
-        }
-      }
+          key1: 'value1',
+          key2: 'value2',
+        },
+      },
     };
     const context = {
       form,
@@ -2825,14 +3288,14 @@ describe('Process Tests', () => {
     processSync(context);
     expect(context.data).to.deep.equal({
       dataMap: {
-        key1: "value1",
-        key2: "value2"
-      }
+        key1: 'value1',
+        key2: 'value2',
+      },
     });
-  })
+  });
 
-  it('Should allow the submission to go through without errors if there is no the subform reference value', async () => {
-    const form =  {
+  it('Should allow the submission to go through without errors if there is no the subform reference value', async function () {
+    const form = {
       _id: '66bc5cff7ca1729623a182db',
       title: 'form2',
       name: 'form2',
@@ -2925,10 +3388,1112 @@ describe('Process Tests', () => {
     context.processors = ProcessTargets.evaluator;
     processSync(context);
     assert.equal(context.scope.errors.length, 0);
-    assert.deepEqual(context.data.form, { _id: '66c455fc0f00757fd4b0e79b', data: {} })
+    assert.deepEqual(context.data.form, { _id: '66c455fc0f00757fd4b0e79b', data: {} });
   });
 
-  describe('Required component validation in nested form in DataGrid/EditGrid', () => {
+  it('Should not hide other components data from submission when address component is filled out', async function () {
+    const { form, submission } = addressComponentWithOtherCondComponents;
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    expect(context.submission.data.number).to.be.equal(1);
+    expect(context.submission.data.textField).to.be.equal('some text');
+  });
+
+  it('Should not hide other components data from submission when address component is not filled out and manual mode enabled', async function () {
+    const { form, submission } = addressComponentWithOtherCondComponents2;
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    expect(context.submission.data.number1).to.be.equal(1);
+    expect(context.submission.data.number2).to.be.equal(2);
+  });
+
+  it('Should not return validation error for multiple textarea with json data type when first value is array', async function () {
+    const form = {
+      _id: '66f676f14b77db82b230a201',
+      title: 'teterter',
+      name: 'teterter',
+      path: 'teterter',
+      type: 'form',
+      display: 'form',
+      owner: '64b642526f32c9c544728ea8',
+      components: [
+        {
+          label: 'Text Area',
+          applyMaskOn: 'change',
+          editor: 'ace',
+          autoExpand: false,
+          tableView: true,
+          multiple: true,
+          validateWhenHidden: false,
+          key: 'textArea',
+          type: 'textarea',
+          as: 'json',
+          input: true,
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+      project: '66f27e5fcb2889b75ac52c6e',
+      created: '2024-09-27T09:12:17.478Z',
+      modified: '2024-09-27T09:15:07.820Z',
+      machineName: 'qcuzcnfwbclumuw:teterter',
+    };
+
+    const submission = {
+      form: '66f678ee5879bf08113d361c',
+      owner: '637b2e6b48c1227e60b1f910',
+      data: {
+        textAreaJson: [
+          [1, 2, 3],
+          [4, 5, 6],
+        ],
+        submit: true,
+      },
+      _id: '66f68c17481ea2ffbf5bb310',
+      project: '66f66c655879bf08113cf4ed',
+      state: 'submitted',
+    };
+
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.equal(context.scope.errors.length, 0);
+  });
+
+  it('Should not unset values for conditionally visible fields with different formats of condtion based on selectboxes value', async function () {
+    const form = {
+      _id: '66ffa92ac25689df8702f283',
+      title: 'cond NEW',
+      name: 'condnew',
+      path: 'condnew',
+      type: 'form',
+      display: 'form',
+      owner: '637b2e6b48c1227e60b1f910',
+      components: [
+        {
+          label: 'Container',
+          tableView: false,
+          validateWhenHidden: false,
+          key: 'container',
+          type: 'container',
+          input: true,
+          components: [
+            {
+              label: 'Select Boxes',
+              optionsLabelPosition: 'right',
+              tableView: false,
+              values: [
+                {
+                  label: 'a',
+                  value: 'a',
+                  shortcut: '',
+                },
+                {
+                  label: 'b',
+                  value: 'b',
+                  shortcut: '',
+                },
+                {
+                  label: 'c',
+                  value: 'c',
+                  shortcut: '',
+                },
+              ],
+              validateWhenHidden: false,
+              key: 'selectBoxes',
+              type: 'selectboxes',
+              input: true,
+              inputType: 'checkbox',
+            },
+          ],
+        },
+        {
+          label: 'Text Field',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textField',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'container.selectBoxes',
+                operator: 'isEqual',
+                value: 'a',
+              },
+            ],
+          },
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Text Field new wrong format',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textFieldNewWrong',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'container.selectBoxes.a',
+                operator: 'isEqual',
+                value: 'true',
+              },
+            ],
+          },
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Text Field Old Format',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textFieldOldFormat',
+          conditional: {
+            show: true,
+            eq: 'true',
+            when: 'container.selectBoxes.a',
+          },
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Submit',
+          showValidations: false,
+          tableView: false,
+          key: 'submit',
+          type: 'button',
+          input: true,
+          saveOnEnter: false,
+        },
+      ],
+    };
+    const data = {
+      textField: 'correct condition',
+      textFieldNewWrong: 'new condition with wrong format',
+      textFieldOldFormat: 'legacy condtion',
+      container: { selectBoxes: { a: true, b: false, c: false } },
+      submit: true,
+    };
+
+    const submission = {
+      data: fastCloneDeep(data),
+      _id: '66f68c17481ea2ffbf5bb310',
+      state: 'submitted',
+    };
+
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    (context.scope as any).conditionals.forEach((v: any) =>
+      assert.equal(v.conditionallyHidden, false),
+    );
+    assert.deepEqual(context.data, data);
+  });
+
+  it('Should not return error for the form with conditionals based on the Day component', function () {
+    const form = {
+      _id: '66ffe59b598a729e707869bf',
+      title: '9143 condition day',
+      name: '9143ConditionDay',
+      path: '9143conditionday',
+      type: 'form',
+      display: 'form',
+      components: [
+        {
+          label: 'Day',
+          hideInputLabels: false,
+          inputsLabelPosition: 'top',
+          useLocaleSettings: false,
+          tableView: false,
+          fields: {
+            day: {
+              hide: false,
+            },
+            month: {
+              hide: false,
+            },
+            year: {
+              hide: false,
+            },
+          },
+          validateWhenHidden: false,
+          key: 'day',
+          type: 'day',
+          input: true,
+        },
+        {
+          label: 'Text Field',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textField',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'day',
+                operator: 'isDateEqual',
+                value: '09/26/2024',
+              },
+            ],
+          },
+          type: 'textfield',
+          input: true,
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+      project: '63cead09be0090345b109e22',
+      created: '2024-10-04T12:54:51.161Z',
+      modified: '2024-10-07T07:47:25.189Z',
+      machineName: 'idwqwhclwioyqbw:9143ConditionDay',
+    };
+
+    const submission = {
+      form: '66ffe59b598a729e707869bf',
+      owner: '63ceaccebe0090345b109da7',
+      data: {
+        day: '09/26/2024',
+        submit: true,
+        textField: 'test',
+      },
+      _id: '6703a011275ca049014f7fab',
+      project: '63cead09be0090345b109e22',
+      state: 'submitted',
+    };
+
+    const errors: any = [];
+    const conditionals: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors, conditionals },
+      config: {
+        server: true,
+      },
+    };
+
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    expect(context.scope.conditionals).to.have.length(1);
+    expect(context.scope.conditionals?.[0].conditionallyHidden).to.equal(false);
+    assert.equal(context.scope.errors.length, 0);
+  });
+
+  it('Should not unset value of the component inside fieldset inside wizard', function () {
+    const form = {
+      _id: '67063bc6094b45c5f33ade96',
+      title: '8802newOne',
+      name: '8802NewOne',
+      path: '8802newone',
+      type: 'form',
+      display: 'wizard',
+      owner: '6707a2f60c037c924c716b54',
+      components: [
+        {
+          title: 'Basic & Advanced',
+          breadcrumbClickable: true,
+          buttonSettings: {
+            previous: true,
+            cancel: true,
+            next: true,
+          },
+          navigateOnEnter: false,
+          saveOnEnter: false,
+          scrollToTop: false,
+          collapsible: false,
+          key: 'page1',
+          type: 'panel',
+          label: 'Page 1',
+          input: false,
+          tableView: false,
+          components: [
+            {
+              label: 'Text Field',
+              description: 'Hide Text Area when Text Field is Empty',
+              applyMaskOn: 'change',
+              tableView: true,
+              validateWhenHidden: false,
+              key: 'textField',
+              type: 'textfield',
+              input: true,
+            },
+            {
+              label: 'Text Area',
+              applyMaskOn: 'change',
+              autoExpand: false,
+              tableView: true,
+              validateWhenHidden: false,
+              key: 'textArea',
+              conditional: {
+                show: false,
+                conjunction: 'all',
+                conditions: [
+                  {
+                    component: 'textField',
+                    operator: 'isEmpty',
+                  },
+                ],
+              },
+              type: 'textarea',
+              input: true,
+            },
+          ],
+        },
+        {
+          title: 'Advanced & Layout',
+          breadcrumbClickable: true,
+          buttonSettings: {
+            previous: true,
+            cancel: true,
+            next: true,
+          },
+          navigateOnEnter: false,
+          saveOnEnter: false,
+          scrollToTop: false,
+          collapsible: false,
+          key: 'page2',
+          type: 'panel',
+          label: 'Page 2',
+          input: false,
+          tableView: false,
+          components: [
+            {
+              key: 'fieldSet',
+              type: 'fieldset',
+              label: 'Field Set',
+              input: false,
+              tableView: false,
+              components: [
+                {
+                  label: 'Url',
+                  applyMaskOn: 'change',
+                  tableView: true,
+                  validateWhenHidden: false,
+                  key: 'url',
+                  conditional: {
+                    show: true,
+                    conjunction: 'all',
+                    conditions: [
+                      {
+                        component: 'textAreaFieldSet',
+                        operator: 'isEmpty',
+                      },
+                    ],
+                  },
+                  type: 'url',
+                  input: true,
+                },
+                {
+                  label: 'Text Area - Field set',
+                  description: 'Show URL when Text Area - Field set is empty',
+                  applyMaskOn: 'change',
+                  autoExpand: false,
+                  tableView: true,
+                  validateWhenHidden: false,
+                  key: 'textAreaFieldSet',
+                  type: 'textarea',
+                  input: true,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    const submission = {
+      data: { textField: '', textAreaFieldSet: 'test' },
+      state: 'submitted',
+    };
+
+    const errors: any = [];
+    const conditionals: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors, conditionals },
+      config: {
+        server: true,
+      },
+    };
+
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.deepEqual(context.data, { textField: '', textAreaFieldSet: 'test' });
+    context.scope.conditionals.forEach((cond: any) => {
+      expect(cond.conditionallyHidden).to.be.equal(true);
+    });
+  });
+
+  it('Should not unset value of the conditionally visible component when condtiion is based on select resource with save as ref', function () {
+    const form = {
+      _id: '670f638c362eca5264b5dc94',
+      title: 'test fire',
+      name: 'testFire',
+      path: 'testfire',
+      type: 'form',
+      display: 'form',
+      owner: '637b2e6b48c1227e60b1f910',
+      components: [
+        {
+          label: 'Select',
+          widget: 'choicesjs',
+          tableView: true,
+          dataSrc: 'resource',
+          data: {
+            resource: '670f62df362eca5264b5d812',
+          },
+          template: '<span>{{ item.data.textField }}</span>',
+          validateWhenHidden: false,
+          key: 'select',
+          type: 'select',
+          input: true,
+          noRefreshOnScroll: false,
+          addResource: false,
+          reference: true,
+        },
+        {
+          label: 'Text Field Show on test1',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textFieldShowOnTest1',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'select',
+                operator: 'isEqual',
+                value: {
+                  data: {
+                    textField: 'test1',
+                  },
+                },
+              },
+            ],
+          },
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Text Area Not Show on test1',
+          applyMaskOn: 'change',
+          autoExpand: false,
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textAreaNotShowOnTest1',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'select',
+                operator: 'isNotEqual',
+                value: {
+                  data: {
+                    textField: 'test1',
+                  },
+                },
+              },
+            ],
+          },
+          type: 'textarea',
+          input: true,
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+      project: '66f66c655879bf08113cf465',
+    };
+
+    const submission = {
+      data: {
+        select: {
+          _id: '670f62e5362eca5264b5daf9',
+          form: '670f62df362eca5264b5d812',
+          owner: '637b2e6b48c1227e60b1f910',
+          data: { textField: 'test1', submit: true },
+          project: '66f66c655879bf08113cf465',
+          state: 'submitted',
+          created: '2024-10-16T06:53:25.603Z',
+          modified: '2024-10-16T06:53:25.604Z',
+        },
+        submit: true,
+        textFieldShowOnTest1: 'test',
+      },
+    };
+
+    const errors: any = [];
+    const conditionals: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors, conditionals },
+      config: {
+        server: true,
+      },
+    };
+
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.deepEqual(context.data.textFieldShowOnTest1, 'test');
+    context.scope.conditionals.forEach((cond: any) => {
+      assert.equal(cond.conditionallyHidden, cond.path !== 'textFieldShowOnTest1');
+    });
+  });
+
+  it('Should not unset values of deeply nested form when some components in other forms have conditional components', function () {
+    const form = {
+      _id: '6718a657d064efa63512550e',
+      title: 'eSubmissionsExt',
+      name: 'eSubmissionsExt',
+      path: 'esubmissionsext',
+      type: 'form',
+      display: 'wizard',
+      tags: [],
+      deleted: null,
+      owner: '6718e9edf62d8a6fd8104211',
+      components: [
+        {
+          title: 'eSubmissions',
+          breadcrumbClickable: true,
+          buttonSettings: {
+            previous: true,
+            cancel: true,
+            next: true,
+          },
+          navigateOnEnter: false,
+          saveOnEnter: false,
+          scrollToTop: false,
+          collapsible: false,
+          key: 'eSubmissions',
+          type: 'panel',
+          label: 'Page 1',
+          components: [
+            {
+              label: 'Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              validateWhenHidden: false,
+              key: 'textField',
+              type: 'textfield',
+              input: true,
+            },
+            {
+              label: 'PMTA',
+              tableView: true,
+              form: '6718a657d064efa6351254eb',
+              useOriginalRevision: false,
+              reference: false,
+              key: 'pmta',
+              conditional: {
+                show: true,
+                conjunction: 'all',
+                conditions: [
+                  {
+                    component: 'textField',
+                    operator: 'isEqual',
+                    value: '5',
+                  },
+                ],
+              },
+              type: 'form',
+              input: true,
+              components: [
+                {
+                  type: 'button',
+                  label: 'Submit',
+                  key: 'submit',
+                  disableOnInvalid: true,
+                  input: true,
+                  tableView: false,
+                },
+                {
+                  title: 'Section I - Applicant Identification',
+                  breadcrumbClickable: true,
+                  buttonSettings: {
+                    previous: true,
+                    cancel: true,
+                    next: true,
+                  },
+                  navigateOnEnter: false,
+                  saveOnEnter: false,
+                  scrollToTop: false,
+                  collapsible: false,
+                  key: 'section1',
+                  type: 'panel',
+                  label: 'Page 6',
+                  input: false,
+                  tableView: false,
+                  components: [
+                    {
+                      label: 'Identification Information',
+                      tableView: true,
+                      form: '6718a657d064efa6351254e4',
+                      useOriginalRevision: false,
+                      reference: false,
+                      clearOnHide: false,
+                      key: 'contacts',
+                      type: 'form',
+                      input: true,
+                      components: [
+                        {
+                          title: 'Part A: Applicant Identification',
+                          breadcrumbClickable: true,
+                          buttonSettings: {
+                            previous: true,
+                            cancel: true,
+                            next: true,
+                          },
+                          navigateOnEnter: false,
+                          saveOnEnter: false,
+                          scrollToTop: false,
+                          collapsible: false,
+                          key: 'section1A',
+                          type: 'panel',
+                          label: 'Page 1',
+                          components: [
+                            {
+                              label: 'Applicant Organization',
+                              tableView: true,
+                              form: '6718a657d064efa6351254c8',
+                              useOriginalRevision: false,
+                              reference: false,
+                              clearOnHide: false,
+                              key: 'applicantOrganization',
+                              type: 'form',
+                              lazyLoad: true,
+                              input: true,
+                              components: [
+                                {
+                                  label: 'Address',
+                                  tableView: true,
+                                  form: '6718f5a4f62d8a6fd8110a41',
+                                  useOriginalRevision: false,
+                                  reference: false,
+                                  clearOnHide: false,
+                                  key: 'address',
+                                  type: 'form',
+                                  input: true,
+                                  components: [
+                                    {
+                                      label: 'Country',
+                                      widget: 'choicesjs',
+                                      tableView: true,
+                                      data: {
+                                        values: [
+                                          { label: 'a', value: 'a' },
+                                          { label: 'b', value: 'b' },
+                                        ],
+                                        resource: '6718a657d064efa635125495',
+                                      },
+                                      clearOnHide: false,
+                                      validateWhenHidden: false,
+                                      key: 'country',
+                                      type: 'select',
+                                      input: true,
+                                    },
+                                    {
+                                      label: 'Zip Code',
+                                      displayMask: '99999-9999',
+                                      applyMaskOn: 'change',
+                                      tableView: true,
+                                      clearOnHide: false,
+                                      validateOn: 'blur',
+                                      validateWhenHidden: false,
+                                      key: 'zipCode',
+                                      conditional: {
+                                        show: true,
+                                        conjunction: 'all',
+                                        conditions: [
+                                          {
+                                            component: 'country',
+                                            operator: 'isEqual',
+                                            value: 'a',
+                                          },
+                                        ],
+                                      },
+                                      type: 'textfield',
+                                      input: true,
+                                    },
+                                    {
+                                      label: 'Postal Code',
+                                      applyMaskOn: 'change',
+                                      tableView: true,
+                                      clearOnHide: false,
+                                      validateWhenHidden: false,
+                                      key: 'postalCode',
+                                      conditional: {
+                                        show: true,
+                                        conjunction: 'all',
+                                        conditions: [
+                                          {
+                                            component: 'country',
+                                            operator: 'isNotEqual',
+                                            value: 'a',
+                                          },
+                                        ],
+                                      },
+                                      type: 'textfield',
+                                      input: true,
+                                    },
+                                    {
+                                      type: 'button',
+                                      label: 'Submit',
+                                      key: 'submit',
+                                      disableOnInvalid: true,
+                                      input: true,
+                                      tableView: false,
+                                    },
+                                  ],
+                                },
+                                {
+                                  type: 'button',
+                                  label: 'Submit',
+                                  key: 'submit',
+                                  disableOnInvalid: true,
+                                  input: true,
+                                  tableView: false,
+                                },
+                              ],
+                            },
+                          ],
+                          input: false,
+                          tableView: false,
+                        },
+                        {
+                          title: 'Part B: Authorized Representative or U.S. Agent Information',
+                          breadcrumbClickable: true,
+                          buttonSettings: {
+                            previous: true,
+                            cancel: true,
+                            next: true,
+                          },
+                          navigateOnEnter: false,
+                          saveOnEnter: false,
+                          scrollToTop: false,
+                          collapsible: false,
+                          key: 'section1B',
+                          properties: { subsection: '1' },
+                          type: 'panel',
+                          label: 'Page 1',
+                          components: [
+                            {
+                              label: 'Authorized Representative',
+                              tableView: true,
+                              form: '6718a657d064efa6351254d6',
+                              useOriginalRevision: false,
+                              reference: false,
+                              clearOnHide: false,
+                              key: 'authorizedRepresentative',
+                              type: 'form',
+                              lazyLoad: true,
+                              input: true,
+                              components: [
+                                {
+                                  label: 'Organization',
+                                  tableView: true,
+                                  form: '6718a657d064efa6351254b0',
+                                  useOriginalRevision: false,
+                                  reference: false,
+                                  key: 'organization',
+                                  type: 'form',
+                                  input: true,
+                                  clearOnHide: false,
+                                  components: [
+                                    {
+                                      label: 'Organization Name',
+                                      applyMaskOn: 'change',
+                                      tableView: true,
+                                      clearOnHide: false,
+                                      validateWhenHidden: false,
+                                      key: 'organizationName',
+                                      type: 'textfield',
+                                      input: true,
+                                    },
+                                    {
+                                      type: 'button',
+                                      label: 'Submit',
+                                      key: 'submit',
+                                      disableOnInvalid: true,
+                                      input: true,
+                                      tableView: false,
+                                    },
+                                  ],
+                                },
+                                {
+                                  type: 'button',
+                                  label: 'Submit',
+                                  key: 'submit',
+                                  disableOnInvalid: true,
+                                  input: true,
+                                  tableView: false,
+                                },
+                              ],
+                            },
+                          ],
+                          input: false,
+                          tableView: false,
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          input: false,
+          tableView: false,
+        },
+      ],
+      created: '2024-10-23T07:31:35.235Z',
+      modified: '2024-10-23T13:14:44.389Z',
+    };
+
+    const data = {
+      textField: '5',
+      pmta: {
+        data: {
+          contacts: {
+            data: {
+              applicantOrganization: {
+                data: {
+                  address: {
+                    data: { country: 'a', zipCode: '555555555', postalCode: '' },
+                    metadata: { selectData: { country: { label: 'a' } } },
+                  },
+                },
+                metadata: {},
+              },
+              authorizedRepresentative: {
+                data: {
+                  organization: {
+                    data: { organizationName: '66666' },
+                    metadata: {},
+                  },
+                },
+                metadata: {},
+              },
+            },
+          },
+        },
+      },
+    };
+    const submission = {
+      data: fastCloneDeep(data),
+    };
+
+    const errors: any = [];
+    const conditionals: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors, conditionals },
+      config: {
+        server: true,
+      },
+    };
+
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.deepEqual(context.data, data);
+    context.scope.conditionals.forEach((cond: any) => {
+      assert.equal(cond.conditionallyHidden, cond.path === 'postalCode');
+    });
+  });
+
+  it('Should not return errors for empty multiple values for url and dateTime', function () {
+    const form = {
+      _id: '671f7fbeaf87b0e2a26e4212',
+      title: 'form2',
+      name: 'form2',
+      path: 'form2',
+      type: 'form',
+      display: 'form',
+      components: [
+        {
+          label: 'Url',
+          applyMaskOn: 'change',
+          tableView: true,
+          multiple: true,
+          validateWhenHidden: false,
+          key: 'url',
+          type: 'url',
+          input: true,
+        },
+        {
+          label: 'Date / Time',
+          tableView: false,
+          datePicker: {
+            disableWeekends: false,
+            disableWeekdays: false,
+          },
+          multiple: true,
+          enableMinDateInput: false,
+          enableMaxDateInput: false,
+          validateWhenHidden: false,
+          key: 'dateTime',
+          type: 'datetime',
+          input: true,
+          widget: {
+            type: 'calendar',
+            displayInTimezone: 'viewer',
+            locale: 'en',
+            useLocaleSettings: false,
+            allowInput: true,
+            mode: 'single',
+            enableTime: true,
+            noCalendar: false,
+            format: 'yyyy-MM-dd hh:mm a',
+            hourIncrement: 1,
+            minuteIncrement: 1,
+            time_24hr: false,
+            minDate: null,
+            disableWeekends: false,
+            disableWeekdays: false,
+            maxDate: null,
+          },
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+      created: '2024-10-28T12:12:46.715Z',
+      modified: '2024-10-29T10:18:00.534Z',
+    };
+
+    const submission = {
+      data: { url: [], dateTime: [], submit: true },
+      state: 'submitted',
+    };
+
+    const errors: any = [];
+    const conditionals: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors, conditionals },
+      config: {
+        server: true,
+      },
+    };
+
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    assert.deepEqual(context.scope.errors.length, 0);
+  });
+
+  describe('Required component validation in nested form in DataGrid/EditGrid', function () {
     const nestedForm = {
       key: 'form',
       type: 'form',
@@ -2945,7 +4510,7 @@ describe('Process Tests', () => {
       ],
     };
 
-    describe('For DataGrid:', () => {
+    describe('For DataGrid:', function () {
       const components = [
         {
           key: 'dataGrid',
@@ -2954,7 +4519,8 @@ describe('Process Tests', () => {
           components: [nestedForm],
         },
       ];
-      it('Should validate required component when it is filled out', async () => {
+
+      it('Should validate required component when it is filled out', async function () {
         const submission = {
           data: {
             dataGrid: [
@@ -2987,14 +4553,13 @@ describe('Process Tests', () => {
         processSync(context);
         context.processors = ProcessTargets.evaluator;
         processSync(context);
-        const errors = (context.scope as ValidationScope).errors;
         expect(context.data).to.deep.equal({
           dataGrid: [{ form: { data: { textField: 'test' } } }],
         });
         expect((context.scope as ValidationScope).errors).to.have.length(0);
-        expect;
       });
-      it('Should not validate required component when it is not filled out', async () => {
+
+      it('Should not validate required component when it is not filled out', async function () {
         const submission = {
           data: {
             dataGrid: [
@@ -3027,7 +4592,7 @@ describe('Process Tests', () => {
       });
     });
 
-    it('Should not return fields from conditionally hidden containers, clearOnHide = true', async () => {
+    it('Should not return fields from conditionally hidden containers, clearOnHide = true', async function () {
       const { form, submission } = clearOnHideWithCustomCondition;
       const context = {
         form,
@@ -3045,14 +4610,13 @@ describe('Process Tests', () => {
       context.processors = ProcessTargets.evaluator;
       processSync(context);
 
-
       expect(context.data).to.deep.equal({
-        candidates:[{candidate:{data:{}}}],
-        submit: true
+        candidates: [{ candidate: { data: {} } }],
+        submit: true,
       });
     });
 
-    it('Should skip child validation with conditional', async () => {
+    it('Should skip child validation with conditional', async function () {
       const { form, submission } = skipValidForConditionallyHiddenComp;
       const context = {
         form,
@@ -3072,7 +4636,7 @@ describe('Process Tests', () => {
       expect((context.scope as ValidationScope).errors).to.have.length(0);
     });
 
-    it('Should skip child validation with hidden parent component', async () => {
+    it('Should skip child validation with hidden parent component', async function () {
       const { form, submission } = skipValidWithHiddenParentComp;
       const context = {
         form,
@@ -3092,7 +4656,7 @@ describe('Process Tests', () => {
       expect((context.scope as ValidationScope).errors).to.have.length(0);
     });
 
-    it('Should skip child validation with logic', async () => {
+    it('Should skip child validation with logic', async function () {
       const { form, submission } = skipValidForLogicallyHiddenComp;
       const context = {
         form,
@@ -3112,7 +4676,7 @@ describe('Process Tests', () => {
       expect((context.scope as ValidationScope).errors).to.have.length(0);
     });
 
-    it('Should not return fields from conditionally hidden containers, clearOnHide = false', async () => {
+    it('Should not return fields from conditionally hidden containers, clearOnHide = false', async function () {
       const { form, submission } = clearOnHideWithCustomCondition;
       const containerComponent = getComponent(form.components, 'section6') as ContainerComponent;
       containerComponent.clearOnHide = false;
@@ -3133,12 +4697,12 @@ describe('Process Tests', () => {
       processSync(context);
 
       expect(context.data).to.deep.equal({
-        candidates:[{candidate:{data:{section6:{}}}}],
-        submit: true
+        candidates: [{ candidate: { data: { section6: {} } } }],
+        submit: true,
       });
     });
 
-    it('Should not return fields from hidden containers, clearOnHide = false', async () => {
+    it('Should not validate fields from hidden containers, clearOnHide = false', async function () {
       const { form, submission } = clearOnHideWithHiddenParent;
       const context = {
         form,
@@ -3146,7 +4710,7 @@ describe('Process Tests', () => {
         data: submission.data,
         components: form.components,
         processors: ProcessTargets.submission,
-        scope: {},
+        scope: { errors: [] },
         config: {
           server: true,
         },
@@ -3157,12 +4721,13 @@ describe('Process Tests', () => {
       processSync(context);
 
       expect(context.data).to.deep.equal({
-        candidates:[{candidate:{data:{section6:{}}}}],
-        submit: true
+        candidates: [{ candidate: { data: { section6: {} } } }],
+        submit: true,
       });
+      expect(context.scope.errors.length).to.equal(0);
     });
 
-    it('Should not return fields from hidden containers, clearOnHide = true', async () => {
+    it('Should not return fields from hidden containers, clearOnHide = true', async function () {
       const { form, submission } = clearOnHideWithHiddenParent;
       const containerComponent = getComponent(form.components, 'section6') as ContainerComponent;
       containerComponent.clearOnHide = true;
@@ -3183,12 +4748,114 @@ describe('Process Tests', () => {
       processSync(context);
 
       expect(context.data).to.deep.equal({
-        candidates:[{candidate:{data:{section6:{}}}}],
-        submit: true
+        candidates: [{ candidate: { data: {} } }],
+        submit: true,
       });
     });
 
-    describe('For EditGrid:', () => {
+    it('Should validate when all child components are empty in required Data Grid', async function () {
+      const { form, submission } = forDataGridRequired;
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: ProcessTargets.submission,
+        scope: {},
+        config: {
+          server: true,
+        },
+      };
+
+      processSync(context);
+      context.processors = ProcessTargets.evaluator;
+      processSync(context);
+
+      expect((context.scope as ValidationScope).errors).to.have.length(1);
+    });
+
+    it('Should validate required an empty array for multiple select', async function () {
+      const form = {
+        _id: '66f4141e34ac6c4049cc5144',
+        title: 'required multiple',
+        name: 'requiredMultiple',
+        path: 'requiredmultiple',
+        type: 'form',
+        display: 'form',
+        owner: '637b2e6b48c1227e60b1f910',
+        components: [
+          {
+            label: 'Select',
+            widget: 'choicesjs',
+            tableView: true,
+            multiple: true,
+            data: {
+              values: [
+                {
+                  label: 'a',
+                  value: 'a',
+                },
+                {
+                  label: 'b',
+                  value: 'b',
+                },
+                {
+                  label: 'c',
+                  value: 'c',
+                },
+              ],
+            },
+            validate: {
+              required: true,
+            },
+            validateWhenHidden: false,
+            key: 'select',
+            type: 'select',
+            input: true,
+          },
+          {
+            type: 'button',
+            label: 'Submit',
+            key: 'submit',
+            disableOnInvalid: true,
+            input: true,
+            tableView: false,
+          },
+        ],
+        project: '66f26afae0c7ef9920ae59f6',
+      };
+
+      const submission = {
+        data: { select: [] },
+        owner: '637b2e6b48c1227e60b1f910',
+        access: [],
+        _fvid: 0,
+        state: 'submitted',
+        _id: '66c455fc0f00757fd4b0e79d',
+        form: '66bc5cff7ca1729623a182db',
+      };
+
+      const errors: any = [];
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: ProcessTargets.submission,
+        scope: { errors },
+        config: {
+          server: true,
+        },
+      };
+      processSync(context);
+      submission.data = context.data;
+      context.processors = ProcessTargets.evaluator;
+      processSync(context);
+      assert.equal(context.scope.errors.length, 1);
+      assert.equal(context.scope.errors[0].ruleName, 'required');
+    });
+
+    describe('For EditGrid:', function () {
       const components = [
         {
           key: 'editGrid',
@@ -3197,7 +4864,8 @@ describe('Process Tests', () => {
           components: [nestedForm],
         },
       ];
-      it('should return empty array when no data is provided', async () => {
+
+      it('should return empty array when no data is provided', async function () {
         const submission = {
           data: {
             editGrid: [],
@@ -3218,9 +4886,9 @@ describe('Process Tests', () => {
         context.processors = ProcessTargets.evaluator;
         processSync(context);
         expect(context.data).to.deep.equal({ editGrid: [] });
+      });
 
-      })
-      it('Should validate required component when it is filled out', async () => {
+      it('Should validate required component when it is filled out', async function () {
         const submission = {
           data: {
             editGrid: [
@@ -3230,7 +4898,6 @@ describe('Process Tests', () => {
                     textField: 'test',
                     invalidField: 'bad',
                   },
-
                 },
               },
               {
@@ -3257,11 +4924,12 @@ describe('Process Tests', () => {
         console.log(JSON.stringify(context.data, null, 2));
 
         expect((context.scope as ValidationScope).errors).to.have.length(0);
-         expect(context.data).to.deep.equal({
+        expect(context.data).to.deep.equal({
           editGrid: [{ form: { data: { textField: 'test' } } }],
         });
       });
-      it('Should not validate required component when it is not filled out', async () => {
+
+      it('Should not validate required component when it is not filled out', async function () {
         const submission = {
           data: {
             editGrid: [
@@ -3292,7 +4960,6 @@ describe('Process Tests', () => {
         processSync(context);
         expect((context.scope as ValidationScope).errors).to.have.length(1);
       });
-
     });
   });
 

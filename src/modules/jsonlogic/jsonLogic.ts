@@ -3,7 +3,7 @@ import { dayjs } from 'utils/date';
 import { _ } from './operators';
 
 // Configure JsonLogic
-for (let operator in _) {
+for (const operator in _) {
   jsonLogic.add_operation(`_${operator}`, _[operator]);
 }
 

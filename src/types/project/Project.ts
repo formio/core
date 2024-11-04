@@ -53,12 +53,7 @@ export type ProjectRef = {
 
 export type ProjectType = 'project' | 'stage' | 'tenant';
 
-export type ProjectPlan =
-    | 'basic'
-    | 'independent'
-    | 'team'
-    | 'trial'
-    | 'commercial';
+export type ProjectPlan = 'basic' | 'independent' | 'team' | 'trial' | 'commercial';
 
 export type ProjectFramework =
     | 'angular'
