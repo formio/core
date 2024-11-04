@@ -15,68 +15,6 @@ import {
   skipValidWithHiddenParentComp,
 } from './fixtures';
 
-/*
-describe('Process Tests', () => {
-    it('Should perform the processes using the processReduced method.', async () => {
-        const reduced: ReducerScope = process({
-            components: form1.components,
-            data: data1a.data,
-            scope: {
-                processes: {}
-            }
-        });
-        const targets = processReduceTargets(reduced.processes);
-        expect(targets.length).to.equal(5);
-        expect(targets[0].target).to.equal('server');
-        expect(Object.keys(targets[0].processes).length).to.equal(1);
-        expect(targets[0].processes.defaultValue.length).to.equal(6);
-        expect(targets[1].target).to.equal('custom');
-        expect(Object.keys(targets[1].processes).length).to.equal(1);
-        expect(targets[1].processes.customDefaultValue.length).to.equal(1);
-        expect(targets[2].target).to.equal('server');
-        expect(Object.keys(targets[2].processes).length).to.equal(1);
-        expect(targets[2].processes.fetch.length).to.equal(1);
-        expect(targets[3].target).to.equal('custom');
-        expect(Object.keys(targets[3].processes).length).to.equal(1);
-        expect(targets[3].processes.calculate.length).to.equal(6);
-        expect(targets[4].target).to.equal('server');
-        expect(Object.keys(targets[4].processes).length).to.equal(2);
-        expect(targets[4].processes.conditions.length).to.equal(1);
-        expect(targets[4].processes.validate.length).to.equal(28);
-        const scope = {errors: []};
-
-        // Reset all values that will be calculated.
-        reduced.data.subtotal = 0;
-        reduced.data.taxes = 0;
-        reduced.data.total = 0;
-        reduced.data.cart.forEach((item: any) => {
-            item.price = 0;
-        });
-        for (let i = 0; i < targets.length; i++) {
-            await processReduced({
-                components: form1.components,
-                data: reduced.data,
-                processes: targets[i].processes,
-                fetch: (url: string, options?: RequestInit | undefined): Promise<Response> => {
-                    return Promise.resolve({
-                        json: () => {
-                            return Promise.resolve(subs);
-                        }
-                    } as Response);
-                },
-                scope
-            });
-        }
-        expect(reduced.data.subtotal).to.equal(100);
-        expect(reduced.data.taxes).to.equal(8);
-        expect(reduced.data.total).to.equal(108);
-        expect(reduced.data.cart[0].price).to.equal(30);
-        expect(reduced.data.cart[1].price).to.equal(20);
-        expect(reduced.data.cart[2].price).to.equal(10);
-    });
-});
-*/
-
 describe('Process Tests', function () {
   it('Should submit data within a nested form.', async function () {
     const form = {
@@ -950,7 +888,6 @@ describe('Process Tests', function () {
       },
       owner: '65ea3601c3792e416cabcb2a',
       access: [],
-
       _vnote: '',
       state: 'submitted',
       form: '65ea368b705068f84a93c87a',
@@ -4592,30 +4529,6 @@ describe('Process Tests', function () {
       });
     });
 
-    it('Should not return fields from conditionally hidden containers, clearOnHide = true', async function () {
-      const { form, submission } = clearOnHideWithCustomCondition;
-      const context = {
-        form,
-        submission,
-        data: submission.data,
-        components: form.components,
-        processors: ProcessTargets.submission,
-        scope: {},
-        config: {
-          server: true,
-        },
-      };
-
-      processSync(context);
-      context.processors = ProcessTargets.evaluator;
-      processSync(context);
-
-      expect(context.data).to.deep.equal({
-        candidates: [{ candidate: { data: {} } }],
-        submit: true,
-      });
-    });
-
     it('Should skip child validation with conditional', async function () {
       const { form, submission } = skipValidForConditionallyHiddenComp;
       const context = {
@@ -4674,83 +4587,6 @@ describe('Process Tests', function () {
       context.processors = ProcessTargets.evaluator;
       processSync(context as any);
       expect((context.scope as ValidationScope).errors).to.have.length(0);
-    });
-
-    it('Should not return fields from conditionally hidden containers, clearOnHide = false', async function () {
-      const { form, submission } = clearOnHideWithCustomCondition;
-      const containerComponent = getComponent(form.components, 'section6') as ContainerComponent;
-      containerComponent.clearOnHide = false;
-      const context = {
-        form,
-        submission,
-        data: submission.data,
-        components: form.components,
-        processors: ProcessTargets.submission,
-        scope: {},
-        config: {
-          server: true,
-        },
-      };
-
-      processSync(context);
-      context.processors = ProcessTargets.evaluator;
-      processSync(context);
-
-      expect(context.data).to.deep.equal({
-        candidates: [{ candidate: { data: { section6: {} } } }],
-        submit: true,
-      });
-    });
-
-    it('Should not validate fields from hidden containers, clearOnHide = false', async function () {
-      const { form, submission } = clearOnHideWithHiddenParent;
-      const context = {
-        form,
-        submission,
-        data: submission.data,
-        components: form.components,
-        processors: ProcessTargets.submission,
-        scope: { errors: [] },
-        config: {
-          server: true,
-        },
-      };
-
-      processSync(context);
-      context.processors = ProcessTargets.evaluator;
-      processSync(context);
-
-      expect(context.data).to.deep.equal({
-        candidates: [{ candidate: { data: { section6: {} } } }],
-        submit: true,
-      });
-      expect(context.scope.errors.length).to.equal(0);
-    });
-
-    it('Should not return fields from hidden containers, clearOnHide = true', async function () {
-      const { form, submission } = clearOnHideWithHiddenParent;
-      const containerComponent = getComponent(form.components, 'section6') as ContainerComponent;
-      containerComponent.clearOnHide = true;
-      const context = {
-        form,
-        submission,
-        data: submission.data,
-        components: form.components,
-        processors: ProcessTargets.submission,
-        scope: {},
-        config: {
-          server: true,
-        },
-      };
-
-      processSync(context);
-      context.processors = ProcessTargets.evaluator;
-      processSync(context);
-
-      expect(context.data).to.deep.equal({
-        candidates: [{ candidate: { data: {} } }],
-        submit: true,
-      });
     });
 
     it('Should validate when all child components are empty in required Data Grid', async function () {
@@ -4963,199 +4799,465 @@ describe('Process Tests', function () {
     });
   });
 
-  /*
-          it('Should not clearOnHide when set to false', async () => {
-            var components = [
-              {
-                "input": true,
-                "tableView": true,
-                "inputType": "radio",
-                "label": "Selector",
-                "key": "selector",
-                "values": [
-                  {
-                    "value": "one",
-                    "label": "One"
-                  },
-                  {
-                    "value": "two",
-                    "label": "Two"
-                  }
-                ],
-                "defaultValue": "",
-                "protected": false,
-                "persistent": true,
-                "validate": {
-                  "required": false,
-                  "custom": "",
-                  "customPrivate": false
-                },
-                "type": "radio",
-                "conditional": {
-                  "show": "",
-                  "when": null,
-                  "eq": ""
-                }
-              },
-              {
-                "input": false,
-                "title": "Panel",
-                "theme": "default",
-                "components": [
-                  {
-                    "input": true,
-                    "tableView": true,
-                    "inputType": "text",
-                    "inputMask": "",
-                    "label": "No Clear Field",
-                    "key": "noClear",
-                    "placeholder": "",
-                    "prefix": "",
-                    "suffix": "",
-                    "multiple": false,
-                    "defaultValue": "",
-                    "protected": false,
-                    "unique": false,
-                    "persistent": true,
-                    "clearOnHide": false,
-                    "validate": {
-                      "required": false,
-                      "minLength": "",
-                      "maxLength": "",
-                      "pattern": "",
-                      "custom": "",
-                      "customPrivate": false
-                    },
-                    "conditional": {
-                      "show": null,
-                      "when": null,
-                      "eq": ""
-                    },
-                    "type": "textfield"
-                  }
-                ],
-                "type": "panel",
-                "key": "panel",
-                "conditional": {
-                  "show": "true",
-                  "when": "selector",
-                  "eq": "two"
-                }
-              }
-            ];
+  describe('clearOnHide', function () {
+    it('Should not include submission data from conditionally hidden containers when clearOnHide ("Omit Data When Conditionally Hidden" is true', async function () {
+      const { form, submission } = clearOnHideWithCustomCondition;
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: ProcessTargets.submission,
+        scope: {},
+        config: {
+          server: true,
+        },
+      };
 
-            helper
-              .form('test', components)
-              .submission({
-                selector: 'one',
-                noClear: 'testing'
-              })
-              .execute(function(err) {
-                if (err) {
-                  return done(err);
-                }
+      processSync(context);
+      context.processors = ProcessTargets.evaluator;
+      processSync(context);
 
-                var submission = helper.getLastSubmission();
-                assert.deepEqual({selector: 'one', noClear: 'testing'}, submission.data);
-                done();
-              });
-          });
+      expect(context.data).to.deep.equal({
+        candidates: [{ candidate: { data: {} } }],
+        submit: true,
+      });
+    });
 
-          it('Should clearOnHide when set to true', async () => {
-            var components = [
-              {
-                "input": true,
-                "tableView": true,
-                "inputType": "radio",
-                "label": "Selector",
-                "key": "selector",
-                "values": [
-                  {
-                    "value": "one",
-                    "label": "One"
-                  },
-                  {
-                    "value": "two",
-                    "label": "Two"
-                  }
-                ],
-                "defaultValue": "",
-                "protected": false,
-                "persistent": true,
-                "validate": {
-                  "required": false,
-                  "custom": "",
-                  "customPrivate": false
-                },
-                "type": "radio",
-                "conditional": {
-                  "show": "",
-                  "when": null,
-                  "eq": ""
-                }
-              },
-              {
-                "input": false,
-                "title": "Panel",
-                "theme": "default",
-                "components": [
-                  {
-                    "input": true,
-                    "tableView": true,
-                    "inputType": "text",
-                    "inputMask": "",
-                    "label": "Clear Me",
-                    "key": "clearMe",
-                    "placeholder": "",
-                    "prefix": "",
-                    "suffix": "",
-                    "multiple": false,
-                    "defaultValue": "",
-                    "protected": false,
-                    "unique": false,
-                    "persistent": true,
-                    "clearOnHide": true,
-                    "validate": {
-                      "required": false,
-                      "minLength": "",
-                      "maxLength": "",
-                      "pattern": "",
-                      "custom": "",
-                      "customPrivate": false
-                    },
-                    "conditional": {
-                      "show": null,
-                      "when": null,
-                      "eq": ""
-                    },
-                    "type": "textfield"
-                  }
-                ],
-                "type": "panel",
-                "key": "panel",
-                "conditional": {
-                  "show": "true",
-                  "when": "selector",
-                  "eq": "two"
-                }
-              }
-            ];
+    it('Should not return fields from conditionally hidden containers, clearOnHide = false', async function () {
+      const { form, submission } = clearOnHideWithCustomCondition;
+      const containerComponent = getComponent(form.components, 'section6') as ContainerComponent;
+      containerComponent.clearOnHide = false;
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: ProcessTargets.submission,
+        scope: {},
+        config: {
+          server: true,
+        },
+      };
 
-            helper
-              .form('test', components)
-              .submission({
-                selector: 'one',
-                clearMe: 'Clear Me!!!!'
-              })
-              .execute(function(err) {
-                if (err) {
-                  return done(err);
-                }
+      processSync(context);
+      context.processors = ProcessTargets.evaluator;
+      processSync(context);
 
-                var submission = helper.getLastSubmission();
-                assert.deepEqual({selector: 'one'}, submission.data);
-                done();
-              });
-          });
-    */
+      expect(context.data).to.deep.equal({
+        candidates: [{ candidate: { data: { section6: {} } } }],
+        submit: true,
+      });
+    });
+
+    it('Should not validate fields from hidden containers, clearOnHide = false', async function () {
+      const { form, submission } = clearOnHideWithHiddenParent;
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: ProcessTargets.submission,
+        scope: { errors: [] },
+        config: {
+          server: true,
+        },
+      };
+
+      processSync(context);
+      context.processors = ProcessTargets.evaluator;
+      processSync(context);
+
+      expect(context.data).to.deep.equal({
+        candidates: [{ candidate: { data: { section6: { c: {}, d: [] } } } }],
+        submit: true,
+      });
+      expect(context.scope.errors.length).to.equal(0);
+    });
+
+    it('Should include submission data from hidden containers even when clearOnHide ("Omit Data When Conditionally Hidden" is true', async function () {
+      const { form, submission } = clearOnHideWithHiddenParent;
+      const containerComponent = getComponent(form.components, 'section6') as ContainerComponent;
+      containerComponent.clearOnHide = true;
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: ProcessTargets.submission,
+        scope: {},
+        config: {
+          server: true,
+        },
+      };
+
+      processSync(context);
+      context.processors = ProcessTargets.evaluator;
+      processSync(context);
+
+      expect(context.data).to.deep.equal({
+        candidates: [{ candidate: { data: { section6: { c: {}, d: [] } } } }],
+        submit: true,
+      });
+    });
+
+    it('Should include submission data for simple fields that are intentionally hidden, even when clearOnHide ("Omit When Conditionally Hidden") is true', async function () {
+      const components = [
+        {
+          label: 'Text Field',
+          tableView: true,
+          key: 'textField',
+          type: 'textfield',
+          input: true,
+          hidden: true,
+          clearOnHide: true,
+        },
+      ];
+      const submission = {
+        data: {
+          textField: 'test',
+        },
+      };
+      const context = {
+        form: { components },
+        submission,
+        data: submission.data,
+        components,
+        processors: ProcessTargets.evaluator,
+        scope: {},
+      };
+      processSync(context);
+      expect(context.data).to.deep.equal({ textField: 'test' });
+    });
+
+    it('Should include submission data for simple components that are intentionally hidden when clearOnHide ("Omit When Conditionally Hidden") is false', async function () {
+      const components = [
+        {
+          label: 'Text Field',
+          tableView: true,
+          key: 'textField',
+          type: 'textfield',
+          input: true,
+          hidden: true,
+          clearOnHide: false,
+        },
+      ];
+      const submission = {
+        data: {
+          textField: 'test',
+        },
+      };
+      const context = {
+        form: { components },
+        submission,
+        data: submission.data,
+        components,
+        processors: ProcessTargets.evaluator,
+        scope: {},
+      };
+      processSync(context);
+      expect(context.data).to.deep.equal({ textField: 'test' });
+    });
+
+    it('Should include submission data for container components that are intentionally hidden, even when clearOnHide ("Omit When Conditionally Hidden") is true', async function () {
+      const components = [
+        {
+          key: 'container',
+          type: 'container',
+          input: true,
+          hidden: true,
+          clearOnHide: true,
+          components: [
+            {
+              label: 'Text Field',
+              tableView: true,
+              key: 'textField',
+              type: 'textfield',
+              input: true,
+              clearOnHide: true,
+            },
+          ],
+        },
+      ];
+      const submission = {
+        data: {
+          container: {
+            textField: 'test',
+          },
+        },
+      };
+      const context = {
+        form: { components },
+        submission,
+        data: submission.data,
+        components,
+        processors: ProcessTargets.evaluator,
+        scope: {},
+      };
+      processSync(context);
+      expect(context.data).to.deep.equal({ container: { textField: 'test' } });
+    });
+
+    it('Should include submission data for container components that are intentionally hidden when clearOnHide ("Omit When Conditionally Hidden") is false', async function () {
+      const components = [
+        {
+          key: 'container',
+          type: 'container',
+          input: true,
+          hidden: true,
+          clearOnHide: false,
+          components: [
+            {
+              label: 'Text Field',
+              tableView: true,
+              key: 'textField',
+              type: 'textfield',
+              input: true,
+              clearOnHide: true,
+            },
+          ],
+        },
+      ];
+      const submission = {
+        data: {
+          container: {
+            textField: 'test',
+          },
+        },
+      };
+      const context = {
+        form: { components },
+        submission,
+        data: submission.data,
+        components,
+        processors: ProcessTargets.evaluator,
+        scope: {},
+      };
+      processSync(context);
+      expect(context.data).to.deep.equal({ container: { textField: 'test' } });
+    });
+
+    it("Should not include submission data for simple fields that are conditionally hidden when clearOnHide ('Omit When Conditionally Hidden') is true", async function () {
+      const components = [
+        {
+          type: 'checkbox',
+          key: 'selector',
+          label: 'Selector',
+          input: true,
+        },
+        {
+          label: 'Text Field',
+          tableView: true,
+          key: 'textField',
+          type: 'textfield',
+          input: true,
+          conditional: {
+            show: true,
+            when: 'selector',
+            eq: true,
+          },
+          clearOnHide: true,
+        },
+      ];
+      const submission = {
+        data: {
+          selector: false,
+          textField: 'test',
+        },
+      };
+      const context = {
+        submission,
+        data: submission.data,
+        components,
+        processors: ProcessTargets.evaluator,
+        scope: {},
+      };
+      processSync(context);
+      expect(context.data).to.deep.equal({ selector: false });
+    });
+
+    it("Should include submission data for simple fields that are conditionally hidden when clearOnHide ('Omit When Conditionally Hidden') is false", async function () {
+      const components = [
+        {
+          type: 'checkbox',
+          key: 'selector',
+          label: 'Selector',
+          input: true,
+        },
+        {
+          label: 'Text Field',
+          tableView: true,
+          key: 'textField',
+          type: 'textfield',
+          input: true,
+          conditional: {
+            show: true,
+            when: 'selector',
+            eq: true,
+          },
+          clearOnHide: false,
+        },
+      ];
+      const submission = {
+        data: {
+          selector: false,
+          textField: 'test',
+        },
+      };
+      const context = {
+        submission,
+        data: submission.data,
+        components,
+        processors: ProcessTargets.evaluator,
+        scope: {},
+      };
+      processSync(context);
+      expect(context.data).to.deep.equal({ selector: false, textField: 'test' });
+    });
+
+    it("Should not include submission data for container components that are conditionally hidden when clearOnHide ('Omit When Conditionally Hidden') is true", async function () {
+      const components = [
+        {
+          type: 'checkbox',
+          key: 'selector',
+          label: 'Selector',
+          input: true,
+        },
+        {
+          key: 'container',
+          type: 'container',
+          input: true,
+          conditional: {
+            show: true,
+            when: 'selector',
+            eq: true,
+          },
+          clearOnHide: true,
+          components: [
+            {
+              label: 'Text Field',
+              tableView: true,
+              key: 'textField',
+              type: 'textfield',
+              input: true,
+            },
+          ],
+        },
+      ];
+      const submission = {
+        data: {
+          selector: false,
+          container: {
+            textField: 'test',
+          },
+        },
+      };
+      const context = {
+        submission,
+        data: submission.data,
+        components,
+        processors: ProcessTargets.evaluator,
+        scope: {},
+      };
+      processSync(context);
+      expect(context.data).to.deep.equal({ selector: false });
+    });
+
+    it("Should include submission data for container components that are conditionally hidden when clearOnHide ('Omit When Conditionally Hidden') is false (but not their children, assuming clearOnHide is true or omitted in the child)", async function () {
+      const components = [
+        {
+          type: 'checkbox',
+          key: 'selector',
+          label: 'Selector',
+          input: true,
+        },
+        {
+          key: 'container',
+          type: 'container',
+          input: true,
+          conditional: {
+            show: true,
+            when: 'selector',
+            eq: true,
+          },
+          clearOnHide: false,
+          components: [
+            {
+              label: 'Text Field',
+              tableView: true,
+              key: 'textField',
+              type: 'textfield',
+              input: true,
+            },
+          ],
+        },
+      ];
+      const submission = {
+        data: {
+          selector: false,
+          container: {
+            textField: 'test',
+          },
+        },
+      };
+      const context = {
+        submission,
+        data: submission.data,
+        components,
+        processors: ProcessTargets.evaluator,
+        scope: {},
+      };
+      processSync(context);
+      expect(context.data).to.deep.equal({ selector: false, container: {} });
+    });
+
+    it("Should include submission data for container components that are conditionally hidden when clearOnHide ('Omit When Conditionally Hidden') is false (and include their children when clearOnHide is false in the child)", async function () {
+      const components = [
+        {
+          type: 'checkbox',
+          key: 'selector',
+          label: 'Selector',
+          input: true,
+        },
+        {
+          key: 'container',
+          type: 'container',
+          input: true,
+          conditional: {
+            show: true,
+            when: 'selector',
+            eq: true,
+          },
+          clearOnHide: false,
+          components: [
+            {
+              label: 'Text Field',
+              tableView: true,
+              key: 'textField',
+              type: 'textfield',
+              input: true,
+              clearOnHide: false,
+            },
+          ],
+        },
+      ];
+      const submission = {
+        data: {
+          selector: false,
+          container: {
+            textField: 'test',
+          },
+        },
+      };
+      const context = {
+        submission,
+        data: submission.data,
+        components,
+        processors: ProcessTargets.evaluator,
+        scope: {},
+      };
+      processSync(context);
+      expect(context.data).to.deep.equal({ selector: false, container: { textField: 'test' } });
+    });
+  });
 });

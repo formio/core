@@ -33,6 +33,7 @@ export type BaseComponent = {
   hidden?: boolean;
   ephemeralState?: {
     conditionallyHidden?: boolean;
+    intentionallyHidden?: boolean;
   };
   clearOnHide?: boolean;
   refreshOn?: string;

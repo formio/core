@@ -87,13 +87,15 @@ export function isValueHidden(context: ValidationContext): boolean {
   }
   return false;
 }
-
 export function isForcedHidden(
   context: ValidationContext,
   isConditionallyHidden: ConditionallyHidden,
 ): boolean {
   const { component } = context;
   if (isConditionallyHidden(context as ConditionsContext)) {
+    return true;
+  }
+  if (component.ephemeralState?.intentionallyHidden) {
     return true;
   }
   if (component.hasOwnProperty('hidden')) {
@@ -118,7 +120,7 @@ export const _shouldSkipValidation = (
   ) {
     return true;
   }
-  const { validateWhenHidden = false } = component || {};
+  const { validateWhenHidden = false } = component;
   const rules = [
     // Skip validation if component is readOnly
     // () => this.options.readOnly,
