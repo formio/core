@@ -15,6 +15,7 @@ import {
   isSimpleConditional,
   isJSONConditional,
 } from 'utils/conditions';
+import { getComponentAbsolutePath } from 'utils/formUtil';
 
 const hasCustomConditions = (context: ConditionsContext): boolean => {
   const { component } = context;
@@ -83,7 +84,8 @@ export const isConditionallyHidden = (context: ConditionsContext): boolean => {
 export type ConditionallyHidden = (context: ConditionsContext) => boolean;
 
 export const conditionalProcess = (context: ConditionsContext, isHidden: ConditionallyHidden) => {
-  const { scope, path } = context;
+  const { scope, path, component } = context;
+  const absolutePath = getComponentAbsolutePath(component) || path;
   if (!hasConditions(context)) {
     return;
   }
@@ -91,9 +93,9 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
   if (!scope.conditionals) {
     scope.conditionals = [];
   }
-  let conditionalComp = scope.conditionals.find((cond) => cond.path === path);
+  let conditionalComp = scope.conditionals.find((cond) => cond.path === absolutePath);
   if (!conditionalComp) {
-    conditionalComp = { path, conditionallyHidden: false };
+    conditionalComp = { path: absolutePath, conditionallyHidden: false };
     scope.conditionals.push(conditionalComp);
   }
 
