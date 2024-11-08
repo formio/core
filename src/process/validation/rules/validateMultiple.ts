@@ -9,6 +9,7 @@ import {
   ValidationContext,
 } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
+import { getModelType } from 'utils/formUtil';
 
 export const isEligible = (component: Component) => {
   // TODO: would be nice if this was type safe
@@ -83,7 +84,7 @@ export const validateMultipleSync: RuleFnSync = (context: ValidationContext) => 
 
   const shouldBeMultipleArray = !!component.multiple;
   const isRequired = !!component.validate?.required;
-  const compModelType = component.modelType || '';
+  const compModelType = getModelType(component);
   const underlyingValueShouldBeArray =
     ['nestedArray', 'nestedDataArray'].indexOf(compModelType) !== -1 ||
     (isTagsComponent(component) && component.storeas === 'array');

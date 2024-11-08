@@ -17,6 +17,7 @@ import {
   resetComponentScope,
   COMPONENT_PATH,
   setComponentPaths,
+  getModelType,
 } from './index';
 import { eachComponent } from './eachComponent';
 
@@ -80,7 +81,7 @@ export const eachComponentData = (
         }
         resetComponentScope(component);
         return true;
-      } else if (!component.type || component.modelType === 'none') {
+      } else if (!component.type || getModelType(component) === 'none') {
         const info = componentInfo(component);
         if (info.hasColumns) {
           (component as HasColumns).columns.forEach((column: any) =>

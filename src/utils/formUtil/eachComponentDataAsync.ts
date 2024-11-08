@@ -11,6 +11,7 @@ import {
   componentPath,
   COMPONENT_PATH,
   setComponentPaths,
+  getModelType,
 } from './index';
 import { eachComponentAsync } from './eachComponentAsync';
 
@@ -65,7 +66,7 @@ export const eachComponentDataAsync = async (
         }
         resetComponentScope(component);
         return true;
-      } else if (!component.type || component.modelType === 'none') {
+      } else if (!component.type || getModelType(component) === 'none') {
         const info = componentInfo(component);
         if (info.hasColumns) {
           const columnsComponent = component as HasColumns;

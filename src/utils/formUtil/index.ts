@@ -572,7 +572,7 @@ export function shouldProcessComponent(component: Component, row: any, value: an
   if (isEmpty(row)) {
     return false;
   }
-  if (component.modelType === 'dataObject') {
+  if (getModelType(component) === 'dataObject') {
     const noReferenceAttached = value && value._id && isEmpty(value.data) && !has(value, 'form');
     const shouldProcessNestedFormData =
       value && value._id ? !noReferenceAttached : value !== undefined;
