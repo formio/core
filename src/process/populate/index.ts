@@ -1,15 +1,14 @@
 import { get, set } from 'lodash';
 import { PopulateContext, PopulateScope, ProcessorFnSync } from 'types';
-import { componentPath, getContextualRowPath, getModelType } from 'utils/formUtil';
 
 // This processor ensures that a "linked" row context is provided to every component.
 export const populateProcessSync: ProcessorFnSync<PopulateScope> = (context: PopulateContext) => {
   const { component, path, scope } = context;
   const { data } = scope;
-  const compDataPath = componentPath(component, getContextualRowPath(component, path));
-  const compData: any = get(data, compDataPath);
+  const compDataPath = component.path || '';
+  const compData: any = get(data, compDataPath, data);
   if (!scope.populated) scope.populated = [];
-  switch (getModelType(component)) {
+  switch (component.modelType) {
     case 'nestedArray':
       if (!compData || !compData.length) {
         set(data, compDataPath, [{}]);

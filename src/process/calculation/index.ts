@@ -7,6 +7,7 @@ import {
   ProcessorInfo,
 } from 'types';
 import { set } from 'lodash';
+import { normalizeContext } from 'utils/Evaluator';
 
 export const shouldCalculate = (context: CalculationContext): boolean => {
   const { component, config } = context;
@@ -23,7 +24,9 @@ export const calculateProcessSync: ProcessorFnSync<CalculationScope> = (
   if (!shouldCalculate(context)) {
     return;
   }
-  const evalContextValue = evalContext ? evalContext(context) : context;
+  const evalContextValue = evalContext
+    ? evalContext(normalizeContext(context))
+    : normalizeContext(context);
   evalContextValue.value = value || null;
   if (!scope.calculated) scope.calculated = [];
   const newValue = JSONLogicEvaluator.evaluate(component.calculateValue, evalContextValue, 'value');

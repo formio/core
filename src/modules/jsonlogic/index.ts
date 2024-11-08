@@ -1,5 +1,6 @@
 import { BaseEvaluator, EvaluatorOptions } from 'utils';
 import { jsonLogic } from './jsonLogic';
+import { EvaluatorContext, normalizeContext } from 'utils/Evaluator';
 export class JSONLogicEvaluator extends BaseEvaluator {
   public static evaluate(
     func: any,
@@ -24,12 +25,6 @@ export class JSONLogicEvaluator extends BaseEvaluator {
   }
 }
 
-export type EvaluatorContext = {
-  evalContext?: (context: any) => any;
-  instance?: any;
-  [key: string]: any;
-};
-
 export type EvaluatorFn = (context: EvaluatorContext) => any;
 
 export function evaluate(
@@ -40,7 +35,9 @@ export function evaluate(
   options: EvaluatorOptions = {},
 ) {
   const { evalContext, instance } = context;
-  const evalContextValue = evalContext ? evalContext(context) : context;
+  const evalContextValue = evalContext
+    ? evalContext(normalizeContext(context))
+    : normalizeContext(context);
   if (evalContextFn) {
     evalContextFn(evalContextValue);
   }
@@ -63,7 +60,9 @@ export function interpolate(
   evalContextFn?: EvaluatorFn,
 ): string {
   const { evalContext, instance } = context;
-  const evalContextValue = evalContext ? evalContext(context) : context;
+  const evalContextValue = evalContext
+    ? evalContext(normalizeContext(context))
+    : normalizeContext(context);
   if (evalContextFn) {
     evalContextFn(evalContextValue);
   }

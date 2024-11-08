@@ -73,10 +73,7 @@ const valueIsPresent = (
 
 export const shouldValidate = (context: ValidationContext) => {
   const { component } = context;
-  if (
-    component.validate?.required &&
-    !(component.hidden || component.ephemeralState?.conditionallyHidden)
-  ) {
+  if (component.validate?.required && !(component.hidden || component.scope?.conditionallyHidden)) {
     return true;
   }
   return false;

@@ -1,11 +1,11 @@
-import { componentInfo, componentPath, componentFormPath } from './index';
+import { Component } from 'types';
+import { componentInfo, setDefaultComponentPaths, setParentReference } from './index';
 
 // Async each component.
 export async function eachComponentAsync(
-  components: any[],
+  components: Component[],
   fn: any,
   includeAll = false,
-  path = '',
   parent?: any,
 ) {
   if (!components) return;
@@ -13,71 +13,32 @@ export async function eachComponentAsync(
     if (!components[i]) {
       continue;
     }
-    const component = components[i];
+    const component: any = components[i];
     const info = componentInfo(component);
-    // Keep track of parent references.
-    if (parent) {
-      // Ensure we don't create infinite JSON structures.
-      Object.defineProperty(component, 'parent', {
-        enumerable: false,
-        writable: true,
-        value: JSON.parse(JSON.stringify(parent)),
-      });
-      Object.defineProperty(component.parent, 'parent', {
-        enumerable: false,
-        writable: true,
-        value: parent.parent,
-      });
-      Object.defineProperty(component.parent, 'path', {
-        enumerable: false,
-        writable: true,
-        value: parent.path,
-      });
-      delete component.parent.components;
-      delete component.parent.componentMap;
-      delete component.parent.columns;
-      delete component.parent.rows;
-    }
-    const compPath = componentPath(component, path);
+    setParentReference(component, parent);
+    setDefaultComponentPaths(component);
 
     if (includeAll || component.tree || !info.layout) {
-      if (await fn(component, compPath, components, parent)) {
+      const path = includeAll ? component.scope?.fullPath || '' : component.path || '';
+      if (await fn(component, path, components, parent)) {
         continue;
       }
     }
     if (info.hasColumns) {
       for (let j = 0; j < component.columns.length; j++) {
-        await eachComponentAsync(
-          component.columns[j]?.components,
-          fn,
-          includeAll,
-          path,
-          parent ? component : null,
-        );
+        await eachComponentAsync(component.columns[j]?.components, fn, includeAll, component);
       }
     } else if (info.hasRows) {
       for (let j = 0; j < component.rows.length; j++) {
         const row = component.rows[j];
         if (Array.isArray(row)) {
           for (let k = 0; k < row.length; k++) {
-            await eachComponentAsync(
-              row[k]?.components,
-              fn,
-              includeAll,
-              path,
-              parent ? component : null,
-            );
+            await eachComponentAsync(row[k]?.components, fn, includeAll, component);
           }
         }
       }
     } else if (info.hasComps) {
-      await eachComponentAsync(
-        component.components,
-        fn,
-        includeAll,
-        componentFormPath(component, path, compPath),
-        parent ? component : null,
-      );
+      await eachComponentAsync(component.components, fn, includeAll, component);
     }
   }
 }

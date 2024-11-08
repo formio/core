@@ -666,18 +666,18 @@ describe('eachComponent', function () {
     expect(numComps).to.be.equal(8);
   });
 
-  it('Should provide the paths to all of the components', function () {
+  it('Should provide the paths to all of the components if includeAll=true', function () {
     const paths = [
       'one',
       'parent1',
-      'two',
-      'parent2',
-      'three',
-      '',
-      'four',
-      'five',
-      'six',
-      'seven',
+      'parent1.two',
+      'parent1.parent2',
+      'parent1.parent2.three',
+      'parent1.parent2',
+      'parent1.parent2.four',
+      'parent1.parent2.five',
+      'parent1.parent2.six',
+      'parent1.parent2.seven',
       'eight',
     ];
     const testPaths: string[] = [];
@@ -879,14 +879,13 @@ describe('eachComponent', function () {
     ];
     const rowResults: Map<string, any> = new Map();
     eachComponent(
-      components[0].components,
+      components,
       (component: Component, path: string) => {
         rowResults.set(path, component);
       },
       true,
-      'dataGrid',
     );
-    expect(rowResults.size).to.equal(2);
+    expect(rowResults.size).to.equal(3);
     expect(rowResults.get('dataGrid.nestedTextField')).to.deep.equal({
       type: 'textfield',
       key: 'nestedTextField',
@@ -903,14 +902,14 @@ describe('eachComponent', function () {
     const paths = [
       'a',
       'b',
-      'c',
-      'd',
-      'f',
-      'f.g',
-      'f.h',
-      'f.i',
-      'e',
-      'j',
+      'b.c',
+      'b.c.d',
+      'b.c.f',
+      'b.c.f.g',
+      'b.c.f.h',
+      'b.c.f.i',
+      'b.c.e',
+      'b.j',
       'k',
       'k.n',
       'k.n.o',

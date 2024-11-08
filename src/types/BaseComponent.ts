@@ -14,11 +14,22 @@ export type SimpleConditional = {
   conditions: SimpleConditionalConditions;
 };
 
+export type ComponentScope = {
+  path?: string; // The "form" path to the component including non-layout parent components.
+  fullPath?: string; // The "form" path to the component including all parent components (including layout components).
+  localPath?: string; // The "form" path to the component local to the current "nested form" component.
+  fullLocalPath?: string; // The "form" path to the component local to the current "nested form" component including all parent components (including layout components).
+  dataPath?: string; // The "full" data path to a component.
+  localDataPath?: string; // The "local" data path to a component referenced from the parent nested form.
+  dataIndex?: number; // The current data index (rowIndex) for this component.
+  conditionallyHidden?: boolean;
+};
+
 export type BaseComponent = {
   input: boolean;
   type: string;
   key: string;
-  path?: string;
+  path?: string; // The "form" path to the component including non-layout parent components.
   parent?: BaseComponent;
   tableView?: boolean;
   placeholder?: string;
@@ -31,9 +42,7 @@ export type BaseComponent = {
   unique?: boolean;
   persistent?: boolean | string;
   hidden?: boolean;
-  ephemeralState?: {
-    conditionallyHidden?: boolean;
-  };
+  scope?: ComponentScope;
   clearOnHide?: boolean;
   refreshOn?: string;
   redrawOn?: string;

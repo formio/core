@@ -15,6 +15,7 @@ import {
   getComponentActualValue,
   hasCondition,
   getModelType,
+  setComponentScope,
 } from '../formUtil';
 
 const writtenNumber = (n: number | null) => {
@@ -109,16 +110,13 @@ describe('formUtil', function () {
           },
         },
       };
-      const path = 'a.b.c';
-      const actual = getContextualRowData(
-        {
-          type: 'textfield',
-          input: true,
-          key: 'c',
-        },
-        path,
-        data,
-      );
+      const component = {
+        type: 'textfield',
+        input: true,
+        key: 'c',
+      };
+      setComponentScope(component, 'dataPath', 'a.b.c');
+      const actual = getContextualRowData(component, data);
       const expected = { c: 'hello' };
       expect(actual).to.deep.equal(expected);
     });
@@ -131,16 +129,13 @@ describe('formUtil', function () {
           },
         },
       };
-      const path = 'a.b';
-      const actual = getContextualRowData(
-        {
-          type: 'textfield',
-          input: true,
-          key: 'b',
-        },
-        path,
-        data,
-      );
+      const component = {
+        type: 'textfield',
+        input: true,
+        key: 'b',
+      };
+      setComponentScope(component, 'dataPath', 'a.b');
+      const actual = getContextualRowData(component, data);
       const expected = { b: { c: 'hello' } };
       expect(actual).to.deep.equal(expected);
     });
@@ -153,16 +148,13 @@ describe('formUtil', function () {
           },
         },
       };
-      const path = 'a';
-      const actual = getContextualRowData(
-        {
-          type: 'textfield',
-          input: true,
-          key: 'a',
-        },
-        path,
-        data,
-      );
+      const component = {
+        type: 'textfield',
+        input: true,
+        key: 'a',
+      };
+      setComponentScope(component, 'dataPath', 'a');
+      const actual = getContextualRowData(component, data);
       const expected = { a: { b: { c: 'hello' } } };
       expect(actual).to.deep.equal(expected);
     });
@@ -176,16 +168,13 @@ describe('formUtil', function () {
         },
         d: 'there',
       };
-      const path = '';
-      const actual = getContextualRowData(
-        {
-          type: 'textfield',
-          input: true,
-          key: 'd',
-        },
-        path,
-        data,
-      );
+      const component = {
+        type: 'textfield',
+        input: true,
+        key: 'd',
+      };
+      setComponentScope(component, 'dataPath', '');
+      const actual = getContextualRowData(component, data);
       const expected = { a: { b: { c: 'hello' } }, d: 'there' };
       expect(actual).to.deep.equal(expected);
     });
@@ -197,16 +186,13 @@ describe('formUtil', function () {
           { b: 'foo', c: 'bar' },
         ],
       };
-      const path = 'a[0].b';
-      const actual = getContextualRowData(
-        {
-          type: 'textfield',
-          input: true,
-          key: 'b',
-        },
-        path,
-        data,
-      );
+      const component = {
+        type: 'textfield',
+        input: true,
+        key: 'b',
+      };
+      setComponentScope(component, 'dataPath', 'a[0].b');
+      const actual = getContextualRowData(component, data);
       const expected = { b: 'hello', c: 'world' };
       expect(actual).to.deep.equal(expected);
     });
@@ -218,16 +204,13 @@ describe('formUtil', function () {
           { b: 'foo', c: 'bar' },
         ],
       };
-      const path = 'a[1].b';
-      const actual = getContextualRowData(
-        {
-          type: 'textfield',
-          input: true,
-          key: 'b',
-        },
-        path,
-        data,
-      );
+      const component = {
+        type: 'textfield',
+        input: true,
+        key: 'b',
+      };
+      setComponentScope(component, 'dataPath', 'a[1].b');
+      const actual = getContextualRowData(component, data);
       const expected = { b: 'foo', c: 'bar' };
       expect(actual).to.deep.equal(expected);
     });
@@ -239,16 +222,13 @@ describe('formUtil', function () {
           { b: 'foo', c: 'bar' },
         ],
       };
-      const path = 'a';
-      const actual = getContextualRowData(
-        {
-          type: 'textfield',
-          input: true,
-          key: 'a',
-        },
-        path,
-        data,
-      );
+      const component = {
+        type: 'textfield',
+        input: true,
+        key: 'a',
+      };
+      setComponentScope(component, 'dataPath', 'a');
+      const actual = getContextualRowData(component, data);
       const expected = {
         a: [
           { b: 'hello', c: 'world' },
@@ -265,16 +245,12 @@ describe('formUtil', function () {
           { b: 'foo', c: 'bar' },
         ],
       };
-      const path = '';
-      const actual = getContextualRowData(
-        {
-          type: 'textfield',
-          input: true,
-          key: 'a',
-        },
-        path,
-        data,
-      );
+      const component = {
+        type: 'textfield',
+        input: true,
+        key: 'a',
+      };
+      const actual = getContextualRowData(component, data);
       const expected = {
         a: [
           { b: 'hello', c: 'world' },
@@ -293,16 +269,13 @@ describe('formUtil', function () {
           ],
         },
       };
-      const path = 'a.b[0].c';
-      const actual = getContextualRowData(
-        {
-          type: 'textfield',
-          input: true,
-          key: 'c',
-        },
-        path,
-        data,
-      );
+      const component = {
+        type: 'textfield',
+        input: true,
+        key: 'c',
+      };
+      setComponentScope(component, 'dataPath', 'a.b[0].c');
+      const actual = getContextualRowData(component, data);
       const expected = { c: 'hello', d: 'world' };
       expect(actual).to.deep.equal(expected);
     });
@@ -316,16 +289,13 @@ describe('formUtil', function () {
           ],
         },
       };
-      const path = 'a.b[1].c';
-      const actual = getContextualRowData(
-        {
-          type: 'textfield',
-          input: true,
-          key: 'c',
-        },
-        path,
-        data,
-      );
+      const component = {
+        type: 'textfield',
+        input: true,
+        key: 'c',
+      };
+      setComponentScope(component, 'dataPath', 'a.b[1].c');
+      const actual = getContextualRowData(component, data);
       const expected = { c: 'foo', d: 'bar' };
       expect(actual).to.deep.equal(expected);
     });
@@ -339,16 +309,13 @@ describe('formUtil', function () {
           ],
         },
       };
-      const path = 'a.b';
-      const actual = getContextualRowData(
-        {
-          type: 'textfield',
-          input: true,
-          key: 'b',
-        },
-        path,
-        data,
-      );
+      const component = {
+        type: 'textfield',
+        input: true,
+        key: 'b',
+      };
+      setComponentScope(component, 'dataPath', 'a.b');
+      const actual = getContextualRowData(component, data);
       const expected = {
         b: [
           { c: 'hello', d: 'world' },
@@ -367,16 +334,13 @@ describe('formUtil', function () {
           ],
         },
       };
-      const path = 'a';
-      const actual = getContextualRowData(
-        {
-          type: 'textfield',
-          input: true,
-          key: 'a',
-        },
-        path,
-        data,
-      );
+      const component = {
+        type: 'textfield',
+        input: true,
+        key: 'a',
+      };
+      setComponentScope(component, 'dataPath', 'a');
+      const actual = getContextualRowData(component, data);
       const expected = {
         a: {
           b: [
@@ -397,16 +361,13 @@ describe('formUtil', function () {
           ],
         },
       };
-      const path = '';
-      const actual = getContextualRowData(
-        {
-          type: 'textfield',
-          input: true,
-          key: 'a',
-        },
-        path,
-        data,
-      );
+      const component = {
+        type: 'textfield',
+        input: true,
+        key: 'a',
+      };
+      setComponentScope(component, 'dataPath', '');
+      const actual = getContextualRowData(component, data);
       const expected = {
         a: {
           b: [
@@ -427,16 +388,13 @@ describe('formUtil', function () {
           ],
         },
       };
-      const path = 'a.b[0].c.e';
-      const actual = getContextualRowData(
-        {
-          type: 'textfield',
-          input: true,
-          key: 'c.e',
-        },
-        path,
-        data,
-      );
+      const component = {
+        type: 'textfield',
+        input: true,
+        key: 'c.e',
+      };
+      setComponentScope(component, 'dataPath', 'a.b[0].c.e');
+      const actual = getContextualRowData(component, data);
       const expected = { c: { e: 'zed' }, d: 'world' };
       expect(actual).to.deep.equal(expected);
     });
@@ -711,8 +669,6 @@ describe('formUtil', function () {
           const value = get(data, path);
           rowResults.set(path, [component, value]);
         },
-        undefined,
-        undefined,
         undefined,
         true,
       );
@@ -1478,8 +1434,6 @@ describe('formUtil', function () {
           const value = get(data, path);
           rowResults.set(path, [component, value]);
         },
-        undefined,
-        undefined,
         undefined,
         true,
       );
