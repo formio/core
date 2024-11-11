@@ -1,3 +1,7 @@
+import {
+  compareSelectResourceWithObjectTypeValues,
+  isSelectResourceWithObjectValue,
+} from 'utils/formUtil';
 import ConditionOperator from './ConditionOperator';
 import { isString, isEqual, get } from 'lodash';
 
@@ -27,6 +31,14 @@ export default class IsEqualTo extends ConditionOperator {
       } catch (ignoreErr) {
         // do nothing
       }
+    }
+
+    if (
+      conditionComponent &&
+      isSelectResourceWithObjectValue(conditionComponent) &&
+      conditionComponent.template
+    ) {
+      return compareSelectResourceWithObjectTypeValues(value, comparedValue, conditionComponent);
     }
 
     return isEqual(value, comparedValue);

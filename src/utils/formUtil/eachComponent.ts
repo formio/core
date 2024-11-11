@@ -53,14 +53,10 @@ export function eachComponent(
       delete component.parent.rows;
     }
 
-    Object.defineProperty(component, 'path', {
-      enumerable: false,
-      writable: true,
-      value: componentPath(component, path),
-    });
+    const compPath = componentPath(component, path);
 
     if (includeAll || component.tree || !info.layout) {
-      noRecurse = !!fn(component, component.path, components, parent);
+      noRecurse = !!fn(component, compPath, components, parent);
     }
 
     if (!noRecurse) {
@@ -81,7 +77,7 @@ export function eachComponent(
           component.components,
           fn,
           includeAll,
-          componentFormPath(component, path, component.path),
+          componentFormPath(component, path, compPath),
           parent ? component : null,
         );
       }

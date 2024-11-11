@@ -38,13 +38,10 @@ export async function eachComponentAsync(
       delete component.parent.columns;
       delete component.parent.rows;
     }
-    Object.defineProperty(component, 'path', {
-      enumerable: false,
-      writable: true,
-      value: componentPath(component, path),
-    });
+    const compPath = componentPath(component, path);
+
     if (includeAll || component.tree || !info.layout) {
-      if (await fn(component, component.path, components, parent)) {
+      if (await fn(component, compPath, components, parent)) {
         continue;
       }
     }
@@ -78,7 +75,7 @@ export async function eachComponentAsync(
         component.components,
         fn,
         includeAll,
-        componentFormPath(component, path, component.path),
+        componentFormPath(component, path, compPath),
         parent ? component : null,
       );
     }

@@ -17,6 +17,7 @@ import {
   trim,
   isBoolean,
   omit,
+  every,
 } from 'lodash';
 import { compare, applyPatch } from 'fast-json-patch';
 
@@ -38,6 +39,7 @@ import {
   JSONConditional,
   SimpleConditional,
   AddressComponent,
+  SelectComponent,
 } from 'types';
 import { Evaluator } from '../Evaluator';
 import { eachComponent } from './eachComponent';
@@ -423,7 +425,7 @@ export function getComponent(
   eachComponent(
     components,
     (component: Component, path: any) => {
-      if (path === key || component.path === key || (component.input && component.key === key)) {
+      if (path === key || (component.input && component.key === key)) {
         result = component;
         return true;
       }
@@ -1008,6 +1010,68 @@ export function isComponentDataEmpty(
     return isValueEmpty(component, value?.toString().trim());
   }
   return isValueEmpty(component, value);
+}
+
+/**
+ * Returns the template keys inside the template code.
+ * @param {string} template - The template to get the keys from.
+ * @returns {Array<string>} - The keys inside the template.
+ */
+export function getItemTemplateKeys(template: any) {
+  const templateKeys: Array<string> = [];
+  if (!template) {
+    return templateKeys;
+  }
+  const keys = template.match(/({{\s*(.*?)\s*}})/g);
+
+  if (keys) {
+    keys.forEach((key: string) => {
+      const propKey = key.match(/{{\s*item\.(.*?)\s*}}/);
+      if (propKey && propKey.length > 1) {
+        templateKeys.push(propKey[1]);
+      }
+    });
+  }
+
+  return templateKeys;
+}
+
+/**
+ * Returns if the component is a select resource with an object for its value.
+ * @param {Component} comp - The component to check.
+ * @returns {boolean} - TRUE if the component is a select resource with an object for its value; FALSE otherwise.
+ */
+export function isSelectResourceWithObjectValue(comp: any = {}) {
+  const { reference, dataSrc, valueProperty } = comp;
+  return reference || (dataSrc === 'resource' && (!valueProperty || valueProperty === 'data'));
+}
+
+/**
+ * Compares real select resource value with expected value in condition.
+ * @param {any} value - current value of selectcomponent.
+ * @param {any} comparedValue - expocted value of select component.
+ * @param {SelectComponent} conditionComponent - select component on which the condtion is based.
+ * @returns {boolean} - TRUE if the select component current value is equal to the expected value; FALSE otherwise.
+ */
+export function compareSelectResourceWithObjectTypeValues(
+  value: any,
+  comparedValue: any,
+  conditionComponent: SelectComponent,
+) {
+  if (!value || !isPlainObject(value)) {
+    return false;
+  }
+
+  const { template, valueProperty } = conditionComponent;
+
+  if (valueProperty === 'data') {
+    value = { data: value };
+    comparedValue = { data: comparedValue };
+  }
+
+  return every(getItemTemplateKeys(template) || [], (k) =>
+    isEqual(get(value, k), get(comparedValue, k)),
+  );
 }
 
 export { eachComponent, eachComponentData, eachComponentAsync, eachComponentDataAsync };

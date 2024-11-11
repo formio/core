@@ -9,7 +9,7 @@ export function dataValue(component: Component, row: any) {
 }
 
 export async function processOne<ProcessorScope>(context: ProcessorsContext<ProcessorScope>) {
-  const { processors, component } = context;
+  const { processors, component, path } = context;
   // Create a getter for `value` that is always derived from the current data object
   if (typeof context.value === 'undefined') {
     Object.defineProperty(context, 'value', {
@@ -22,8 +22,18 @@ export async function processOne<ProcessorScope>(context: ProcessorsContext<Proc
       },
     });
   }
-  // If the component has ephemeral state, then we need to reset the ephemeral state in case this is e.g. a data grid, in which each row needs to be validated independently
+
+  // Define the component path
+  Object.defineProperty(component, 'path', {
+    enumerable: false,
+    writable: true,
+    value: path,
+  });
+
+  // If the component has ephemeral state, then we need to reset it in case this is e.g. a data grid,
+  // in which each row needs to be validated independently
   resetEphemeralState(component);
+
   if (!context.row) {
     return;
   }
@@ -36,7 +46,7 @@ export async function processOne<ProcessorScope>(context: ProcessorsContext<Proc
 }
 
 export function processOneSync<ProcessorScope>(context: ProcessorsContext<ProcessorScope>) {
-  const { processors, component } = context;
+  const { processors, component, path } = context;
   // Create a getter for `value` that is always derived from the current data object
   if (typeof context.value === 'undefined') {
     Object.defineProperty(context, 'value', {
@@ -49,8 +59,17 @@ export function processOneSync<ProcessorScope>(context: ProcessorsContext<Proces
       },
     });
   }
+
+  // Define the component path
+  Object.defineProperty(component, 'path', {
+    enumerable: false,
+    writable: true,
+    value: path,
+  });
+
   // If the component has ephemeral state, then we need to reset the ephemeral state in case this is e.g. a data grid, in which each row needs to be validated independently
   resetEphemeralState(component);
+
   if (!context.row) {
     return;
   }

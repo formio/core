@@ -11,6 +11,11 @@ export const shouldValidate = (context: ValidationContext) => {
   if (!isUrlComponent(component)) {
     return false;
   }
+
+  if (component.multiple && Array.isArray(value) && value.length === 0) {
+    return false;
+  }
+
   if (!value) {
     return false;
   }
