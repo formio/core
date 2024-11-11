@@ -1603,7 +1603,6 @@ describe('Process Tests', function () {
     });
   });
 
-  // TODO: test case naming
   it('Should not unset submission data of nested forms with identical keys', function () {
     const parentForm = {
       display: 'form',
@@ -3320,6 +3319,51 @@ describe('Process Tests', function () {
     expect(context.data).to.deep.equal({
       textArea: 'should be conditionally visible',
       textField: 'not empty',
+    });
+  });
+
+  it('Should include submission data for intentionally hidden fields', async function () {
+    const form = {
+      display: 'form',
+      components: [
+        {
+          type: 'textfield',
+          key: 'textField',
+          label: 'Text Field',
+          input: true,
+        },
+        {
+          type: 'textarea',
+          key: 'textArea',
+          label: 'Text Area',
+          input: true,
+          hidden: true,
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        textField: 'not empty',
+        textArea: 'also not empty',
+      },
+    };
+
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    expect(context.data).to.deep.equal({
+      textField: 'not empty',
+      textArea: 'also not empty',
     });
   });
 

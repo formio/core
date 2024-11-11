@@ -32,7 +32,7 @@ describe('clearHidden', function () {
     expect(context.data).to.deep.equal({ foo: 'bar' });
   });
 
-  it('Should clear conditiionally hidden component data when clearOnHide is true', function () {
+  it('Should clear conditionally hidden component data when clearOnHide is true', function () {
     // Test case data
     const context = {
       component: {
@@ -59,5 +59,29 @@ describe('clearHidden', function () {
     };
     clearHiddenProcess(context);
     expect(context.data).to.deep.equal({});
+  });
+
+  it('Should not clear component data when the component is intentionally hidden', function () {
+    // Test case data
+    const context = {
+      component: {
+        type: 'textfield',
+        key: 'foo',
+        clearOnHide: true,
+        input: true,
+        hidden: true,
+      },
+      data: {
+        foo: 'bar',
+      },
+      value: 'foo',
+      row: {},
+      scope: {
+        clearHidden: {},
+      },
+      path: 'foo',
+    };
+    clearHiddenProcess(context);
+    expect(context.data).to.deep.equal({ foo: 'bar' });
   });
 });
