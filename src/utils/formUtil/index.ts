@@ -340,10 +340,19 @@ export type ComponentMatch = {
   paths: ComponentPaths | undefined;
 };
 
+/**
+ * Determines if a component has a match at any of the path types.
+ * @param component {Component} - The component JSON to check for matches.
+ * @param paths {ComponentPaths} - The current component paths object.
+ * @param path {string} - Either the "form" or "data" path to see if a match occurs.
+ * @param dataIndex {number | undefined} - The data index for the current component to match.
+ * @param matches {Record<string, ComponentMatch | undefined>} - The current matches object.
+ * @param addMatch {(type: ComponentPath | 'key', match: ComponentMatch) => ComponentMatch} - A callback function to allow modules to decorate the match object.
+ */
 export function componentMatches(
   component: Component,
   paths: ComponentPaths,
-  formPath: string,
+  path: string,
   dataIndex?: number,
   matches: Record<string, ComponentMatch | undefined> = {
     path: undefined,
@@ -361,42 +370,48 @@ export function componentMatches(
   let dataProperty = '';
   if (component.type === 'selectboxes') {
     const valuePath = new RegExp(`(\\.${escapeRegExp(component.key)})(\\.[^\\.]+)$`);
-    const pathMatches = formPath.match(valuePath);
+    const pathMatches = path.match(valuePath);
     if (pathMatches?.length === 3) {
       dataProperty = pathMatches[2];
-      formPath = formPath.replace(valuePath, '$1');
+      path = path.replace(valuePath, '$1');
     }
   }
+
   [
     ComponentPath.path,
     ComponentPath.fullPath,
     ComponentPath.localPath,
     ComponentPath.fullLocalPath,
+    ComponentPath.dataPath,
+    ComponentPath.localDataPath,
   ].forEach((type) => {
-    if (paths[type as ComponentPath] === formPath) {
-      if (!matches[type as ComponentPath]) {
-        matches[type as ComponentPath] = addMatch(type, { component, paths });
-      }
-      if (!matches.dataPath || dataIndex === paths.dataIndex) {
-        const dataPaths = {
-          dataPath: paths.dataPath || '',
-          localDataPath: paths.localDataPath || '',
-        };
-        if (dataProperty) {
-          dataPaths.dataPath += dataProperty;
-          dataPaths.localDataPath += dataProperty;
+    const dataPath = type === ComponentPath.dataPath || type === ComponentPath.localDataPath;
+    if (paths[type as ComponentPath] === path) {
+      // Only add a new match if it already doesn't exist OR if the dataIndex is the same (more direct match).
+      if (!matches[type as ComponentPath] || dataPath || dataIndex === paths.dataIndex) {
+        if (dataPath) {
+          const dataPaths = {
+            dataPath: paths.dataPath || '',
+            localDataPath: paths.localDataPath || '',
+          };
+          if (dataProperty) {
+            dataPaths.dataPath += dataProperty;
+            dataPaths.localDataPath += dataProperty;
+          }
+          matches[type as ComponentPath] = addMatch(type, {
+            component,
+            paths: {
+              ...paths,
+              ...dataPaths,
+            },
+          });
+        } else {
+          matches[type as ComponentPath] = addMatch(type, { component, paths });
         }
-        matches.dataPath = addMatch(ComponentPath.dataPath, {
-          component,
-          paths: {
-            ...paths,
-            ...dataPaths,
-          },
-        });
       }
     }
   });
-  if (!matches.key && component.input !== false && component.key === formPath) {
+  if (!matches.key && component.input !== false && component.key === path) {
     matches.key = addMatch('key', { component, paths });
   }
 }
