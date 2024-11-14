@@ -1,5 +1,6 @@
 import {
   Component,
+  ComponentPaths,
   DataObject,
   Form,
   PassedComponentInstance,
@@ -16,6 +17,7 @@ export type ProcessorContext<ProcessorScope> = {
   row: any;
   value?: any;
   form?: Form;
+  paths?: ComponentPaths;
   submission?: Submission;
   components?: Component[];
   instance?: PassedComponentInstance;

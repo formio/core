@@ -1,6 +1,6 @@
-import { BaseEvaluator, EvaluatorOptions } from 'utils';
+import { normalizeContext } from 'utils/formUtil';
 import { jsonLogic } from './jsonLogic';
-import { EvaluatorContext, normalizeContext } from 'utils/Evaluator';
+import { BaseEvaluator, EvaluatorOptions, EvaluatorContext } from 'utils/Evaluator';
 export class JSONLogicEvaluator extends BaseEvaluator {
   public static evaluate(
     func: any,

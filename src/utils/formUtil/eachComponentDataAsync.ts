@@ -1,16 +1,20 @@
 import { get } from 'lodash';
 
-import { Component, DataObject, EachComponentDataAsyncCallback, HasColumns, HasRows } from 'types';
+import {
+  Component,
+  DataObject,
+  EachComponentDataAsyncCallback,
+  HasColumns,
+  HasRows,
+  ComponentPaths,
+  HasChildComponents,
+} from 'types';
 import {
   isComponentNestedDataType,
   componentInfo,
   getContextualRowData,
   shouldProcessComponent,
-  setComponentScope,
   resetComponentScope,
-  componentPath,
-  COMPONENT_PATH,
-  setComponentPaths,
   getModelType,
 } from './index';
 import { eachComponentAsync } from './eachComponentAsync';
@@ -20,28 +24,31 @@ export const eachComponentDataAsync = async (
   components: Component[],
   data: DataObject,
   fn: EachComponentDataAsyncCallback,
-  parent?: Component,
   includeAll: boolean = false,
+  parent?: Component,
+  parentPaths?: ComponentPaths,
 ) => {
   if (!components || !data) {
     return;
   }
   return await eachComponentAsync(
     components,
-    async (component: any, compPath: string, componentComponents: any, compParent: any) => {
-      setComponentPaths(component, {
-        dataPath: componentPath(component, COMPONENT_PATH.DATA),
-        localDataPath: componentPath(component, COMPONENT_PATH.LOCAL_DATA),
-      });
-      const row = getContextualRowData(component, data);
+    async (
+      component: Component,
+      compPath: string,
+      componentComponents: Component[] | undefined,
+      compParent: Component | undefined,
+      compPaths: ComponentPaths | undefined,
+    ) => {
+      const row = getContextualRowData(component, data, compPaths);
       if (
         (await fn(
           component,
           data,
           row,
-          component.scope?.dataPath || '',
+          compPaths?.dataPath || '',
           componentComponents,
-          component.scope?.dataIndex,
+          compPaths?.dataIndex,
           compParent,
         )) === true
       ) {
@@ -49,11 +56,20 @@ export const eachComponentDataAsync = async (
         return true;
       }
       if (isComponentNestedDataType(component)) {
-        const value = get(data, component.scope?.dataPath || '');
+        const value = get(data, compPaths?.dataPath || '');
         if (Array.isArray(value)) {
           for (let i = 0; i < value.length; i++) {
-            setComponentScope(component, 'dataIndex', i);
-            await eachComponentDataAsync(component.components, data, fn, component, includeAll);
+            if (compPaths) {
+              compPaths.dataIndex = i;
+            }
+            await eachComponentDataAsync(
+              component.components,
+              data,
+              fn,
+              includeAll,
+              component,
+              compPaths,
+            );
           }
           resetComponentScope(component);
           return true;
@@ -62,7 +78,14 @@ export const eachComponentDataAsync = async (
             resetComponentScope(component);
             return true;
           }
-          await eachComponentDataAsync(component.components, data, fn, component, includeAll);
+          await eachComponentDataAsync(
+            component.components,
+            data,
+            fn,
+            includeAll,
+            component,
+            compPaths,
+          );
         }
         resetComponentScope(component);
         return true;
@@ -71,19 +94,40 @@ export const eachComponentDataAsync = async (
         if (info.hasColumns) {
           const columnsComponent = component as HasColumns;
           for (const column of columnsComponent.columns) {
-            await eachComponentDataAsync(column.components, data, fn, component);
+            await eachComponentDataAsync(
+              column.components,
+              data,
+              fn,
+              includeAll,
+              component,
+              compPaths,
+            );
           }
         } else if (info.hasRows) {
           const rowsComponent = component as HasRows;
           for (const rowArray of rowsComponent.rows) {
             if (Array.isArray(rowArray)) {
               for (const row of rowArray) {
-                await eachComponentDataAsync(row.components, data, fn, component);
+                await eachComponentDataAsync(
+                  row.components,
+                  data,
+                  fn,
+                  includeAll,
+                  component,
+                  compPaths,
+                );
               }
             }
           }
         } else if (info.hasComps) {
-          await eachComponentDataAsync(component.components, data, fn, component);
+          await eachComponentDataAsync(
+            (component as HasChildComponents).components,
+            data,
+            fn,
+            includeAll,
+            component,
+            compPaths,
+          );
         }
         resetComponentScope(component);
         return true;
@@ -92,6 +136,7 @@ export const eachComponentDataAsync = async (
       return false;
     },
     true,
+    parentPaths,
     parent,
   );
 };

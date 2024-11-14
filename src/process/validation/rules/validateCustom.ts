@@ -1,7 +1,7 @@
 import { RuleFn, RuleFnSync, ProcessorInfo, ValidationContext } from 'types';
 import { FieldError, ProcessorError } from 'error';
 import { Evaluator } from 'utils';
-import { normalizeContext } from 'utils/Evaluator';
+import { normalizeContext } from 'utils/formUtil';
 
 export const validateCustom: RuleFn = async (context: ValidationContext) => {
   return validateCustomSync(context);

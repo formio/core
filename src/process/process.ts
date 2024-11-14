@@ -29,11 +29,10 @@ export async function process<ProcessScope>(
   context: ProcessContext<ProcessScope>,
 ): Promise<ProcessScope> {
   const { instances, components, data, scope, flat, processors } = context;
-
   await eachComponentDataAsync(
     components,
     data,
-    async (component, compData, row, path, components, index, parent) => {
+    async (component, compData, row, path, components, index, parent, paths) => {
       // Skip processing if row is null or undefined
       if (!row) {
         return;
@@ -44,6 +43,7 @@ export async function process<ProcessScope>(
         component,
         components,
         path,
+        paths,
         row,
         index,
         instance: instances ? instances[path] : undefined,
@@ -69,11 +69,10 @@ export async function process<ProcessScope>(
 
 export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>): ProcessScope {
   const { instances, components, data, scope, flat, processors } = context;
-
   eachComponentData(
     components,
     data,
-    (component, compData, row, path, components, index, parent) => {
+    (component, compData, row, path, components, index, parent, paths) => {
       // Skip processing if row is null or undefined
       if (!row) {
         return;
@@ -84,6 +83,7 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
         component,
         components,
         path,
+        paths,
         row,
         index,
         instance: instances ? instances[path] : undefined,

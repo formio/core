@@ -7,8 +7,7 @@ import {
   DefaultValueContext,
 } from 'types';
 import { set, has } from 'lodash';
-import { getComponentKey } from 'utils/formUtil';
-import { normalizeContext } from 'utils/Evaluator';
+import { getComponentKey, normalizeContext } from 'utils/formUtil';
 
 export const hasCustomDefaultValue = (context: DefaultValueContext): boolean => {
   const { component } = context;

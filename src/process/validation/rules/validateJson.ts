@@ -3,7 +3,7 @@ import { FieldError } from 'error';
 import { RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 import { isObject } from 'lodash';
-import { normalizeContext } from 'utils/Evaluator';
+import { normalizeContext } from 'utils/formUtil';
 
 export const shouldValidate = (context: ValidationContext) => {
   const { component } = context;

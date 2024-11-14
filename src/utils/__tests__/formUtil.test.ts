@@ -12,10 +12,9 @@ import {
   findComponents,
   getComponent,
   flattenComponents,
-  getComponentActualValue,
+  getComponentValue,
   hasCondition,
   getModelType,
-  setComponentScope,
 } from '../formUtil';
 
 const writtenNumber = (n: number | null) => {
@@ -115,8 +114,9 @@ describe('formUtil', function () {
         input: true,
         key: 'c',
       };
-      setComponentScope(component, 'dataPath', 'a.b.c');
-      const actual = getContextualRowData(component, data);
+      const actual = getContextualRowData(component, data, {
+        dataPath: 'a.b.c',
+      });
       const expected = { c: 'hello' };
       expect(actual).to.deep.equal(expected);
     });
@@ -134,8 +134,9 @@ describe('formUtil', function () {
         input: true,
         key: 'b',
       };
-      setComponentScope(component, 'dataPath', 'a.b');
-      const actual = getContextualRowData(component, data);
+      const actual = getContextualRowData(component, data, {
+        dataPath: 'a.b',
+      });
       const expected = { b: { c: 'hello' } };
       expect(actual).to.deep.equal(expected);
     });
@@ -153,8 +154,9 @@ describe('formUtil', function () {
         input: true,
         key: 'a',
       };
-      setComponentScope(component, 'dataPath', 'a');
-      const actual = getContextualRowData(component, data);
+      const actual = getContextualRowData(component, data, {
+        dataPath: 'a',
+      });
       const expected = { a: { b: { c: 'hello' } } };
       expect(actual).to.deep.equal(expected);
     });
@@ -173,7 +175,6 @@ describe('formUtil', function () {
         input: true,
         key: 'd',
       };
-      setComponentScope(component, 'dataPath', '');
       const actual = getContextualRowData(component, data);
       const expected = { a: { b: { c: 'hello' } }, d: 'there' };
       expect(actual).to.deep.equal(expected);
@@ -191,8 +192,9 @@ describe('formUtil', function () {
         input: true,
         key: 'b',
       };
-      setComponentScope(component, 'dataPath', 'a[0].b');
-      const actual = getContextualRowData(component, data);
+      const actual = getContextualRowData(component, data, {
+        dataPath: 'a[0].b',
+      });
       const expected = { b: 'hello', c: 'world' };
       expect(actual).to.deep.equal(expected);
     });
@@ -209,8 +211,9 @@ describe('formUtil', function () {
         input: true,
         key: 'b',
       };
-      setComponentScope(component, 'dataPath', 'a[1].b');
-      const actual = getContextualRowData(component, data);
+      const actual = getContextualRowData(component, data, {
+        dataPath: 'a[1].b',
+      });
       const expected = { b: 'foo', c: 'bar' };
       expect(actual).to.deep.equal(expected);
     });
@@ -227,8 +230,9 @@ describe('formUtil', function () {
         input: true,
         key: 'a',
       };
-      setComponentScope(component, 'dataPath', 'a');
-      const actual = getContextualRowData(component, data);
+      const actual = getContextualRowData(component, data, {
+        dataPath: 'a',
+      });
       const expected = {
         a: [
           { b: 'hello', c: 'world' },
@@ -274,8 +278,9 @@ describe('formUtil', function () {
         input: true,
         key: 'c',
       };
-      setComponentScope(component, 'dataPath', 'a.b[0].c');
-      const actual = getContextualRowData(component, data);
+      const actual = getContextualRowData(component, data, {
+        dataPath: 'a.b[0].c',
+      });
       const expected = { c: 'hello', d: 'world' };
       expect(actual).to.deep.equal(expected);
     });
@@ -294,8 +299,9 @@ describe('formUtil', function () {
         input: true,
         key: 'c',
       };
-      setComponentScope(component, 'dataPath', 'a.b[1].c');
-      const actual = getContextualRowData(component, data);
+      const actual = getContextualRowData(component, data, {
+        dataPath: 'a.b[1].c',
+      });
       const expected = { c: 'foo', d: 'bar' };
       expect(actual).to.deep.equal(expected);
     });
@@ -314,8 +320,9 @@ describe('formUtil', function () {
         input: true,
         key: 'b',
       };
-      setComponentScope(component, 'dataPath', 'a.b');
-      const actual = getContextualRowData(component, data);
+      const actual = getContextualRowData(component, data, {
+        dataPath: 'a.b',
+      });
       const expected = {
         b: [
           { c: 'hello', d: 'world' },
@@ -339,8 +346,9 @@ describe('formUtil', function () {
         input: true,
         key: 'a',
       };
-      setComponentScope(component, 'dataPath', 'a');
-      const actual = getContextualRowData(component, data);
+      const actual = getContextualRowData(component, data, {
+        dataPath: 'a',
+      });
       const expected = {
         a: {
           b: [
@@ -366,7 +374,6 @@ describe('formUtil', function () {
         input: true,
         key: 'a',
       };
-      setComponentScope(component, 'dataPath', '');
       const actual = getContextualRowData(component, data);
       const expected = {
         a: {
@@ -393,8 +400,9 @@ describe('formUtil', function () {
         input: true,
         key: 'c.e',
       };
-      setComponentScope(component, 'dataPath', 'a.b[0].c.e');
-      const actual = getContextualRowData(component, data);
+      const actual = getContextualRowData(component, data, {
+        dataPath: 'a.b[0].c.e',
+      });
       const expected = { c: { e: 'zed' }, d: 'world' };
       expect(actual).to.deep.equal(expected);
     });
@@ -669,7 +677,6 @@ describe('formUtil', function () {
           const value = get(data, path);
           rowResults.set(path, [component, value]);
         },
-        undefined,
         true,
       );
       expect(rowResults.size).to.equal(2);
@@ -778,7 +785,7 @@ describe('formUtil', function () {
                 tableView: true,
               },
               {
-                type: 'editGrid',
+                type: 'editgrid',
                 key: 'nestedEditGrid',
                 input: true,
                 tableView: true,
@@ -1434,7 +1441,6 @@ describe('formUtil', function () {
           const value = get(data, path);
           rowResults.set(path, [component, value]);
         },
-        undefined,
         true,
       );
       expect(rowResults.size).to.equal(2);
@@ -1459,49 +1465,65 @@ describe('formUtil', function () {
     });
   });
 
-  describe('getComponentActualValue', function () {
+  describe('getComponentValue', function () {
     it('Should return correct value for component inside inside panel inside editGrid', function () {
-      const component = {
-        label: 'Radio',
-        optionsLabelPosition: 'right',
-        inline: false,
-        tableView: false,
-        values: [
-          { label: 'yes', value: 'yes', shortcut: '' },
-          { label: 'no', value: 'no', shortcut: '' },
-        ],
-        key: 'radio',
-        type: 'radio',
-        input: true,
-        path: 'editGrid.radio',
-        parent: {
-          collapsible: false,
-          key: 'panel',
-          type: 'panel',
-          label: 'Panel',
-          input: false,
-          tableView: false,
-          path: 'editGrid[0].panel',
-          parent: {
-            label: 'Edit Grid',
-            tableView: false,
-            rowDrafts: false,
-            key: 'editGrid',
-            type: 'editgrid',
-            path: 'editGrid',
-            displayAsTable: false,
-            input: true,
-          },
-        },
-      };
       const compPath = 'editGrid.radio';
       const data = {
-        editGrid: [{ radio: 'yes', textArea: 'test' }],
+        form: {
+          data: {
+            editGrid: [{ radio: 'yes', textArea: 'test' }],
+          },
+        },
         submit: true,
       };
-      const row = { radio: 'yes', textArea: 'test' };
-
-      const value = getComponentActualValue(component, compPath, data, row);
+      const value = getComponentValue(
+        {
+          components: [
+            {
+              type: 'panel',
+              label: 'Panel',
+              key: 'panel',
+              input: false,
+              components: [
+                {
+                  type: 'form',
+                  key: 'form',
+                  input: false,
+                  components: [
+                    {
+                      type: 'panel',
+                      key: 'panel',
+                      label: 'Panel',
+                      input: false,
+                      components: [
+                        {
+                          type: 'editgrid',
+                          key: 'editGrid',
+                          input: true,
+                          components: [
+                            {
+                              type: 'radio',
+                              key: 'radio',
+                              label: 'Radio',
+                              input: true,
+                              values: [
+                                { label: 'yes', value: 'yes', shortcut: '' },
+                                { label: 'no', value: 'no', shortcut: '' },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        data,
+        compPath,
+      );
       expect(value).to.equal('yes');
     });
   });

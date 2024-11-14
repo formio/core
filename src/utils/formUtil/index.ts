@@ -4,7 +4,6 @@ import {
   set,
   isEmpty,
   isNil,
-  isObject,
   has,
   isString,
   forOwn,
@@ -14,7 +13,6 @@ import {
   isPlainObject,
   isArray,
   isEqual,
-  trim,
   isBoolean,
   omit,
   every,
@@ -42,6 +40,10 @@ import {
   AddressComponent,
   SelectComponent,
   ComponentScope,
+  ComponentPaths,
+  ComponentPath,
+  Form,
+  ValidationContext,
 } from 'types';
 import { Evaluator } from '../Evaluator';
 import { eachComponent } from './eachComponent';
@@ -111,127 +113,6 @@ export function uniqueName(name: string, template?: string, evalContext?: any) {
 }
 
 /**
- * Defines the Component paths used for every component within a form. This allows for
- * quick reference to either the "form" path or the "data" path of a component. These paths are
- * defined as follows.
- *
- *  - Form Path: The path to a component within the Form JSON. This path is used to locate a component provided a nested Form JSON object.
- *  - Data Path: The path to the data value of a component within the data model for the form. This path is used to provide the value path provided the Submission JSON object.
- *
- * These paths can also be broken into two different path "types".   Local and Full paths.
- *
- *  - Local Path: This is the path relative to the "current" form. This is used inside of a nested form to identify components and values relative to the current form in context.
- *  - Full Path: This is the path that is absolute to the root form object. Any nested form paths will include the parent form path as part of the value for the provided path.
- */
-export enum COMPONENT_PATH {
-  /**
-   * The "form" path to the component including all parent paths (exclusive of layout components). This path is used to uniquely identify component within a form inclusive of any parent form paths.
-   *
-   * For example: Suppose you have the following form structure.
-   *    - Root
-   *      - Panel 1 (panel)
-   *        - Form (form)
-   *          - Panel 2 (panel2)
-   *            - Data Grid (dataGrid)
-   *              - Panel 3 (panel3)
-   *                - TextField (textField)
-   *
-   * The "path" to the TextField component from the perspective of a configuration within the Form, would be "form.dataGrid.textField"
-   */
-  FORM = 'path',
-
-  /**
-   * The "form" path to the component including all parent paths (inclusive of layout componnts). This path is used to uniquely identify component within a form inclusive of any parent form paths.
-   *
-   * For example: Suppose you have the following form structure.
-   *    - Root
-   *      - Panel 1 (panel)
-   *        - Form (form)
-   *          - Panel 2 (panel2)
-   *            - Data Grid (dataGrid)
-   *              - Panel 3 (panel3)
-   *                - TextField (textField)
-   *
-   * The "fullPath" to the TextField component from the perspective of a configuration within the Form, would be "panel1.form.panel2.dataGrid.panel3.textField"
-   */
-  FULL_FORM = 'fullPath',
-
-  /**
-   * The local "form" path to the component. This is the local path to any component within a form. This
-   * path is consistent no matter if this form is nested within another form or not. All form configurations
-   * are in relation to this path since forms are configured independently. The difference between a form path
-   * and a dataPath is that this includes any parent layout components to locate the component provided a form JSON.
-   * This path does NOT include any layout components.
-   *
-   * For example: Suppose you have the following form structure.
-   *    - Root
-   *      - Panel 1 (panel)
-   *        - Form (form)
-   *          - Panel 2 (panel2)
-   *            - Data Grid (dataGrid)
-   *              - Panel 3 (panel3)
-   *                - TextField (textField)
-   *
-   * The "path" to the TextField component from the perspective of a configuration within the Form, would be "dataGrid.textField"
-   */
-  LOCAL_FORM = 'localPath',
-
-  /**
-   * The local "form" path to the component. This is the local path to any component within a form. This
-   * path is consistent no matter if this form is nested within another form or not. All form configurations
-   * are in relation to this path since forms are configured independently. The difference between a form path
-   * and a dataPath is that this includes any parent layout components to locate the component provided a form JSON.
-   * This path does NOT include any layout components.
-   *
-   * For example: Suppose you have the following form structure.
-   *    - Root
-   *      - Panel 1 (panel)
-   *        - Form (form)
-   *          - Panel 2 (panel2)
-   *            - Data Grid (dataGrid)
-   *              - Panel 3 (panel3)
-   *                - TextField (textField)
-   *
-   * The "path" to the TextField component from the perspective of a configuration within the Form, would be "dataGrid.textField"
-   */
-  FULL_LOCAL_FORM = 'fullLocalPath',
-
-  /**
-   *  The "data" path to the component including all parent paths. This path is used to fetch the data value of a component within a data model, inclusive of any parent data paths of nested forms.
-   *
-   * For example: Suppose you have the following form structure.
-   *    - Root
-   *      - Panel 1 (panel)
-   *        - Form (form)
-   *          - Panel 2 (panel2)
-   *            - Data Grid (dataGrid)
-   *              - Panel 3 (panel3)
-   *                - TextField (textField)
-   *
-   * The "dataPath" to the TextField component would be "form.data.dataGrid[1].textField"
-   */
-  DATA = 'dataPath',
-
-  /**
-   * The "data" path is the local path to the data value for any component. The difference between this path
-   * and the "path" is that this path is used to locate the data value for a component within the data model.
-   * and does not include any keys for layout components.
-   *
-   * For example: Suppose you have the following form structure.
-   *    - Root
-   *      - Panel 1 (panel)
-   *        - Form (form)
-   *          - Panel 2 (panel2)
-   *            - Data Grid (dataGrid)
-   *              - Panel 3 (panel3)
-   *                - TextField (textField)
-   *
-   * The "localDataPath" to the TextField component from the perspective of a configuration within the Form, would be "dataGrid[1].textField"
-   */
-  LOCAL_DATA = 'localDataPath',
-}
-
-/**
  * Defines model types for known components.
  * For now, these will be the only model types supported by the @formio/core library.
  *
@@ -292,36 +173,32 @@ export function getModelType(component: Component): keyof typeof MODEL_TYPES_OF_
     return component.modelType;
   }
 
+  let modelType: keyof typeof MODEL_TYPES_OF_KNOWN_COMPONENTS = 'any';
+
   // Otherwise, check for known component types.
   for (const type of Object.keys(
     MODEL_TYPES_OF_KNOWN_COMPONENTS,
   ) as (keyof typeof MODEL_TYPES_OF_KNOWN_COMPONENTS)[]) {
     if (MODEL_TYPES_OF_KNOWN_COMPONENTS[type].includes(component.type)) {
-      return type;
+      modelType = type;
+      break;
     }
   }
 
   // Otherwise check for components that assert no value.
-  if (component.input === false) {
-    return 'none';
+  if (modelType === 'any' && component.input === false) {
+    modelType = 'none';
   }
+
+  // To speed up performance of getModelType, we will set the modelType on the component as a non-enumerable property.
+  Object.defineProperty(component, 'modelType', {
+    enumerable: false,
+    writable: true,
+    value: modelType,
+  });
 
   // Otherwise default to any.
-  return 'any';
-}
-
-export function getComponentPath(component: Component, path: string) {
-  const key = getComponentKey(component);
-  if (!key) {
-    return path;
-  }
-  if (!path) {
-    return key;
-  }
-  if (path.match(new RegExp(`${escapeRegExp(key)}$`))) {
-    return path;
-  }
-  return getModelType(component) === 'none' ? `${path}.${key}` : path;
+  return modelType;
 }
 
 export function isComponentNestedDataType(component: any): component is HasChildComponents {
@@ -340,6 +217,9 @@ export function setComponentScope(
   name: keyof NonNullable<ComponentScope>,
   value: string | boolean | number,
 ) {
+  if (!component) {
+    return;
+  }
   if (!component.scope) {
     Object.defineProperty(component, 'scope', {
       enumerable: false,
@@ -368,21 +248,31 @@ export function resetComponentScope(component: Component) {
  * @param type - The type of path to return.
  * @returns
  */
-export function componentPath(component: Component, type: COMPONENT_PATH): string {
-  const parent = component.parent;
+export function componentPath(
+  component: Component,
+  parent: Component | undefined | null,
+  parentPaths: ComponentPaths | undefined | null,
+  type: ComponentPath,
+): string {
+  if (!component) {
+    return '';
+  }
+  if ((component as any).component) {
+    component = (component as any).component;
+  }
   const compModel = getModelType(component);
 
   // Relative paths are only referenced from the current form.
   const relative =
-    type === COMPONENT_PATH.LOCAL_FORM ||
-    type === COMPONENT_PATH.FULL_LOCAL_FORM ||
-    type === COMPONENT_PATH.LOCAL_DATA;
+    type === ComponentPath.localPath ||
+    type === ComponentPath.fullLocalPath ||
+    type === ComponentPath.localDataPath;
 
   // Full paths include all layout component ids in the path.
-  const fullPath = type === COMPONENT_PATH.FULL_FORM || type === COMPONENT_PATH.FULL_LOCAL_FORM;
+  const fullPath = type === ComponentPath.fullPath || type === ComponentPath.fullLocalPath;
 
   // See if this is a data path.
-  const dataPath = type === COMPONENT_PATH.DATA || type === COMPONENT_PATH.LOCAL_DATA;
+  const dataPath = type === ComponentPath.dataPath || type === ComponentPath.localDataPath;
 
   // Determine if this component should include its key.
   const includeKey =
@@ -405,16 +295,13 @@ export function componentPath(component: Component, type: COMPONENT_PATH): strin
   }
 
   // Return the parent path.
-  let parentPath = parent.scope ? (parent.scope as any)[type] || '' : '';
+  let parentPath = parentPaths?.hasOwnProperty(type) ? parentPaths[type] || '' : '';
 
   // For data paths (where we wish to get the path to the data), we need to ensure we append the parent
   // paths to the end of the path so that any component within this component properly references their data.
   if (dataPath && parentPath) {
-    if (
-      parent.scope?.dataIndex !== undefined &&
-      (parentModel === 'nestedArray' || parentModel === 'nestedDataArray')
-    ) {
-      parentPath += `[${parent.scope?.dataIndex}]`;
+    if (parentModel === 'nestedArray' || parentModel === 'nestedDataArray') {
+      parentPath += `[${parentPaths?.dataIndex || 0}]`;
     }
     if (parentModel === 'dataObject' || parentModel === 'nestedDataArray') {
       parentPath += '.data';
@@ -426,105 +313,166 @@ export function componentPath(component: Component, type: COMPONENT_PATH): strin
 }
 
 /**
- * The types of paths that can be set on a component.
- */
-export type ComponentPaths = {
-  path?: string;
-  fullPath?: string;
-  localPath?: string;
-  fullLocalPath?: string;
-  dataPath?: string;
-  localDataPath?: string;
-};
-
-/**
- * @param component - The component to establish paths for.
- * @param paths - The ComponentPaths object to set the paths on this component.
- */
-export function setComponentPaths(component: Component, paths: ComponentPaths = {}) {
-  Object.defineProperty(component, 'modelType', {
-    enumerable: false,
-    writable: true,
-    value: getModelType(component),
-  });
-  if (paths.hasOwnProperty(COMPONENT_PATH.FORM)) {
-    // Do not mutate the component path if it is already set.
-    if (!component.path) {
-      Object.defineProperty(component, 'path', {
-        enumerable: false,
-        writable: true,
-        value: paths[COMPONENT_PATH.FORM],
-      });
-    }
-    setComponentScope(component, COMPONENT_PATH.FORM, paths[COMPONENT_PATH.FORM] || '');
-  }
-  if (paths.hasOwnProperty(COMPONENT_PATH.FULL_FORM)) {
-    setComponentScope(component, COMPONENT_PATH.FULL_FORM, paths[COMPONENT_PATH.FULL_FORM] || '');
-  }
-  if (paths.hasOwnProperty(COMPONENT_PATH.LOCAL_FORM)) {
-    setComponentScope(component, COMPONENT_PATH.LOCAL_FORM, paths[COMPONENT_PATH.LOCAL_FORM] || '');
-  }
-  if (paths.hasOwnProperty(COMPONENT_PATH.FULL_LOCAL_FORM)) {
-    setComponentScope(
-      component,
-      COMPONENT_PATH.FULL_LOCAL_FORM,
-      paths[COMPONENT_PATH.FULL_LOCAL_FORM] || '',
-    );
-  }
-  if (paths.hasOwnProperty(COMPONENT_PATH.DATA)) {
-    setComponentScope(component, COMPONENT_PATH.DATA, paths[COMPONENT_PATH.DATA] || '');
-  }
-  if (paths.hasOwnProperty(COMPONENT_PATH.LOCAL_DATA)) {
-    setComponentScope(component, COMPONENT_PATH.LOCAL_DATA, paths[COMPONENT_PATH.LOCAL_DATA] || '');
-  }
-}
-
-export function setDefaultComponentPaths(component: Component) {
-  setComponentPaths(component, {
-    path: componentPath(component, COMPONENT_PATH.FORM),
-    fullPath: componentPath(component, COMPONENT_PATH.FULL_FORM),
-    localPath: componentPath(component, COMPONENT_PATH.LOCAL_FORM),
-    fullLocalPath: componentPath(component, COMPONENT_PATH.FULL_LOCAL_FORM),
-  });
-}
-
-/**
- * Sets the parent reference on a component, and ensures the component paths are set as well
- * as removes any circular references.
+ * This method determines a components paths provided the component JSON, the parent and the parent paths.
  * @param component
  * @param parent
+ * @param parentPaths
  * @returns
  */
-export function setParentReference(component: Component, parent?: Component) {
-  if (!parent) {
-    return;
+export function getComponentPaths(
+  component: Component,
+  parent?: Component,
+  parentPaths?: ComponentPaths,
+): ComponentPaths {
+  return {
+    path: componentPath(component, parent, parentPaths, ComponentPath.path),
+    fullPath: componentPath(component, parent, parentPaths, ComponentPath.fullPath),
+    localPath: componentPath(component, parent, parentPaths, ComponentPath.localPath),
+    fullLocalPath: componentPath(component, parent, parentPaths, ComponentPath.fullLocalPath),
+    dataPath: componentPath(component, parent, parentPaths, ComponentPath.dataPath),
+    localDataPath: componentPath(component, parent, parentPaths, ComponentPath.localDataPath),
+    dataIndex: parentPaths?.dataIndex,
+  };
+}
+
+export type ComponentMatch = {
+  component: Component | undefined;
+  paths: ComponentPaths | undefined;
+};
+
+export function componentMatches(
+  component: Component,
+  paths: ComponentPaths,
+  formPath: string,
+  dataIndex?: number,
+  matches: Record<string, ComponentMatch | undefined> = {
+    path: undefined,
+    fullPath: undefined,
+    localPath: undefined,
+    dataPath: undefined,
+    localDataPath: undefined,
+    fullLocalPath: undefined,
+    key: undefined,
+  },
+) {
+  let dataProperty = '';
+  if (component.type === 'selectboxes') {
+    const valuePath = new RegExp(`(\\.${escapeRegExp(component.key)})(\\.[^\\.]+)$`);
+    const pathMatches = formPath.match(valuePath);
+    if (pathMatches?.length === 3) {
+      dataProperty = pathMatches[2];
+      formPath = formPath.replace(valuePath, '$1');
+    }
   }
-  const parentRef = JSON.parse(JSON.stringify(parent));
-  delete parentRef.components;
-  delete parentRef.componentMap;
-  delete parentRef.columns;
-  delete parentRef.rows;
-  setComponentPaths(parentRef, {
-    path: parent.path,
-    localPath: parent.scope?.localPath || '',
-    fullPath: parent.scope?.fullPath || '',
-    fullLocalPath: parent.scope?.fullLocalPath || '',
+  [
+    ComponentPath.path,
+    ComponentPath.fullPath,
+    ComponentPath.localPath,
+    ComponentPath.fullLocalPath,
+  ].forEach((type) => {
+    if (paths[type as ComponentPath] === formPath) {
+      if (!matches[type as ComponentPath]) {
+        matches[type as ComponentPath] = { component, paths };
+      }
+      if (!matches.dataPath || dataIndex === paths.dataIndex) {
+        const dataPaths = {
+          dataPath: paths.dataPath || '',
+          localDataPath: paths.localDataPath || '',
+        };
+        if (dataProperty) {
+          dataPaths.dataPath += dataProperty;
+          dataPaths.localDataPath += dataProperty;
+        }
+        matches.dataPath = {
+          component,
+          paths: {
+            ...paths,
+            ...dataPaths,
+          },
+        };
+      }
+    }
   });
-  Object.defineProperty(parentRef, 'scope', {
-    enumerable: false,
-    writable: true,
-    value: parent.scope,
-  });
-  Object.defineProperty(parentRef, 'parent', {
-    enumerable: false,
-    writable: true,
-    value: parent.parent,
-  });
-  Object.defineProperty(component, 'parent', {
-    enumerable: false,
-    writable: true,
-    value: parentRef,
-  });
+  if (!matches.key && component.input !== false && component.key === formPath) {
+    matches.key = { component, paths };
+  }
+}
+
+export function getBestMatch(
+  matches: Record<string, ComponentMatch | undefined>,
+): ComponentMatch | undefined {
+  if (matches.dataPath) {
+    return matches.dataPath;
+  }
+  if (matches.localDataPath) {
+    return matches.localDataPath;
+  }
+  if (matches.fullPath) {
+    return matches.fullPath;
+  }
+  if (matches.path) {
+    return matches.path;
+  }
+  if (matches.fullLocalPath) {
+    return matches.fullLocalPath;
+  }
+  if (matches.localPath) {
+    return matches.localPath;
+  }
+  if (matches.key) {
+    return matches.key;
+  }
+  return undefined;
+}
+
+/**
+ * This method performs a fuzzy search for a component within a form provided a number of different
+ * paths to search.
+ */
+export function getComponentFromPath(
+  components: Component[],
+  path: any,
+  data?: any,
+  dataIndex?: number,
+  includeAll: any = false,
+): ComponentMatch | undefined {
+  const matches: Record<string, ComponentMatch | undefined> = {
+    path: undefined,
+    fullPath: undefined,
+    localPath: undefined,
+    fullLocalPath: undefined,
+    dataPath: undefined,
+    localDataPath: undefined,
+    key: undefined,
+  };
+  if (data) {
+    eachComponentData(
+      components,
+      data,
+      (
+        component: Component,
+        data: DataObject,
+        row: any,
+        compPath: string,
+        comps,
+        index,
+        parent,
+        paths,
+      ) => {
+        componentMatches(component, paths || {}, path, dataIndex, matches);
+      },
+      includeAll,
+    );
+  } else {
+    eachComponent(
+      components,
+      (component: Component, compPath: any, componentComponents, compParent, paths) => {
+        componentMatches(component, paths || {}, path, dataIndex, matches);
+      },
+      includeAll,
+    );
+  }
+  return getBestMatch(matches);
 }
 
 /**
@@ -535,6 +483,9 @@ export function setParentReference(component: Component, parent?: Component) {
  * @returns
  */
 export function getComponentKey(component: Component) {
+  if (!component) {
+    return '';
+  }
   if (
     component.type === 'checkbox' &&
     component.inputType === 'radio' &&
@@ -545,26 +496,23 @@ export function getComponentKey(component: Component) {
   return component.key;
 }
 
-export function getContextualRowPath(component: Component): string {
+export function getContextualRowPath(component: Component, paths?: ComponentPaths): string {
+  if (!paths) {
+    return '';
+  }
   return (
-    component.scope?.dataPath?.replace(
-      new RegExp(`.?${escapeRegExp(getComponentKey(component))}$`),
-      '',
-    ) || ''
+    paths.dataPath?.replace(new RegExp(`.?${escapeRegExp(getComponentKey(component))}$`), '') || ''
   );
 }
 
-export function getContextualRowData(component: Component, data: any): any {
-  const rowPath = getContextualRowPath(component);
+export function getContextualRowData(component: Component, data: any, paths?: ComponentPaths): any {
+  const rowPath = getContextualRowPath(component, paths);
   return rowPath ? get(data, rowPath, null) : data;
 }
 
-export function getComponentLocalData(component: Component, data: any): string {
+export function getComponentLocalData(paths: ComponentPaths, data: any): string {
   const parentPath =
-    component.scope?.dataPath?.replace(
-      new RegExp(`.?${escapeRegExp(component.scope?.localDataPath)}$`),
-      '',
-    ) || '';
+    paths.dataPath?.replace(new RegExp(`.?${escapeRegExp(paths.localDataPath)}$`), '') || '';
   return parentPath ? get(data, parentPath, null) : data;
 }
 
@@ -584,6 +532,9 @@ export function shouldProcessComponent(component: Component, row: any, value: an
 }
 
 export function componentInfo(component: any) {
+  if (component.component) {
+    return componentInfo(component.component);
+  }
   const hasColumns = component.columns && Array.isArray(component.columns);
   const hasRows = component.rows && Array.isArray(component.rows);
   const hasComps = component.components && Array.isArray(component.components);
@@ -616,49 +567,23 @@ export function getComponentData(components: Component[], data: DataObject, path
   return compData;
 }
 
-export function getComponentActualValue(
-  component: Component,
-  compPath: string,
-  data: any,
-  row: any,
+export function getComponentValue(
+  form: Form | undefined,
+  data: DataObject,
+  path: string,
+  dataIndex?: number,
 ) {
-  // The compPath here will NOT contain the indexes for DataGrids and EditGrids.
-  //
-  //   a[0].b[2].c[3].d
-  //
-  // Because of this, we will need to determine our parent component path (not data path),
-  // and find the "row" based comp path.
-  //
-  //   a[0].b[2].c[3].d => a.b.c.d
-  //
-  let parentInputComponent: any = null;
-  let parent = component;
-  let rowPath = '';
-
-  while (parent?.parent?.path && !parentInputComponent) {
-    parent = parent.parent;
-    if (parent.input) {
-      parentInputComponent = parent;
-    }
+  const match: ComponentMatch | undefined = getComponentFromPath(
+    form?.components || [],
+    path,
+    data,
+    dataIndex,
+  );
+  if (!match) {
+    // Fall back to get the value from the data object.
+    return get(data, path, undefined);
   }
-
-  if (parentInputComponent) {
-    const parentCompPath = parentInputComponent.path.replace(/\[[0-9]+\]/g, '');
-    rowPath = compPath.replace(parentCompPath, '');
-    rowPath = trim(rowPath, '. ');
-  }
-
-  let value = null;
-  if (data) {
-    value = get(data, compPath);
-  }
-  if (rowPath && row && isNil(value)) {
-    value = get(row, rowPath);
-  }
-  if (isNil(value) || (isObject(value) && isEmpty(value))) {
-    value = '';
-  }
-  return value;
+  return match?.paths?.dataPath ? get(data, match.paths.dataPath, undefined) : null;
 }
 
 /**
@@ -687,11 +612,9 @@ export function isLayoutComponent(component: Component) {
  * @param query
  * @return {boolean}
  */
-export function matchComponent(component: Component, query: any) {
+export function matchComponent(component: Component, query: any, paths?: ComponentPaths) {
   if (isString(query)) {
-    return (
-      component.key === query || component.scope?.localPath === query || component.path === query
-    );
+    return component.key === query || paths?.localPath === query || paths?.path === query;
   } else {
     let matches = false;
     forOwn(query, (value, key) => {
@@ -705,35 +628,20 @@ export function matchComponent(component: Component, query: any) {
 }
 
 /**
- * Get a component by its key
+ * Get a component by its path.
  *
  * @param {Object} components - The components to iterate.
- * @param {String|Object} key - The key of the component to get, or a query of the component to search.
+ * @param {String|Object} path - The key of the component to get, or a query of the component to search.
  * @param {boolean} includeAll - Whether or not to include layout components.
  * @returns {Component} - The component that matches the given key, or undefined if not found.
  */
 export function getComponent(
   components: Component[],
-  key: any,
+  path: any,
   includeAll: any = false,
+  dataIndex?: number, // The preferred last data index of the component to find.
 ): Component | undefined {
-  let result;
-  eachComponent(
-    components,
-    (component: Component, path: any) => {
-      if (
-        path === key ||
-        component.scope?.localPath === key ||
-        component.path === key ||
-        (component.input !== false && component.key === key)
-      ) {
-        result = component;
-        return true;
-      }
-    },
-    includeAll,
-  );
-  return result;
+  return getComponentFromPath(components, path, undefined, dataIndex, includeAll)?.component;
 }
 
 /**
@@ -747,8 +655,8 @@ export function searchComponents(components: Component[], query: any): Component
   const results: Component[] = [];
   eachComponent(
     components,
-    (component: any) => {
-      if (matchComponent(component, query)) {
+    (component: any, compPath, components, parent, compPaths) => {
+      if (matchComponent(component, query, compPaths)) {
         results.push(component);
       }
     },
@@ -1373,6 +1281,25 @@ export function compareSelectResourceWithObjectTypeValues(
   return every(getItemTemplateKeys(template) || [], (k) =>
     isEqual(get(value, k), get(comparedValue, k)),
   );
+}
+
+export function getComponentErrorField(component: Component, context: ValidationContext) {
+  const toInterpolate =
+    component.errorLabel || component.label || component.placeholder || component.key;
+  return Evaluator.interpolate(toInterpolate, context);
+}
+
+export function normalizeContext(context: any): any {
+  const { data, paths } = context;
+  return paths
+    ? {
+        ...context,
+        ...{
+          path: paths.localDataPath,
+          data: getComponentLocalData(paths, data),
+        },
+      }
+    : context;
 }
 
 export { eachComponent, eachComponentData, eachComponentAsync, eachComponentDataAsync };

@@ -7,7 +7,7 @@ import {
   ProcessorInfo,
 } from 'types';
 import { set } from 'lodash';
-import { normalizeContext } from 'utils/Evaluator';
+import { normalizeContext } from 'utils/formUtil';
 
 export const shouldCalculate = (context: CalculationContext): boolean => {
   const { component, config } = context;

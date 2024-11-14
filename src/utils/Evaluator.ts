@@ -1,5 +1,4 @@
 import { noop, trim, keys, get, set, isObject, values } from 'lodash';
-import { getComponentLocalData } from './formUtil';
 
 export interface EvaluatorOptions {
   noeval?: boolean;
@@ -11,17 +10,6 @@ export type EvaluatorContext = {
   instance?: any;
   [key: string]: any;
 };
-
-export function normalizeContext(context: any): any {
-  const { component, data } = context;
-  return {
-    ...context,
-    ...{
-      path: component.scope?.localDataPath,
-      data: getComponentLocalData(component, data),
-    },
-  };
-}
 
 // BaseEvaluator is for extending.
 export class BaseEvaluator {

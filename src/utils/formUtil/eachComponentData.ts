@@ -6,17 +6,14 @@ import {
   HasChildComponents,
   HasColumns,
   HasRows,
+  ComponentPaths,
 } from 'types';
 import {
   isComponentNestedDataType,
   componentInfo,
   getContextualRowData,
   shouldProcessComponent,
-  componentPath,
-  setComponentScope,
   resetComponentScope,
-  COMPONENT_PATH,
-  setComponentPaths,
   getModelType,
 } from './index';
 import { eachComponent } from './eachComponent';
@@ -35,40 +32,40 @@ export const eachComponentData = (
   components: Component[],
   data: DataObject,
   fn: EachComponentDataCallback,
-  parent?: Component,
   includeAll: boolean = false,
+  parent?: Component,
+  parentPaths?: ComponentPaths,
 ) => {
   if (!components) {
     return;
   }
   return eachComponent(
     components,
-    (component, compPath, componentComponents, compParent) => {
-      setComponentPaths(component, {
-        dataPath: componentPath(component, COMPONENT_PATH.DATA),
-        localDataPath: componentPath(component, COMPONENT_PATH.LOCAL_DATA),
-      });
-      const row = getContextualRowData(component, data);
+    (component, compPath, componentComponents, compParent, compPaths) => {
+      const row = getContextualRowData(component, data, compPaths);
       if (
         fn(
           component,
           data,
           row,
-          component.scope?.dataPath || '',
+          compPaths?.dataPath || '',
           componentComponents,
-          component.scope?.dataIndex,
+          compPaths?.dataIndex,
           compParent,
+          compPaths,
         ) === true
       ) {
         resetComponentScope(component);
         return true;
       }
       if (isComponentNestedDataType(component)) {
-        const value = get(data, component.scope?.dataPath || '') as DataObject;
+        const value = get(data, compPaths?.dataPath || '') as DataObject;
         if (Array.isArray(value)) {
           for (let i = 0; i < value.length; i++) {
-            setComponentScope(component, 'dataIndex', i);
-            eachComponentData(component.components, data, fn, component, includeAll);
+            if (compPaths) {
+              compPaths.dataIndex = i;
+            }
+            eachComponentData(component.components, data, fn, includeAll, component, compPaths);
           }
           resetComponentScope(component);
           return true;
@@ -77,7 +74,7 @@ export const eachComponentData = (
             resetComponentScope(component);
             return true;
           }
-          eachComponentData(component.components, data, fn, component, includeAll);
+          eachComponentData(component.components, data, fn, includeAll, component, compPaths);
         }
         resetComponentScope(component);
         return true;
@@ -85,16 +82,25 @@ export const eachComponentData = (
         const info = componentInfo(component);
         if (info.hasColumns) {
           (component as HasColumns).columns.forEach((column: any) =>
-            eachComponentData(column.components, data, fn, component),
+            eachComponentData(column.components, data, fn, includeAll, component, compPaths),
           );
         } else if (info.hasRows) {
           (component as HasRows).rows.forEach((row: any) => {
             if (Array.isArray(row)) {
-              row.forEach((row) => eachComponentData(row.components, data, fn, component));
+              row.forEach((row) =>
+                eachComponentData(row.components, data, fn, includeAll, component, compPaths),
+              );
             }
           });
         } else if (info.hasComps) {
-          eachComponentData((component as HasChildComponents).components, data, fn, component);
+          eachComponentData(
+            (component as HasChildComponents).components,
+            data,
+            fn,
+            includeAll,
+            component,
+            compPaths,
+          );
         }
         resetComponentScope(component);
         return true;
@@ -103,6 +109,7 @@ export const eachComponentData = (
       return false;
     },
     true,
+    parentPaths,
     parent,
   );
 };

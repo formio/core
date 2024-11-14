@@ -1,9 +1,8 @@
 import { ConditionsContext, JSONConditional, LegacyConditional, SimpleConditional } from 'types';
 import { EvaluatorFn, evaluate, JSONLogicEvaluator } from 'modules/jsonlogic';
-import { flattenComponents, getComponent, getComponentActualValue } from './formUtil';
-import { has, isObject, map, every, some, find, filter, isBoolean, split } from 'lodash';
+import { getComponent, getComponentValue, normalizeContext } from './formUtil';
+import { has, isObject, map, every, some, find, filter } from 'lodash';
 import ConditionOperators from './operators';
-import { normalizeContext } from './Evaluator';
 
 export const isJSONConditional = (conditional: any): conditional is JSONConditional => {
   return conditional && conditional.json && isObject(conditional.json);
@@ -65,11 +64,11 @@ export function checkLegacyConditional(
   conditional: LegacyConditional,
   context: ConditionsContext,
 ): boolean | null {
-  const { row, data, component } = context;
+  const { data, form } = context;
   if (!conditional || !isLegacyConditional(conditional) || !conditional.when) {
     return null;
   }
-  const value: any = getComponentActualValue(component, conditional.when, data, row);
+  const value: any = getComponentValue(form, data, conditional.when);
   const eq = String(conditional.eq);
   const show = String(conditional.show);
   if (isObject(value) && has(value, eq)) {
@@ -102,25 +101,6 @@ export function checkJsonConditional(
 }
 
 /**
- * Checks if condition can potentially have a value path instead of component path.
- * @param condition
- * @returns {boolean}
- */
-function isConditionPotentiallyBasedOnValuePath(condition: any = {}) {
-  let comparedValue;
-  try {
-    comparedValue = JSON.parse(condition.value);
-  } catch (ignoreError) {
-    comparedValue = condition.value;
-  }
-  return (
-    isBoolean(comparedValue) &&
-    (condition.component || '').split('.').length > 1 &&
-    condition.operator === 'isEqual'
-  );
-}
-
-/**
  * Checks the simple conditionals.
  * @param conditional
  * @param context
@@ -130,7 +110,7 @@ export function checkSimpleConditional(
   conditional: SimpleConditional,
   context: ConditionsContext,
 ): boolean | null {
-  const { component, data, row, instance, form } = context;
+  const { component, data, instance, form, paths } = context;
   if (!conditional || !isSimpleConditional(conditional)) {
     return null;
   }
@@ -142,52 +122,21 @@ export function checkSimpleConditional(
   const conditionsResult = filter(
     map(conditions, (cond) => {
       const { operator } = cond;
-      let { value: comparedValue, component: conditionComponentPath } = cond;
+      const { value: comparedValue, component: conditionComponentPath } = cond;
       if (!conditionComponentPath) {
         // Ignore conditions if there is no component path.
         return null;
       }
       const formComponents = form?.components || [];
-      let conditionComponent = getComponent(formComponents, conditionComponentPath, true);
-      // If condition componenet is not found, check if conditionComponentPath is value path.
-      // Need to handle condtions like:
-      //   {
-      //     "component": "selectBoxes.a",
-      //     "operator": "isEqual",
-      //     "value": "true"
-      //   }
-      if (
-        !conditionComponent &&
-        isConditionPotentiallyBasedOnValuePath(cond) &&
-        formComponents.length
-      ) {
-        const flattenedComponents = flattenComponents(formComponents, true);
-        const pathParts = split(conditionComponentPath, '.');
-        const valuePathParts = [];
-
-        while (!conditionComponent && pathParts.length) {
-          conditionComponent = flattenedComponents[`${pathParts.join('.')}`];
-          if (!conditionComponent) {
-            valuePathParts.unshift(pathParts.pop());
-          }
-        }
-        if (
-          conditionComponent &&
-          conditionComponent.type === 'selectboxes' &&
-          valuePathParts.length
-        ) {
-          console.warn(
-            'Condition based on selectboxes has wrong format. Resave the form in the form builder to fix it.',
-          );
-          conditionComponentPath = pathParts.join('.');
-          comparedValue = valuePathParts.join('.');
-        }
-      }
-
+      const conditionComponent = getComponent(
+        formComponents,
+        conditionComponentPath,
+        true,
+        paths?.dataIndex,
+      );
       const value = conditionComponent
-        ? getComponentActualValue(conditionComponent, conditionComponentPath, data, row)
+        ? getComponentValue(form, data, conditionComponentPath, paths?.dataIndex)
         : null;
-
       const ConditionOperator = ConditionOperators[operator];
       return ConditionOperator
         ? new ConditionOperator().getResult({

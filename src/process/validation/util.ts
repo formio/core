@@ -1,5 +1,5 @@
 import { FieldError } from 'error';
-import { Component, ValidationContext } from 'types';
+import { Component } from 'types';
 import { Evaluator, unescapeHTML } from 'utils';
 import { VALIDATION_ERRORS } from './i18n';
 import _isEmpty from 'lodash/isEmpty';
@@ -16,12 +16,6 @@ export function isComponentProtected(component: Component) {
 
 export function isEmptyObject(obj: any) {
   return !!obj && Object.keys(obj).length === 0 && obj.constructor === Object;
-}
-
-export function getComponentErrorField(component: Component, context: ValidationContext) {
-  const toInterpolate =
-    component.errorLabel || component.label || component.placeholder || component.key;
-  return Evaluator.interpolate(toInterpolate, context);
 }
 
 export function toBoolean(value: any) {

@@ -35,7 +35,6 @@ describe('Filter processor', function () {
       type: 'editgrid',
       key: 'editGrid',
       input: true,
-      path: 'editGrid',
       components: [
         {
           type: 'textfield',

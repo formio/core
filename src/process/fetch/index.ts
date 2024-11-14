@@ -9,8 +9,7 @@ import {
 } from 'types';
 import { get, set } from 'lodash';
 import { Evaluator } from 'utils';
-import { getComponentKey } from 'utils/formUtil';
-import { normalizeContext } from 'utils/Evaluator';
+import { getComponentKey, normalizeContext } from 'utils/formUtil';
 
 export const shouldFetch = (context: FetchContext): boolean => {
   const { component, config } = context;
