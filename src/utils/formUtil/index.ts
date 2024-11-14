@@ -354,6 +354,9 @@ export function componentMatches(
     fullLocalPath: undefined,
     key: undefined,
   },
+  addMatch = (type: ComponentPath | 'key', match: ComponentMatch) => {
+    return match;
+  },
 ) {
   let dataProperty = '';
   if (component.type === 'selectboxes') {
@@ -372,7 +375,7 @@ export function componentMatches(
   ].forEach((type) => {
     if (paths[type as ComponentPath] === formPath) {
       if (!matches[type as ComponentPath]) {
-        matches[type as ComponentPath] = { component, paths };
+        matches[type as ComponentPath] = addMatch(type, { component, paths });
       }
       if (!matches.dataPath || dataIndex === paths.dataIndex) {
         const dataPaths = {
@@ -383,18 +386,18 @@ export function componentMatches(
           dataPaths.dataPath += dataProperty;
           dataPaths.localDataPath += dataProperty;
         }
-        matches.dataPath = {
+        matches.dataPath = addMatch(ComponentPath.dataPath, {
           component,
           paths: {
             ...paths,
             ...dataPaths,
           },
-        };
+        });
       }
     }
   });
   if (!matches.key && component.input !== false && component.key === formPath) {
-    matches.key = { component, paths };
+    matches.key = addMatch('key', { component, paths });
   }
 }
 
