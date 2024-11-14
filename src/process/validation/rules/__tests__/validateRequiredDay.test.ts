@@ -52,4 +52,49 @@ describe('validateRequiredDay', function () {
     expect(result).to.be.instanceOf(FieldError);
     expect(result?.errorKeyOrMessage).to.equal('requiredYearField');
   });
+
+  it('Validating a day component that requires month and year will not return a FieldError if year and month are given', async function () {
+    const component = {
+      ...simpleDayField,
+      fields: {
+        year: { required: true },
+        month: { required: true },
+        day: { hide: true }
+      },
+    };
+    const data = { component: '07/2024' };
+    const context = generateProcessorContext(component, data);
+    const result = await validateRequiredDay(context);
+    expect(result).to.equal(null);
+  });
+
+  it('Validating a day component that requires day and year will not return a FieldError if year and day are given', async function () {
+    const component = {
+      ...simpleDayField,
+      fields: {
+        year: { required: true },
+        day: { required: true },
+        month: { hide: true }
+      },
+    };
+    const data = { component: '24/2024' };
+    const context = generateProcessorContext(component, data);
+    const result = await validateRequiredDay(context);
+    expect(result).to.equal(null);
+  });
+
+  it('Validating a day component that requires day and month will not return a FieldError if day and month are given', async function () {
+    const component = {
+      ...simpleDayField,
+      fields: {
+        month: { required: true },
+        day: { required: true },
+        year: { hide: true }
+      },
+    };
+    const data = { component: '07/24' };
+    const context = generateProcessorContext(component, data);
+    const result = await validateRequiredDay(context);
+    expect(result).to.equal(null);
+  });
 });
