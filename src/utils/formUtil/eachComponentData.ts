@@ -27,7 +27,7 @@ export const eachComponentData = (
   parent?: Component,
   includeAll: boolean = false,
 ) => {
-  if (!components || !data) {
+  if (!components) {
     return;
   }
   return eachComponent(
@@ -61,14 +61,16 @@ export const eachComponentData = (
           return true;
         }
         if (getModelType(component) === 'dataObject') {
-          // No need to bother processing all the children data if there is no data for this form or the reference value has not been loaded.
-          const nestedFormValue: any = get(data, compPath);
-          const noReferenceAttached =
-            nestedFormValue?._id && isEmpty(nestedFormValue.data) && !has(nestedFormValue, 'form');
-          const shouldProcessNestedFormData = nestedFormValue?._id
-            ? !noReferenceAttached
-            : has(data, compPath);
-          if (shouldProcessNestedFormData) {
+          const nestedFormValue: any = get(data, component.path);
+          const noReferenceAttached = nestedFormValue?._id
+            ? isEmpty(nestedFormValue.data) && !has(nestedFormValue, 'form')
+            : false;
+          const shouldBeCleared =
+            (!component.hasOwnProperty('clearOnHide') || component.clearOnHide) &&
+            (component.hidden || component.ephermalState?.conditionallyHidden);
+          // Skip all the nested components processing if nested form is hidden and should be cleared on hide or if submission is saved as reference and not loaded
+          const shouldSkipProcessingNestedFormData = noReferenceAttached || shouldBeCleared;
+          if (!shouldSkipProcessingNestedFormData) {
             // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
             const childPath: string = componentDataPath(component, path, compPath);
             const childData: any = get(data, childPath, {});

@@ -1,3 +1,9 @@
+##[Unreleased: 2.3.1-rc.]
+
+### Changed
+
+- FIO-9266,FIO-9267,FIO-9268: Fixes an issue where nested forms will be not validated if there are no data provided
+
 ## 2.3.0
 
 ### Changed
