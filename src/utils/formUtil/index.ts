@@ -377,6 +377,10 @@ export function componentMatches(
     }
   }
 
+  // Get the current model type.
+  const modelType = getModelType(component);
+  const dataModel = modelType !== 'none' && modelType !== 'content';
+
   [
     ComponentPath.path,
     ComponentPath.fullPath,
@@ -387,8 +391,16 @@ export function componentMatches(
   ].forEach((type) => {
     const dataPath = type === ComponentPath.dataPath || type === ComponentPath.localDataPath;
     if (paths[type as ComponentPath] === path) {
-      // Only add a new match if it already doesn't exist OR if the dataIndex is the same (more direct match).
-      if (!matches[type as ComponentPath] || dataPath || dataIndex === paths.dataIndex) {
+      const currentMatch = matches[type as ComponentPath];
+      const currentModelType = currentMatch?.component
+        ? getModelType(currentMatch.component)
+        : 'none';
+      const currentDataModel = currentModelType !== 'none' && currentModelType !== 'content';
+      if (
+        !currentMatch ||
+        (dataPath && dataModel && currentDataModel) || // Replace the current match if this is a dataPath and both are dataModels.
+        (!dataPath && dataIndex === paths.dataIndex) // Replace the current match if this is not a dataPath and the indexes are the same.
+      ) {
         if (dataPath) {
           const dataPaths = {
             dataPath: paths.dataPath || '',

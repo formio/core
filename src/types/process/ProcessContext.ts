@@ -5,6 +5,7 @@ import {
   ProcessorContext,
   ProcessType,
   ProcessorInfo,
+  ComponentPaths,
 } from 'types';
 
 export type ComponentInstances = {
@@ -21,6 +22,8 @@ export type BaseProcessContext<ProcessorScope> = {
   form?: any;
   submission?: any;
   flat?: boolean;
+  parent?: Component;
+  parentPaths?: ComponentPaths;
   evalContext?: (context: ProcessorContext<ProcessorScope>) => any;
 };
 

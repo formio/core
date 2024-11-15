@@ -60,7 +60,6 @@ export type BaseComponent = {
   validateOn?: string;
   validateWhenHidden?: boolean;
   modelType?: ReturnType<typeof getModelType>;
-  parentPath?: string;
   validate?: {
     required?: boolean;
     custom?: string;
