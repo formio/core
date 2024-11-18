@@ -1,7 +1,8 @@
-## [Unreleased: 2.3.0-rc.22]
+## 2.3.0-rc.22
 
 ### Changed
 
+- FIO-9344 fixed require validation for day component
 - FIO-9329: fix issue where validateWhenHidden now validates hidden and conditionally hidden components
 
 ## 2.3.0-rc.21
