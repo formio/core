@@ -1,5 +1,4 @@
 import {
-  ConditionsScope,
   ProcessorFn,
   ProcessorFnSync,
   ProcessorInfo,
@@ -93,7 +92,10 @@ export function isForcedHidden(
   isConditionallyHidden: ConditionallyHidden,
 ): boolean {
   const { component } = context;
-  if (isConditionallyHidden(context as ConditionsContext)) {
+  if (
+    component.ephemeralState?.conditionallyHidden ||
+    isConditionallyHidden(context as ConditionsContext)
+  ) {
     return true;
   }
   if (component.hasOwnProperty('hidden')) {
@@ -106,20 +108,8 @@ export const _shouldSkipValidation = (
   context: ValidationContext,
   isConditionallyHidden: ConditionallyHidden,
 ) => {
-  const { component, scope, path } = context;
-  const absolutePath = getComponentAbsolutePath(component) || path;
+  const { component } = context;
 
-  if (
-    (scope as ConditionsScope)?.conditionals &&
-    (find((scope as ConditionsScope).conditionals, {
-      path: absolutePath,
-      conditionallyHidden: true,
-    }) ||
-      component.ephemeralState?.conditionallyHidden === true)
-  ) {
-    return true;
-  }
-  const { validateWhenHidden = false } = component || {};
   const rules = [
     // Skip validation if component is readOnly
     // () => this.options.readOnly,
@@ -128,7 +118,7 @@ export const _shouldSkipValidation = (
     // Check to see if we are editing and if so, check component persistence.
     () => isValueHidden(context),
     // Force valid if component is hidden.
-    () => isForcedHidden(context, isConditionallyHidden) && !validateWhenHidden,
+    () => !component.validateWhenHidden && isForcedHidden(context, isConditionallyHidden),
   ];
 
   return rules.some((pred) => pred());
