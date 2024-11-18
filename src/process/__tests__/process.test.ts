@@ -4549,6 +4549,135 @@ describe('Process Tests', function () {
     });
   });
 
+  it("Should validate Nested Form's components if it should not be cleared and no data provided", async function () {
+    const nestedForm = {
+      key: 'form',
+      type: 'form',
+      display: 'form',
+      input: true,
+      components: [
+        {
+          key: 'textField',
+          type: 'textfield',
+          validate: {
+            required: true,
+          },
+          input: true,
+        },
+      ],
+    };
+    const submission = {
+      data: {
+        submit: true,
+      },
+      state: 'submitted',
+    };
+    const form = {
+      title: 'Parent Form',
+      name: 'parentForm',
+      path: 'parentform',
+      type: 'form',
+      display: 'form',
+      components: [
+        nestedForm,
+        {
+          ...nestedForm,
+          key: 'form1',
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    context.processors = ProcessTargets.evaluator;
+    const scope = processSync(context);
+    expect((scope as ValidationScope).errors).to.have.length(2);
+  });
+
+  it("Should validate Nested Form's components if it should not be cleared and no data provided and the parent form has errors itself", async function () {
+    const nestedForm = {
+      key: 'form',
+      type: 'form',
+      input: true,
+      components: [
+        {
+          key: 'textField',
+          type: 'textfield',
+          validate: {
+            required: true,
+          },
+          input: true,
+        },
+      ],
+    };
+    const submission = {
+      data: {
+        submit: true,
+      },
+      state: 'submitted',
+    };
+    const form = {
+      title: 'Parent Form',
+      name: 'parentForm',
+      path: 'parentform',
+      type: 'form',
+      display: 'form',
+      components: [
+        {
+          key: 'textField',
+          type: 'textfield',
+          validate: {
+            required: true,
+          },
+          input: true,
+        },
+        nestedForm,
+        {
+          ...nestedForm,
+          key: 'form1',
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    context.processors = ProcessTargets.evaluator;
+    const scope = processSync(context);
+    expect((scope as ValidationScope).errors).to.have.length(3);
+  });
+
   it('Should not return errors for empty multiple values for url and dateTime', function () {
     const form = {
       _id: '671f7fbeaf87b0e2a26e4212',

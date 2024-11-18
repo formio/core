@@ -28,7 +28,7 @@ export const eachComponentDataAsync = async (
   parent?: Component,
   parentPaths?: ComponentPaths,
 ) => {
-  if (!components || !data) {
+  if (!components) {
     return;
   }
   return await eachComponentAsync(
