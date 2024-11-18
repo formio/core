@@ -57,19 +57,24 @@ export const eachComponentDataAsync = async (
       }
       if (isComponentNestedDataType(component)) {
         const value = get(data, compPaths?.dataPath || '');
-        if (Array.isArray(value)) {
-          for (let i = 0; i < value.length; i++) {
-            if (compPaths) {
-              compPaths.dataIndex = i;
+        if (
+          getModelType(component) === 'nestedArray' ||
+          getModelType(component) === 'nestedDataArray'
+        ) {
+          if (Array.isArray(value) && value.length) {
+            for (let i = 0; i < value.length; i++) {
+              if (compPaths) {
+                compPaths.dataIndex = i;
+              }
+              await eachComponentDataAsync(
+                component.components,
+                data,
+                fn,
+                includeAll,
+                component,
+                compPaths,
+              );
             }
-            await eachComponentDataAsync(
-              component.components,
-              data,
-              fn,
-              includeAll,
-              component,
-              compPaths,
-            );
           }
           resetComponentScope(component);
           return true;

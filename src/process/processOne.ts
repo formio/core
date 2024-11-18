@@ -3,7 +3,7 @@ import { ProcessorsContext, ProcessorType } from 'types';
 import { getModelType } from 'utils/formUtil';
 
 export async function processOne<ProcessorScope>(context: ProcessorsContext<ProcessorScope>) {
-  const { processors, row, component } = context;
+  const { processors, component } = context;
   // Create a getter for `value` that is always derived from the current data object
   if (typeof context.value === 'undefined') {
     Object.defineProperty(context, 'value', {
@@ -26,9 +26,6 @@ export async function processOne<ProcessorScope>(context: ProcessorsContext<Proc
     });
   }
 
-  if (!row) {
-    return;
-  }
   context.processor = ProcessorType.Custom;
   for (const processor of processors) {
     if (processor?.process) {
@@ -38,7 +35,7 @@ export async function processOne<ProcessorScope>(context: ProcessorsContext<Proc
 }
 
 export function processOneSync<ProcessorScope>(context: ProcessorsContext<ProcessorScope>) {
-  const { processors, row, component } = context;
+  const { processors, component } = context;
   // Create a getter for `value` that is always derived from the current data object
   if (typeof context.value === 'undefined') {
     Object.defineProperty(context, 'value', {
@@ -59,10 +56,6 @@ export function processOneSync<ProcessorScope>(context: ProcessorsContext<Proces
         set(context.data, context.path, newValue);
       },
     });
-  }
-
-  if (!row) {
-    return;
   }
 
   // Process the components.

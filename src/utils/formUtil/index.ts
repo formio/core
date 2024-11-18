@@ -546,15 +546,17 @@ export function getComponentLocalData(paths: ComponentPaths, data: any): string 
   return parentPath ? get(data, parentPath, null) : data;
 }
 
-export function shouldProcessComponent(component: Component, row: any, value: any): boolean {
+export function shouldProcessComponent(comp: Component, row: any, value: any): boolean {
   if (isEmpty(row)) {
     return false;
   }
-  if (getModelType(component) === 'dataObject') {
-    const noReferenceAttached = value && value._id && isEmpty(value.data) && !has(value, 'form');
-    const shouldProcessNestedFormData =
-      value && value._id ? !noReferenceAttached : value !== undefined;
-    if (!shouldProcessNestedFormData) {
+  if (getModelType(comp) === 'dataObject') {
+    const noReferenceAttached = value?._id ? isEmpty(value.data) && !has(value, 'form') : false;
+    const shouldBeCleared =
+      (!comp.hasOwnProperty('clearOnHide') || comp.clearOnHide) &&
+      (comp.hidden || comp.scope?.conditionallyHidden);
+    const shouldSkipProcessingNestedFormData = noReferenceAttached || shouldBeCleared;
+    if (shouldSkipProcessingNestedFormData) {
       return false;
     }
   }
