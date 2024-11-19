@@ -28,7 +28,8 @@ import { hideChildrenProcessorInfo } from './hideChildren';
 export async function process<ProcessScope>(
   context: ProcessContext<ProcessScope>,
 ): Promise<ProcessScope> {
-  const { instances, components, data, scope, flat, processors, parent, parentPaths } = context;
+  const { instances, components, data, scope, flat, processors, local, parent, parentPaths } =
+    context;
   await eachComponentDataAsync(
     components,
     data,
@@ -54,6 +55,7 @@ export async function process<ProcessScope>(
       }
     },
     false,
+    local,
     parent,
     parentPaths,
   );
@@ -67,7 +69,8 @@ export async function process<ProcessScope>(
 }
 
 export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>): ProcessScope {
-  const { instances, components, data, scope, flat, processors, parent, parentPaths } = context;
+  const { instances, components, data, scope, flat, processors, local, parent, parentPaths } =
+    context;
   eachComponentData(
     components,
     data,
@@ -93,6 +96,7 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
       }
     },
     false,
+    local,
     parent,
     parentPaths,
   );

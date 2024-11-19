@@ -25,6 +25,7 @@ export const eachComponentDataAsync = async (
   data: DataObject,
   fn: EachComponentDataAsyncCallback,
   includeAll: boolean = false,
+  local: boolean = false,
   parent?: Component,
   parentPaths?: ComponentPaths,
 ) => {
@@ -40,7 +41,7 @@ export const eachComponentDataAsync = async (
       compParent: Component | undefined,
       compPaths: ComponentPaths | undefined,
     ) => {
-      const row = getContextualRowData(component, data, compPaths);
+      const row = getContextualRowData(component, data, compPaths, local);
       if (
         (await fn(
           component,
@@ -56,7 +57,7 @@ export const eachComponentDataAsync = async (
         return true;
       }
       if (isComponentNestedDataType(component)) {
-        const value = get(data, compPaths?.dataPath || '');
+        const value = get(data, local ? compPaths?.localDataPath || '' : compPaths?.dataPath || '');
         if (
           getModelType(component) === 'nestedArray' ||
           getModelType(component) === 'nestedDataArray'
@@ -71,6 +72,7 @@ export const eachComponentDataAsync = async (
                 data,
                 fn,
                 includeAll,
+                local,
                 component,
                 compPaths,
               );
@@ -88,6 +90,7 @@ export const eachComponentDataAsync = async (
             data,
             fn,
             includeAll,
+            local,
             component,
             compPaths,
           );
@@ -104,6 +107,7 @@ export const eachComponentDataAsync = async (
               data,
               fn,
               includeAll,
+              local,
               component,
               compPaths,
             );
@@ -118,6 +122,7 @@ export const eachComponentDataAsync = async (
                   data,
                   fn,
                   includeAll,
+                  local,
                   component,
                   compPaths,
                 );
@@ -130,6 +135,7 @@ export const eachComponentDataAsync = async (
             data,
             fn,
             includeAll,
+            local,
             component,
             compPaths,
           );

@@ -64,11 +64,11 @@ export function checkLegacyConditional(
   conditional: LegacyConditional,
   context: ConditionsContext,
 ): boolean | null {
-  const { data, form } = context;
+  const { data, form, paths, local } = context;
   if (!conditional || !isLegacyConditional(conditional) || !conditional.when) {
     return null;
   }
-  const value: any = getComponentValue(form, data, conditional.when);
+  const value: any = getComponentValue(form, data, conditional.when, paths?.dataIndex, local);
   const eq = String(conditional.eq);
   const show = String(conditional.show);
   if (isObject(value) && has(value, eq)) {
@@ -110,7 +110,7 @@ export function checkSimpleConditional(
   conditional: SimpleConditional,
   context: ConditionsContext,
 ): boolean | null {
-  const { component, data, instance, form, paths } = context;
+  const { component, data, instance, form, paths, local } = context;
   if (!conditional || !isSimpleConditional(conditional)) {
     return null;
   }
@@ -135,7 +135,7 @@ export function checkSimpleConditional(
         paths?.dataIndex,
       );
       const value = conditionComponent
-        ? getComponentValue(form, data, conditionComponentPath, paths?.dataIndex)
+        ? getComponentValue(form, data, conditionComponentPath, paths?.dataIndex, local)
         : null;
       const ConditionOperator = ConditionOperators[operator];
       return ConditionOperator

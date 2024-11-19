@@ -3,9 +3,10 @@ import { ProcessorsContext, ProcessorType } from 'types';
 import { getModelType } from 'utils/formUtil';
 
 export async function processOne<ProcessorScope>(context: ProcessorsContext<ProcessorScope>) {
-  const { processors, component } = context;
+  const { processors, component, paths, local, path } = context;
   // Create a getter for `value` that is always derived from the current data object
   if (typeof context.value === 'undefined') {
+    const dataPath = local ? paths?.localDataPath || path : paths?.dataPath || path;
     Object.defineProperty(context, 'value', {
       enumerable: true,
       get() {
@@ -13,7 +14,7 @@ export async function processOne<ProcessorScope>(context: ProcessorsContext<Proc
         if (!component.type || modelType === 'none' || modelType === 'content') {
           return undefined;
         }
-        return get(context.data, context.path);
+        return get(context.data, dataPath);
       },
       set(newValue: any) {
         const modelType = getModelType(component);
@@ -21,7 +22,7 @@ export async function processOne<ProcessorScope>(context: ProcessorsContext<Proc
           // Do not set the value if the model type is 'none' or 'content'
           return;
         }
-        set(context.data, context.path, newValue);
+        set(context.data, dataPath, newValue);
       },
     });
   }
@@ -35,9 +36,10 @@ export async function processOne<ProcessorScope>(context: ProcessorsContext<Proc
 }
 
 export function processOneSync<ProcessorScope>(context: ProcessorsContext<ProcessorScope>) {
-  const { processors, component } = context;
+  const { processors, component, paths, local, path } = context;
   // Create a getter for `value` that is always derived from the current data object
   if (typeof context.value === 'undefined') {
+    const dataPath = local ? paths?.localDataPath || path : paths?.dataPath || path;
     Object.defineProperty(context, 'value', {
       enumerable: true,
       get() {
@@ -45,7 +47,7 @@ export function processOneSync<ProcessorScope>(context: ProcessorsContext<Proces
         if (!component.type || modelType === 'none' || modelType === 'content') {
           return undefined;
         }
-        return get(context.data, context.path);
+        return get(context.data, dataPath);
       },
       set(newValue: any) {
         const modelType = getModelType(component);
@@ -53,7 +55,7 @@ export function processOneSync<ProcessorScope>(context: ProcessorsContext<Proces
           // Do not set the value if the model type is 'none' or 'content'
           return;
         }
-        set(context.data, context.path, newValue);
+        set(context.data, dataPath, newValue);
       },
     });
   }

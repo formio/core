@@ -526,21 +526,32 @@ export function getComponentKey(component: Component) {
   return component.key;
 }
 
-export function getContextualRowPath(component: Component, paths?: ComponentPaths): string {
+export function getContextualRowPath(
+  component: Component,
+  paths?: ComponentPaths,
+  local?: boolean,
+): string {
   if (!paths) {
     return '';
   }
-  return (
-    paths.dataPath?.replace(new RegExp(`.?${escapeRegExp(getComponentKey(component))}$`), '') || ''
-  );
+  const dataPath = local ? paths.localDataPath : paths.dataPath;
+  return dataPath?.replace(new RegExp(`.?${escapeRegExp(getComponentKey(component))}$`), '') || '';
 }
 
-export function getContextualRowData(component: Component, data: any, paths?: ComponentPaths): any {
-  const rowPath = getContextualRowPath(component, paths);
+export function getContextualRowData(
+  component: Component,
+  data: any,
+  paths?: ComponentPaths,
+  local?: boolean,
+): any {
+  const rowPath = getContextualRowPath(component, paths, local);
   return rowPath ? get(data, rowPath, null) : data;
 }
 
-export function getComponentLocalData(paths: ComponentPaths, data: any): string {
+export function getComponentLocalData(paths: ComponentPaths, data: any, local?: boolean): string {
+  if (local) {
+    return data;
+  }
   const parentPath =
     paths.dataPath?.replace(new RegExp(`.?${escapeRegExp(paths.localDataPath)}$`), '') || '';
   return parentPath ? get(data, parentPath, null) : data;
@@ -604,6 +615,7 @@ export function getComponentValue(
   data: DataObject,
   path: string,
   dataIndex?: number,
+  local?: boolean,
 ) {
   const match: ComponentMatch | undefined = getComponentFromPath(
     form?.components || [],
@@ -614,6 +626,9 @@ export function getComponentValue(
   if (!match) {
     // Fall back to get the value from the data object.
     return get(data, path, undefined);
+  }
+  if (local) {
+    return match?.paths?.localDataPath ? get(data, match.paths.localDataPath, undefined) : null;
   }
   return match?.paths?.dataPath ? get(data, match.paths.dataPath, undefined) : null;
 }
@@ -1322,13 +1337,13 @@ export function getComponentErrorField(component: Component, context: Validation
 }
 
 export function normalizeContext(context: any): any {
-  const { data, paths } = context;
+  const { data, paths, local } = context;
   return paths
     ? {
         ...context,
         ...{
           path: paths.localDataPath,
-          data: getComponentLocalData(paths, data),
+          data: getComponentLocalData(paths, data, local),
         },
       }
     : context;

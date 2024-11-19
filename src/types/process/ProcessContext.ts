@@ -24,6 +24,7 @@ export type BaseProcessContext<ProcessorScope> = {
   flat?: boolean;
   parent?: Component;
   parentPaths?: ComponentPaths;
+  local?: boolean; // If the "data" being passed to the processors is local to the nested form.
   evalContext?: (context: ProcessorContext<ProcessorScope>) => any;
 };
 

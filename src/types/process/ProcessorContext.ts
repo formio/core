@@ -25,6 +25,7 @@ export type ProcessorContext<ProcessorScope> = {
   processor?: ProcessorType;
   config?: Record<string, any>;
   index?: number;
+  local?: boolean; // If the "data" being passed to the processors is local to the nested form.
   scope: ProcessorScope;
   parent?: Component | null;
   evalContext?: (context: ProcessorContext<ProcessorScope>) => any;

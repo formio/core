@@ -33,6 +33,7 @@ export const eachComponentData = (
   data: DataObject,
   fn: EachComponentDataCallback,
   includeAll: boolean = false,
+  local: boolean = false,
   parent?: Component,
   parentPaths?: ComponentPaths,
 ) => {
@@ -42,7 +43,7 @@ export const eachComponentData = (
   return eachComponent(
     components,
     (component, compPath, componentComponents, compParent, compPaths) => {
-      const row = getContextualRowData(component, data, compPaths);
+      const row = getContextualRowData(component, data, compPaths, local);
       if (
         fn(
           component,
@@ -59,7 +60,10 @@ export const eachComponentData = (
         return true;
       }
       if (isComponentNestedDataType(component)) {
-        const value = get(data, compPaths?.dataPath || '') as DataObject;
+        const value = get(
+          data,
+          local ? compPaths?.localDataPath || '' : compPaths?.dataPath || '',
+        ) as DataObject;
         if (
           getModelType(component) === 'nestedArray' ||
           getModelType(component) === 'nestedDataArray'
@@ -69,7 +73,15 @@ export const eachComponentData = (
               if (compPaths) {
                 compPaths.dataIndex = i;
               }
-              eachComponentData(component.components, data, fn, includeAll, component, compPaths);
+              eachComponentData(
+                component.components,
+                data,
+                fn,
+                includeAll,
+                local,
+                component,
+                compPaths,
+              );
             }
           }
           resetComponentScope(component);
@@ -79,7 +91,15 @@ export const eachComponentData = (
             resetComponentScope(component);
             return true;
           }
-          eachComponentData(component.components, data, fn, includeAll, component, compPaths);
+          eachComponentData(
+            component.components,
+            data,
+            fn,
+            includeAll,
+            local,
+            component,
+            compPaths,
+          );
         }
         resetComponentScope(component);
         return true;
@@ -87,13 +107,21 @@ export const eachComponentData = (
         const info = componentInfo(component);
         if (info.hasColumns) {
           (component as HasColumns).columns.forEach((column: any) =>
-            eachComponentData(column.components, data, fn, includeAll, component, compPaths),
+            eachComponentData(column.components, data, fn, includeAll, local, component, compPaths),
           );
         } else if (info.hasRows) {
           (component as HasRows).rows.forEach((row: any) => {
             if (Array.isArray(row)) {
               row.forEach((row) =>
-                eachComponentData(row.components, data, fn, includeAll, component, compPaths),
+                eachComponentData(
+                  row.components,
+                  data,
+                  fn,
+                  includeAll,
+                  local,
+                  component,
+                  compPaths,
+                ),
               );
             }
           });
@@ -103,6 +131,7 @@ export const eachComponentData = (
             data,
             fn,
             includeAll,
+            local,
             component,
             compPaths,
           );
