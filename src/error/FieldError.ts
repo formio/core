@@ -1,5 +1,5 @@
-import { getComponentErrorField } from 'process/validation/util';
 import { ValidationContext } from 'types';
+import { getComponentErrorField } from 'utils/formUtil';
 
 type FieldErrorContext = ValidationContext & {
   field?: string;

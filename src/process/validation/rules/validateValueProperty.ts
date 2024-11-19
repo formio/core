@@ -3,15 +3,11 @@ import { ListComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isValidatableListComponent = (comp: any): comp is ListComponent => {
-  return (
-    comp &&
-    comp.type &&
-    comp.type === 'selectboxes'
-  );
+  return comp && comp.type && comp.type === 'selectboxes';
 };
 
 export const shouldValidate = (context: ValidationContext) => {
-  const { component, instance} = context;
+  const { component, instance } = context;
   if (!isValidatableListComponent(component)) {
     return false;
   }
@@ -39,7 +35,7 @@ export const validateValuePropertySync: RuleFnSync = (context: ValidationContext
     Object.entries(value as any).some(
       ([key, value]) => value && (key === '[object Object]' || key === 'true' || key === 'false'),
     ) ||
-    (instance && instance.loadedOptions?.some(option => option.invalid))
+    (instance && instance.loadedOptions?.some((option) => option.invalid))
   ) {
     return error;
   }

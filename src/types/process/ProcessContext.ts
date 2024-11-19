@@ -5,6 +5,7 @@ import {
   ProcessorContext,
   ProcessType,
   ProcessorInfo,
+  ComponentPaths,
 } from 'types';
 
 export type ComponentInstances = {
@@ -21,6 +22,9 @@ export type BaseProcessContext<ProcessorScope> = {
   form?: any;
   submission?: any;
   flat?: boolean;
+  parent?: Component;
+  parentPaths?: ComponentPaths;
+  local?: boolean; // If the "data" being passed to the processors is local to the nested form.
   evalContext?: (context: ProcessorContext<ProcessorScope>) => any;
 };
 

@@ -1,46 +1,44 @@
 import { FilterContext, FilterScope, ProcessorFn, ProcessorFnSync, ProcessorInfo } from 'types';
 import { set } from 'lodash';
-import { Utils } from 'utils';
 import { get, isObject } from 'lodash';
-import { getComponentAbsolutePath } from 'utils/formUtil';
+import { getModelType } from 'utils/formUtil';
 export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterContext) => {
   const { scope, component, path } = context;
   const { value } = context;
-  const absolutePath = getComponentAbsolutePath(component) || path;
   if (!scope.filter) scope.filter = {};
   if (value !== undefined) {
-    const modelType = Utils.getModelType(component);
+    const modelType = getModelType(component);
     switch (modelType) {
       case 'dataObject':
-        scope.filter[absolutePath] = {
+        scope.filter[path] = {
           compModelType: modelType,
           include: true,
           value: { data: {} },
         };
         break;
       case 'nestedArray':
-        scope.filter[absolutePath] = {
+        scope.filter[path] = {
           compModelType: modelType,
           include: true,
           value: [],
         };
         break;
       case 'nestedDataArray':
-        scope.filter[absolutePath] = {
+        scope.filter[path] = {
           compModelType: modelType,
           include: true,
           value: Array.isArray(value) ? value.map((v) => ({ ...v, data: {} })) : [],
         };
         break;
       case 'object':
-        scope.filter[absolutePath] = {
+        scope.filter[path] = {
           compModelType: modelType,
           include: true,
           value: component.type === 'address' ? false : {},
         };
         break;
       default:
-        scope.filter[absolutePath] = {
+        scope.filter[path] = {
           compModelType: modelType,
           include: true,
         };

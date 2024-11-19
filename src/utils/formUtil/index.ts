@@ -4,7 +4,6 @@ import {
   set,
   isEmpty,
   isNil,
-  isObject,
   has,
   isString,
   forOwn,
@@ -14,10 +13,10 @@ import {
   isPlainObject,
   isArray,
   isEqual,
-  trim,
   isBoolean,
   omit,
   every,
+  escapeRegExp,
 } from 'lodash';
 import { compare, applyPatch } from 'fast-json-patch';
 
@@ -40,6 +39,11 @@ import {
   SimpleConditional,
   AddressComponent,
   SelectComponent,
+  ComponentScope,
+  ComponentPaths,
+  ComponentPath,
+  Form,
+  ValidationContext,
 } from 'types';
 import { Evaluator } from '../Evaluator';
 import { eachComponent } from './eachComponent';
@@ -169,49 +173,32 @@ export function getModelType(component: Component): keyof typeof MODEL_TYPES_OF_
     return component.modelType;
   }
 
+  let modelType: keyof typeof MODEL_TYPES_OF_KNOWN_COMPONENTS = 'any';
+
   // Otherwise, check for known component types.
   for (const type of Object.keys(
     MODEL_TYPES_OF_KNOWN_COMPONENTS,
   ) as (keyof typeof MODEL_TYPES_OF_KNOWN_COMPONENTS)[]) {
     if (MODEL_TYPES_OF_KNOWN_COMPONENTS[type].includes(component.type)) {
-      return type;
+      modelType = type;
+      break;
     }
   }
 
   // Otherwise check for components that assert no value.
-  if (component.input === false) {
-    return 'none';
+  if (modelType === 'any' && component.input === false) {
+    modelType = 'none';
   }
+
+  // To speed up performance of getModelType, we will set the modelType on the component as a non-enumerable property.
+  Object.defineProperty(component, 'modelType', {
+    enumerable: false,
+    writable: true,
+    value: modelType,
+  });
 
   // Otherwise default to any.
-  return 'any';
-}
-
-export function getComponentAbsolutePath(component: Component) {
-  const paths = [component.path];
-  while (component.parent) {
-    component = component.parent;
-    // We only need to do this for nested forms because they reset the data contexts for the children.
-    if (getModelType(component) === 'dataObject') {
-      paths[paths.length - 1] = `data.${paths[paths.length - 1]}`;
-      paths.push(component.path);
-    }
-  }
-  return paths.reverse().join('.');
-}
-
-export function getComponentPath(component: Component, path: string) {
-  const key = getComponentKey(component);
-  if (!key) {
-    return path;
-  }
-  if (!path) {
-    return key;
-  }
-  if (path.match(new RegExp(`${key}$`))) {
-    return path;
-  }
-  return getModelType(component) === 'none' ? `${path}.${key}` : path;
+  return modelType;
 }
 
 export function isComponentNestedDataType(component: any): component is HasChildComponents {
@@ -225,51 +212,310 @@ export function isComponentNestedDataType(component: any): component is HasChild
   );
 }
 
-export function componentPath(component: Component, parentPath?: string): string {
-  parentPath = component.parentPath || parentPath;
-  const key = getComponentKey(component);
-  if (!key) {
-    // If the component does not have a key, then just always return the parent path.
-    return parentPath || '';
+export function setComponentScope(
+  component: Component,
+  name: keyof NonNullable<ComponentScope>,
+  value: string | boolean | number,
+) {
+  if (!component) {
+    return;
   }
-  return parentPath ? `${parentPath}.${key}` : key;
+  if (!component.scope) {
+    Object.defineProperty(component, 'scope', {
+      enumerable: false,
+      configurable: true,
+      writable: true,
+      value: {},
+    });
+  }
+  Object.defineProperty(component.scope, name, {
+    enumerable: false,
+    writable: false,
+    configurable: true,
+    value,
+  });
 }
 
-export const componentDataPath = (component: any, parentPath: string, path: string): string => {
-  parentPath = component.parentPath || parentPath;
-  path = path || componentPath(component, parentPath);
-  // See if we are a nested component.
-  if (component.components && Array.isArray(component.components)) {
-    if (getModelType(component) === 'dataObject') {
-      return `${path}.data`;
-    }
-    if (getModelType(component) === 'nestedArray') {
-      return `${path}[0]`;
-    }
-    if (getModelType(component) === 'nestedDataArray') {
-      return `${path}[0].data`;
-    }
-    if (isComponentNestedDataType(component)) {
-      return path;
-    }
-    return parentPath;
+export function resetComponentScope(component: Component) {
+  if (component.scope) {
+    delete component.scope;
   }
-  return path;
+}
+
+/**
+ * Return the component path provided the type of the component path.
+ * @param component - The component JSON.
+ * @param type - The type of path to return.
+ * @returns
+ */
+export function componentPath(
+  component: Component,
+  parent: Component | undefined | null,
+  parentPaths: ComponentPaths | undefined | null,
+  type: ComponentPath,
+): string {
+  if (!component) {
+    return '';
+  }
+  if ((component as any).component) {
+    component = (component as any).component;
+  }
+  const compModel = getModelType(component);
+
+  // Relative paths are only referenced from the current form.
+  const relative =
+    type === ComponentPath.localPath ||
+    type === ComponentPath.fullLocalPath ||
+    type === ComponentPath.localDataPath;
+
+  // Full paths include all layout component ids in the path.
+  const fullPath = type === ComponentPath.fullPath || type === ComponentPath.fullLocalPath;
+
+  // See if this is a data path.
+  const dataPath = type === ComponentPath.dataPath || type === ComponentPath.localDataPath;
+
+  // Determine if this component should include its key.
+  const includeKey =
+    fullPath || (!!component.type && compModel !== 'none' && compModel !== 'content');
+
+  // The key is provided if the component can have data or if we are fetching the full path.
+  const key = includeKey ? getComponentKey(component) : '';
+
+  if (!parent) {
+    // Return the key if there is no parent.
+    return key;
+  }
+
+  // Get the parent model type.
+  const parentModel = getModelType(parent);
+
+  // If there is a parent, then we only return the key if the parent is a nested form and it is a relative path.
+  if (relative && parentModel === 'dataObject') {
+    return key;
+  }
+
+  // Return the parent path.
+  let parentPath = parentPaths?.hasOwnProperty(type) ? parentPaths[type] || '' : '';
+
+  // For data paths (where we wish to get the path to the data), we need to ensure we append the parent
+  // paths to the end of the path so that any component within this component properly references their data.
+  if (dataPath && parentPath) {
+    if (parentModel === 'nestedArray' || parentModel === 'nestedDataArray') {
+      parentPath += `[${parentPaths?.dataIndex || 0}]`;
+    }
+    if (parentModel === 'dataObject' || parentModel === 'nestedDataArray') {
+      parentPath += '.data';
+    }
+  }
+
+  // Return the parent path with its relative component path (if applicable).
+  return parentPath ? (key ? `${parentPath}.${key}` : parentPath) : key;
+}
+
+/**
+ * This method determines a components paths provided the component JSON, the parent and the parent paths.
+ * @param component
+ * @param parent
+ * @param parentPaths
+ * @returns
+ */
+export function getComponentPaths(
+  component: Component,
+  parent?: Component,
+  parentPaths?: ComponentPaths,
+): ComponentPaths {
+  return {
+    path: componentPath(component, parent, parentPaths, ComponentPath.path),
+    fullPath: componentPath(component, parent, parentPaths, ComponentPath.fullPath),
+    localPath: componentPath(component, parent, parentPaths, ComponentPath.localPath),
+    fullLocalPath: componentPath(component, parent, parentPaths, ComponentPath.fullLocalPath),
+    dataPath: componentPath(component, parent, parentPaths, ComponentPath.dataPath),
+    localDataPath: componentPath(component, parent, parentPaths, ComponentPath.localDataPath),
+    dataIndex: parentPaths?.dataIndex,
+  };
+}
+
+export type ComponentMatch = {
+  component: Component | undefined;
+  paths: ComponentPaths | undefined;
 };
 
-export const componentFormPath = (component: any, parentPath: string, path: string): string => {
-  parentPath = component.parentPath || parentPath;
-  path = path || componentPath(component, parentPath);
-  if (getModelType(component) === 'dataObject') {
-    return `${path}.data`;
+/**
+ * Determines if a component has a match at any of the path types.
+ * @param component {Component} - The component JSON to check for matches.
+ * @param paths {ComponentPaths} - The current component paths object.
+ * @param path {string} - Either the "form" or "data" path to see if a match occurs.
+ * @param dataIndex {number | undefined} - The data index for the current component to match.
+ * @param matches {Record<string, ComponentMatch | undefined>} - The current matches object.
+ * @param addMatch {(type: ComponentPath | 'key', match: ComponentMatch) => ComponentMatch} - A callback function to allow modules to decorate the match object.
+ */
+export function componentMatches(
+  component: Component,
+  paths: ComponentPaths,
+  path: string,
+  dataIndex?: number,
+  matches: Record<string, ComponentMatch | undefined> = {
+    path: undefined,
+    fullPath: undefined,
+    localPath: undefined,
+    dataPath: undefined,
+    localDataPath: undefined,
+    fullLocalPath: undefined,
+    key: undefined,
+  },
+  addMatch = (type: ComponentPath | 'key', match: ComponentMatch) => {
+    return match;
+  },
+) {
+  let dataProperty = '';
+  if (component.type === 'selectboxes') {
+    const valuePath = new RegExp(`(\\.${escapeRegExp(component.key)})(\\.[^\\.]+)$`);
+    const pathMatches = path.match(valuePath);
+    if (pathMatches?.length === 3) {
+      dataProperty = pathMatches[2];
+      path = path.replace(valuePath, '$1');
+    }
   }
-  if (isComponentNestedDataType(component)) {
-    return path;
-  }
-  return parentPath;
-};
 
+  // Get the current model type.
+  const modelType = getModelType(component);
+  const dataModel = modelType !== 'none' && modelType !== 'content';
+
+  [
+    ComponentPath.path,
+    ComponentPath.fullPath,
+    ComponentPath.localPath,
+    ComponentPath.fullLocalPath,
+    ComponentPath.dataPath,
+    ComponentPath.localDataPath,
+  ].forEach((type) => {
+    const dataPath = type === ComponentPath.dataPath || type === ComponentPath.localDataPath;
+    if (paths[type as ComponentPath] === path) {
+      const currentMatch = matches[type as ComponentPath];
+      const currentModelType = currentMatch?.component
+        ? getModelType(currentMatch.component)
+        : 'none';
+      const currentDataModel = currentModelType !== 'none' && currentModelType !== 'content';
+      if (
+        !currentMatch ||
+        (dataPath && dataModel && currentDataModel) || // Replace the current match if this is a dataPath and both are dataModels.
+        (!dataPath && dataIndex === paths.dataIndex) // Replace the current match if this is not a dataPath and the indexes are the same.
+      ) {
+        if (dataPath) {
+          const dataPaths = {
+            dataPath: paths.dataPath || '',
+            localDataPath: paths.localDataPath || '',
+          };
+          if (dataProperty) {
+            dataPaths.dataPath += dataProperty;
+            dataPaths.localDataPath += dataProperty;
+          }
+          matches[type as ComponentPath] = addMatch(type, {
+            component,
+            paths: {
+              ...paths,
+              ...dataPaths,
+            },
+          });
+        } else {
+          matches[type as ComponentPath] = addMatch(type, { component, paths });
+        }
+      }
+    }
+  });
+  if (!matches.key && component.input !== false && component.key === path) {
+    matches.key = addMatch('key', { component, paths });
+  }
+}
+
+export function getBestMatch(
+  matches: Record<string, ComponentMatch | undefined>,
+): ComponentMatch | undefined {
+  if (matches.dataPath) {
+    return matches.dataPath;
+  }
+  if (matches.localDataPath) {
+    return matches.localDataPath;
+  }
+  if (matches.fullPath) {
+    return matches.fullPath;
+  }
+  if (matches.path) {
+    return matches.path;
+  }
+  if (matches.fullLocalPath) {
+    return matches.fullLocalPath;
+  }
+  if (matches.localPath) {
+    return matches.localPath;
+  }
+  if (matches.key) {
+    return matches.key;
+  }
+  return undefined;
+}
+
+/**
+ * This method performs a fuzzy search for a component within a form provided a number of different
+ * paths to search.
+ */
+export function getComponentFromPath(
+  components: Component[],
+  path: any,
+  data?: any,
+  dataIndex?: number,
+  includeAll: any = false,
+): ComponentMatch | undefined {
+  const matches: Record<string, ComponentMatch | undefined> = {
+    path: undefined,
+    fullPath: undefined,
+    localPath: undefined,
+    fullLocalPath: undefined,
+    dataPath: undefined,
+    localDataPath: undefined,
+    key: undefined,
+  };
+  if (data) {
+    eachComponentData(
+      components,
+      data,
+      (
+        component: Component,
+        data: DataObject,
+        row: any,
+        compPath: string,
+        comps,
+        index,
+        parent,
+        paths,
+      ) => {
+        componentMatches(component, paths || {}, path, dataIndex, matches);
+      },
+      includeAll,
+    );
+  } else {
+    eachComponent(
+      components,
+      (component: Component, compPath: any, componentComponents, compParent, paths) => {
+        componentMatches(component, paths || {}, path, dataIndex, matches);
+      },
+      includeAll,
+    );
+  }
+  return getBestMatch(matches);
+}
+
+/**
+ * Provided a component, this will return the "data" key for that component in the contextual data
+ * object.
+ *
+ * @param component
+ * @returns
+ */
 export function getComponentKey(component: Component) {
+  if (!component) {
+    return '';
+  }
   if (
     component.type === 'checkbox' &&
     component.inputType === 'radio' &&
@@ -280,16 +526,58 @@ export function getComponentKey(component: Component) {
   return component.key;
 }
 
-export function getContextualRowPath(component: Component, path: string): string {
-  return path.replace(new RegExp(`.?${getComponentKey(component)}$`), '');
+export function getContextualRowPath(
+  component: Component,
+  paths?: ComponentPaths,
+  local?: boolean,
+): string {
+  if (!paths) {
+    return '';
+  }
+  const dataPath = local ? paths.localDataPath : paths.dataPath;
+  return dataPath?.replace(new RegExp(`.?${escapeRegExp(getComponentKey(component))}$`), '') || '';
 }
 
-export function getContextualRowData(component: Component, path: string, data: any): any {
-  const rowPath = getContextualRowPath(component, path);
+export function getContextualRowData(
+  component: Component,
+  data: any,
+  paths?: ComponentPaths,
+  local?: boolean,
+): any {
+  const rowPath = getContextualRowPath(component, paths, local);
   return rowPath ? get(data, rowPath, null) : data;
 }
 
+export function getComponentLocalData(paths: ComponentPaths, data: any, local?: boolean): string {
+  if (local) {
+    return data;
+  }
+  const parentPath =
+    paths.dataPath?.replace(new RegExp(`.?${escapeRegExp(paths.localDataPath)}$`), '') || '';
+  return parentPath ? get(data, parentPath, null) : data;
+}
+
+export function shouldProcessComponent(comp: Component, row: any, value: any): boolean {
+  if (isEmpty(row)) {
+    return false;
+  }
+  if (getModelType(comp) === 'dataObject') {
+    const noReferenceAttached = value?._id ? isEmpty(value.data) && !has(value, 'form') : false;
+    const shouldBeCleared =
+      (!comp.hasOwnProperty('clearOnHide') || comp.clearOnHide) &&
+      (comp.hidden || comp.scope?.conditionallyHidden);
+    const shouldSkipProcessingNestedFormData = noReferenceAttached || shouldBeCleared;
+    if (shouldSkipProcessingNestedFormData) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export function componentInfo(component: any) {
+  if (component.component) {
+    return componentInfo(component.component);
+  }
   const hasColumns = component.columns && Array.isArray(component.columns);
   const hasRows = component.rows && Array.isArray(component.rows);
   const hasComps = component.components && Array.isArray(component.components);
@@ -322,49 +610,27 @@ export function getComponentData(components: Component[], data: DataObject, path
   return compData;
 }
 
-export function getComponentActualValue(
-  component: Component,
-  compPath: string,
-  data: any,
-  row: any,
+export function getComponentValue(
+  form: Form | undefined,
+  data: DataObject,
+  path: string,
+  dataIndex?: number,
+  local?: boolean,
 ) {
-  // The compPath here will NOT contain the indexes for DataGrids and EditGrids.
-  //
-  //   a[0].b[2].c[3].d
-  //
-  // Because of this, we will need to determine our parent component path (not data path),
-  // and find the "row" based comp path.
-  //
-  //   a[0].b[2].c[3].d => a.b.c.d
-  //
-  let parentInputComponent: any = null;
-  let parent = component;
-  let rowPath = '';
-
-  while (parent?.parent?.path && !parentInputComponent) {
-    parent = parent.parent;
-    if (parent.input) {
-      parentInputComponent = parent;
-    }
+  const match: ComponentMatch | undefined = getComponentFromPath(
+    form?.components || [],
+    path,
+    data,
+    dataIndex,
+  );
+  if (!match) {
+    // Fall back to get the value from the data object.
+    return get(data, path, undefined);
   }
-
-  if (parentInputComponent) {
-    const parentCompPath = parentInputComponent.path.replace(/\[[0-9]+\]/g, '');
-    rowPath = compPath.replace(parentCompPath, '');
-    rowPath = trim(rowPath, '. ');
+  if (local) {
+    return match?.paths?.localDataPath ? get(data, match.paths.localDataPath, undefined) : null;
   }
-
-  let value = null;
-  if (data) {
-    value = get(data, compPath);
-  }
-  if (rowPath && row && isNil(value)) {
-    value = get(row, rowPath);
-  }
-  if (isNil(value) || (isObject(value) && isEmpty(value))) {
-    value = '';
-  }
-  return value;
+  return match?.paths?.dataPath ? get(data, match.paths.dataPath, undefined) : null;
 }
 
 /**
@@ -393,9 +659,9 @@ export function isLayoutComponent(component: Component) {
  * @param query
  * @return {boolean}
  */
-export function matchComponent(component: Component, query: any) {
+export function matchComponent(component: Component, query: any, paths?: ComponentPaths) {
   if (isString(query)) {
-    return component.key === query || component.path === query;
+    return component.key === query || paths?.localPath === query || paths?.path === query;
   } else {
     let matches = false;
     forOwn(query, (value, key) => {
@@ -409,30 +675,20 @@ export function matchComponent(component: Component, query: any) {
 }
 
 /**
- * Get a component by its key
+ * Get a component by its path.
  *
  * @param {Object} components - The components to iterate.
- * @param {String|Object} key - The key of the component to get, or a query of the component to search.
+ * @param {String|Object} path - The key of the component to get, or a query of the component to search.
  * @param {boolean} includeAll - Whether or not to include layout components.
  * @returns {Component} - The component that matches the given key, or undefined if not found.
  */
 export function getComponent(
   components: Component[],
-  key: any,
+  path: any,
   includeAll: any = false,
+  dataIndex?: number, // The preferred last data index of the component to find.
 ): Component | undefined {
-  let result;
-  eachComponent(
-    components,
-    (component: Component, path: any) => {
-      if (path === key || (component.input && component.key === key)) {
-        result = component;
-        return true;
-      }
-    },
-    includeAll,
-  );
-  return result;
+  return getComponentFromPath(components, path, undefined, dataIndex, includeAll)?.component;
 }
 
 /**
@@ -446,8 +702,8 @@ export function searchComponents(components: Component[], query: any): Component
   const results: Component[] = [];
   eachComponent(
     components,
-    (component: any) => {
-      if (matchComponent(component, query)) {
+    (component: any, compPath, components, parent, compPaths) => {
+      if (matchComponent(component, query, compPaths)) {
         results.push(component);
       }
     },
@@ -1072,6 +1328,25 @@ export function compareSelectResourceWithObjectTypeValues(
   return every(getItemTemplateKeys(template) || [], (k) =>
     isEqual(get(value, k), get(comparedValue, k)),
   );
+}
+
+export function getComponentErrorField(component: Component, context: ValidationContext) {
+  const toInterpolate =
+    component.errorLabel || component.label || component.placeholder || component.key;
+  return Evaluator.interpolate(toInterpolate, context);
+}
+
+export function normalizeContext(context: any): any {
+  const { data, paths, local } = context;
+  return paths
+    ? {
+        ...context,
+        ...{
+          path: paths.localDataPath,
+          data: getComponentLocalData(paths, data, local),
+        },
+      }
+    : context;
 }
 
 export { eachComponent, eachComponentData, eachComponentAsync, eachComponentDataAsync };

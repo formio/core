@@ -59,7 +59,7 @@ describe('validateRequiredDay', function () {
       fields: {
         year: { required: true },
         month: { required: true },
-        day: { hide: true }
+        day: { hide: true },
       },
     };
     const data = { component: '07/2024' };
@@ -74,7 +74,7 @@ describe('validateRequiredDay', function () {
       fields: {
         year: { required: true },
         day: { required: true },
-        month: { hide: true }
+        month: { hide: true },
       },
     };
     const data = { component: '24/2024' };
@@ -89,7 +89,7 @@ describe('validateRequiredDay', function () {
       fields: {
         month: { required: true },
         day: { required: true },
-        year: { hide: true }
+        year: { hide: true },
       },
     };
     const data = { component: '07/24' };
