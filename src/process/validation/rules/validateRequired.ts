@@ -71,12 +71,9 @@ const valueIsPresent = (
   return true;
 };
 
-export const shouldValidate = (context: ValidationContext) => {
+export const shouldValidate = (context: ValidationContext): boolean => {
   const { component } = context;
-  if (component.validate?.required && !(component.hidden || component.scope?.conditionallyHidden)) {
-    return true;
-  }
-  return false;
+  return !!component.validate?.required;
 };
 
 export const validateRequired: RuleFn = async (context: ValidationContext) => {
