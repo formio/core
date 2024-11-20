@@ -617,7 +617,7 @@ describe('validateAvailableItems', function () {
     expect(result?.errorKeyOrMessage).to.equal('invalidOption');
   });
 
-  it('Validating a select boxes component with url data source with the available items validation parameter will return FieldError if the selected item is invalid', async function () {
+  it('Validating a select boxes component with url data source with the available items validation parameter will return null if the selected item is valid', async function () {
     const component: SelectBoxesComponent = {
       ...simpleSelectBoxes,
       dataSrc: 'url',
