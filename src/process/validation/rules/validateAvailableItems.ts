@@ -335,6 +335,17 @@ export const validateAvailableItemsSync: RuleFnSync = (context: ValidationContex
         }
         return values.find((optionValue) => optionValue === value) !== undefined ? null : error;
       }
+    } else if (isValidateableSelectBoxesComponent(component) && component.dataSrc !== 'url') {
+      if (value == null || isEmpty(value) || !isObject(value)) {
+        return null;
+      }
+
+      const values = component.values.map(val => val.value);
+      if (values) {
+        return difference(Object.keys(value), values).length
+          ? error
+          : null;
+      }
     }
   } catch (err: any) {
     throw new ProcessorError(err.message || err, context, 'validate:validateAvailableItems');
