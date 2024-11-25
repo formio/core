@@ -24,16 +24,17 @@ export const validateCustomSync: RuleFnSync = (context: ValidationContext) => {
       return null;
     }
 
+    const ctx = instance?.evalContext
+      ? instance.evalContext()
+      : evalContext
+        ? evalContext(normalizeContext(context))
+        : normalizeContext(context);
     const evalContextValue = {
-      ...(instance?.evalContext
-        ? instance.evalContext()
-        : evalContext
-          ? evalContext(normalizeContext(context))
-          : normalizeContext(context)),
+      ...ctx,
       component,
       data,
       row,
-      rowIndex: index,
+      rowIndex: typeof index === 'number' ? index : ctx.rowIndex,
       instance,
       valid: true,
       input: value,
