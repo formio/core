@@ -65,12 +65,12 @@ export const eachComponentDataAsync = async (
         }
         if (getModelType(component) === 'dataObject') {
           // No need to bother processing all the children data if there is no data for this form or the reference value has not been loaded.
-          const nestedFormValue: any = get(data, component.path);
+          const nestedFormValue: any = get(data, compPath);
           const noReferenceAttached =
             nestedFormValue?._id && isEmpty(nestedFormValue.data) && !has(nestedFormValue, 'form');
           const shouldProcessNestedFormData = nestedFormValue?._id
             ? !noReferenceAttached
-            : has(data, component.path);
+            : has(data, compPath);
           if (shouldProcessNestedFormData) {
             // For nested forms, we need to reset the "data" and "path" objects for all of the children components, and then re-establish the data when it is done.
             const childPath: string = componentDataPath(component, path, compPath);
