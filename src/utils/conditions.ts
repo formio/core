@@ -8,6 +8,8 @@ import {
 } from './formUtil';
 import { has, isObject, map, every, some, find, filter, isBoolean, split } from 'lodash';
 import ConditionOperators from './operators';
+import _ from 'lodash';
+import { checkComponentType } from './utils';
 
 export const isJSONConditional = (conditional: any): conditional is JSONConditional => {
   return conditional && conditional.json && isObject(conditional.json);
@@ -123,6 +125,45 @@ function isConditionPotentiallyBasedOnValuePath(condition: any = {}) {
   );
 }
 
+function getConditionalPathsRecursive(conditionPaths: string[], data: any): any {
+  let currentGlobalIndex = 0;
+  const conditionalPathsArray: string[] = [];
+  const getConditionalPaths = (data: any, currentPath = '', localIndex = 0) => {
+    currentPath = currentPath.replace(/^\.+|\.+$/g, '');
+    const currentLocalIndex = localIndex;
+    const currentData = _.get(data, currentPath);
+    if (Array.isArray(currentData) && currentData.filter(Boolean).length > 0) {
+      if (currentData.some(element => typeof element !== 'object')) {
+        return;
+      }
+      const hasInnerDataArray = currentData.find(x => Array.isArray(x[conditionPaths[currentLocalIndex]]));
+      if (hasInnerDataArray) {
+        currentData.forEach((_, indexOutside) => {
+          const innerCompDataPath = `${currentPath}[${indexOutside}].${conditionPaths[currentLocalIndex]}`;
+          getConditionalPaths(data, innerCompDataPath, currentLocalIndex + 1);
+        });
+      }
+      else {
+        currentData.forEach((x, index) => {
+          if (!_.isNil(x[conditionPaths[currentLocalIndex]])) {
+            const compDataPath = `${currentPath}[${index}].${conditionPaths[currentLocalIndex]}`;
+            conditionalPathsArray.push(compDataPath);
+          }
+        });
+      }
+    }
+    else {
+      if (!conditionPaths[currentGlobalIndex]) {
+        return;
+      }
+      currentGlobalIndex = currentGlobalIndex + 1;
+      getConditionalPaths(data, `${currentPath}.${conditionPaths[currentGlobalIndex - 1]}`, currentGlobalIndex);
+    }
+  };
+  getConditionalPaths(data);
+  return conditionalPathsArray;
+}
+
 /**
  * Checks the simple conditionals.
  * @param conditional
@@ -187,22 +228,35 @@ export function checkSimpleConditional(
         }
       }
 
-      const value = conditionComponent
-        ? getComponentActualValue(conditionComponent, conditionComponentPath, data, row)
-        : null;
+      const splittedConditionPath = conditionComponentPath.split('.');
+      const isParentGrid = (component?.parent?.type || instance?.parent?.type) === 'datagrid' || (component?.parent?.type || instance?.parent?.type) === 'editgrid'
+      const conditionalPaths = isParentGrid ? [] : getConditionalPathsRecursive(splittedConditionPath, data);
 
-      const ConditionOperator = ConditionOperators[operator];
-      return ConditionOperator
-        ? new ConditionOperator().getResult({
-            value,
-            comparedValue,
-            instance,
-            component,
-            conditionComponent,
-            conditionComponentPath,
-            data,
-          })
-        : true;
+      if (checkComponentType(conditionComponent, "checkbox")) {
+        if (typeof comparedValue === 'string') {
+          comparedValue = comparedValue === 'true'
+        }
+      }
+      if (checkComponentType(conditionComponent, "select")) {
+        conditionComponent = conditionComponent?.component || conditionComponent;
+      }
+      if (conditionalPaths.length > 0) {
+        return conditionalPaths.map((path: string) => {
+          const value = getComponentActualValue(conditionComponent, path, data, row);
+
+          const ConditionOperator = ConditionOperators[operator];
+          return ConditionOperator
+            ? new ConditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath })
+            : true;
+        });
+      }
+      else {
+        const value = getComponentActualValue(conditionComponent, conditionComponentPath, data, row);
+        const СonditionOperator = ConditionOperators[operator];
+        return СonditionOperator
+          ? new СonditionOperator().getResult({ value, comparedValue, instance, component, conditionComponentPath, conditionComponent })
+          : true;
+      }
     }),
     (res) => res !== null,
   );
@@ -210,10 +264,11 @@ export function checkSimpleConditional(
   let result = false;
   switch (conjunction) {
     case 'any':
-      result = some(conditionsResult, (res) => !!res);
+      result = some(conditionsResult.flat(), (res) => !!res);
       break;
     default:
-      result = every(conditionsResult, (res) => !!res);
+      result = every(conditionsResult.flat(), (res) => !!res);
   }
   return show ? result : !result;
 }
+
