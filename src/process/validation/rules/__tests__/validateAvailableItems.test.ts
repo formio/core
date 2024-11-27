@@ -608,7 +608,7 @@ describe('validateAvailableItems', function () {
         baz: true,
         biz: false,
         new: true,
-        test: false
+        test: false,
       },
     };
     const context = generateProcessorContext(component, data);
@@ -631,7 +631,7 @@ describe('validateAvailableItems', function () {
       component: {
         one: true,
         two: false,
-        three: true
+        three: true,
       },
     };
     const context = generateProcessorContext(component, data);
@@ -639,8 +639,7 @@ describe('validateAvailableItems', function () {
     context.fetch = () => {
       return Promise.resolve({
         ok: true,
-        json: () =>
-          Promise.resolve(['one', 'two', 'three']),
+        json: () => Promise.resolve(['one', 'two', 'three']),
       });
     };
     const result = await validateAvailableItems(context);
@@ -663,7 +662,7 @@ describe('validateAvailableItems', function () {
         two: false,
         three: true,
         four: true,
-        five: false
+        five: false,
       },
     };
     const context = generateProcessorContext(component, data);
@@ -671,8 +670,7 @@ describe('validateAvailableItems', function () {
     context.fetch = () => {
       return Promise.resolve({
         ok: true,
-        json: () =>
-          Promise.resolve(['one', 'two', 'three']),
+        json: () => Promise.resolve(['one', 'two', 'three']),
       });
     };
     const result = await validateAvailableItems(context);
