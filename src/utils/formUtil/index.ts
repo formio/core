@@ -558,10 +558,10 @@ export function getComponentLocalData(paths: ComponentPaths, data: any, local?: 
 }
 
 export function shouldProcessComponent(comp: Component, row: any, value: any): boolean {
-  if (isEmpty(row)) {
-    return false;
-  }
   if (getModelType(comp) === 'dataObject') {
+    if (isEmpty(row)) {
+      return false;
+    }
     const noReferenceAttached = value?._id ? isEmpty(value.data) && !has(value, 'form') : false;
     const shouldBeCleared =
       (!comp.hasOwnProperty('clearOnHide') || comp.clearOnHide) &&
