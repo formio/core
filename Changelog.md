@@ -1,3 +1,9 @@
+## 2.3.0-rc.23
+
+### Changed
+
+ - FIO-9021: Fixed eachComponentData iteration for nested forms
+
 ## 2.3.0-rc.22
 
 ### Changed
