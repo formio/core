@@ -1,4 +1,4 @@
-## 2.3.0-rc.23
+## [Unreleased: 2.3.0-rc.23]
 
 ### Changed
 
