@@ -1,42 +1,32 @@
 import { get, set } from 'lodash';
-import { Component, ProcessorsContext, ProcessorType } from 'types';
-import { getComponentKey } from 'utils/formUtil';
-import { resetEphemeralState } from 'utils';
-
-export function dataValue(component: Component, row: any) {
-  const key = getComponentKey(component);
-  return key ? get(row, key) : undefined;
-}
+import { ProcessorsContext, ProcessorType } from 'types';
+import { getModelType } from 'utils/formUtil';
 
 export async function processOne<ProcessorScope>(context: ProcessorsContext<ProcessorScope>) {
-  const { processors, component, path } = context;
+  const { processors, component, paths, local, path } = context;
   // Create a getter for `value` that is always derived from the current data object
   if (typeof context.value === 'undefined') {
+    const dataPath = local ? paths?.localDataPath || path : paths?.dataPath || path;
     Object.defineProperty(context, 'value', {
       enumerable: true,
       get() {
-        return get(context.data, context.path);
+        const modelType = getModelType(component);
+        if (!component.type || modelType === 'none' || modelType === 'content') {
+          return undefined;
+        }
+        return get(context.data, dataPath);
       },
       set(newValue: any) {
-        set(context.data, context.path, newValue);
+        const modelType = getModelType(component);
+        if (!component.type || modelType === 'none' || modelType === 'content') {
+          // Do not set the value if the model type is 'none' or 'content'
+          return;
+        }
+        set(context.data, dataPath, newValue);
       },
     });
   }
 
-  // Define the component path
-  Object.defineProperty(component, 'path', {
-    enumerable: false,
-    writable: true,
-    value: path,
-  });
-
-  // If the component has ephemeral state, then we need to reset it in case this is e.g. a data grid,
-  // in which each row needs to be validated independently
-  resetEphemeralState(component);
-
-  if (!context.row) {
-    return;
-  }
   context.processor = ProcessorType.Custom;
   for (const processor of processors) {
     if (processor?.process) {
@@ -46,33 +36,31 @@ export async function processOne<ProcessorScope>(context: ProcessorsContext<Proc
 }
 
 export function processOneSync<ProcessorScope>(context: ProcessorsContext<ProcessorScope>) {
-  const { processors, component, path } = context;
+  const { processors, component, paths, local, path } = context;
   // Create a getter for `value` that is always derived from the current data object
   if (typeof context.value === 'undefined') {
+    const dataPath = local ? paths?.localDataPath || path : paths?.dataPath || path;
     Object.defineProperty(context, 'value', {
       enumerable: true,
       get() {
-        return get(context.data, context.path);
+        const modelType = getModelType(component);
+        if (!component.type || modelType === 'none' || modelType === 'content') {
+          return undefined;
+        }
+        return get(context.data, dataPath);
       },
       set(newValue: any) {
-        set(context.data, context.path, newValue);
+        const modelType = getModelType(component);
+        if (!component.type || modelType === 'none' || modelType === 'content') {
+          // Do not set the value if the model type is 'none' or 'content'
+          return;
+        }
+        set(context.data, dataPath, newValue);
       },
     });
   }
 
-  // Define the component path
-  Object.defineProperty(component, 'path', {
-    enumerable: false,
-    writable: true,
-    value: path,
-  });
-
-  // If the component has ephemeral state, then we need to reset the ephemeral state in case this is e.g. a data grid, in which each row needs to be validated independently
-  resetEphemeralState(component);
-
-  if (!context.row) {
-    return;
-  }
+  // Process the components.
   context.processor = ProcessorType.Custom;
   for (const processor of processors) {
     if (processor?.processSync) {

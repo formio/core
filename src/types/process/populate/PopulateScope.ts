@@ -4,6 +4,5 @@ export type PopulateScope = {
   row?: any;
   populated?: Array<{
     path: string;
-    row: any;
   }>;
 } & ProcessorScope;

@@ -15,6 +15,7 @@ import { processOne } from 'processes/processOne';
 import { generateProcessorContext } from './fixtures/util';
 import { ProcessorsContext, SelectBoxesComponent, ValidationScope } from 'types';
 import { validateProcessInfo } from 'processes/validation';
+import { conditionProcessInfo } from 'processes/conditions';
 
 describe('validateRequired', function () {
   it('Validating a simple component that is required and not present in the data will return a field error', async function () {
@@ -66,7 +67,7 @@ describe('validateRequired', function () {
     const component = conditionallyHiddenRequiredHiddenField;
     const data = { otherData: 'hideme' };
     const context = generateProcessorContext(component, data) as ProcessorsContext<ValidationScope>;
-    context.processors = [validateProcessInfo];
+    context.processors = [conditionProcessInfo, validateProcessInfo];
     await processOne(context);
     expect(context.scope.errors.length).to.equal(0);
   });

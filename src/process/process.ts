@@ -28,22 +28,19 @@ import { hideChildrenProcessorInfo } from './hideChildren';
 export async function process<ProcessScope>(
   context: ProcessContext<ProcessScope>,
 ): Promise<ProcessScope> {
-  const { instances, components, data, scope, flat, processors } = context;
-
+  const { instances, components, data, scope, flat, processors, local, parent, parentPaths } =
+    context;
   await eachComponentDataAsync(
     components,
     data,
-    async (component, compData, row, path, components, index, parent) => {
-      // Skip processing if row is null or undefined
-      if (!row) {
-        return;
-      }
+    async (component, compData, row, path, components, index, parent, paths) => {
       await processOne<ProcessScope>({
         ...context,
         data: compData,
         component,
         components,
         path,
+        paths,
         row,
         index,
         instance: instances ? instances[path] : undefined,
@@ -57,6 +54,10 @@ export async function process<ProcessScope>(
         return true;
       }
     },
+    false,
+    local,
+    parent,
+    parentPaths,
   );
   for (let i = 0; i < processors?.length; i++) {
     const processor = processors[i];
@@ -68,22 +69,19 @@ export async function process<ProcessScope>(
 }
 
 export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>): ProcessScope {
-  const { instances, components, data, scope, flat, processors } = context;
-
+  const { instances, components, data, scope, flat, processors, local, parent, parentPaths } =
+    context;
   eachComponentData(
     components,
     data,
-    (component, compData, row, path, components, index, parent) => {
-      // Skip processing if row is null or undefined
-      if (!row) {
-        return;
-      }
+    (component, compData, row, path, components, index, parent, paths) => {
       processOneSync<ProcessScope>({
         ...context,
         data: compData,
         component,
         components,
         path,
+        paths,
         row,
         index,
         instance: instances ? instances[path] : undefined,
@@ -97,6 +95,10 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
         return true;
       }
     },
+    false,
+    local,
+    parent,
+    parentPaths,
   );
   for (let i = 0; i < processors?.length; i++) {
     const processor = processors[i];

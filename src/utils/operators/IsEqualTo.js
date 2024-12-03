@@ -3,7 +3,7 @@ import {
   isSelectResourceWithObjectValue,
 } from 'utils/formUtil';
 import ConditionOperator from './ConditionOperator';
-import { isString, isEqual, get } from 'lodash';
+import { isString, isEqual, get, isObject } from 'lodash';
 
 export default class IsEqualTo extends ConditionOperator {
   static get operatorKey() {
@@ -16,10 +16,9 @@ export default class IsEqualTo extends ConditionOperator {
 
   execute({ value, comparedValue, conditionComponent }) {
     // special check for select boxes
-    if (conditionComponent?.type === 'selectboxes') {
+    if (conditionComponent?.type === 'selectboxes' && isObject(value)) {
       return get(value, comparedValue, false);
     }
-
     if (
       value &&
       comparedValue &&

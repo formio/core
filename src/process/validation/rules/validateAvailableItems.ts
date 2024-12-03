@@ -28,11 +28,7 @@ function isValidateableSelectComponent(component: any): component is SelectCompo
 }
 
 function isValidateableSelectBoxesComponent(component: any): component is SelectBoxesComponent {
-  return (
-    component &&
-    !!component.validate?.onlyAvailableItems &&
-    component.type === 'selectboxes'
-  );
+  return component && !!component.validate?.onlyAvailableItems && component.type === 'selectboxes';
 }
 
 function mapDynamicValues<T extends Record<string, any>>(component: SelectComponent, values: T[]) {
@@ -279,11 +275,9 @@ export const validateAvailableItems: RuleFn = async (context: ValidationContext)
       const values =
         component.dataSrc === 'url'
           ? await getAvailableDynamicValues(component, context)
-          : component.values.map(val => val.value);
+          : component.values.map((val) => val.value);
       if (values) {
-        return difference(Object.keys(value), values).length
-          ? error
-          : null;
+        return difference(Object.keys(value), values).length ? error : null;
       }
     }
   } catch (err: any) {
@@ -340,11 +334,9 @@ export const validateAvailableItemsSync: RuleFnSync = (context: ValidationContex
         return null;
       }
 
-      const values = component.values.map(val => val.value);
+      const values = component.values.map((val) => val.value);
       if (values) {
-        return difference(Object.keys(value), values).length
-          ? error
-          : null;
+        return difference(Object.keys(value), values).length ? error : null;
       }
     }
   } catch (err: any) {

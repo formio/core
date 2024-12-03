@@ -5,6 +5,12 @@ export interface EvaluatorOptions {
   data?: any;
 }
 
+export type EvaluatorContext = {
+  evalContext?: (context: any) => any;
+  instance?: any;
+  [key: string]: any;
+};
+
 // BaseEvaluator is for extending.
 export class BaseEvaluator {
   static templateSettings = {

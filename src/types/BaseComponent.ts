@@ -14,12 +14,15 @@ export type SimpleConditional = {
   conditions: SimpleConditionalConditions;
 };
 
+export type ComponentScope = {
+  conditionallyHidden?: boolean;
+};
+
 export type BaseComponent = {
   input: boolean;
   type: string;
   key: string;
-  path?: string;
-  parent?: BaseComponent;
+  path?: string; // The "form" path to the component including non-layout parent components.
   tableView?: boolean;
   placeholder?: string;
   prefix?: string;
@@ -31,9 +34,7 @@ export type BaseComponent = {
   unique?: boolean;
   persistent?: boolean | string;
   hidden?: boolean;
-  ephemeralState?: {
-    conditionallyHidden?: boolean;
-  };
+  scope?: ComponentScope;
   clearOnHide?: boolean;
   refreshOn?: string;
   redrawOn?: string;
@@ -59,7 +60,6 @@ export type BaseComponent = {
   validateOn?: string;
   validateWhenHidden?: boolean;
   modelType?: ReturnType<typeof getModelType>;
-  parentPath?: string;
   validate?: {
     required?: boolean;
     custom?: string;
