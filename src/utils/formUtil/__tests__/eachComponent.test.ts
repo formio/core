@@ -1041,4 +1041,45 @@ describe('eachComponent', function () {
     );
     expect(contentComponentsAmount).to.be.equal(1);
   });
+
+  it('Should get the absolute paths correctly when iterating.', function () {
+    const form: any = {
+      key: 'form',
+      display: 'form',
+      components: [
+        {
+          type: 'container',
+          key: 'outer-container',
+          components: [
+            {
+              type: 'textfield',
+              key: 'textfield',
+            },
+            {
+              type: 'container',
+              key: 'inner-container',
+              components: [
+                {
+                  type: 'textfield',
+                  key: 'innerTextfield',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    // when passed child components, absolute path returns relative to the parent component/
+    eachComponent(
+      form.components,
+      (component: Component, path: string, components, parent, paths) => {
+        if (component.key === 'innerTextfield') {
+          expect(paths?.dataPath).to.equal(
+            'outer-container.inner-container.innerTextfield',
+            'absolute path path is incomplete',
+          );
+        }
+      },
+    );
+  });
 });
