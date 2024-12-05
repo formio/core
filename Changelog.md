@@ -1,3 +1,9 @@
+## 2.3.0
+
+### Changed
+
+- Official Release
+
 ## 2.3.0-rc.23
 
 ### Changed
