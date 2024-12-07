@@ -1,4 +1,4 @@
-##[Unreleased: 2.3.1-rc.]
+## [Unreleased: 2.3.1-rc.1]
 
 ### Changed
 
