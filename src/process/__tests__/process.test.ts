@@ -4768,6 +4768,221 @@ describe('Process Tests', function () {
     assert.deepEqual(context.scope.errors.length, 0);
   });
 
+  it('Should calculate value on server for calculations based on dataSource component', async function () {
+    const form = {
+      _id: '6752ad48eda1569ebc9aaead',
+      title: 'cart',
+      name: 'Cart',
+      path: '9357cart',
+      type: 'form',
+      display: 'form',
+      components: [
+        {
+          label: 'Products',
+          persistent: 'client-only',
+          trigger: {
+            init: true,
+            server: true
+          },
+          dataSrc: 'url',
+          fetch: {
+            url: '{{ config.appUrl }}/product/submission',
+            method: 'get',
+            headers: [
+              {
+                key: '',
+                value: ''
+              }
+            ],
+            mapFunction: '',
+            forwardHeaders: false,
+          },
+          allowCaching: true,
+          key: 'products',
+          type: 'datasource',
+          input: true,
+          tableView: false
+        },
+        {
+          label: 'Cart',
+          reorder: false,
+          addAnotherPosition: 'bottom',
+          layoutFixed: false,
+          enableRowGroups: false,
+          initEmpty: false,
+          tableView: false,
+          key: 'cart',
+          type: 'datagrid',
+          input: true,
+          components: [
+            {
+              label: 'Product',
+              widget: 'choicesjs',
+              tableView: true,
+              dataSrc: 'custom',
+              data: {
+                custom: 'values = data.products;'
+              },
+              valueProperty: '_id',
+              template: '\u003Cspan\u003E{{ item.data.name }}\u003C/span\u003E',
+              refreshOn: 'products',
+              key: 'product',
+              type: 'select',
+              input: true
+            },
+            {
+              label: 'Quantity',
+              applyMaskOn: 'change',
+              mask: false,
+              tableView: false,
+              delimiter: false,
+              requireDecimal: false,
+              inputFormat: 'plain',
+              truncateMultipleSpaces: false,
+              key: 'quantity',
+              type: 'number',
+              input: true,
+              defaultValue: 1
+            },
+            {
+              label: 'Price',
+              applyMaskOn: 'change',
+              mask: false,
+              tableView: false,
+              delimiter: false,
+              requireDecimal: false,
+              inputFormat: 'plain',
+              truncateMultipleSpaces: false,
+              redrawOn: 'cart.product',
+              calculateValue: 'var productId = row.product;\nvalue = 0;\nif (productId && data.products && data.products.length) {\n  data.products.forEach(function(product) {\n    if (product._id === productId) {\n      value = product.data.price * (row.quantity || 1);\n    }\n  });\n}',
+              calculateServer: true,
+              key: 'price',
+              type: 'number',
+              input: true
+            }
+          ]
+        },
+        {
+          label: 'Total',
+          applyMaskOn: 'change',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          redrawOn: 'cart',
+          calculateValue: 'if (data.cart && data.cart.length) {\n  value = data.cart.reduce(function(total, cartItem) {\n    return total + cartItem.price;\n  }, 0);\n}',
+          calculateServer: true,
+          key: 'total',
+          type: 'number',
+          input: true
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false
+        }
+      ],
+      created: '2024-12-06T07:52:40.891Z',
+      modified: '2024-12-06T08:33:40.971Z',
+      config: {
+        appUrl: 'http://localhost:3000/idwqwhclwioyqbw'
+      },
+    };
+
+    const resource = [
+      {
+        _id: '6752adf3eda1569ebc9ab0cd',
+        data: {
+          name: 'Cream',
+          price: 30
+        },
+      },
+      {
+        _id: '6752adf4eda1569ebc9ab0df',
+        data: {
+          name: 'Perfume',
+          price: 100
+        },
+      },
+      {
+        _id: '6752adf4eda1569ebc9ab0f1',
+        data: {
+          name: 'Soap',
+          price: 5
+        },
+      },
+      {
+        _id: '6752adf4eda1569ebc9ab103',
+        data: {
+          name: 'Toothpaste',
+          price: 10
+        },
+      },
+      {
+        _id: '6752adf4eda1569ebc9ab115',
+        data: {
+          name: 'Shampoo',
+          price: 20
+        },
+      }
+    ];
+
+    const submission = {
+      data: {
+        cart: [
+          {
+            product: '6752adf4eda1569ebc9ab115',
+            quantity: 5,
+            price: 100
+          },
+          {
+            product: '6752adf4eda1569ebc9ab103',
+            quantity: 3,
+            price: 30
+          },
+          {
+            product: '6752adf4eda1569ebc9ab0df',
+            quantity: 2,
+            price: 200
+          }
+        ],
+        total: 330,
+        submit: true
+      },
+      state: 'submitted'
+    };
+
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: {},
+      fetch: (): Promise<Response> => {
+        return Promise.resolve({
+          ok: true,
+          json: () => {
+              return Promise.resolve(resource);
+          }
+        } as Response);
+      },
+      config: {
+        server: true,
+      },
+    };
+    await process(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    await process(context);
+    assert.deepEqual(context.data, submission.data);
+  });
+
   describe('Required component validation in nested form in DataGrid/EditGrid', function () {
     const nestedForm = {
       key: 'form',
