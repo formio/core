@@ -5,6 +5,7 @@ import {
   CalculationScope,
   CalculationContext,
   ProcessorInfo,
+  FetchScope,
 } from 'types';
 import { set } from 'lodash';
 
@@ -23,7 +24,10 @@ export const calculateProcessSync: ProcessorFnSync<CalculationScope> = (
   if (!shouldCalculate(context)) {
     return;
   }
-  const evalContextValue = evalContext ? evalContext(context) : context;
+  const calculationContext = (scope as FetchScope).fetched
+    ? {...context, data: {...data, ...(scope as FetchScope).fetched}}
+    : context;
+  const evalContextValue = evalContext ? evalContext(calculationContext) : calculationContext;
   evalContextValue.value = value || null;
   if (!scope.calculated) scope.calculated = [];
   const newValue = JSONLogicEvaluator.evaluate(component.calculateValue, evalContextValue, 'value');
