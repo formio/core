@@ -21,12 +21,6 @@ module.exports = {
       arrowFunction: false,
     },
   },
-  plugins: [
-    new webpack.IgnorePlugin({
-      resourceRegExp: /^\.\/locale$/,
-      contextRegExp: /moment$/,
-    }),
-  ],
   resolve: {
     extensions: ['.ts', '.js'],
     plugins: [

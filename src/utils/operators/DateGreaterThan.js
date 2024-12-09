@@ -1,6 +1,15 @@
 import ConditionOperator from './ConditionOperator';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
 import { isPartialDay, getDateValidationFormat } from '../../utils/date';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(customParseFormat);
+dayjs.extend(advancedFormat);
 export default class DateGeaterThan extends ConditionOperator {
   static get operatorKey() {
     return 'dateGreaterThan';
@@ -15,10 +24,10 @@ export default class DateGeaterThan extends ConditionOperator {
       conditionTriggerComponent && conditionTriggerComponent.component.type === 'day'
         ? getDateValidationFormat(conditionTriggerComponent.component)
         : null;
-    const date = validationFormat ? moment(value, validationFormat) : moment(value);
+    const date = validationFormat ? dayjs(value, validationFormat) : dayjs(value);
     const comparedDate = validationFormat
-      ? moment(comparedValue, validationFormat)
-      : moment(comparedValue);
+      ? dayjs(comparedValue, validationFormat)
+      : dayjs(comparedValue);
 
     return { date, comparedDate };
   }

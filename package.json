@@ -112,8 +112,7 @@
     "fetch-ponyfill": "^7.1.0",
     "inputmask": "5.0.9",
     "json-logic-js": "^2.0.5",
-    "lodash": "^4.17.21",
-    "moment": "^2.29.4"
+    "lodash": "^4.17.21"
   },
   "nyc": {
     "check-coverage": true,
