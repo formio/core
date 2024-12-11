@@ -19,5 +19,5 @@ export type PassedComponentInstance = {
   evaluate: (expression: string, additionalContext?: Record<string, any>) => any;
   interpolate: (text: string, additionalContext?: Record<string, any>) => string;
   shouldSkipValidation: (data?: DataObject, row?: DataObject) => boolean;
-  loadedOptions?: Array<{invalid: boolean, value: any, label: string}>
+  loadedOptions?: Array<{ invalid: boolean; value: any; label: string }>;
 };

@@ -1,5 +1,4 @@
 import {
-  ConditionsScope,
   ProcessorFn,
   ProcessorFnSync,
   ProcessorInfo,
@@ -15,7 +14,6 @@ import { evaluationRules, rules, serverRules } from './rules';
 import find from 'lodash/find';
 import get from 'lodash/get';
 import pick from 'lodash/pick';
-import { getComponentAbsolutePath } from 'utils/formUtil';
 import { getErrorMessage } from 'utils/error';
 import { FieldError } from 'error';
 import {
@@ -92,10 +90,10 @@ export function isForcedHidden(
   isConditionallyHidden: ConditionallyHidden,
 ): boolean {
   const { component } = context;
-  if (isConditionallyHidden(context as ConditionsContext)) {
+  if (component.scope?.conditionallyHidden || isConditionallyHidden(context as ConditionsContext)) {
     return true;
   }
-  if (component.ephemeralState?.intentionallyHidden) {
+  if (component.scope?.intentionallyHidden) {
     return true;
   }
   if (component.hasOwnProperty('hidden')) {
@@ -108,20 +106,8 @@ export const _shouldSkipValidation = (
   context: ValidationContext,
   isConditionallyHidden: ConditionallyHidden,
 ) => {
-  const { component, scope, path } = context;
-  const absolutePath = getComponentAbsolutePath(component) || path;
+  const { component } = context;
 
-  if (
-    (scope as ConditionsScope)?.conditionals &&
-    (find((scope as ConditionsScope).conditionals, {
-      path: absolutePath,
-      conditionallyHidden: true,
-    }) ||
-      component.ephemeralState?.conditionallyHidden === true)
-  ) {
-    return true;
-  }
-  const { validateWhenHidden = false } = component;
   const rules = [
     // Skip validation if component is readOnly
     // () => this.options.readOnly,
@@ -130,7 +116,7 @@ export const _shouldSkipValidation = (
     // Check to see if we are editing and if so, check component persistence.
     () => isValueHidden(context),
     // Force valid if component is hidden.
-    () => isForcedHidden(context, isConditionallyHidden) && !validateWhenHidden,
+    () => !component.validateWhenHidden && isForcedHidden(context, isConditionallyHidden),
   ];
 
   return rules.some((pred) => pred());
@@ -172,23 +158,22 @@ export function shouldValidateServer(context: ValidationContext): boolean {
 }
 
 function handleError(error: FieldError | null, context: ValidationContext) {
-  const { scope, component, path } = context;
-  const absolutePath = getComponentAbsolutePath(component) || path;
+  const { scope, path } = context;
   if (error) {
     const cleanedError = cleanupValidationError(error);
-    cleanedError.context.path = absolutePath;
+    cleanedError.context.path = path;
     if (
       !find(scope.errors, {
         errorKeyOrMessage: cleanedError.errorKeyOrMessage,
         context: {
-          path: absolutePath,
+          path: path,
         },
       })
     ) {
       if (!scope.validated) scope.validated = [];
       if (!scope.errors) scope.errors = [];
       scope.errors.push(cleanedError);
-      scope.validated.push({ path: absolutePath, error: cleanedError });
+      scope.validated.push({ path, error: cleanedError });
     }
   }
 }

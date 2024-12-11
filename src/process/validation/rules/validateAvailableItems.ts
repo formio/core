@@ -1,4 +1,4 @@
-import { isEmpty, isUndefined } from 'lodash';
+import { isEmpty, isUndefined, difference } from 'lodash';
 import { FieldError, ProcessorError } from 'error';
 import { Evaluator } from 'utils';
 import {
@@ -28,12 +28,7 @@ function isValidateableSelectComponent(component: any): component is SelectCompo
 }
 
 function isValidateableSelectBoxesComponent(component: any): component is SelectBoxesComponent {
-  return (
-    component &&
-    !!component.validate?.onlyAvailableItems &&
-    component.type === 'selectboxes' &&
-    component.dataSrc === 'url'
-  );
+  return component && !!component.validate?.onlyAvailableItems && component.type === 'selectboxes';
 }
 
 function mapDynamicValues<T extends Record<string, any>>(component: SelectComponent, values: T[]) {
@@ -273,19 +268,16 @@ export const validateAvailableItems: RuleFn = async (context: ValidationContext)
         return values.find((optionValue) => optionValue === value) !== undefined ? null : error;
       }
     } else if (isValidateableSelectBoxesComponent(component)) {
-      if (value == null || isEmpty(value)) {
+      if (value == null || isEmpty(value) || !isObject(value)) {
         return null;
       }
-      const values = await getAvailableDynamicValues(component, context);
-      if (values) {
-        if (isObject(value)) {
-          return values.find((optionValue) => compareComplexValues(optionValue, value, context)) !==
-            undefined
-            ? null
-            : error;
-        }
 
-        return values.find((optionValue) => optionValue === value) !== undefined ? null : error;
+      const values =
+        component.dataSrc === 'url'
+          ? await getAvailableDynamicValues(component, context)
+          : component.values.map((val) => val.value);
+      if (values) {
+        return difference(Object.keys(value), values).length ? error : null;
       }
     }
   } catch (err: any) {
@@ -336,6 +328,15 @@ export const validateAvailableItemsSync: RuleFnSync = (context: ValidationContex
             : error;
         }
         return values.find((optionValue) => optionValue === value) !== undefined ? null : error;
+      }
+    } else if (isValidateableSelectBoxesComponent(component) && component.dataSrc !== 'url') {
+      if (value == null || isEmpty(value) || !isObject(value)) {
+        return null;
+      }
+
+      const values = component.values.map((val) => val.value);
+      if (values) {
+        return difference(Object.keys(value), values).length ? error : null;
       }
     }
   } catch (err: any) {

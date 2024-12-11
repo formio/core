@@ -666,18 +666,18 @@ describe('eachComponent', function () {
     expect(numComps).to.be.equal(8);
   });
 
-  it('Should provide the paths to all of the components', function () {
+  it('Should provide the paths to all of the components if includeAll=true', function () {
     const paths = [
       'one',
       'parent1',
-      'two',
-      'parent2',
-      'three',
-      '',
-      'four',
-      'five',
-      'six',
-      'seven',
+      'parent1.two',
+      'parent1.parent2',
+      'parent1.parent2.three',
+      'parent1.parent2',
+      'parent1.parent2.four',
+      'parent1.parent2.five',
+      'parent1.parent2.six',
+      'parent1.parent2.seven',
       'eight',
     ];
     const testPaths: string[] = [];
@@ -879,14 +879,13 @@ describe('eachComponent', function () {
     ];
     const rowResults: Map<string, any> = new Map();
     eachComponent(
-      components[0].components,
+      components,
       (component: Component, path: string) => {
         rowResults.set(path, component);
       },
       true,
-      'dataGrid',
     );
-    expect(rowResults.size).to.equal(2);
+    expect(rowResults.size).to.equal(3);
     expect(rowResults.get('dataGrid.nestedTextField')).to.deep.equal({
       type: 'textfield',
       key: 'nestedTextField',
@@ -903,14 +902,14 @@ describe('eachComponent', function () {
     const paths = [
       'a',
       'b',
-      'c',
-      'd',
-      'f',
-      'f.g',
-      'f.h',
-      'f.i',
-      'e',
-      'j',
+      'b.c',
+      'b.c.d',
+      'b.c.f',
+      'b.c.f.g',
+      'b.c.f.h',
+      'b.c.f.i',
+      'b.c.e',
+      'b.j',
       'k',
       'k.n',
       'k.n.o',
@@ -1043,56 +1042,44 @@ describe('eachComponent', function () {
     expect(contentComponentsAmount).to.be.equal(1);
   });
 
-  it('should not mutate the path property if contained in component', function () {
-    const components = [
-      {
-        type: 'textfield',
-        key: 'textField',
-        input: true,
-        path: 'doNotMutate',
-      },
-      {
-        type: 'container',
-        key: 'container',
-        input: true,
-        path: 'doNotMutate',
-        components: [
-          {
-            type: 'textfield',
-            key: 'nestedTextField',
-            path: 'doNotMutate',
-            input: true,
-          },
-          {
-            type: 'textarea',
-            key: 'nestedTextArea',
-            path: 'doNotMutate',
-            input: true,
-          },
-        ],
-      },
-    ];
+  it('Should get the absolute paths correctly when iterating.', function () {
+    const form: any = {
+      key: 'form',
+      display: 'form',
+      components: [
+        {
+          type: 'container',
+          key: 'outer-container',
+          components: [
+            {
+              type: 'textfield',
+              key: 'textfield',
+            },
+            {
+              type: 'container',
+              key: 'inner-container',
+              components: [
+                {
+                  type: 'textfield',
+                  key: 'innerTextfield',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    // when passed child components, absolute path returns relative to the parent component/
     eachComponent(
-      components,
-      (component: Component, path: string) => {
-        if (component.key === 'textField') {
-          expect(component.path).to.equal('doNotMutate');
-          expect(path).to.equal('textField');
-        }
-        if (component.key === 'container') {
-          expect(component.path).to.equal('doNotMutate');
-          expect(path).to.equal('container');
-        }
-        if (component.key === 'nestedTextField') {
-          expect(component.path).to.equal('doNotMutate');
-          expect(path).to.equal('container.nestedTextField');
-        }
-        if (component.key === 'nestedTextArea') {
-          expect(component.path).to.equal('doNotMutate');
-          expect(path).to.equal('container.nestedTextArea');
+      form.components,
+      (component: Component, path: string, components, parent, paths) => {
+        if (component.key === 'innerTextfield') {
+          expect(paths?.dataPath).to.equal(
+            'outer-container.inner-container.innerTextfield',
+            'absolute path path is incomplete',
+          );
         }
       },
-      true,
     );
   });
 });

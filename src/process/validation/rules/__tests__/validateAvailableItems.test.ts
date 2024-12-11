@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
 import { FieldError } from 'error';
-import { RadioComponent, SelectComponent } from 'types';
+import { RadioComponent, SelectBoxesComponent, SelectComponent } from 'types';
 import {
   simpleRadioField,
   simpleSelectBoxes,
@@ -571,6 +571,106 @@ describe('validateAvailableItems', function () {
             { id: 'opt_1', value: 1 },
             { id: 'opt_2', value: 2 },
           ]),
+      });
+    };
+    const result = await validateAvailableItems(context);
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.errorKeyOrMessage).to.equal('invalidOption');
+  });
+
+  it('Validating a simple static values select boxes component with the available items validation parameter will return null if the selected item is valid', async function () {
+    const component: SelectBoxesComponent = {
+      ...simpleSelectBoxes,
+      validate: { onlyAvailableItems: true },
+    };
+    const data = {
+      component: {
+        foo: true,
+        bar: false,
+        baz: true,
+        biz: false,
+      },
+    };
+    const context = generateProcessorContext(component, data);
+    const result = await validateAvailableItems(context);
+    expect(result).to.equal(null);
+  });
+
+  it('Validating a simple static values select boxes component with the available items validation parameter will return FieldError if the selected item is invalid', async function () {
+    const component: SelectBoxesComponent = {
+      ...simpleSelectBoxes,
+      validate: { onlyAvailableItems: true },
+    };
+    const data = {
+      component: {
+        foo: true,
+        bar: false,
+        baz: true,
+        biz: false,
+        new: true,
+        test: false,
+      },
+    };
+    const context = generateProcessorContext(component, data);
+    const result = await validateAvailableItems(context);
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.errorKeyOrMessage).to.equal('invalidOption');
+  });
+
+  it('Validating a select boxes component with url data source with the available items validation parameter will return null if the selected item is valid', async function () {
+    const component: SelectBoxesComponent = {
+      ...simpleSelectBoxes,
+      dataSrc: 'url',
+      data: {
+        url: 'http://localhost:8080/numbers',
+        headers: [],
+      },
+      validate: { onlyAvailableItems: true },
+    };
+    const data = {
+      component: {
+        one: true,
+        two: false,
+        three: true,
+      },
+    };
+    const context = generateProcessorContext(component, data);
+
+    context.fetch = () => {
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(['one', 'two', 'three']),
+      });
+    };
+    const result = await validateAvailableItems(context);
+    expect(result).to.equal(null);
+  });
+
+  it('Validating a select boxes component with url data source with the available items validation parameter will return FieldError if the selected item is invalid', async function () {
+    const component: SelectBoxesComponent = {
+      ...simpleSelectBoxes,
+      dataSrc: 'url',
+      data: {
+        url: 'http://localhost:8080/numbers',
+        headers: [],
+      },
+      validate: { onlyAvailableItems: true },
+    };
+    const data = {
+      component: {
+        one: true,
+        two: false,
+        three: true,
+        four: true,
+        five: false,
+      },
+    };
+    const context = generateProcessorContext(component, data);
+
+    context.fetch = () => {
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(['one', 'two', 'three']),
       });
     };
     const result = await validateAvailableItems(context);
