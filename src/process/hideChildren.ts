@@ -22,7 +22,7 @@ export const hideChildrenProcessor: ProcessorFnSync<ConditionsScope> = (context)
     scope.conditionals = [];
   }
 
-  if (isConditionallyHidden || component.hidden || parent?.scope?.conditionallyHidden) {
+  if (isConditionallyHidden || parent?.scope?.conditionallyHidden) {
     setComponentScope(component, 'conditionallyHidden', true);
   }
 
