@@ -31,7 +31,7 @@ export const calculateProcessSync: ProcessorFnSync<CalculationScope> = (
     : context;
   const evalContextValue = evalContext
     ? evalContext(normalizeContext(calculationContext))
-    : normalizeContext(calculationContex);
+    : normalizeContext(calculationContext);
   evalContextValue.value = value || null;
   if (!scope.calculated) scope.calculated = [];
   const newValue = JSONLogicEvaluator.evaluate(component.calculateValue, evalContextValue, 'value');
