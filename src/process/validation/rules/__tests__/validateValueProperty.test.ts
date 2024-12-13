@@ -2,10 +2,7 @@ import { expect } from 'chai';
 import { set } from 'lodash';
 import { FieldError } from 'error';
 import { SelectBoxesComponent } from 'types';
-import {
-  simpleRadioField,
-  simpleSelectBoxes
-} from './fixtures/components';
+import { simpleRadioField, simpleSelectBoxes } from './fixtures/components';
 import { generateProcessorContext } from './fixtures/util';
 import { validateValueProperty } from '../validateValueProperty';
 
@@ -45,7 +42,7 @@ describe('validateValueProperty', function () {
         headers: [],
       },
     };
-    const data = {component: { 'true': true }};
+    const data = { component: { true: true } };
 
     const context = generateProcessorContext(component, data);
     const result = await validateValueProperty(context);
@@ -62,7 +59,7 @@ describe('validateValueProperty', function () {
         headers: [],
       },
     };
-    const data =  {component: { 'true': true }};
+    const data = { component: { true: true } };
 
     const context = generateProcessorContext(component, data);
     set(context, 'instance.options.building', true);

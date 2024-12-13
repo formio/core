@@ -8,6 +8,7 @@ import {
   FetchScope,
 } from 'types';
 import { set } from 'lodash';
+import { normalizeContext } from 'utils/formUtil';
 
 export const shouldCalculate = (context: CalculationContext): boolean => {
   const { component, config } = context;
@@ -24,10 +25,13 @@ export const calculateProcessSync: ProcessorFnSync<CalculationScope> = (
   if (!shouldCalculate(context)) {
     return;
   }
+
   const calculationContext = (scope as FetchScope).fetched
     ? {...context, data: {...data, ...(scope as FetchScope).fetched}}
     : context;
-  const evalContextValue = evalContext ? evalContext(calculationContext) : calculationContext;
+  const evalContextValue = evalContext
+    ? evalContext(normalizeContext(calculationContext))
+    : normalizeContext(calculationContex);
   evalContextValue.value = value || null;
   if (!scope.calculated) scope.calculated = [];
   const newValue = JSONLogicEvaluator.evaluate(component.calculateValue, evalContextValue, 'value');

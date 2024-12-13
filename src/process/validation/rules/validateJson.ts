@@ -3,6 +3,7 @@ import { FieldError } from 'error';
 import { RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 import { isObject } from 'lodash';
+import { normalizeContext } from 'utils/formUtil';
 
 export const shouldValidate = (context: ValidationContext) => {
   const { component } = context;
@@ -23,7 +24,9 @@ export const validateJsonSync: RuleFnSync = (context: ValidationContext) => {
   }
 
   const func = component?.validate?.json;
-  const evalContextValue = evalContext ? evalContext(context) : context;
+  const evalContextValue = evalContext
+    ? evalContext(normalizeContext(context))
+    : normalizeContext(context);
   evalContextValue.value = value || null;
   const valid: true | string = JSONLogicEvaluator.evaluate(
     func,

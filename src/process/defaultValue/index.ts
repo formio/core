@@ -7,7 +7,7 @@ import {
   DefaultValueContext,
 } from 'types';
 import { set, has } from 'lodash';
-import { getComponentKey } from 'utils/formUtil';
+import { getComponentKey, normalizeContext } from 'utils/formUtil';
 
 export const hasCustomDefaultValue = (context: DefaultValueContext): boolean => {
   const { component } = context;
@@ -48,7 +48,9 @@ export const customDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
   }
   let defaultValue = null;
   if (component.customDefaultValue) {
-    const evalContextValue = evalContext ? evalContext(context) : context;
+    const evalContextValue = evalContext
+      ? evalContext(normalizeContext(context))
+      : normalizeContext(context);
     evalContextValue.value = null;
     defaultValue = JSONLogicEvaluator.evaluate(
       component.customDefaultValue,

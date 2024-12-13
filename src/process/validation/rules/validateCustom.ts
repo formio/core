@@ -1,6 +1,7 @@
 import { RuleFn, RuleFnSync, ProcessorInfo, ValidationContext } from 'types';
 import { FieldError, ProcessorError } from 'error';
 import { Evaluator } from 'utils';
+import { normalizeContext } from 'utils/formUtil';
 
 export const validateCustom: RuleFn = async (context: ValidationContext) => {
   return validateCustomSync(context);
@@ -26,8 +27,8 @@ export const validateCustomSync: RuleFnSync = (context: ValidationContext) => {
     const ctx = instance?.evalContext
       ? instance.evalContext()
       : evalContext
-        ? evalContext(context)
-        : context;
+        ? evalContext(normalizeContext(context))
+        : normalizeContext(context);
     const evalContextValue = {
       ...ctx,
       component,
