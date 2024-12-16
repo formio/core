@@ -1,4 +1,4 @@
-## [Unreleased: 2.4.0-rc.2]
+## 2.4.0-rc.2
 
 - FIO-9159: add intentionallyHidden ephemeral state and breaking change to clearOnHide behavior
 
