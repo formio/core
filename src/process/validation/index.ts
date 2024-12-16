@@ -85,13 +85,15 @@ export function isValueHidden(context: ValidationContext): boolean {
   }
   return false;
 }
-
 export function isForcedHidden(
   context: ValidationContext,
   isConditionallyHidden: ConditionallyHidden,
 ): boolean {
   const { component } = context;
   if (component.scope?.conditionallyHidden || isConditionallyHidden(context as ConditionsContext)) {
+    return true;
+  }
+  if (component.scope?.intentionallyHidden) {
     return true;
   }
   if (component.hasOwnProperty('hidden')) {

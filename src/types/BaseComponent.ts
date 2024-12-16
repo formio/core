@@ -16,6 +16,7 @@ export type SimpleConditional = {
 
 export type ComponentScope = {
   conditionallyHidden?: boolean;
+  intentionallyHidden?: boolean;
 };
 
 export type BaseComponent = {
