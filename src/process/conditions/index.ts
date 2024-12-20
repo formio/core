@@ -15,6 +15,7 @@ import {
   isSimpleConditional,
   isJSONConditional,
 } from 'utils/conditions';
+import { getComponentPaths } from '../../utils/formUtil/index';
 
 const hasCustomConditions = (context: ConditionsContext): boolean => {
   const { component } = context;
@@ -93,7 +94,11 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
   }
   let conditionalComp = scope.conditionals.find((cond) => cond.path === path);
   if (!conditionalComp) {
-    conditionalComp = { path, conditionallyHidden: false };
+    const conditionalPath = path ? path : getComponentPaths(component).fullPath || '';
+    conditionalComp = {
+      path: conditionalPath,
+      conditionallyHidden: false,
+    };
     scope.conditionals.push(conditionalComp);
   }
 
