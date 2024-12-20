@@ -3242,6 +3242,85 @@ describe('Process Tests', function () {
     });
   });
 
+  it('Should correctly provide conditionals path for wizard panels, which affects the accuracy of validation when nested forms are presented ', async function () {
+    const form = {
+      components: [
+        {
+          type: 'radio',
+          label: 'Choose Form',
+          key: 'chooseForm',
+          values: [
+            { label: 'Show Form A', value: 'a' },
+            { label: 'Show Form B', value: 'b' },
+          ],
+          input: true,
+        },
+        {
+          type: 'form',
+          key: 'formA',
+          conditional: {
+            show: true,
+            when: 'chooseForm',
+            eq: 'a',
+          },
+          components: [
+            {
+              type: 'textfield',
+              label: 'Field A',
+              key: 'fieldA',
+              validate: { required: true },
+              input: true,
+            },
+          ],
+          input: true,
+        },
+        {
+          type: 'form',
+          key: 'formB',
+          conditional: {
+            show: true,
+            when: 'chooseForm',
+            eq: 'b',
+          },
+          components: [
+            {
+              type: 'textfield',
+              label: 'Field B',
+              key: 'fieldB',
+              validate: { required: true },
+              input: true,
+            },
+          ],
+          input: true,
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        chooseForm: 'b',
+        formB: { data: { fieldB: 'Test Value' } },
+      },
+    };
+
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: { errors: [] },
+      config: { server: true },
+    };
+
+    processSync(context);
+    assert.equal(context.scope.errors.length, 0);
+    expect((context.scope as any).conditionals).to.deep.equal([
+      { path: 'formA', conditionallyHidden: true },
+      { path: 'formB', conditionallyHidden: false },
+    ]);
+  });
+
   it('Should include submission data for logically visible fields', async function () {
     const form = {
       display: 'form',
@@ -4764,7 +4843,7 @@ describe('Process Tests', function () {
           persistent: 'client-only',
           trigger: {
             init: true,
-            server: true
+            server: true,
           },
           dataSrc: 'url',
           fetch: {
@@ -4773,8 +4852,8 @@ describe('Process Tests', function () {
             headers: [
               {
                 key: '',
-                value: ''
-              }
+                value: '',
+              },
             ],
             mapFunction: '',
             forwardHeaders: false,
@@ -4783,7 +4862,7 @@ describe('Process Tests', function () {
           key: 'products',
           type: 'datasource',
           input: true,
-          tableView: false
+          tableView: false,
         },
         {
           label: 'Cart',
@@ -4803,14 +4882,14 @@ describe('Process Tests', function () {
               tableView: true,
               dataSrc: 'custom',
               data: {
-                custom: 'values = data.products;'
+                custom: 'values = data.products;',
               },
               valueProperty: '_id',
               template: '\u003Cspan\u003E{{ item.data.name }}\u003C/span\u003E',
               refreshOn: 'products',
               key: 'product',
               type: 'select',
-              input: true
+              input: true,
             },
             {
               label: 'Quantity',
@@ -4824,7 +4903,7 @@ describe('Process Tests', function () {
               key: 'quantity',
               type: 'number',
               input: true,
-              defaultValue: 1
+              defaultValue: 1,
             },
             {
               label: 'Price',
@@ -4836,13 +4915,14 @@ describe('Process Tests', function () {
               inputFormat: 'plain',
               truncateMultipleSpaces: false,
               redrawOn: 'cart.product',
-              calculateValue: 'var productId = row.product;\nvalue = 0;\nif (productId && data.products && data.products.length) {\n  data.products.forEach(function(product) {\n    if (product._id === productId) {\n      value = product.data.price * (row.quantity || 1);\n    }\n  });\n}',
+              calculateValue:
+                'var productId = row.product;\nvalue = 0;\nif (productId && data.products && data.products.length) {\n  data.products.forEach(function(product) {\n    if (product._id === productId) {\n      value = product.data.price * (row.quantity || 1);\n    }\n  });\n}',
               calculateServer: true,
               key: 'price',
               type: 'number',
-              input: true
-            }
-          ]
+              input: true,
+            },
+          ],
         },
         {
           label: 'Total',
@@ -4854,11 +4934,12 @@ describe('Process Tests', function () {
           inputFormat: 'plain',
           truncateMultipleSpaces: false,
           redrawOn: 'cart',
-          calculateValue: 'if (data.cart && data.cart.length) {\n  value = data.cart.reduce(function(total, cartItem) {\n    return total + cartItem.price;\n  }, 0);\n}',
+          calculateValue:
+            'if (data.cart && data.cart.length) {\n  value = data.cart.reduce(function(total, cartItem) {\n    return total + cartItem.price;\n  }, 0);\n}',
           calculateServer: true,
           key: 'total',
           type: 'number',
-          input: true
+          input: true,
         },
         {
           type: 'button',
@@ -4866,13 +4947,13 @@ describe('Process Tests', function () {
           key: 'submit',
           disableOnInvalid: true,
           input: true,
-          tableView: false
-        }
+          tableView: false,
+        },
       ],
       created: '2024-12-06T07:52:40.891Z',
       modified: '2024-12-06T08:33:40.971Z',
       config: {
-        appUrl: 'http://localhost:3000/idwqwhclwioyqbw'
+        appUrl: 'http://localhost:3000/idwqwhclwioyqbw',
       },
     };
 
@@ -4881,37 +4962,37 @@ describe('Process Tests', function () {
         _id: '6752adf3eda1569ebc9ab0cd',
         data: {
           name: 'Cream',
-          price: 30
+          price: 30,
         },
       },
       {
         _id: '6752adf4eda1569ebc9ab0df',
         data: {
           name: 'Perfume',
-          price: 100
+          price: 100,
         },
       },
       {
         _id: '6752adf4eda1569ebc9ab0f1',
         data: {
           name: 'Soap',
-          price: 5
+          price: 5,
         },
       },
       {
         _id: '6752adf4eda1569ebc9ab103',
         data: {
           name: 'Toothpaste',
-          price: 10
+          price: 10,
         },
       },
       {
         _id: '6752adf4eda1569ebc9ab115',
         data: {
           name: 'Shampoo',
-          price: 20
+          price: 20,
         },
-      }
+      },
     ];
 
     const submission = {
@@ -4920,23 +5001,23 @@ describe('Process Tests', function () {
           {
             product: '6752adf4eda1569ebc9ab115',
             quantity: 5,
-            price: 100
+            price: 100,
           },
           {
             product: '6752adf4eda1569ebc9ab103',
             quantity: 3,
-            price: 30
+            price: 30,
           },
           {
             product: '6752adf4eda1569ebc9ab0df',
             quantity: 2,
-            price: 200
-          }
+            price: 200,
+          },
         ],
         total: 330,
-        submit: true
+        submit: true,
       },
-      state: 'submitted'
+      state: 'submitted',
     };
 
     const context = {
@@ -4950,8 +5031,8 @@ describe('Process Tests', function () {
         return Promise.resolve({
           ok: true,
           json: () => {
-              return Promise.resolve(resource);
-          }
+            return Promise.resolve(resource);
+          },
         } as Response);
       },
       config: {
