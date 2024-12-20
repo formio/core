@@ -43,7 +43,8 @@ export function eachComponent(
           eachComponent(column.components, fn, includeAll, compPaths, component),
         );
       } else if (info.hasRows) {
-        component.rows.forEach((row: any) => {
+        const comp = component.component || component;
+        comp.rows.forEach((row: any) => {
           if (Array.isArray(row)) {
             row.forEach((column) =>
               eachComponent(column.components, fn, includeAll, compPaths, component),
