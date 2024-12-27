@@ -84,6 +84,9 @@ export const eachComponentData = (
               );
             }
           }
+          else {
+            eachComponentData(component.components, data, fn, includeAll, local, component, compPaths);
+          }
           resetComponentScope(component);
           return true;
         } else {
