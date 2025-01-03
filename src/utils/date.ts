@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { isNaN, isNil } from 'lodash';
+import { isNaN, isNil, get } from 'lodash';
 import { Evaluator } from './Evaluator';
 import { DayComponent } from 'types';
 dayjs.extend(utc);
@@ -75,6 +75,29 @@ export function formatDate(value: any, format: any, timezone: any): string {
     return momentDate.tz(timezone).format(`${convertFormatToMoment(format)} z`);
   }
   return momentDate.format(convertFormatToMoment(format));
+}
+
+export function getDayFormat(component: DayComponent) {
+  let format = '';
+  const showDay = !get(component, 'fields.day.hide', false);
+  const showMonth = !get(component, 'fields.month.hide', false);
+  const showYear = !get(component, 'fields.year.hide', false);
+  if (component.dayFirst && showDay) {
+    format += 'D/';
+  }
+  if (showMonth) {
+    format += 'M/';
+  }
+  if (!component.dayFirst && showDay) {
+    format += 'D/';
+  }
+  if (showYear) {
+    format += 'YYYY';
+    return format;
+  } else {
+    // Trim off the "/" from the end of the format string.
+    return format.length ? format.substring(0, format.length - 1) : format;
+  }
 }
 
 /**
