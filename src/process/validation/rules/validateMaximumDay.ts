@@ -1,6 +1,12 @@
 import { ProcessorError, FieldError } from 'error';
 import { DayComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
-import { dayjs, isPartialDay, getDateValidationFormat, getDateSetting } from 'utils/date';
+import {
+  dayjs,
+  isPartialDay,
+  getDateValidationFormat,
+  getDateSetting,
+  getDayFormat,
+} from 'utils/date';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isValidatableDayComponent = (component: any): component is DayComponent => {
@@ -47,9 +53,9 @@ export const validateMaximumDaySync: RuleFnSync = (context: ValidationContext) =
   } else {
     maxDate.setHours(0, 0, 0, 0);
   }
-  const error = new FieldError('maxDay', {
+  const error = new FieldError('maxDate', {
     ...context,
-    maxDate: String(maxDate),
+    maxDate: dayjs(maxDate).format(getDayFormat(component as DayComponent)),
     setting: String(maxDate),
   });
   return date.isBefore(dayjs(maxDate)) || date.isSame(dayjs(maxDate)) ? null : error;

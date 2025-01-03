@@ -24,7 +24,7 @@ describe('validateMaximumDay', function () {
     const context = generateProcessorContext(component, data);
     const result = await validateMaximumDay(context);
     expect(result).to.be.instanceOf(FieldError);
-    expect(result?.errorKeyOrMessage).to.equal('maxDay');
+    expect(result?.errorKeyOrMessage).to.equal('maxDate');
   });
 
   it('Validating a day component with a day before the maximum day will return null', async function () {
@@ -45,7 +45,7 @@ describe('validateMaximumDay', function () {
     const context = generateProcessorContext(component, data);
     const result = await validateMaximumDay(context);
     expect(result).to.be.instanceOf(FieldError);
-    expect(result?.errorKeyOrMessage).to.equal('maxDay');
+    expect(result?.errorKeyOrMessage).to.equal('maxDate');
   });
 
   it('Validating a day-first day component with a day before the maximum day will return null', async function () {

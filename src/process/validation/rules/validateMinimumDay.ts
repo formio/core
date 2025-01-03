@@ -1,6 +1,12 @@
 import { ProcessorError, FieldError } from 'error';
 import { DayComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
-import { dayjs, isPartialDay, getDateValidationFormat, getDateSetting } from 'utils/date';
+import {
+  dayjs,
+  isPartialDay,
+  getDateValidationFormat,
+  getDateSetting,
+  getDayFormat,
+} from 'utils/date';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
 const isValidatableDayComponent = (component: any): component is DayComponent => {
@@ -48,9 +54,9 @@ export const validateMinimumDaySync: RuleFnSync = (context: ValidationContext) =
   } else {
     minDate.setHours(0, 0, 0, 0);
   }
-  const error = new FieldError('minDay', {
+  const error = new FieldError('minDate', {
     ...context,
-    minDate: String(minDate),
+    minDate: dayjs(minDate).format(getDayFormat(component as DayComponent)),
     setting: String(minDate),
   });
   return date.isAfter(minDate) || date.isSame(minDate) ? null : error;
