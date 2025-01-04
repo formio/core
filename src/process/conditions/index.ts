@@ -93,7 +93,10 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
   }
   let conditionalComp = scope.conditionals.find((cond) => cond.path === path);
   if (!conditionalComp) {
-    conditionalComp = { path, conditionallyHidden: false };
+    conditionalComp = {
+      path: component.type === 'page' ? component.key : path,
+      conditionallyHidden: false,
+    };
     scope.conditionals.push(conditionalComp);
   }
 
