@@ -24,7 +24,7 @@ describe('validateMinimumDay', function () {
     const context = generateProcessorContext(component, data);
     const result = await validateMinimumDay(context);
     expect(result).to.be.instanceOf(FieldError);
-    expect(result?.errorKeyOrMessage).to.equal('minDay');
+    expect(result?.errorKeyOrMessage).to.equal('minDate');
   });
 
   it('Validating a day component with a day after the minimum day will return null', async function () {
@@ -45,7 +45,7 @@ describe('validateMinimumDay', function () {
     const context = generateProcessorContext(component, data);
     const result = await validateMinimumDay(context);
     expect(result).to.be.instanceOf(FieldError);
-    expect(result?.errorKeyOrMessage).to.contain('minDay');
+    expect(result?.errorKeyOrMessage).to.contain('minDate');
   });
 
   it('Validating a day-first day component with a day after the minimum day will return null', async function () {
