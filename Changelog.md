@@ -1,3 +1,9 @@
+## 2.3.2-rc.1
+
+### Changed
+
+- FIO-9511: fixed day component min/max validation message
+
 ## 2.3.1
 
 ### Changed
