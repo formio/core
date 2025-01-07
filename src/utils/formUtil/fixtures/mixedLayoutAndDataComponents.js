@@ -26,4 +26,4 @@ export default [
     type: 'number',
     input: true,
   },
-]
+];

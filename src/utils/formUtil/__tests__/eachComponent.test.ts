@@ -1,5 +1,10 @@
 import { expect } from 'chai';
-import {components, components2, components3, tableInsideWizardComp} from '../fixtures'
+import {
+  textFieldsNestedInLayoutComponents,
+  nestedArrayDataComponents,
+  mixedLayoutAndDataComponents,
+  tableInsideWizardComp,
+} from '../fixtures';
 
 import { eachComponent } from '../eachComponent';
 import { isLayoutComponent } from '../index';
@@ -7,10 +12,9 @@ import { isLayoutComponent } from '../index';
 import { Component, TableComponent, HasChildComponents } from 'types';
 
 describe('eachComponent', function () {
-
   it('should iterate through nested components in the right order', function () {
     let n = 1;
-    eachComponent(components, (component: Component) => {
+    eachComponent(textFieldsNestedInLayoutComponents, (component: Component) => {
       expect((component as any).order).to.equal(n);
       n += 1;
     });
@@ -20,7 +24,7 @@ describe('eachComponent', function () {
     let numComps = 0;
     let numLayout = 0;
     eachComponent(
-      components,
+      textFieldsNestedInLayoutComponents,
       (component: Component) => {
         if (isLayoutComponent(component)) {
           numLayout++;
@@ -50,7 +54,7 @@ describe('eachComponent', function () {
     ];
     const testPaths: string[] = [];
     eachComponent(
-      components,
+      textFieldsNestedInLayoutComponents,
       (component: Component, path: string) => {
         testPaths.push(path);
       },
@@ -292,7 +296,7 @@ describe('eachComponent', function () {
     ];
     const testPaths: string[] = [];
     eachComponent(
-      components2,
+      nestedArrayDataComponents,
       (component: Component, path: string) => {
         testPaths.push(path);
       },
@@ -324,7 +328,7 @@ describe('eachComponent', function () {
       'tagpad.a',
     ];
     const testPaths: string[] = [];
-    eachComponent(components2, (component: Component, path: string) => {
+    eachComponent(nestedArrayDataComponents, (component: Component, path: string) => {
       testPaths.push(path);
     });
     expect(paths).to.deep.equal(testPaths);
@@ -334,7 +338,7 @@ describe('eachComponent', function () {
     let numComps = 0;
     let numLayout = 0;
     eachComponent(
-      components,
+      textFieldsNestedInLayoutComponents,
       (component: Component) => {
         if (isLayoutComponent(component)) {
           numLayout++;
@@ -364,7 +368,7 @@ describe('eachComponent', function () {
 
   it('should not include `htmlelement` components when `includeAll` is not provided', function () {
     let htmlComponentsAmount = 0;
-    eachComponent(components3, (component: Component) => {
+    eachComponent(mixedLayoutAndDataComponents, (component: Component) => {
       if (component.type === 'htmlelement') {
         htmlComponentsAmount++;
       }
@@ -375,7 +379,7 @@ describe('eachComponent', function () {
   it('should include `htmlelement` components when `includeAll` is provided', function () {
     let htmlComponentsAmount = 0;
     eachComponent(
-      components3,
+      mixedLayoutAndDataComponents,
       (component: Component) => {
         if (component.type === 'htmlelement') {
           htmlComponentsAmount++;
@@ -388,7 +392,7 @@ describe('eachComponent', function () {
 
   it('should not include `content` components when `includeAll` is not provided', function () {
     let contentComponentsAmount = 0;
-    eachComponent(components3, (component: Component) => {
+    eachComponent(mixedLayoutAndDataComponents, (component: Component) => {
       if (component.type === 'content') {
         contentComponentsAmount++;
       }
@@ -399,7 +403,7 @@ describe('eachComponent', function () {
   it('should include `content` components when `includeAll` is provided', function () {
     let contentComponentsAmount = 0;
     eachComponent(
-      components3,
+      mixedLayoutAndDataComponents,
       (component: Component) => {
         if (component.type === 'content') {
           contentComponentsAmount++;
