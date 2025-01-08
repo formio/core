@@ -1,3 +1,10 @@
+## 2.4.0-rc.4
+
+### Changed
+
+- FIO-9465: fix conditionals path for panel component
+- FIO-9357 fixed calculation based on DataSource component
+
 ## 2.4.0-rc.3
 
 ### Changed
