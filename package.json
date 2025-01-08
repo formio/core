@@ -1,6 +1,6 @@
 {
   "name": "@formio/core",
-  "version": "2.4.0-rc.3",
+  "version": "2.4.0-dev.1",
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
   "exports": {
@@ -106,7 +106,7 @@
     "browser-cookies": "^1.2.0",
     "core-js": "^3.39.0",
     "dayjs": "^1.11.12",
-    "dompurify": "^3.1.7",
+    "dompurify": "^3.2.3",
     "eventemitter3": "^5.0.0",
     "fast-json-patch": "^3.1.1",
     "fetch-ponyfill": "^7.1.0",
