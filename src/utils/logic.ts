@@ -18,6 +18,7 @@ import {
 import { get, set, clone, isEqual, assign } from 'lodash';
 import { evaluate, interpolate } from 'modules/jsonlogic';
 import { setComponentScope } from 'utils/formUtil';
+import { fastCloneDeep } from "./fastCloneDeep";
 
 export const hasLogic = (context: LogicContext): boolean => {
   const { component } = context;
@@ -73,7 +74,13 @@ export function setActionBooleanProperty(
   const currentValue = get(component, property, false).toString();
   const newValue = action.state.toString();
   if (currentValue !== newValue) {
-    set(component, property, newValue === 'true');
+    if (property === 'hidden') {
+      set(component, 'hidden', newValue === 'true');
+    } else {
+      const newComponent = fastCloneDeep(component);
+      set(newComponent, property, newValue === 'true');
+      set(context, 'component', newComponent);
+    }
 
     // If this is "logic" forcing a component to set hidden property, then we will set the "conditionallyHidden"
     // flag which will trigger the clearOnHide functionality.
