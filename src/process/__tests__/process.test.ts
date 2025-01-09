@@ -4965,7 +4965,7 @@ describe('Process Tests', function () {
     assert.deepEqual(context.data, submission.data);
   });
 
-  it('Should properly validate comopnents inside Data Components with Advanced logic', async () => {
+  it('Should properly validate comopnents inside Data Components with Advanced logic', async function () {
     const form = {
       display: 'form',
       components: [
