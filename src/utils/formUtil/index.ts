@@ -572,9 +572,6 @@ export function shouldProcessComponent(comp: Component, row: any, value: any): b
 }
 
 export function componentInfo(component: any) {
-  if (component.component) {
-    return componentInfo(component.component);
-  }
   const hasColumns = component.columns && Array.isArray(component.columns);
   const hasRows = component.rows && Array.isArray(component.rows);
   const hasComps = component.components && Array.isArray(component.components);
