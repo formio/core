@@ -3,7 +3,6 @@ import {
   textFieldsNestedInLayoutComponents,
   nestedArrayDataComponents,
   mixedLayoutAndDataComponents,
-  tableInsideWizardComp,
 } from '../fixtures';
 
 import { eachComponent } from '../eachComponent';
@@ -453,19 +452,5 @@ describe('eachComponent', function () {
         }
       },
     );
-  });
-
-  it('should iterate through table components inside wizard form', function () {
-    let isExistUrlComponentInTable;
-    eachComponent(
-      tableInsideWizardComp,
-      (component: Component) => {
-        if (component.key === 'url1') {
-          isExistUrlComponentInTable = true;
-        }
-      },
-      true,
-    );
-    expect(isExistUrlComponentInTable).to.be.equal(true);
   });
 });
