@@ -12,6 +12,7 @@ import {
   pad,
   isPlainObject,
   isArray,
+  isNumber,
   isEqual,
   isBoolean,
   omit,
@@ -333,6 +334,21 @@ export function getComponentPaths(
     localDataPath: componentPath(component, parent, parentPaths, ComponentPath.localDataPath),
     dataIndex: parentPaths?.dataIndex,
   };
+}
+
+export function getStringFromComponentPath(path: string | string[]) {
+  if (!isArray(path)) {
+    return path;
+  }
+  let strPath = '';
+  path.forEach((part, i) => {
+    if (isNumber(part)) {
+      strPath += `[${part}]`;
+    } else {
+      strPath += i === 0 ? part : `.${part}`;
+    }
+  });
+  return strPath;
 }
 
 export type ComponentMatch = {

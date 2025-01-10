@@ -83,6 +83,16 @@ export const eachComponentData = (
                 compPaths,
               );
             }
+          } else if (includeAll) {
+            eachComponentData(
+              component.components,
+              data,
+              fn,
+              includeAll,
+              local,
+              component,
+              compPaths,
+            );
           }
           resetComponentScope(component);
           return true;

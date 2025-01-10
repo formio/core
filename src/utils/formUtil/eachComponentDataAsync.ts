@@ -77,6 +77,16 @@ export const eachComponentDataAsync = async (
                 compPaths,
               );
             }
+          } else if (includeAll) {
+            await eachComponentDataAsync(
+              component.components,
+              data,
+              fn,
+              includeAll,
+              local,
+              component,
+              compPaths,
+            );
           }
           resetComponentScope(component);
           return true;
