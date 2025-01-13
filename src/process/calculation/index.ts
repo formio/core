@@ -27,7 +27,7 @@ export const calculateProcessSync: ProcessorFnSync<CalculationScope> = (
   }
 
   const calculationContext = (scope as FetchScope).fetched
-    ? {...context, data: {...data, ...(scope as FetchScope).fetched}}
+    ? { ...context, data: { ...data, ...(scope as FetchScope).fetched } }
     : context;
   const evalContextValue = evalContext
     ? evalContext(normalizeContext(calculationContext))
