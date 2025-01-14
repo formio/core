@@ -6,6 +6,7 @@ import {
   ProcessorContext,
   ProcessorScope,
   DayComponent,
+  TagsComponent,
 } from 'types';
 import { normalizeProcessSync } from '../';
 import { generateProcessorContext } from '../../__tests__/fixtures/util';
@@ -337,5 +338,22 @@ describe('Normalize processor', function () {
     const context: ProcessorContext<ProcessorScope> = generateProcessorContext(dayComp, data);
     normalizeProcessSync(context);
     expect({ day: '01/2025' }).to.deep.equal({ day: '01/2025' });
+  });
+
+  it('Should remove the tag component from the submission object if data is set to null', async function () {
+    const tagsComponent: TagsComponent = {
+      input: true,
+      delimeter: '',
+      maxTags: 1,
+      storeas: '',
+      type: 'tags',
+      key: 'tags',
+    };
+    const data = {
+      tags: null,
+    };
+    const context: ProcessorContext<ProcessorScope> = generateProcessorContext(tagsComponent, data);
+    normalizeProcessSync(context);
+    expect(context.data).to.deep.equal({});
   });
 });

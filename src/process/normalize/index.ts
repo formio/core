@@ -394,6 +394,9 @@ export const normalizeProcessSync: ProcessorFnSync<NormalizeScope> = (context) =
     scope.normalize[path].normalized = true;
   } else if (isTagsComponent(component)) {
     set(data, path, normalizeTagsComponentValue(component, value));
+    if (data[path] === null) {
+      delete data[path];
+    }
     scope.normalize[path].normalized = true;
   } else if (isTextFieldComponent(component)) {
     set(data, path, normalizeTextFieldComponentValue(component, defaultValues, value, path));
