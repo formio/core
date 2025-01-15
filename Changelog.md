@@ -1,3 +1,9 @@
+## 2.4.0-rc.5
+
+### Changed
+
+- FIO-9467: Fix rendering table component in wizard
+
 ## 2.4.0-rc.4
 
 ### Changed
