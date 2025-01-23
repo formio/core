@@ -7,6 +7,7 @@ import {
   ProcessorScope,
   DayComponent,
   TagsComponent,
+  SurveyComponent,
 } from 'types';
 import { normalizeProcessSync } from '../';
 import { generateProcessorContext } from '../../__tests__/fixtures/util';
@@ -355,5 +356,44 @@ describe('Normalize processor', function () {
     const context: ProcessorContext<ProcessorScope> = generateProcessorContext(tagsComponent, data);
     normalizeProcessSync(context);
     expect(context.data).to.deep.equal({});
+  });
+
+  it('Should remove the survey component from the submission object if data is set falsy values', async function () {
+    const surveyComponent: SurveyComponent = {
+      label: 'Survey',
+      tableView: false,
+      questions: [
+        {
+          label: 'Agree',
+          value: 'agree',
+          tooltip: ''
+        }
+      ],
+      values: [
+        {
+          label: 'Yes',
+          value: 'yes',
+          tooltip: ''
+        },
+        {
+          label: "No",
+          value: "no",
+          tooltip: ''
+        }
+      ],
+      validateWhenHidden: false,
+      key: 'survey',
+      type: 'survey',
+      input: true
+    };
+    const context1: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {survey: null});
+    normalizeProcessSync(context1);
+    expect(context1.data).to.deep.equal({});
+    const context2: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {survey: 0});
+    normalizeProcessSync(context2);
+    expect(context2.data).to.deep.equal({});
+    const context3: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {survey: ''});
+    normalizeProcessSync(context3);
+    expect(context3.data).to.deep.equal({});
   });
 });
