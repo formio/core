@@ -1,4 +1,4 @@
-import { JSONLogicEvaluator } from 'modules/jsonlogic';
+import { JSONLogicEvaluator } from "modules/jsonlogic";
 import {
   ProcessorFn,
   ProcessorFnSync,
@@ -6,13 +6,17 @@ import {
   CalculationContext,
   ProcessorInfo,
   FetchScope,
-} from 'types';
-import { set } from 'lodash';
-import { normalizeContext } from 'utils/formUtil';
+} from "types";
+import { set } from "lodash";
+import { normalizeContext } from "utils/formUtil";
 
 export const shouldCalculate = (context: CalculationContext): boolean => {
+  // this is a sample change
   const { component, config } = context;
-  if (!component.calculateValue || (config?.server && !component.calculateServer)) {
+  if (
+    !component.calculateValue ||
+    (config?.server && !component.calculateServer)
+  ) {
     return false;
   }
   return true;
@@ -34,7 +38,11 @@ export const calculateProcessSync: ProcessorFnSync<CalculationScope> = (
     : normalizeContext(calculationContext);
   evalContextValue.value = value || null;
   if (!scope.calculated) scope.calculated = [];
-  const newValue = JSONLogicEvaluator.evaluate(component.calculateValue, evalContextValue, 'value');
+  const newValue = JSONLogicEvaluator.evaluate(
+    component.calculateValue,
+    evalContextValue,
+    "value",
+  );
 
   // Only set a new value if it is not "null" which would be the case if no calculation occurred.
   if (newValue !== null) {
@@ -54,7 +62,7 @@ export const calculateProcess: ProcessorFn<CalculationScope> = async (
 };
 
 export const calculateProcessInfo: ProcessorInfo<CalculationContext, void> = {
-  name: 'calculate',
+  name: "calculate",
   process: calculateProcess,
   processSync: calculateProcessSync,
   shouldProcess: shouldCalculate,
