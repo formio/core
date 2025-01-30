@@ -366,33 +366,39 @@ describe('Normalize processor', function () {
         {
           label: 'Agree',
           value: 'agree',
-          tooltip: ''
-        }
+          tooltip: '',
+        },
       ],
       values: [
         {
           label: 'Yes',
           value: 'yes',
-          tooltip: ''
+          tooltip: '',
         },
         {
-          label: "No",
-          value: "no",
-          tooltip: ''
-        }
+          label: 'No',
+          value: 'no',
+          tooltip: '',
+        },
       ],
       validateWhenHidden: false,
       key: 'survey',
       type: 'survey',
-      input: true
+      input: true,
     };
-    const context1: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {survey: null});
+    const context1: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {
+      survey: null,
+    });
     normalizeProcessSync(context1);
     expect(context1.data).to.deep.equal({});
-    const context2: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {survey: 0});
+    const context2: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {
+      survey: 0,
+    });
     normalizeProcessSync(context2);
     expect(context2.data).to.deep.equal({});
-    const context3: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {survey: ''});
+    const context3: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {
+      survey: '',
+    });
     normalizeProcessSync(context3);
     expect(context3.data).to.deep.equal({});
   });

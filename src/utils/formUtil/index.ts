@@ -439,7 +439,7 @@ export function componentMatches(
       }
     }
   });
-  if (!matches.key && component.input !== false && component.key === path) {
+  if (!matches.key && component.key === path) {
     matches.key = addMatch('key', { component, paths });
   }
 }

@@ -45,7 +45,8 @@ const isTextFieldComponent = (component: any): component is TextFieldComponent =
 const isTimeComponent = (component: any): component is TimeComponent => component.type === 'time';
 const isNumberComponent = (component: any): component is NumberComponent =>
   component.type === 'number';
-const isSurveyComponent = (component: any): component is SurveyComponent => component.type === 'survey';
+const isSurveyComponent = (component: any): component is SurveyComponent =>
+  component.type === 'survey';
 
 const normalizeAddressComponentValue = (component: AddressComponent, value: any) => {
   if (!component.multiple && Boolean(component.enableManualMode) && value && !value.mode) {
