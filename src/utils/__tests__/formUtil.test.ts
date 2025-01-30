@@ -97,7 +97,7 @@ describe('formUtil', function () {
       };
       const component = getComponent(form.components, 'myPanel');
       expect(component, 'Component should be found');
-      expect(component!.key).to.equal('panel');
+      expect(component!.key).to.equal('myPanel');
       expect(component!.type).to.equal('panel');
     });
   });
