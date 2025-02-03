@@ -39,13 +39,13 @@ export class FieldError {
       level = 'error',
     } = context;
     this.ruleName = ruleName;
+    this.level = level;
     if (context.component.validate?.customMessage) {
       this.errorKeyOrMessage = context.component.validate.customMessage;
       this.context = { ...context, hasLabel: false, field, level };
     } else {
       this.errorKeyOrMessage = errorKeyOrMessage;
       this.context = { ...context, hasLabel, field };
-      this.level = level;
     }
   }
 }
