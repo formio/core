@@ -1,3 +1,9 @@
+## 2.4.0-rc.7
+
+### Changed
+
+- FIO-9508: includeAll flag now works with nested components
+
 ## 2.4.0-rc.6
 
 ### Changed
