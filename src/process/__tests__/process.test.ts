@@ -5879,43 +5879,43 @@ describe('Process Tests', function () {
     it("Should save 'level' field when custom error message is defined to correctly add error classes into app template ", async function () {
       const components = [
         {
-          label: "Text Field",
-          applyMaskOn: "change",
+          label: 'Text Field',
+          applyMaskOn: 'change',
           tableView: true,
           validate: {
             required: true,
-            customMessage: "mikhail"
+            customMessage: 'mikhail',
           },
           validateWhenHidden: false,
-          key: "textField",
-          type: "textfield",
-          input: true
+          key: 'textField',
+          type: 'textfield',
+          input: true,
         },
         {
-          label: "Submit",
+          label: 'Submit',
           showValidations: false,
           tableView: false,
-          key: "submit",
-          type: "button",
+          key: 'submit',
+          type: 'button',
           input: true,
-          saveOnEnter: false
-        }
+          saveOnEnter: false,
+        },
       ];
       const submission = {
         data: {
-          textField: "",
-          submit: true
-        }
-      }
+          textField: '',
+          submit: true,
+        },
+      };
       const context = {
         submission,
         data: submission.data,
         components,
         processors: ProcessTargets.evaluator,
-        scope: {} as { errors: Record<string,unknown>[] }
+        scope: {} as { errors: Record<string, unknown>[] },
       };
       processSync(context);
-      expect(context.scope.errors[0].level).to.equal("error");
+      expect(context.scope.errors[0].level).to.equal('error');
     });
   });
 });

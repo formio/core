@@ -1,3 +1,9 @@
+## 2.4.0-rc.8
+
+### Changed
+
+- FIO-9668: Fix custom error messages are not highlighted
+
 ## 2.4.0-rc.7
 
 ### Changed
