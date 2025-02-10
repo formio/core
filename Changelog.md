@@ -1,3 +1,7 @@
+## [Unreleased: 2.4.0-rc.9]
+
+- FIO-9649: update componentMatches fn to not omit layout components; add tests
+
 ## 2.4.0-rc.8
 
 ### Changed
