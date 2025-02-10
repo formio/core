@@ -18,6 +18,7 @@ import {
   TimeComponent,
   NumberComponent,
   SurveyComponent,
+  DateTimeComponent,
 } from 'types';
 
 type NormalizeScope = DefaultValueScope & {
@@ -47,6 +48,8 @@ const isNumberComponent = (component: any): component is NumberComponent =>
   component.type === 'number';
 const isSurveyComponent = (component: any): component is SurveyComponent =>
   component.type === 'survey';
+const isDateTimeComponent = (component: any): component is DateTimeComponent =>
+  component.type === 'datetime';
 
 const normalizeAddressComponentValue = (component: AddressComponent, value: any) => {
   if (!component.multiple && Boolean(component.enableManualMode) && value && !value.mode) {
@@ -412,6 +415,10 @@ export const normalizeProcessSync: ProcessorFnSync<NormalizeScope> = (context) =
     scope.normalize[path].normalized = true;
   } else if (isSurveyComponent(component)) {
     if (!data[path]) {
+      delete data[path];
+    }
+  } else if (isDateTimeComponent(component)) {
+    if (data[path] === null) {
       delete data[path];
     }
   }

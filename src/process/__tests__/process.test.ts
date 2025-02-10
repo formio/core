@@ -5875,5 +5875,47 @@ describe('Process Tests', function () {
       processSync(context);
       expect(context.data).to.deep.equal({ selector: false, container: { textField: 'test' } });
     });
+
+    it("Should save 'level' field when custom error message is defined to correctly add error classes into app template ", async function () {
+      const components = [
+        {
+          label: "Text Field",
+          applyMaskOn: "change",
+          tableView: true,
+          validate: {
+            required: true,
+            customMessage: "mikhail"
+          },
+          validateWhenHidden: false,
+          key: "textField",
+          type: "textfield",
+          input: true
+        },
+        {
+          label: "Submit",
+          showValidations: false,
+          tableView: false,
+          key: "submit",
+          type: "button",
+          input: true,
+          saveOnEnter: false
+        }
+      ];
+      const submission = {
+        data: {
+          textField: "",
+          submit: true
+        }
+      }
+      const context = {
+        submission,
+        data: submission.data,
+        components,
+        processors: ProcessTargets.evaluator,
+        scope: {} as { errors: Record<string,unknown>[] }
+      };
+      processSync(context);
+      expect(context.scope.errors[0].level).to.equal("error");
+    });
   });
 });
