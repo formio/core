@@ -8,6 +8,7 @@ import {
   DayComponent,
   TagsComponent,
   SurveyComponent,
+  DateTimeComponent,
 } from 'types';
 import { normalizeProcessSync } from '../';
 import { generateProcessorContext } from '../../__tests__/fixtures/util';
@@ -366,34 +367,82 @@ describe('Normalize processor', function () {
         {
           label: 'Agree',
           value: 'agree',
-          tooltip: ''
-        }
+          tooltip: '',
+        },
       ],
       values: [
         {
           label: 'Yes',
           value: 'yes',
-          tooltip: ''
+          tooltip: '',
         },
         {
-          label: "No",
-          value: "no",
-          tooltip: ''
-        }
+          label: 'No',
+          value: 'no',
+          tooltip: '',
+        },
       ],
       validateWhenHidden: false,
       key: 'survey',
       type: 'survey',
-      input: true
+      input: true,
     };
-    const context1: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {survey: null});
+    const context1: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {
+      survey: null,
+    });
     normalizeProcessSync(context1);
     expect(context1.data).to.deep.equal({});
-    const context2: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {survey: 0});
+    const context2: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {
+      survey: 0,
+    });
     normalizeProcessSync(context2);
     expect(context2.data).to.deep.equal({});
-    const context3: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {survey: ''});
+    const context3: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {
+      survey: '',
+    });
     normalizeProcessSync(context3);
     expect(context3.data).to.deep.equal({});
+  });
+
+  it('Should remove the datetime component from the submission object if data is set to null', async function () {
+    const dateTimeComponent: DateTimeComponent = {
+      label: 'Date / Time',
+      tableView: false,
+      datePicker: {
+        disableWeekends: false,
+        disableWeekdays: false,
+      },
+      enableMinDateInput: false,
+      enableMaxDateInput: false,
+      validateWhenHidden: false,
+      key: 'dateTime',
+      type: 'datetime',
+      input: true,
+      widget: {
+        type: 'calendar',
+        displayInTimezone: 'viewer',
+        locale: 'en',
+        useLocaleSettings: false,
+        allowInput: true,
+        mode: 'single',
+        enableTime: true,
+        noCalendar: false,
+        format: 'yyyy-MM-dd hh:mm a',
+        hourIncrement: 1,
+        minuteIncrement: 1,
+        time_24hr: false,
+        disableWeekends: false,
+        disableWeekdays: false,
+      },
+    };
+    const data = {
+      dateTime: null,
+    };
+    const context: ProcessorContext<ProcessorScope> = generateProcessorContext(
+      dateTimeComponent,
+      data,
+    );
+    normalizeProcessSync(context);
+    expect(context.data).to.deep.equal({});
   });
 });
