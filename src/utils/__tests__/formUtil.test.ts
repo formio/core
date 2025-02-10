@@ -74,6 +74,32 @@ describe('formUtil', function () {
         expect(component?.key).to.equal(writtenNumber(n));
       }
     });
+
+    it('should get layout components using only their key', function () {
+      const form = {
+        display: 'form',
+        components: [
+          {
+            legend: 'Field Set',
+            key: 'fieldSet',
+            type: 'fieldset',
+            input: false,
+            components: [
+              {
+                type: 'panel',
+                key: 'myPanel',
+                input: false,
+                components: [],
+              },
+            ],
+          },
+        ],
+      };
+      const component = getComponent(form.components, 'myPanel');
+      expect(component, 'Component should be found');
+      expect(component!.key).to.equal('myPanel');
+      expect(component!.type).to.equal('panel');
+    });
   });
 
   describe('flattenComponents', function () {

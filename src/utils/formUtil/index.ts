@@ -439,7 +439,7 @@ export function componentMatches(
       }
     }
   });
-  if (!matches.key && component.input !== false && component.key === path) {
+  if (!matches.key && component.key === path) {
     matches.key = addMatch('key', { component, paths });
   }
 }
@@ -695,7 +695,7 @@ export function matchComponent(component: Component, query: any, paths?: Compone
 export function getComponent(
   components: Component[],
   path: any,
-  includeAll: any = false,
+  includeAll: any = true,
   dataIndex?: number, // The preferred last data index of the component to find.
 ): Component | undefined {
   return getComponentFromPath(components, path, undefined, dataIndex, includeAll)?.component;
