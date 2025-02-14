@@ -1,3 +1,7 @@
+## [Unreleased: 2.4.0-rc.10]
+
+- Hotfix/fix type aliases
+
 ## 2.4.0-rc.9
 
 ### Changed
