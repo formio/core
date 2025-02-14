@@ -4,11 +4,11 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 module.exports = {
   mode: 'development',
   entry: {
-    'formio.core.js': './src/index.ts',
-    'formio.modules.js': './src/modules/index.ts',
-    'formio.js': './src/sdk/index.ts',
-    'formio.utils.js': './src/utils/index.ts',
-    'formio.process.js': './src/process/index.ts',
+    'formio.core.js': './lib/index.js',
+    'formio.modules.js': './lib/modules/index.js',
+    'formio.js': './lib/sdk/index.js',
+    'formio.utils.js': './lib/utils/index.js',
+    'formio.process.js': './lib/process/index.js',
   },
   output: {
     library: {
@@ -28,20 +28,6 @@ module.exports = {
     }),
   ],
   resolve: {
-    extensions: ['.ts', '.js'],
-    plugins: [
-      new TsconfigPathsPlugin({
-        configFile: path.resolve(__dirname, '..', 'tsconfig.json'),
-      }),
-    ],
-  },
-  module: {
-    rules: [
-      {
-        test: /\.ts$/,
-        exclude: /\.spec\.ts$/,
-        loader: 'ts-loader',
-      },
-    ],
+    extensions: ['.js'],
   },
 };
