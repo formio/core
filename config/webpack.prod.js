@@ -1,10 +1,9 @@
-const path = require('path');
 const config = require('./webpack.config');
 config.mode = 'production';
 config.entry = {
-  'formio.core.min.js': './src/index.ts',
-  'formio.modules.min.js': './src/modules/index.ts',
-  'formio.min.js': './src/sdk/index.ts',
-  'formio.utils.min.js': './src/utils/index.ts',
+  'formio.core.min.js': './lib/index.js',
+  'formio.modules.min.js': './lib/modules/index.js',
+  'formio.min.js': './lib/sdk/index.js',
+  'formio.utils.min.js': './lib/utils/index.js',
 };
 module.exports = config;
