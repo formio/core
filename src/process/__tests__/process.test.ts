@@ -5879,43 +5879,135 @@ describe('Process Tests', function () {
     it("Should save 'level' field when custom error message is defined to correctly add error classes into app template ", async function () {
       const components = [
         {
-          label: "Text Field",
-          applyMaskOn: "change",
+          label: 'Text Field',
+          applyMaskOn: 'change',
           tableView: true,
           validate: {
             required: true,
-            customMessage: "mikhail"
+            customMessage: 'mikhail',
           },
           validateWhenHidden: false,
-          key: "textField",
-          type: "textfield",
-          input: true
+          key: 'textField',
+          type: 'textfield',
+          input: true,
         },
         {
-          label: "Submit",
+          label: 'Submit',
           showValidations: false,
           tableView: false,
-          key: "submit",
-          type: "button",
+          key: 'submit',
+          type: 'button',
           input: true,
-          saveOnEnter: false
-        }
+          saveOnEnter: false,
+        },
       ];
       const submission = {
         data: {
-          textField: "",
-          submit: true
-        }
-      }
+          textField: '',
+          submit: true,
+        },
+      };
       const context = {
         submission,
         data: submission.data,
         components,
         processors: ProcessTargets.evaluator,
-        scope: {} as { errors: Record<string,unknown>[] }
+        scope: {} as { errors: Record<string, unknown>[] },
       };
       processSync(context);
-      expect(context.scope.errors[0].level).to.equal("error");
+      expect(context.scope.errors[0].level).to.equal('error');
+    });
+
+    it('Should override the component settings with serverOverride and clear hidden value', async function () {
+      const components = [
+        {
+          label: 'Number',
+          applyMaskOn: 'change',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          validateWhenHidden: false,
+          key: 'number',
+          type: 'number',
+          input: true,
+        },
+        {
+          label: 'Text Field',
+          applyMaskOn: 'change',
+          tableView: true,
+          clearOnHide: false,
+          serverOverride: {
+            clearOnHide: true,
+          },
+          validateWhenHidden: false,
+          key: 'textField',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'number',
+                operator: 'isEqual',
+                value: 55,
+              },
+            ],
+          },
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Text Area',
+          applyMaskOn: 'change',
+          autoExpand: false,
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textArea',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'number',
+                operator: 'isEqual',
+                value: 5,
+              },
+            ],
+          },
+          type: 'textarea',
+          input: true,
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ];
+      const submission = {
+        data: {
+          textField: 'should be cleared on server',
+          submit: true,
+          number: 5,
+          textArea: 'visible value',
+        },
+      };
+      const context = {
+        submission,
+        data: submission.data,
+        components,
+        processors: ProcessTargets.submission,
+        scope: {} as { errors: Record<string, unknown>[] },
+      };
+      processSync(context);
+      submission.data = context.data;
+      context.processors = ProcessTargets.evaluator;
+      processSync(context);
+      assert.equal(!!context.data.textField, false);
     });
   });
 });
