@@ -1,4 +1,4 @@
-## [Unreleased: 2.4.0-rc.10]
+## 2.4.0-rc.10
 
 - Hotfix/fix type aliases
 
