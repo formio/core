@@ -1617,7 +1617,7 @@ export class Formio {
             response.headers.get('content-type').includes('application/json')
               ? response.json()
               : response.text()
-          ).then((error: any) => {
+          ).then((error: object | string) => {
             return Promise.reject({ ...response, error });
           });
         }
