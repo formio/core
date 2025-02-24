@@ -1618,7 +1618,7 @@ export class Formio {
               ? response.json()
               : response.text()
           ).then((error: any) => {
-            return Promise.reject(error);
+            return Promise.reject({ ...response, error });
           });
         }
 
