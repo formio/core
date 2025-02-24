@@ -5,7 +5,7 @@ import {
   ProcessorInfo,
   ConditionsContext,
 } from 'types';
-import { registerEphemeralState } from 'utils';
+import { setComponentScope } from 'utils/formUtil';
 import {
   checkCustomConditional,
   checkJsonConditional,
@@ -15,7 +15,7 @@ import {
   isSimpleConditional,
   isJSONConditional,
 } from 'utils/conditions';
-import { getComponentAbsolutePath } from 'utils/formUtil';
+import { getComponentPaths } from '../../utils/formUtil/index';
 
 const hasCustomConditions = (context: ConditionsContext): boolean => {
   const { component } = context;
@@ -85,7 +85,6 @@ export type ConditionallyHidden = (context: ConditionsContext) => boolean;
 
 export const conditionalProcess = (context: ConditionsContext, isHidden: ConditionallyHidden) => {
   const { scope, path, component } = context;
-  const absolutePath = getComponentAbsolutePath(component) || path;
   if (!hasConditions(context)) {
     return;
   }
@@ -93,16 +92,20 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
   if (!scope.conditionals) {
     scope.conditionals = [];
   }
-  let conditionalComp = scope.conditionals.find((cond) => cond.path === absolutePath);
+  let conditionalComp = scope.conditionals.find((cond) => cond.path === path);
   if (!conditionalComp) {
-    conditionalComp = { path: absolutePath, conditionallyHidden: false };
+    const conditionalPath = path ? path : getComponentPaths(component).fullPath || '';
+    conditionalComp = {
+      path: conditionalPath,
+      conditionallyHidden: false,
+    };
     scope.conditionals.push(conditionalComp);
   }
 
   conditionalComp.conditionallyHidden =
     conditionalComp.conditionallyHidden || isHidden(context) === true;
   if (conditionalComp.conditionallyHidden) {
-    registerEphemeralState(context.component, 'conditionallyHidden', true);
+    setComponentScope(component, 'conditionallyHidden', true);
   }
 };
 

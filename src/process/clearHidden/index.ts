@@ -6,7 +6,6 @@ import {
   ProcessorFnSync,
   ConditionsScope,
 } from 'types';
-import { getComponentAbsolutePath } from 'utils/formUtil';
 
 type ClearHiddenScope = ProcessorScope & {
   clearHidden: {
@@ -19,7 +18,6 @@ type ClearHiddenScope = ProcessorScope & {
  */
 export const clearHiddenProcess: ProcessorFnSync<ClearHiddenScope> = (context) => {
   const { component, data, value, scope, path } = context;
-  const absolutePath = getComponentAbsolutePath(component) || path;
 
   // No need to unset the value if it's undefined
   if (value === undefined) {
@@ -32,7 +30,7 @@ export const clearHiddenProcess: ProcessorFnSync<ClearHiddenScope> = (context) =
 
   // Check if there's a conditional set for the component and if it's marked as conditionally hidden
   const isConditionallyHidden = (scope as ConditionsScope).conditionals?.find((cond) => {
-    return absolutePath === cond.path && cond.conditionallyHidden;
+    return path === cond.path && cond.conditionallyHidden;
   });
 
   const shouldClearValueWhenHidden =
@@ -40,10 +38,10 @@ export const clearHiddenProcess: ProcessorFnSync<ClearHiddenScope> = (context) =
 
   if (
     shouldClearValueWhenHidden &&
-    (isConditionallyHidden || component.hidden || component.ephemeralState?.conditionallyHidden)
+    (isConditionallyHidden || component.scope?.conditionallyHidden)
   ) {
-    unset(data, absolutePath);
-    scope.clearHidden[absolutePath] = true;
+    unset(data, path);
+    scope.clearHidden[path] = true;
   }
 };
 

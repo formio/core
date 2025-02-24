@@ -9,7 +9,7 @@ import {
 } from 'types';
 import { get, set } from 'lodash';
 import { Evaluator } from 'utils';
-import { getComponentKey } from 'utils/formUtil';
+import { getComponentKey, normalizeContext } from 'utils/formUtil';
 
 export const shouldFetch = (context: FetchContext): boolean => {
   const { component, config } = context;
@@ -38,7 +38,9 @@ export const fetchProcess: ProcessorFn<FetchScope> = async (context: FetchContex
     return;
   }
   if (!scope.fetched) scope.fetched = {};
-  const evalContextValue = evalContext ? evalContext(context) : context;
+  const evalContextValue = evalContext
+    ? evalContext(normalizeContext(context))
+    : normalizeContext(context);
   const url = Evaluator.interpolateString(get(component, 'fetch.url', ''), evalContextValue);
   if (!url) {
     return;
@@ -105,7 +107,7 @@ export const fetchProcess: ProcessorFn<FetchScope> = async (context: FetchContex
     // Make sure the value does not get filtered for now...
     if (!(scope as FilterContext).filter) (scope as FilterContext).filter = {};
     (scope as FilterContext).filter[path] = true;
-    scope.fetched[path] = true;
+    scope.fetched[path] = get(row, key);
   } catch (err: any) {
     console.log(err.message);
   }

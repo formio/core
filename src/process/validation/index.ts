@@ -14,7 +14,6 @@ import { evaluationRules, rules, serverRules } from './rules';
 import find from 'lodash/find';
 import get from 'lodash/get';
 import pick from 'lodash/pick';
-import { getComponentAbsolutePath } from 'utils/formUtil';
 import { getErrorMessage } from 'utils/error';
 import { FieldError } from 'error';
 import {
@@ -86,16 +85,15 @@ export function isValueHidden(context: ValidationContext): boolean {
   }
   return false;
 }
-
 export function isForcedHidden(
   context: ValidationContext,
   isConditionallyHidden: ConditionallyHidden,
 ): boolean {
   const { component } = context;
-  if (
-    component.ephemeralState?.conditionallyHidden ||
-    isConditionallyHidden(context as ConditionsContext)
-  ) {
+  if (component.scope?.conditionallyHidden || isConditionallyHidden(context as ConditionsContext)) {
+    return true;
+  }
+  if (component.scope?.intentionallyHidden) {
     return true;
   }
   if (component.hasOwnProperty('hidden')) {
@@ -160,23 +158,22 @@ export function shouldValidateServer(context: ValidationContext): boolean {
 }
 
 function handleError(error: FieldError | null, context: ValidationContext) {
-  const { scope, component, path } = context;
-  const absolutePath = getComponentAbsolutePath(component) || path;
+  const { scope, path } = context;
   if (error) {
     const cleanedError = cleanupValidationError(error);
-    cleanedError.context.path = absolutePath;
+    cleanedError.context.path = path;
     if (
       !find(scope.errors, {
         errorKeyOrMessage: cleanedError.errorKeyOrMessage,
         context: {
-          path: absolutePath,
+          path: path,
         },
       })
     ) {
       if (!scope.validated) scope.validated = [];
       if (!scope.errors) scope.errors = [];
       scope.errors.push(cleanedError);
-      scope.validated.push({ path: absolutePath, error: cleanedError });
+      scope.validated.push({ path, error: cleanedError });
     }
   }
 }

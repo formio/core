@@ -15,6 +15,7 @@ import { processOne } from 'processes/processOne';
 import { generateProcessorContext } from './fixtures/util';
 import { ProcessorsContext, SelectBoxesComponent, ValidationScope } from 'types';
 import { validateProcessInfo } from 'processes/validation';
+import { conditionProcessInfo } from 'processes/conditions';
 
 describe('validateRequired', function () {
   it('Validating a simple component that is required and not present in the data will return a field error', async function () {
@@ -66,7 +67,7 @@ describe('validateRequired', function () {
     const component = conditionallyHiddenRequiredHiddenField;
     const data = { otherData: 'hideme' };
     const context = generateProcessorContext(component, data) as ProcessorsContext<ValidationScope>;
-    context.processors = [validateProcessInfo];
+    context.processors = [conditionProcessInfo, validateProcessInfo];
     await processOne(context);
     expect(context.scope.errors.length).to.equal(0);
   });
@@ -79,6 +80,16 @@ describe('validateRequired', function () {
     context.processors = [validateProcessInfo];
     await processOne(context);
     expect(context.scope.errors.length).to.equal(0);
+  });
+
+  it('Should validate a hidden component that has the `validateWhenHidden` property set to true.', async function () {
+    const component = { ...hiddenRequiredField };
+    component.validateWhenHidden = true;
+    const data = {};
+    const context = generateProcessorContext(component, data) as ProcessorsContext<ValidationScope>;
+    context.processors = [validateProcessInfo];
+    await processOne(context);
+    expect(context.scope.errors.length).to.equal(1);
   });
 
   it('Validating a simple component that is required but conditionally hidden', async function () {

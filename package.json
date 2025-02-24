@@ -1,6 +1,6 @@
 {
   "name": "@formio/core",
-  "version": "2.1.0-dev.tt.13",
+  "version": "2.4.0-dev.2",
   "description": "The core Form.io renderering framework.",
   "main": "lib/index.js",
   "exports": {
@@ -15,7 +15,8 @@
   },
   "scripts": {
     "test": "TEST=1 nyc --reporter=lcov --reporter=text --reporter=text-summary mocha -b -r ts-node/register -r tsconfig-paths/register -r mock-local-storage -r jsdom-global/register -t 0 'src/**/__tests__/*.test.ts'",
-    "lib": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
+    "lib": "tsc --project tsconfig.json",
+    "alias": "tsc-alias -p tsconfig.json",
     "lib:watch": "tsc -w & tsc-alias -w",
     "replace": "node -r tsconfig-paths/register -r ts-node/register ./lib/base/array/ArrayComponent.js",
     "test:debug": "mocha -r ts-node/register -r tsconfig-paths/register -r mock-local-storage -r jsdom-global/register --debug-brk --inspect '**/*.spec.ts'",
@@ -23,7 +24,7 @@
     "build:dev": "npx webpack --config config/webpack.config.js",
     "build:prod": "npx webpack --config config/webpack.prod.js",
     "clean": "rm -rf lib && rm -rf dist && rm -rf docs",
-    "build": "yarn clean && gulp templates && yarn docs && yarn lib && yarn build:dev && yarn build:prod",
+    "build": "yarn clean && gulp templates && yarn docs && yarn lib && yarn alias && yarn build:dev && yarn build:prod",
     "prepublish": "yarn lint && yarn format && yarn build && yarn test",
     "show-coverage": "open coverage/lcov-report/index.html",
     "lint": "eslint src",
@@ -104,9 +105,9 @@
   },
   "dependencies": {
     "browser-cookies": "^1.2.0",
-    "core-js": "^3.38.0",
+    "core-js": "^3.40.0",
     "dayjs": "^1.11.12",
-    "dompurify": "^3.1.7",
+    "dompurify": "^3.2.4",
     "eventemitter3": "^5.0.0",
     "fast-json-patch": "^3.1.1",
     "fetch-ponyfill": "^7.1.0",

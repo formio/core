@@ -1,47 +1,28 @@
-import { componentInfo, componentPath, componentFormPath } from './index';
+import { Component, EachComponentAsyncCallback, ComponentPaths } from 'types';
+import { componentInfo, getComponentPaths } from './index';
 
 // Async each component.
 export async function eachComponentAsync(
-  components: any[],
-  fn: any,
+  components: Component[],
+  fn: EachComponentAsyncCallback,
   includeAll = false,
-  path = '',
+  parentPaths?: string | ComponentPaths,
   parent?: any,
 ) {
   if (!components) return;
+  if (typeof parentPaths === 'string') {
+    parentPaths = { path: parentPaths };
+  }
   for (let i = 0; i < components.length; i++) {
     if (!components[i]) {
       continue;
     }
-    const component = components[i];
+    const component: any = components[i];
     const info = componentInfo(component);
-    // Keep track of parent references.
-    if (parent) {
-      // Ensure we don't create infinite JSON structures.
-      Object.defineProperty(component, 'parent', {
-        enumerable: false,
-        writable: true,
-        value: JSON.parse(JSON.stringify(parent)),
-      });
-      Object.defineProperty(component.parent, 'parent', {
-        enumerable: false,
-        writable: true,
-        value: parent.parent,
-      });
-      Object.defineProperty(component.parent, 'path', {
-        enumerable: false,
-        writable: true,
-        value: parent.path,
-      });
-      delete component.parent.components;
-      delete component.parent.componentMap;
-      delete component.parent.columns;
-      delete component.parent.rows;
-    }
-    const compPath = componentPath(component, path);
-
+    const compPaths = getComponentPaths(component, parent, parentPaths);
     if (includeAll || component.tree || !info.layout) {
-      if (await fn(component, compPath, components, parent)) {
+      const path = includeAll ? compPaths.fullPath : compPaths.path;
+      if (await fn(component, path || '', components, parent, compPaths)) {
         continue;
       }
     }
@@ -51,8 +32,8 @@ export async function eachComponentAsync(
           component.columns[j]?.components,
           fn,
           includeAll,
-          path,
-          parent ? component : null,
+          compPaths,
+          component,
         );
       }
     } else if (info.hasRows) {
@@ -60,24 +41,12 @@ export async function eachComponentAsync(
         const row = component.rows[j];
         if (Array.isArray(row)) {
           for (let k = 0; k < row.length; k++) {
-            await eachComponentAsync(
-              row[k]?.components,
-              fn,
-              includeAll,
-              path,
-              parent ? component : null,
-            );
+            await eachComponentAsync(row[k]?.components, fn, includeAll, compPaths, component);
           }
         }
       }
     } else if (info.hasComps) {
-      await eachComponentAsync(
-        component.components,
-        fn,
-        includeAll,
-        componentFormPath(component, path, compPath),
-        parent ? component : null,
-      );
+      await eachComponentAsync(component.components, fn, includeAll, compPaths, component);
     }
   }
 }

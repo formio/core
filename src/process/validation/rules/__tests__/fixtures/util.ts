@@ -11,9 +11,15 @@ export const generateProcessorContext = (
   return {
     component,
     data,
-    form,
+    form: form ? form : { components: [component] },
     scope: { errors: [] },
     row: data,
+    paths: {
+      path: component.key,
+      localPath: component.key,
+      fullPath: component.key,
+      fullLocalPath: component.key,
+    },
     path: component.key,
     value,
     config: {
