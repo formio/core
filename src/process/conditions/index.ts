@@ -102,8 +102,7 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
     scope.conditionals.push(conditionalComp);
   }
 
-  conditionalComp.conditionallyHidden =
-    conditionalComp.conditionallyHidden || isHidden(context) === true;
+  conditionalComp.conditionallyHidden = isHidden(context) === true;
   if (conditionalComp.conditionallyHidden) {
     setComponentScope(component, 'conditionallyHidden', true);
   }
