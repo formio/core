@@ -5112,6 +5112,76 @@ describe('Process Tests', function () {
         expect((context.scope as ValidationScope).errors).to.have.length(0);
       });
 
+      it('Should not clear a value when it uses simple conditionals to hide and dependent value uses calculated value.', async function () {
+        const components: any = [
+          {
+            label: 'Checkbox',
+            tableView: false,
+            calculateValue: 'value = true;',
+            calculateServer: true,
+            validateWhenHidden: false,
+            key: 'checkbox',
+            type: 'checkbox',
+            input: true,
+            defaultValue: false,
+          },
+          {
+            label: 'Radio',
+            optionsLabelPosition: 'right',
+            inline: false,
+            tableView: false,
+            values: [
+              {
+                label: 'yes',
+                value: 'yes',
+                shortcut: '',
+              },
+              {
+                label: 'no',
+                value: 'no',
+                shortcut: '',
+              },
+            ],
+            validateWhenHidden: false,
+            conditional: {
+              show: true,
+              conjunction: 'all',
+              conditions: [
+                {
+                  component: 'checkbox',
+                  operator: 'isEqual',
+                  value: true,
+                },
+              ],
+            },
+            key: 'radio',
+            type: 'radio',
+            input: true,
+          },
+        ];
+        const submission = {
+          data: {
+            radio: 'yes',
+          },
+        };
+
+        const context = {
+          form: { components },
+          submission,
+          data: submission.data,
+          components,
+          processors: ProcessTargets.submission,
+          scope: {},
+          config: {
+            server: true,
+          },
+        };
+        processSync(context);
+        context.processors = ProcessTargets.evaluator;
+        processSync(context);
+        assert.equal(context.data.radio, 'yes');
+      });
+
       it('Should not validate required component when it is not filled out', async function () {
         const submission = {
           data: {
