@@ -1,3 +1,9 @@
+## 2.4.0-rc.11
+
+### Changed
+
+- FIO-9796: Fixed issue where the conditions from a previous run may be in the wrong state for conditionally hidden.
+
 ## 2.4.0-rc.10
 
 - Hotfix/fix type aliases
