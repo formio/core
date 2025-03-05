@@ -39,6 +39,9 @@ export function rewind(submissions: any) {
   return submission;
 }
 
+/**
+ * @deprecated This method is no longer supported
+ */
 export function unwind(form: any, submission: any) {
   const dataPaths = {};
   const locked = {};
