@@ -1,3 +1,9 @@
+## [Unreleased: 2.4.0-rc.12]
+
+### Changed
+
+- Update dompurify@3.2.4
+
 ## 2.4.0-rc.11
 
 ### Changed
