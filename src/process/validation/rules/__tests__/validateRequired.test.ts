@@ -10,6 +10,7 @@ import {
   simpleSelectBoxes,
   simpleRadioField,
   simpleCheckBoxField,
+  requiredAddressManualMode,
 } from './fixtures/components';
 import { processOne } from 'processes/processOne';
 import { generateProcessorContext } from './fixtures/util';
@@ -231,5 +232,25 @@ describe('validateRequired', function () {
     const context = generateProcessorContext(component, data);
     const result = await validateRequired(context);
     expect(result).to.be.instanceOf(FieldError);
+  });
+
+  it('Should not return error message for empty Address 2 field in Address Component with manual mode', async function () {
+    const component = { ...requiredAddressManualMode };
+    const data = {
+      component: {
+        mode: 'manual',
+        address: {
+          address1: '2140 Worthington Drive',
+          address2: '',
+          city: 'Plano',
+          country: 'US',
+          state: 'Texas',
+          zip: '75074',
+        },
+      },
+    };
+    const context = generateProcessorContext(component, data);
+    const result = await validateRequired(context);
+    expect(result).to.equal(null);
   });
 });

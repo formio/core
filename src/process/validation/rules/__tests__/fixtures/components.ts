@@ -242,3 +242,67 @@ export const requiredNonInputField: any = {
     required: true,
   },
 };
+
+export const requiredAddressManualMode: any = {
+  label: 'Address',
+  enableManualMode: true,
+  provider: 'nominatim',
+  validate: {
+    required: true,
+  },
+  key: 'component',
+  type: 'address',
+  providerOptions: {
+    params: {},
+  },
+  input: true,
+  components: [
+    {
+      label: 'Address 1',
+      key: 'address1',
+      type: 'textfield',
+      input: true,
+      customConditional: "show = _.get(instance, 'parent.manualMode', false);",
+    },
+    {
+      label: 'Address 2',
+      tableView: false,
+      key: 'address2',
+      type: 'textfield',
+      input: true,
+      customConditional: "show = _.get(instance, 'parent.manualMode', false);",
+    },
+    {
+      label: 'City',
+      tableView: false,
+      key: 'city',
+      type: 'textfield',
+      input: true,
+      customConditional: "show = _.get(instance, 'parent.manualMode', false);",
+    },
+    {
+      label: 'State',
+      tableView: false,
+      key: 'state',
+      type: 'textfield',
+      input: true,
+      customConditional: "show = _.get(instance, 'parent.manualMode', false);",
+    },
+    {
+      label: 'Country',
+      tableView: false,
+      key: 'country',
+      type: 'textfield',
+      input: true,
+      customConditional: "show = _.get(instance, 'parent.manualMode', false);",
+    },
+    {
+      label: 'Zip Code',
+      tableView: false,
+      key: 'zip',
+      type: 'textfield',
+      input: true,
+      customConditional: "show = _.get(instance, 'parent.manualMode', false);",
+    },
+  ],
+};
