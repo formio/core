@@ -89,7 +89,9 @@ export const validateRequiredSync: RuleFnSync = (context: ValidationContext) => 
   if (isAddressComponent(component) && isAddressComponentDataObject(value)) {
     return isEmptyObject(value.address)
       ? error
-      : Object.values(value.address).every((val) => !!val)
+      : Object.entries(value.address)
+            .filter(([key]) => !['address2'].includes(key))
+            .every(([, val]) => !!val)
         ? null
         : error;
   } else if (isDayComponent(component) && value === '00/00/0000') {
