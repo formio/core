@@ -118,7 +118,7 @@ export class I18n {
     this.languages[language] = strings;
   }
 
-  t(text: any, ...args: [any]) {
+  t(text: any, data: any, ...args: any[]) {
     let currentTranslation = this.currentLanguage[text];
     // provide compatibility with cases where the entire phrase is used as a key
     // get the phrase that is possibly being used as a key
@@ -129,12 +129,12 @@ export class I18n {
     }
 
     if (currentTranslation) {
-      const customTranslationFieldName = args[0]?.field;
+      const customTranslationFieldName = data?.field;
       if (customTranslationFieldName && this.currentLanguage[customTranslationFieldName]) {
-        args[0].field = this.currentLanguage[customTranslationFieldName];
+        data.field = this.currentLanguage[customTranslationFieldName];
       }
-      return Evaluator.interpolateString(currentTranslation, ...args, undefined);
+      return Evaluator.interpolateString(currentTranslation, data, ...args);
     }
-    return Evaluator.interpolateString(text, ...args, undefined);
+    return Evaluator.interpolateString(text, data, ...args);
   }
 }
