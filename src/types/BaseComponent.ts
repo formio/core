@@ -14,9 +14,11 @@ export type SimpleConditional = {
   conditions: SimpleConditionalConditions;
 };
 
+// track validate property in scope
 export type ComponentScope = {
   conditionallyHidden?: boolean;
   intentionallyHidden?: boolean;
+  required?: boolean;
 };
 
 export type BaseComponent = {
