@@ -3242,6 +3242,128 @@ describe('Process Tests', function () {
     });
   });
 
+  it('Should allow logic that affects component properties or its schema to be applied on a per-row basis', async function () {
+    const form = {
+      components: [
+        {
+          label: 'Data Grid',
+          reorder: false,
+          addAnotherPosition: 'bottom',
+          layoutFixed: false,
+          enableRowGroups: false,
+          initEmpty: false,
+          tableView: false,
+          defaultValue: [{}],
+          validateWhenHidden: false,
+          key: 'dataGrid',
+          type: 'datagrid',
+          input: true,
+          components: [
+            {
+              label: 'Text Field 1',
+              applyMaskOn: 'change',
+              tableView: true,
+              validateWhenHidden: false,
+              key: 'textField1',
+              logic: [
+                {
+                  name: 'Check Required',
+                  trigger: { type: 'javascript', javascript: 'result = !row.textField2;' },
+                  actions: [
+                    {
+                      name: 'Set Required',
+                      type: 'property',
+                      property: { label: 'Required', value: 'validate.required', type: 'boolean' },
+                      state: true,
+                    },
+                  ],
+                },
+              ],
+              type: 'textfield',
+              input: true,
+            },
+            {
+              label: 'Text Field 2',
+              applyMaskOn: 'change',
+              tableView: true,
+              validateWhenHidden: false,
+              key: 'textField2',
+              logic: [
+                {
+                  name: 'Check Required',
+                  trigger: { type: 'javascript', javascript: 'result = !row.textField1;' },
+                  actions: [
+                    {
+                      name: 'Set Required',
+                      type: 'property',
+                      property: { label: 'Required', value: 'validate.required', type: 'boolean' },
+                      state: true,
+                    },
+                  ],
+                },
+              ],
+              type: 'textfield',
+              input: true,
+            },
+          ],
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+    const firstInvalidSubmission = {
+      data: {
+        dataGrid: [{}, {}],
+      },
+    };
+    let context = {
+      form,
+      submission: firstInvalidSubmission,
+      data: firstInvalidSubmission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: {} as ValidationScope,
+    };
+    processSync(context);
+    expect(context.scope.errors.length).to.equal(4);
+    const secondInvalidSubmission = {
+      data: {
+        dataGrid: [{ textField1: 'Test' }, {}],
+      },
+    };
+    context = {
+      form,
+      submission: secondInvalidSubmission,
+      data: secondInvalidSubmission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: {} as ValidationScope,
+    };
+    processSync(context);
+    expect(context.scope.errors.length).to.equal(2);
+    const validSubmission = {
+      data: {
+        dataGrid: [{ textField1: 'Test' }, { textField2: 'Test' }],
+      },
+    };
+    context = {
+      form,
+      submission: validSubmission,
+      data: validSubmission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: {} as ValidationScope,
+    };
+    processSync(context);
+    expect(context.scope.errors.length).to.equal(0);
+  });
+
   it('Should correctly provide conditionals path for wizard panels, which affects the accuracy of validation when nested forms are presented ', async function () {
     const form = {
       components: [
