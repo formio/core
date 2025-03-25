@@ -73,7 +73,7 @@ const valueIsPresent = (
 
 export const shouldValidate = (context: ValidationContext): boolean => {
   const { component } = context;
-  return !!component.validate?.required;
+  return !!component.scope?.required || !!component.validate?.required;
 };
 
 export const validateRequired: RuleFn = async (context: ValidationContext) => {

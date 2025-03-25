@@ -73,11 +73,10 @@ export function setActionBooleanProperty(
   const currentValue = get(component, property, false).toString();
   const newValue = action.state.toString();
   if (currentValue !== newValue) {
-    set(component, property, newValue === 'true');
-
     // If this is "logic" forcing a component to set hidden property, then we will set the "conditionallyHidden"
     // flag which will trigger the clearOnHide functionality.
     if (property === 'hidden' && path) {
+      set(component, property, newValue === 'true');
       if (!(scope as ConditionsScope).conditionals) {
         (scope as ConditionsScope).conditionals = [];
       }
@@ -93,6 +92,12 @@ export function setActionBooleanProperty(
           conditionallyHidden: !!component.hidden,
         });
       }
+    }
+    // TODO: implement other properties that are settable via logic.
+    if (property === 'validate.required') {
+      setComponentScope(component, 'required', newValue === 'true');
+    } else {
+      set(component, property, newValue === 'true');
     }
     return true;
   }
