@@ -1,7 +1,7 @@
 import { normalizeContext } from 'utils/formUtil';
 import { jsonLogic } from './jsonLogic';
-import { BaseEvaluator, EvaluatorOptions, EvaluatorContext } from 'utils/Evaluator';
-export class JSONLogicEvaluator extends BaseEvaluator {
+import { Evaluator, EvaluatorOptions, EvaluatorContext } from 'utils/Evaluator';
+export class JSONLogicEvaluator extends Evaluator {
   public static evaluate(
     func: any,
     args: any = {},
@@ -19,7 +19,7 @@ export class JSONLogicEvaluator extends BaseEvaluator {
         console.warn(`An error occured within JSON Logic`, err);
       }
     } else {
-      returnVal = BaseEvaluator.evaluate(func, args, ret, interpolate, context, options);
+      returnVal = Evaluator.evaluate(func, args, ret, interpolate, context, options);
     }
     return returnVal;
   }
