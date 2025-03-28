@@ -21,4 +21,6 @@ export default {
   no: 'No',
   surveyQuestion: 'Question',
   surveyQuestionValue: 'Value',
+  complexData: '[Complex Data]', // also in premium en.ts
+  dots: 'Dots', // also in premium en.ts
 };
