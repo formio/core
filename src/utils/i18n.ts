@@ -5,7 +5,34 @@ import { Evaluator } from './Evaluator';
 
 export const coreEnTranslation = enTranslation;
 
-export const i18nConfig: any = {
+type TranslationDictionary = {
+  [key: string]: string;
+};
+
+export type LanguageResources = {
+  [language: string]: {
+    translation: TranslationDictionary;
+  };
+};
+
+export type I18nConfig = {
+  lng: string;
+  nsSeparator: string;
+  keySeparator: string;
+  pluralSeparator: string;
+  contextSeparator: string;
+  resources: LanguageResources;
+};
+
+export type LanguagesMap = {
+  [language: string]: TranslationDictionary;
+};
+
+export type I18nOptions = Partial<I18nConfig> & {
+  language?: string;
+} & Omit<{ [language: string]: TranslationDictionary }, 'language'>;
+
+export const i18nConfig: I18nConfig = {
   lng: 'en',
   nsSeparator: '::',
   keySeparator: '.|.',
@@ -18,7 +45,7 @@ export const i18nConfig: any = {
   },
 };
 
-const i18Defaults: any = {};
+const i18Defaults: LanguagesMap = {};
 for (const lang in i18nConfig.resources) {
   if (i18nConfig.resources.hasOwnProperty(lang)) {
     i18Defaults[lang] = i18nConfig.resources[lang].translation;
@@ -36,25 +63,25 @@ export class I18n {
   currentLanguage = i18Defaults.en;
 
   constructor(languages = {}) {
-    this.setLanguages(languages, undefined);
+    this.setLanguages(languages, false);
     this.changeLanguage(this.language);
   }
 
-  static setDefaultTranslations(languages: any) {
+  static setDefaultTranslations(languages: LanguagesMap) {
     if (isEmpty(languages)) {
       return;
     }
     for (const lang in languages) {
       if (lang !== 'language' && languages.hasOwnProperty(lang)) {
         if (!this.languages[lang]) {
-          (this.languages as any)[lang] = {};
+          this.languages[lang] = {};
         }
         this.languages[lang] = { ...languages[lang], ...this.languages[lang] };
       }
     }
   }
 
-  setLanguages(languages: any, noDefaultOverride: any) {
+  setLanguages(languages: I18nOptions, noDefaultOverride: boolean) {
     if (languages.resources) {
       for (const lang in languages.resources) {
         if (languages.resources.hasOwnProperty(lang)) {
@@ -103,7 +130,7 @@ export class I18n {
     return new I18n();
   }
 
-  changeLanguage(language: any, ready: any = null) {
+  changeLanguage(language: string, ready?: () => any) {
     if (!this.languages[language]) {
       language = 'en';
     }
@@ -114,11 +141,11 @@ export class I18n {
     }
   }
 
-  addResourceBundle(language: any, type: any, strings: any) {
+  addResourceBundle(language: string, type: string, strings: TranslationDictionary) {
     this.languages[language] = strings;
   }
 
-  t(text: any, data: any, ...args: any[]) {
+  t(text: string, data: any, ...args: any[]) {
     let currentTranslation = this.currentLanguage[text];
     // provide compatibility with cases where the entire phrase is used as a key
     // get the phrase that is possibly being used as a key
