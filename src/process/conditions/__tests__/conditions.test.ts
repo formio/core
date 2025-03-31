@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, assert } from 'chai';
 import { processSync } from '../../process';
 import { conditionProcessInfo } from '../index';
 import { ConditionsScope, ProcessContext } from 'types';
@@ -633,5 +633,109 @@ describe('Condition processor', function () {
     expect(context.scope.conditionals?.[0].path).to.equal(
       'outerDataGrid[0].outerContainer.innerContainer.innerDataGrid[0].textField',
     );
+  });
+
+  it('Should correctly execute conditional logic when show is a string', async function () {
+    const form = {
+      components: [
+        {
+          label: 'Checkbox',
+          tableView: false,
+          validateWhenHidden: false,
+          key: 'checkbox',
+          type: 'checkbox',
+          input: true,
+        },
+        {
+          label: 'Text Field',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textField',
+          conditional: {
+            show: 'true',
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'checkbox',
+                operator: 'isEqual',
+                value: true,
+              },
+            ],
+          },
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Number',
+          applyMaskOn: 'change',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          validateWhenHidden: false,
+          key: 'number',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'checkbox',
+                operator: 'isEqual',
+                value: true,
+              },
+            ],
+          },
+          type: 'number',
+          input: true,
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        checkbox: false,
+        submit: true,
+      },
+    };
+
+    let context: ProcessContext<ConditionsScope> = processForm(form, submission);
+    assert.deepEqual(context.scope.conditionals, [
+      { path: 'textField', conditionallyHidden: true },
+      { path: 'number', conditionallyHidden: true },
+    ]);
+
+    submission.data.checkbox = true;
+    context = processForm(form, submission);
+    assert.deepEqual(context.scope.conditionals, [
+      { path: 'textField', conditionallyHidden: false },
+      { path: 'number', conditionallyHidden: false },
+    ]);
+
+    (form as any).components[1].conditional.show = 'false';
+    (form as any).components[2].conditional.show = false;
+
+    context = processForm(form, submission);
+    assert.deepEqual(context.scope.conditionals, [
+      { path: 'textField', conditionallyHidden: true },
+      { path: 'number', conditionallyHidden: true },
+    ]);
+
+    submission.data.checkbox = false;
+    context = processForm(form, submission);
+    assert.deepEqual(context.scope.conditionals, [
+      { path: 'textField', conditionallyHidden: false },
+      { path: 'number', conditionallyHidden: false },
+    ]);
   });
 });
