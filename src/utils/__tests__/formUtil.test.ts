@@ -1568,6 +1568,30 @@ describe('formUtil', function () {
       const result = hasCondition(component as Component);
       expect(result).to.equal(false);
     });
+
+    it('Should return true if the simple condition "show" value is a string', function () {
+      const component = {
+        label: 'Text Field',
+        hidden: false,
+        key: 'textField',
+        conditional: {
+          show: 'true',
+          conjunction: 'all',
+          conditions: [
+            {
+              component: 'checkbox',
+              operator: 'isEqual',
+              value: true,
+            },
+          ],
+        },
+        type: 'textfield',
+        input: true,
+      };
+
+      const result = hasCondition(component as any);
+      expect(result).to.equal(true);
+    });
   });
 
   describe('getModelType', function () {

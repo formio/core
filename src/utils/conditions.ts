@@ -6,7 +6,7 @@ import {
   getComponentAbsolutePath,
   getComponentActualValue,
 } from './formUtil';
-import { has, isObject, map, every, some, find, filter, isBoolean, split } from 'lodash';
+import { has, isObject, map, every, some, find, filter, isBoolean, split, isString } from 'lodash';
 import ConditionOperators from './operators';
 
 export const isJSONConditional = (conditional: any): conditional is JSONConditional => {
@@ -124,6 +124,25 @@ function isConditionPotentiallyBasedOnValuePath(condition: any = {}) {
 }
 
 /**
+ * Convert the 'show' property of simple conditional to boolean
+ * @param show
+ * @returns {boolean}
+ */
+export function convertShowToBoolean(show: any) {
+  let shouldShow = show;
+  if (isString(show)) {
+    try {
+      shouldShow = JSON.parse(show);
+    } catch (e) {
+      console.log(e);
+      shouldShow = show;
+    }
+  }
+
+  return !!shouldShow;
+}
+
+/**
  * Checks the simple conditionals.
  * @param conditional
  * @param context
@@ -215,5 +234,5 @@ export function checkSimpleConditional(
     default:
       result = every(conditionsResult, (res) => !!res);
   }
-  return show ? result : !result;
+  return convertShowToBoolean(show) ? result : !result;
 }

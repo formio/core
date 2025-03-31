@@ -497,7 +497,8 @@ export function hasCondition(component: Component) {
         ((component.conditional as LegacyConditional).when ||
           (component.conditional as JSONConditional).json ||
           ((component.conditional as SimpleConditional).conjunction &&
-            isBoolean((component.conditional as SimpleConditional).show) &&
+            (isBoolean((component.conditional as SimpleConditional).show) ||
+              (component.conditional as SimpleConditional).show) &&
             !isEmpty((component.conditional as SimpleConditional).conditions)))),
   );
 }
