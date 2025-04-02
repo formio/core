@@ -1,3 +1,9 @@
+## 2.4.0-rc.13
+
+### Changed
+
+- FIO-9874: fixed an issue where operands disappear
+
 ## 2.4.0-rc.12
 
 ### Changed
