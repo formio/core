@@ -43,7 +43,9 @@ export async function process<ProcessScope>(
         paths,
         row,
         index,
-        instance: instances ? instances[path] : undefined,
+        instance: instances
+          ? instances[component.modelType === 'none' && paths?.fullPath ? paths.fullPath : path]
+          : undefined,
         parent,
       });
       if (flat) {
@@ -84,7 +86,9 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
         paths,
         row,
         index,
-        instance: instances ? instances[path] : undefined,
+        instance: instances
+          ? instances[component.modelType === 'none' && paths?.fullPath ? paths.fullPath : path]
+          : undefined,
         parent,
       });
       if (flat) {
