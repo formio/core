@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, isUndefined } from 'lodash';
 import {
   Component,
   DataObject,
@@ -83,7 +83,7 @@ export const eachComponentData = (
                 compPaths,
               );
             }
-          } else if (includeAll) {
+          } else if (includeAll || isUndefined(value)) {
             eachComponentData(
               component.components,
               data,
