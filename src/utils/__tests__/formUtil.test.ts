@@ -74,6 +74,122 @@ describe('formUtil', function () {
         expect(component?.key).to.equal(writtenNumber(n));
       }
     });
+
+    it('Should return correct component when the form has 2 components with the same key', function () {
+      const component = getComponent(
+        [
+          {
+            label: 'Tabs',
+            components: [
+              {
+                label: 'Tab1',
+                key: 'tab1',
+                components: [
+                  {
+                    label: 'Text Field',
+                    tableView: true,
+                    validateWhenHidden: false,
+                    key: 'someDuplicatedKey',
+                    type: 'textfield',
+                    input: true,
+                  },
+                ],
+              },
+              {
+                label: 'Tab2',
+                key: 'tab2',
+                components: [
+                  {
+                    label: 'Another container',
+                    tableView: false,
+                    key: 'anotherContainerKey',
+                    type: 'container',
+                    input: true,
+                    components: [
+                      {
+                        label:
+                          "A select with the same key of a container in tab1. Select the option 'more'",
+                        widget: 'choicesjs',
+                        tableView: true,
+                        data: {
+                          values: [
+                            {
+                              label: 'less',
+                              value: 'less',
+                            },
+                            {
+                              label: 'more',
+                              value: 'more',
+                            },
+                          ],
+                        },
+                        validateWhenHidden: false,
+                        key: 'someDuplicatedKey',
+                        type: 'select',
+                        input: true,
+                      },
+                      {
+                        label: 'Here select yes, value will disappear',
+                        tableView: false,
+                        validateWhenHidden: false,
+                        key: 'additionalContainer',
+                        conditional: {
+                          show: true,
+                          conjunction: 'all',
+                          conditions: [
+                            {
+                              component: 'someDuplicatedKey',
+                              operator: 'isEqual',
+                              value: 'more',
+                            },
+                          ],
+                        },
+                        type: 'container',
+                        input: true,
+                        components: [
+                          {
+                            label: 'Select yes here, the value will disappear upon save',
+                            labelPosition: 'left-left',
+                            optionsLabelPosition: 'right',
+                            inline: true,
+                            tableView: false,
+                            values: [
+                              {
+                                label: 'yes',
+                                value: 'yes',
+                                shortcut: '',
+                              },
+                              {
+                                label: 'no',
+                                value: 'no',
+                                shortcut: '',
+                              },
+                            ],
+                            validateWhenHidden: false,
+                            key: 'aradiobutton',
+                            type: 'radio',
+                            input: true,
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+            key: 'tabs',
+            type: 'tabs',
+            input: false,
+            tableView: false,
+          },
+        ],
+        'someDuplicatedKey',
+      );
+      expect(component).not.to.equal(null);
+      expect(component).not.to.equal(undefined);
+      expect(component).to.be.an('object');
+      expect((component as any).type).to.equal('textfield');
+    });
   });
 
   describe('flattenComponents', function () {
