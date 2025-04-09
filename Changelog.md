@@ -1,3 +1,9 @@
+## 2.4.1-rc.1
+
+### Changed
+
+- FIO-9908: fixed an issue where conditional setting with "show" set as a string does not work well
+
 ## 2.4.0
 
 ### Changed
