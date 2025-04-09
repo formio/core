@@ -1,5 +1,4 @@
 import { each, set, has, get } from 'lodash';
-const async = require('async');
 const debug = require('debug')('formio:actions:save');
 const error = require('debug')('formio:error');
 const SaveAction = {
@@ -278,26 +277,23 @@ const SaveAction = {
         debug('Saving to resource: ' + action.settings.resource);
         const saveTo = SaveAction.saveToForm(scope, action.settings.resource);
         if (saveTo) {
-          if (!saveTo.handlers) {
-            error('Cannot find resource handlers.');
-            return next('Cannot find resource handlers.');
+          try {
+            if (!saveTo.handlers) {
+              error('Cannot find resource handlers.');
+              return next('Cannot find resource handlers.');
+            }
+            const handlers = req.method === 'PUT' ? saveTo.handlers.update : saveTo.handlers.create;
+            const childReq = scope.utils.childRequest(req);
+            childReq.body = SaveAction.childSubmission(scope, req, res, childReq.body);
+            for (const handler of handlers) {
+              await handler(childReq, res);
+            }
+            SaveAction.childResponse(scope, req, res);
+            return next();
+          } catch (err) {
+            error(err);
+            return next(err);
           }
-          const handlers = req.method === 'PUT' ? saveTo.handlers.update : saveTo.handlers.create;
-          const childReq = scope.utils.childRequest(req);
-          childReq.body = SaveAction.childSubmission(scope, req, res, childReq.body);
-          return async.series(
-            handlers.map((handler) => async.apply(handler, childReq, res)),
-            (err) => {
-              if (err) {
-                error(err);
-                return next(err);
-              }
-
-              // Set the child response based on the response of the subform.
-              SaveAction.childResponse(scope, req, res);
-              next();
-            },
-          );
         }
       }
 
