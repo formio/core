@@ -421,11 +421,11 @@ export function getComponent(
   key: any,
   includeAll: any = false,
 ): Component | undefined {
-  let result;
+  let result: Component | undefined;
   eachComponent(
     components,
     (component: Component, path: any) => {
-      if (path === key || (component.input && component.key === key)) {
+      if ((path === key || (component.input && component.key === key)) && !result) {
         result = component;
         return true;
       }
