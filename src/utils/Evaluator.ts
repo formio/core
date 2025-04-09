@@ -18,7 +18,16 @@ export class BaseEvaluator {
     evaluate: /\{%([\s\S]+?)%\}/g,
     escape: /\{\{\{([\s\S]+?)\}\}\}/g,
   };
-  public static noeval: boolean = false;
+  private static _noeval = false;
+
+  public static get noeval(): boolean {
+    return BaseEvaluator._noeval;
+  }
+
+  public static set noeval(value: boolean) {
+    BaseEvaluator._noeval = value;
+  }
+
   public static evaluator(func: any, ...params: any) {
     if (Evaluator.noeval) {
       console.warn('No evaluations allowed for this renderer.');
