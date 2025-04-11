@@ -198,7 +198,7 @@ export class Evaluator extends BaseEvaluator {
    */
   public static registerEvaluator(evaluator: any) {
     Object.keys(evaluator).forEach((key) => {
-      (Evaluator as any)[key] = evaluator[key];
+      (this as any)[key] = evaluator[key];
     });
   }
 }
