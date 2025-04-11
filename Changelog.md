@@ -1,3 +1,9 @@
+## 2.4.1-rc.2
+
+### Changed
+
+- FIO-9737: add deprecated tag to the unwind method
+
 ## 2.4.1-rc.1
 
 ### Changed
