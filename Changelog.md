@@ -1,7 +1,40 @@
-## [Unreleased: 2.4.0-rc.1]
-
+## [Unreleased: 2.5.0-rc.1]
 ### Changed
+- FIO-8228: Expanding the types for Project Roles and Access Information
+- FIO-8544: Replace async callbacks with async/await
+- FIO-9942: Fix issue with disabling evaluations
+- FIO-9668: Fix custom error messages are not highlighted
+- update exported evaluator to be 'extendable' version
+- FIO-9776: Excluded Address2 field from required validation
+- FIO-9642: enhance error information
+- FIO-8409: added serverOverride processor and tests
+- FIO-8118: removed datetime value from submission if null is submitted
+- FIO-8117 removed survey from data if value is falsy
+- FIO-8119: remove tags from data if value is null
+- Added .idea to gitignore for webstorm users
+- FIO-9357 fixed calculation based on DataSource component
 
+## 2.4.1
+### Changed
+- FIO-9737: add deprecated tag to the unwind method
+- FIO-9908: fixed an issue where conditional setting with "show" set as a string does not work well
+
+## 2.4.0
+### Changed
+- FIO-9934 fixed appearing extra validation messages
+- FIO-9874: fixed an issue where operands disappear
+- Update dompurify@3.2.4
+- FIO-9796: Fixed issue where the conditions from a previous run may be in the wrong state for conditionally hidden.
+- Hotfix/fix type aliases
+- FIO-9649: update componentMatches fn to not omit layout components; add tests
+- FIO-9668: Fix custom error messages are not highlighted
+- FIO-9508: includeAll flag now works with nested components
+- FIO-9511: fixed day component min/max validation message
+- FIO-9467: Fix rendering table component in wizard
+- FIO-9465: fix conditionals path for panel component
+- FIO-9357 fixed calculation based on DataSource component
+- FIO-9266/FIO-9267/FIO-9268: Fixes an issue where nested form validation will be skipped if parent form submits empty data
+- FIO-9159: add intentionallyHidden ephemeral state and breaking change to clearOnHide behavior
 - Regression | Nested Form | Components in Nested forms should not validate hidden components without Validate When Hidden = true
 - FIO-8347: Added ability to skip mask validation
 - FIO-8273 fixed advanced logic for data components
