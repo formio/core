@@ -49,7 +49,7 @@ export const eachComponentData = (
           component,
           data,
           row,
-          compPaths?.dataPath || '',
+          (component.modelType === 'none' ? compPaths?.fullPath : compPaths?.dataPath) || '',
           componentComponents,
           compPaths?.dataIndex,
           compParent,
