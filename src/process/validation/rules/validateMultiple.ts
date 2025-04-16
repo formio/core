@@ -7,6 +7,7 @@ import {
   TagsComponent,
   RuleFnSync,
   ValidationContext,
+  FileComponent,
 } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 import { getModelType } from 'utils/formUtil';
@@ -40,6 +41,10 @@ export const isEligible = (component: Component) => {
 
 const isTagsComponent = (component: any): component is TagsComponent => {
   return component?.type === 'tags';
+};
+
+const isFileComponent = (component: any): component is FileComponent => {
+  return component?.type === 'file';
 };
 
 export const emptyValueIsArray = (component: Component) => {
@@ -103,7 +108,9 @@ export const validateMultipleSync: RuleFnSync = (context: ValidationContext) => 
       return null;
     } else if (valueIsArray && !underlyingValueShouldBeArray) {
       if (value.length === 0) {
-        return isRequired ? new FieldError('array_nonempty', { ...context, setting: true }) : null;
+        return isRequired && !isFileComponent(component)
+          ? new FieldError('array_nonempty', { ...context, setting: true })
+          : null;
       }
 
       return Array.isArray(value[0]) && compModelType !== 'any'
