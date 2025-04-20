@@ -1,6 +1,6 @@
 import { isEmpty, isUndefined, difference } from 'lodash';
 import { FieldError, ProcessorError } from 'error';
-import { Evaluator } from 'utils';
+import { evaluate } from 'utils';
 import {
   RadioComponent,
   SelectComponent,
@@ -102,7 +102,7 @@ async function getAvailableSelectValues(component: SelectComponent, context: Val
       }
     }
     case 'custom': {
-      const customItems = Evaluator.evaluate(
+      const customItems = evaluate(
         component.data.custom,
         {
           values: [],
@@ -178,7 +178,7 @@ function getAvailableSelectValuesSync(component: SelectComponent, context: Valid
       }
     }
     case 'custom': {
-      const customItems = Evaluator.evaluate(
+      const customItems = evaluate(
         component.data.custom,
         {
           values: [],

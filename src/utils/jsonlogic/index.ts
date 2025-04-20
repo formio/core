@@ -1,10 +1,10 @@
 import jsonLogic from 'json-logic-js';
 import { dayjs } from 'utils/date';
-import { _ } from './operators';
+import { operators } from './operators';
 
 // Configure JsonLogic
-for (const operator in _) {
-  jsonLogic.add_operation(`_${operator}`, _[operator]);
+for (const operator in operators) {
+  jsonLogic.add_operation(`_${operator}`, operators[operator]);
 }
 
 // Retrieve Any Date
