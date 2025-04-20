@@ -1,4 +1,3 @@
-export * from './modules';
 export * from './utils';
 export * from './process/validation';
 export * from './process/validation/rules';

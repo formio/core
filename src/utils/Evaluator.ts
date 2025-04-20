@@ -1,26 +1,26 @@
 import { noop, trim, keys, get, set, isObject, values } from 'lodash';
+import { jsonLogic } from './jsonlogic';
 
-export interface EvaluatorOptions {
+export type EvaluatorOptions = {
   noeval?: boolean;
   data?: any;
-}
-
-export type EvaluatorContext = {
-  evalContext?: (context: any) => any;
-  instance?: any;
-  [key: string]: any;
+  formModule?: string;
 };
 
-// BaseEvaluator is for extending.
-export class BaseEvaluator {
-  static templateSettings = {
+export class DefaultEvaluator {
+  noeval: boolean;
+  templateSettings = {
     interpolate: /{{([\s\S]+?)}}/g,
     evaluate: /\{%([\s\S]+?)%\}/g,
     escape: /\{\{\{([\s\S]+?)\}\}\}/g,
   };
-  public static noeval: boolean = false;
-  public static evaluator(func: any, ...params: any) {
-    if (Evaluator.noeval) {
+
+  constructor(options: EvaluatorOptions = {}) {
+    this.noeval = !!options.noeval;
+  }
+
+  evaluator(func: any, ...params: any) {
+    if (this.noeval) {
       console.warn('No evaluations allowed for this renderer.');
       return noop;
     }
@@ -33,7 +33,7 @@ export class BaseEvaluator {
     return new Function(...params, func);
   }
 
-  public static interpolateString(rawTemplate: string, data: any, options: EvaluatorOptions = {}) {
+  interpolateString(rawTemplate: string, data: any, options: EvaluatorOptions = {}) {
     if (!rawTemplate) {
       return '';
     }
@@ -42,7 +42,7 @@ export class BaseEvaluator {
     }
     return rawTemplate.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => {
       // If this is a function call and we allow evals.
-      if ($2.indexOf('(') !== -1 && !(Evaluator.noeval || options.noeval)) {
+      if ($2.indexOf('(') !== -1 && !(this.noeval || options.noeval)) {
         return $2.replace(
           /([^(]+)\(([^)]+)\s*\);?/,
           (evalMatch: any, funcName: string, args: any) => {
@@ -58,7 +58,7 @@ export class BaseEvaluator {
                   return get(data, arg);
                 });
               }
-              return Evaluator.evaluate(func, args, '', false, data, options);
+              return this.evaluate(func, args, '', false, data, options);
             }
             return '';
           },
@@ -87,8 +87,8 @@ export class BaseEvaluator {
     });
   }
 
-  public static interpolate(rawTemplate: any, data: any, options: EvaluatorOptions = {}) {
-    if (typeof rawTemplate === 'function' && !(Evaluator.noeval || options.noeval)) {
+  interpolate(rawTemplate: any, data: any, options: EvaluatorOptions = {}) {
+    if (typeof rawTemplate === 'function' && !(this.noeval || options.noeval)) {
       try {
         return rawTemplate(data);
       } catch (err: any) {
@@ -97,7 +97,7 @@ export class BaseEvaluator {
       }
     }
 
-    return Evaluator.interpolateString(String(rawTemplate), data, options);
+    return this.interpolateString(String(rawTemplate), data, options);
   }
 
   /**
@@ -107,7 +107,7 @@ export class BaseEvaluator {
    * @param args
    * @return {*}
    */
-  public static evaluate(
+  evaluate(
     func: any,
     args: any = {},
     ret: any = '',
@@ -121,22 +121,37 @@ export class BaseEvaluator {
     if (!args.form && args.instance) {
       args.form = get(args.instance, 'root._form', {});
     }
-
     const componentKey = component.key;
-    if (typeof func === 'string') {
+    if (typeof func === 'object') {
+      try {
+        returnVal = jsonLogic.apply(func, args);
+      } catch (err) {
+        returnVal = null;
+        console.warn(`An error occured within JSON Logic`, err);
+      }
+      return returnVal;
+    } else if (typeof func === 'string') {
       if (ret) {
         func = `var ${ret};${func};return ${ret}`;
       }
+      if (options.formModule) {
+        func = `const module = ${options.formModule};
+          if (module.options?.form?.evalContext) {
+            Object.keys(module.options.form.evalContext).forEach((key) => globalThis[key] = module[key]);
+          }
+          ${func};
+        `;
+      }
 
       if (interpolate) {
-        func = BaseEvaluator.interpolate(func, args, options);
+        func = this.interpolate(func, args, options);
       }
 
       try {
-        if (Evaluator.noeval || options.noeval) {
+        if (this.noeval || options.noeval) {
           func = noop;
         } else {
-          func = Evaluator.evaluator(func, args, context);
+          func = this.evaluator(func, args, context);
         }
         args = values(args);
       } catch (err) {
@@ -148,7 +163,7 @@ export class BaseEvaluator {
 
     if (typeof func === 'function') {
       try {
-        returnVal = Evaluator.execute(func, args, context, options);
+        returnVal = this.execute(func, args, context, options);
       } catch (err) {
         returnVal = null;
         console.warn(`An error occured within custom function for ${componentKey}`, err);
@@ -166,14 +181,9 @@ export class BaseEvaluator {
    * @param args
    * @returns
    */
-  public static execute(
-    func: string | any,
-    args: any,
-    context: any = {},
-    options: EvaluatorOptions = {},
-  ) {
+  execute(func: string | any, args: any, context: any = {}, options: EvaluatorOptions = {}) {
     options = isObject(options) ? options : { noeval: options };
-    if (Evaluator.noeval || options.noeval) {
+    if (this.noeval || options.noeval) {
       console.warn('No evaluations allowed for this renderer.');
       return;
     }
@@ -181,15 +191,9 @@ export class BaseEvaluator {
   }
 }
 
-// The extendable evaluator
-export class Evaluator extends BaseEvaluator {
-  /**
-   * Allow external modules the ability to extend the Evaluator.
-   * @param evaluator
-   */
-  public static registerEvaluator(evaluator: any) {
-    Object.keys(evaluator).forEach((key) => {
-      (Evaluator as any)[key] = evaluator[key];
-    });
-  }
+// The mutable singleton instance
+export let Evaluator: DefaultEvaluator = new DefaultEvaluator();
+
+export function registerEvaluator(override: DefaultEvaluator) {
+  Evaluator = override;
 }
