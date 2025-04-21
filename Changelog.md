@@ -1,5 +1,7 @@
-## [Unreleased: 2.5.0-rc.1]
+## 2.5.0-rc.1
+
 ### Changed
+
 - FIO-8228: Expanding the types for Project Roles and Access Information
 - FIO-8544: Replace async callbacks with async/await
 - FIO-9942: Fix issue with disabling evaluations
@@ -15,12 +17,16 @@
 - FIO-9357 fixed calculation based on DataSource component
 
 ## 2.4.1
+
 ### Changed
+
 - FIO-9737: add deprecated tag to the unwind method
 - FIO-9908: fixed an issue where conditional setting with "show" set as a string does not work well
 
 ## 2.4.0
+
 ### Changed
+
 - FIO-9934 fixed appearing extra validation messages
 - FIO-9874: fixed an issue where operands disappear
 - Update dompurify@3.2.4
