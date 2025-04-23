@@ -6,6 +6,7 @@ export { unwind } from './unwind';
 export * as Utils from './formUtil';
 export * as dom from './dom';
 export * from './utils';
+export * from './i18n';
 export * from './date';
 export * from './mask';
 export * from './fastCloneDeep';
