@@ -1,3 +1,10 @@
+## 2.5.0-rc.2
+
+### Changed
+
+- FIO-10034: added missed types
+- FIO-10036: added missing types
+
 ## 2.5.0-rc.1
 
 ### Changed
