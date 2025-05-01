@@ -84,7 +84,7 @@ export const isConditionallyHidden = (context: ConditionsContext): boolean => {
 export type ConditionallyHidden = (context: ConditionsContext) => boolean;
 
 export const conditionalProcess = (context: ConditionsContext, isHidden: ConditionallyHidden) => {
-  const { scope, path, component } = context;
+  const { scope, path, component, paths } = context;
   if (!hasConditions(context)) {
     return;
   }
@@ -94,7 +94,7 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
   }
   let conditionalComp = scope.conditionals.find((cond) => cond.path === path);
   if (!conditionalComp) {
-    const conditionalPath = path ? path : getComponentPaths(component).fullPath || '';
+    const conditionalPath = (paths ? paths.fullPath : getComponentPaths(component).fullPath) ?? '';
     conditionalComp = {
       path: conditionalPath,
       conditionallyHidden: false,
