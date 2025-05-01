@@ -51,6 +51,7 @@ export const eachComponentDataAsync = async (
           componentComponents,
           compPaths?.dataIndex,
           compParent,
+          compPaths,
         )) === true
       ) {
         resetComponentScope(component);

@@ -5,7 +5,7 @@ import {
   ProcessorInfo,
   ConditionsContext,
 } from 'types';
-import { setComponentScope } from 'utils/formUtil';
+import { getModelType, setComponentScope } from 'utils/formUtil';
 import {
   checkCustomConditional,
   checkJsonConditional,
@@ -15,7 +15,6 @@ import {
   isSimpleConditional,
   isJSONConditional,
 } from 'utils/conditions';
-import { getComponentPaths } from '../../utils/formUtil/index';
 
 const hasCustomConditions = (context: ConditionsContext): boolean => {
   const { component } = context;
@@ -94,7 +93,8 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
   }
   let conditionalComp = scope.conditionals.find((cond) => cond.path === path);
   if (!conditionalComp) {
-    const conditionalPath = (paths ? paths.fullPath : getComponentPaths(component).fullPath) ?? '';
+    // Layout components don't have data paths, so if we've conditionally hidden a layout component, use its full path
+    const conditionalPath = getModelType(component) === 'none' ? (paths?.fullPath ?? '') : path;
     conditionalComp = {
       path: conditionalPath,
       conditionallyHidden: false,
