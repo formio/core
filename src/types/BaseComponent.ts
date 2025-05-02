@@ -96,4 +96,5 @@ export type BaseComponent = {
   errors?: Record<string, string>;
   truncateMultipleSpaces?: boolean;
   serverOverride?: Record<string, any>;
+  hideColumnByDefault?: boolean;
 };

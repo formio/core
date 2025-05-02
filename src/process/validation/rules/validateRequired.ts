@@ -58,6 +58,13 @@ const valueIsPresent = (
   else if (Array.isArray(value) && value.length === 0) {
     return false;
   }
+  // Check for moment.js object or Date object
+  else if (
+    typeof value === 'object' &&
+    (value._isAMomentObject === true || value instanceof Date)
+  ) {
+    return true;
+  }
   // Recursively evaluate
   else if (typeof value === 'object' && !isNestedDatatype) {
     return Object.values(value).some((val) =>
