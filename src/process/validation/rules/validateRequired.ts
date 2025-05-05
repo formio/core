@@ -97,7 +97,7 @@ export const validateRequiredSync: RuleFnSync = (context: ValidationContext) => 
     return isEmptyObject(value.address)
       ? error
       : Object.entries(value.address)
-            .filter(([key]) => !['address2'].includes(key))
+            .filter(([key]) => !['address2', 'name'].includes(key))
             .every(([, val]) => !!val)
         ? null
         : error;

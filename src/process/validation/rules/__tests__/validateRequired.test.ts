@@ -256,6 +256,46 @@ describe('validateRequired', function () {
     expect(result).to.equal(null);
   });
 
+  it('Should not return error message for empty name from OpenStreetMap result', async function () {
+    const component = { ...requiredAddressManualMode };
+    const data = {
+      component: {
+        mode: 'autocomplete',
+        address: {
+          place_id: 328348026,
+          licence: 'Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright',
+          osm_type: 'way',
+          osm_id: 888173250,
+          lat: '42.707967249999996',
+          lon: '-73.70969481422155',
+          class: 'building',
+          type: 'residential',
+          place_rank: 30,
+          importance: 0.00006285877775230056,
+          addresstype: 'building',
+          name: '',
+          display_name:
+            '123, 1st Street, City of Watervliet, Albany County, New York, 12189, United States',
+          address: {
+            house_number: '123',
+            road: '1st Street',
+            town: 'City of Watervliet',
+            county: 'Albany County',
+            state: 'New York',
+            'ISO3166-2-lvl4': 'US-NY',
+            postcode: '12189',
+            country: 'United States',
+            country_code: 'us',
+          },
+          boundingbox: ['42.7078691', '42.7080721', '-73.7097797', '-73.7096099'],
+        },
+      },
+    };
+    const context = generateProcessorContext(component, data);
+    const result = await validateRequired(context);
+    expect(result).to.equal(null);
+  });
+
   it('Validating a required component with moment.js object', async function () {
     const component = { ...simpleDateTimeField, validate: { required: true } };
     const data = { component: moment() };
@@ -267,6 +307,7 @@ describe('validateRequired', function () {
   it('Validating a required component with Date object', async function () {
     const component = { ...simpleDateTimeField, validate: { required: true } };
     const data = { component: new Date() };
+
     const context = generateProcessorContext(component, data);
     const result = await validateRequired(context);
     expect(result).to.equal(null);
