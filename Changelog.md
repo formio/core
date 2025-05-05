@@ -1,3 +1,9 @@
+## 2.4.1-rc.4
+
+### Changed
+
+- FIO-9885: Fixes an issue where conditionally hidden layout components could cause data loss of the conditionally hidden Nested Form
+
 ## 2.4.1-rc.3
 
 ### Changed
