@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import moment from 'moment';
 
 import { FieldError } from 'error';
 import { validateRequired } from '../validateRequired';
@@ -11,6 +12,7 @@ import {
   simpleRadioField,
   simpleCheckBoxField,
   requiredAddressManualMode,
+  simpleDateTimeField,
 } from './fixtures/components';
 import { processOne } from 'processes/processOne';
 import { generateProcessorContext } from './fixtures/util';
@@ -289,6 +291,23 @@ describe('validateRequired', function () {
         },
       },
     };
+    const context = generateProcessorContext(component, data);
+    const result = await validateRequired(context);
+    expect(result).to.equal(null);
+  });
+
+  it('Validating a required component with moment.js object', async function () {
+    const component = { ...simpleDateTimeField, validate: { required: true } };
+    const data = { component: moment() };
+    const context = generateProcessorContext(component, data);
+    const result = await validateRequired(context);
+    expect(result).to.equal(null);
+  });
+
+  it('Validating a required component with Date object', async function () {
+    const component = { ...simpleDateTimeField, validate: { required: true } };
+    const data = { component: new Date() };
+
     const context = generateProcessorContext(component, data);
     const result = await validateRequired(context);
     expect(result).to.equal(null);
