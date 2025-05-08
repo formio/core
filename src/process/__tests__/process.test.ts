@@ -5169,6 +5169,54 @@ describe('Process Tests', function () {
     assert.deepEqual(context.data, submission.data);
   });
 
+  it('Should return only a single require error message for File component with Multiple Values and require', async function () {
+    const form = {
+      components: [
+        {
+          label: 'Upload',
+          tableView: false,
+          storage: 'base64',
+          webcam: false,
+          capture: false,
+          fileTypes: [
+            {
+              label: '',
+              value: '',
+            },
+          ],
+          multiple: true,
+          validate: {
+            required: true,
+          },
+          validateWhenHidden: false,
+          key: 'file',
+          type: 'file',
+          input: true,
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        file: [],
+      },
+    };
+
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: { errors },
+      config: {},
+    };
+    processSync(context);
+    expect((context.scope as ValidationScope).errors).to.have.length(1);
+    assert.equal(context.scope.errors[0].ruleName, 'required');
+  });
+
   describe('Required component validation in nested form in DataGrid/EditGrid', function () {
     const nestedForm = {
       key: 'form',
