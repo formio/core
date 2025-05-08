@@ -579,7 +579,8 @@ export function shouldProcessComponent(comp: Component, row: any, value: any): b
     const shouldBeCleared =
       (!comp.hasOwnProperty('clearOnHide') || comp.clearOnHide) &&
       (comp.hidden || comp.scope?.conditionallyHidden);
-    const shouldSkipProcessingNestedFormData = noReferenceAttached || shouldBeCleared;
+    const shouldSkipProcessingNestedFormData =
+      noReferenceAttached || (shouldBeCleared && !comp.validateWhenHidden);
     if (shouldSkipProcessingNestedFormData) {
       return false;
     }
