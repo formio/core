@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { clearHiddenProcess } from '../index';
+import { clearHiddenProcessSync } from '../index';
 
 describe('clearHidden', function () {
   it('Shoud not clear conditionally hidden component data when clearOnHide is false', function () {
@@ -28,7 +28,7 @@ describe('clearHidden', function () {
       },
       path: 'foo',
     };
-    clearHiddenProcess(context);
+    clearHiddenProcessSync(context);
     expect(context.data).to.deep.equal({ foo: 'bar' });
   });
 
@@ -57,7 +57,7 @@ describe('clearHidden', function () {
       },
       path: 'foo',
     };
-    clearHiddenProcess(context);
+    clearHiddenProcessSync(context);
     expect(context.data).to.deep.equal({});
   });
 
@@ -81,7 +81,7 @@ describe('clearHidden', function () {
       },
       path: 'foo',
     };
-    clearHiddenProcess(context);
+    clearHiddenProcessSync(context);
     expect(context.data).to.deep.equal({ foo: 'bar' });
   });
 });

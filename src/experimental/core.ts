@@ -1,11 +1,10 @@
 import 'core-js/features/object/from-entries';
 import { Formio } from '../sdk';
-import { Evaluator, Utils } from '../utils';
+import { Evaluator, Utils, registerEvaluator } from '../utils';
 import { Components, render } from './base';
 import { Template } from './template';
 import { merge } from 'lodash';
 import components from './components';
-import modules from '../modules';
 
 export default class FormioCore extends Formio {
   static Components = Components;
@@ -60,7 +59,7 @@ export default class FormioCore extends Formio {
         if (!(Formio as any).Evaluator) {
           return;
         }
-        (Formio as any).Evaluator.registerEvaluator(plugin);
+        registerEvaluator(plugin);
         break;
       default:
         console.log('Unknown plugin option', key);
@@ -95,4 +94,3 @@ export default class FormioCore extends Formio {
 }
 
 FormioCore.use(components);
-FormioCore.use(modules);

@@ -1,8 +1,8 @@
-import { ConditionsContext, JSONConditional, LegacyConditional, SimpleConditional } from 'types';
-import { EvaluatorFn, evaluate, JSONLogicEvaluator } from 'modules/jsonlogic';
-import { getComponent, getComponentValue, normalizeContext } from './formUtil';
 import { has, isObject, map, every, some, find, filter, isString } from 'lodash';
+import { getComponent, getComponentValue } from './formUtil';
 import ConditionOperators from './operators';
+import { evaluate } from './utils';
+import { ConditionsContext, JSONConditional, LegacyConditional, SimpleConditional } from 'types';
 
 export const isJSONConditional = (conditional: any): conditional is JSONConditional => {
   return conditional && conditional.json && isObject(conditional.json);
@@ -41,11 +41,10 @@ export function checkCustomConditional(
   context: ConditionsContext,
   variable: string = 'show',
 ): boolean | null {
-  const { evalContext } = context;
   if (!condition) {
     return null;
   }
-  const value = evaluate(context, condition, variable, evalContext as EvaluatorFn);
+  const value = evaluate(condition, context, variable);
   if (value === null) {
     return null;
   }
@@ -90,14 +89,10 @@ export function checkJsonConditional(
   conditional: JSONConditional,
   context: ConditionsContext,
 ): boolean | null {
-  const { evalContext } = context;
   if (!conditional || !isJSONConditional(conditional)) {
     return null;
   }
-  const evalContextValue = evalContext
-    ? evalContext(normalizeContext(context))
-    : normalizeContext(context);
-  return JSONLogicEvaluator.evaluate(conditional.json, evalContextValue);
+  return evaluate(conditional.json as string, context);
 }
 
 /**
