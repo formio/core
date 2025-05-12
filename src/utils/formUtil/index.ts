@@ -276,8 +276,7 @@ export function componentPath(
   const dataPath = type === ComponentPath.dataPath || type === ComponentPath.localDataPath;
 
   // Determine if this component should include its key.
-  const includeKey =
-    fullPath || (!!component.type && compModel !== 'none' && compModel !== 'content');
+  const includeKey = fullPath || (!!component.type && compModel !== 'none');
 
   // The key is provided if the component can have data or if we are fetching the full path.
   const key = includeKey ? getComponentKey(component) : '';
