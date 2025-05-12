@@ -4861,6 +4861,326 @@ describe('Process Tests', function () {
     expect((scope as ValidationScope).errors).to.have.length(3);
   });
 
+  it('Should not clear container components when they have child layout components', function () {
+    // This form has a parent container with some layout children each containing a text field
+    // The issue was that the path was not being correctly evaluated - since the layout component contains the conditional, we were trying to get its
+    // path (something like `container.panel`) but instead received `container`, which led to the container being cleared because clearOnHide is
+    // enabled by default
+    const form = {
+      components: [
+        {
+          label: 'Checkbox',
+          tableView: false,
+          validateWhenHidden: false,
+          key: 'checkbox',
+          type: 'checkbox',
+          input: true,
+        },
+        {
+          label: 'Container',
+          tableView: false,
+          validateWhenHidden: false,
+          key: 'container',
+          type: 'container',
+          input: true,
+          components: [
+            {
+              label: 'Panel',
+              collapsible: false,
+              key: 'panel',
+              type: 'panel',
+              input: false,
+              tableView: false,
+              components: [
+                {
+                  label: 'Text Field',
+                  applyMaskOn: 'change',
+                  tableView: true,
+                  validateWhenHidden: false,
+                  key: 'textField',
+                  type: 'textfield',
+                  input: true,
+                },
+                {
+                  label: 'Panel',
+                  collapsible: false,
+                  key: 'panel1',
+                  type: 'panel',
+                  input: false,
+                  tableView: false,
+                  components: [
+                    {
+                      label: 'Text Field',
+                      applyMaskOn: 'change',
+                      tableView: true,
+                      validateWhenHidden: false,
+                      key: 'textField1',
+                      type: 'textfield',
+                      input: true,
+                    },
+                  ],
+                },
+                {
+                  label: 'Panel',
+                  collapsible: false,
+                  key: 'panel2',
+                  type: 'panel',
+                  input: false,
+                  tableView: false,
+                  components: [
+                    {
+                      label: 'Text Field',
+                      applyMaskOn: 'change',
+                      tableView: true,
+                      validateWhenHidden: false,
+                      key: 'textField2',
+                      type: 'textfield',
+                      input: true,
+                    },
+                  ],
+                },
+                {
+                  label: 'Panel',
+                  collapsible: false,
+                  key: 'panel3',
+                  conditional: {
+                    show: true,
+                    conjunction: 'all',
+                    conditions: [
+                      {
+                        component: 'checkbox',
+                        operator: 'isEqual',
+                        value: false,
+                      },
+                    ],
+                  },
+                  type: 'panel',
+                  input: false,
+                  tableView: false,
+                  components: [
+                    {
+                      label: 'Text Field',
+                      applyMaskOn: 'change',
+                      tableView: true,
+                      validateWhenHidden: false,
+                      key: 'textField3',
+                      type: 'textfield',
+                      input: true,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        checkbox: true,
+        container: {
+          textField: 'hello',
+          textField1: 'world',
+          textField2: 'foo',
+          textField3: 'bar',
+        },
+        submit: true,
+      },
+    };
+
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    // Note that we DID omit textField3, which has clearOnHide enabled by default
+    assert.deepEqual(context.data, {
+      checkbox: true,
+      container: { textField: 'hello', textField1: 'world', textField2: 'foo' },
+    });
+  });
+
+  it('Should not clear container components when they have child content components', function () {
+    // This form has a parent container with some layout children each containing a text field
+    // The issue was that the path was not being correctly evaluated - since the layout component contains the conditional, we were trying to get its
+    // path (something like `container.panel`) but instead received `container`, which led to the container being cleared because clearOnHide is
+    // enabled by default
+    const form = {
+      components: [
+        {
+          label: 'Checkbox',
+          tableView: false,
+          validateWhenHidden: false,
+          key: 'checkbox',
+          type: 'checkbox',
+          input: true,
+        },
+        {
+          label: 'Container',
+          tableView: false,
+          validateWhenHidden: false,
+          key: 'container',
+          type: 'container',
+          input: true,
+          components: [
+            {
+              label: 'Panel',
+              collapsible: false,
+              key: 'panel',
+              type: 'panel',
+              input: false,
+              tableView: false,
+              components: [
+                {
+                  label: 'Text Field',
+                  applyMaskOn: 'change',
+                  tableView: true,
+                  validateWhenHidden: false,
+                  key: 'textField',
+                  type: 'textfield',
+                  input: true,
+                },
+                {
+                  label: 'Panel',
+                  collapsible: false,
+                  key: 'panel1',
+                  type: 'panel',
+                  input: false,
+                  tableView: false,
+                  components: [
+                    {
+                      label: 'Text Field',
+                      applyMaskOn: 'change',
+                      tableView: true,
+                      validateWhenHidden: false,
+                      key: 'textField1',
+                      type: 'textfield',
+                      input: true,
+                    },
+                  ],
+                },
+                {
+                  label: 'Panel',
+                  collapsible: false,
+                  key: 'panel2',
+                  type: 'panel',
+                  input: false,
+                  tableView: false,
+                  components: [
+                    {
+                      label: 'Text Field',
+                      applyMaskOn: 'change',
+                      tableView: true,
+                      validateWhenHidden: false,
+                      key: 'textField2',
+                      type: 'textfield',
+                      input: true,
+                    },
+                  ],
+                },
+                {
+                  label: 'Panel',
+                  collapsible: false,
+                  key: 'panel3',
+                  conditional: {
+                    show: true,
+                    conjunction: 'all',
+                    conditions: [
+                      {
+                        component: 'checkbox',
+                        operator: 'isEqual',
+                        value: false,
+                      },
+                    ],
+                  },
+                  type: 'panel',
+                  input: false,
+                  tableView: false,
+                  components: [
+                    {
+                      label: 'Text Field',
+                      applyMaskOn: 'change',
+                      tableView: true,
+                      validateWhenHidden: false,
+                      key: 'textField3',
+                      type: 'textfield',
+                      input: true,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              html: '<p>content, cond=true</p>',
+              label: 'Content',
+              refreshOnChange: false,
+              key: 'content',
+              conditional: {
+                show: true,
+                conjunction: 'all',
+                conditions: [
+                  {
+                    component: 'checkbox',
+                    operator: 'isEqual',
+                    value: true,
+                  },
+                ],
+              },
+              type: 'content',
+              input: false,
+              tableView: false,
+            },
+          ],
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        checkbox: false,
+        container: {
+          textField: 'hello',
+          textField1: 'world',
+          textField2: 'foo',
+          textField3: 'bar',
+        },
+        submit: true,
+      },
+    };
+
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.submission,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    processSync(context);
+    // Note that we DID omit textField3, which has clearOnHide enabled by default
+    assert.deepEqual(context.data, {
+      checkbox: false,
+      container: { textField: 'hello', textField1: 'world', textField2: 'foo', textField3: 'bar' },
+    });
+  });
+
   it('Should not return errors for empty multiple values for url and dateTime', function () {
     const form = {
       _id: '671f7fbeaf87b0e2a26e4212',
