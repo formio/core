@@ -1,3 +1,9 @@
+## [Unreleased: 2.4.1-rc.5]
+
+### Changed
+
+- FIO-10124: fixes an issue where HTML and Content components are clearing sibling components when nested in a container
+
 ## 2.4.1-rc.4
 
 ### Changed
