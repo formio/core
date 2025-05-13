@@ -385,7 +385,7 @@ export function componentMatches(
 ) {
   let dataProperty = '';
   if (component.type === 'selectboxes') {
-    const valuePath = new RegExp(`(\\.${escapeRegExp(component.key)})(\\.[^\\.]+)$`);
+    const valuePath = new RegExp(`(\\.?${escapeRegExp(component.key)})(\\.[^\\.]+)$`);
     const pathMatches = path.match(valuePath);
     if (pathMatches?.length === 3) {
       dataProperty = pathMatches[2];
