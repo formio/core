@@ -1,4 +1,4 @@
-## [Unreleased: 2.4.1-rc.5]
+## 2.4.1-rc.5
 
 ### Changed
 
