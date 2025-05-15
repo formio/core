@@ -1,3 +1,9 @@
+## [Unreleased: 2.5.0-rc.3]
+
+### Changed
+
+- Change 2.5.x to fork from 2.4.x
+
 ## 2.4.1
 
 ### Changed
