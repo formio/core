@@ -1,4 +1,3 @@
-import { JSONLogicEvaluator } from 'modules/jsonlogic';
 import {
   ProcessorFn,
   ProcessorFnSync,
@@ -7,7 +6,8 @@ import {
   DefaultValueContext,
 } from 'types';
 import { set, has } from 'lodash';
-import { getComponentKey, normalizeContext } from 'utils/formUtil';
+import { evaluate } from 'utils';
+import { getComponentKey } from 'utils/formUtil';
 
 export const hasCustomDefaultValue = (context: DefaultValueContext): boolean => {
   const { component } = context;
@@ -38,7 +38,7 @@ export const customDefaultValueProcess: ProcessorFn<ConditionsScope> = async (
 export const customDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
   context: DefaultValueContext,
 ) => {
-  const { component, row, data, scope, evalContext, path } = context;
+  const { component, row, data, scope, path } = context;
   if (!hasCustomDefaultValue(context)) {
     return;
   }
@@ -48,14 +48,12 @@ export const customDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
   }
   let defaultValue = null;
   if (component.customDefaultValue) {
-    const evalContextValue = evalContext
-      ? evalContext(normalizeContext(context))
-      : normalizeContext(context);
-    evalContextValue.value = null;
-    defaultValue = JSONLogicEvaluator.evaluate(
+    defaultValue = evaluate(
       component.customDefaultValue,
-      evalContextValue,
+      context,
       'value',
+      false,
+      (context) => (context.value = null),
     );
     if (component.multiple && !Array.isArray(defaultValue)) {
       defaultValue = defaultValue ? [defaultValue] : [];
