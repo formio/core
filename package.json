@@ -105,7 +105,7 @@
   },
   "dependencies": {
     "browser-cookies": "^1.2.0",
-    "core-js": "^3.40.0",
+    "core-js": "^3.41.0",
     "dayjs": "^1.11.12",
     "dompurify": "^3.2.4",
     "eventemitter3": "^5.0.0",
