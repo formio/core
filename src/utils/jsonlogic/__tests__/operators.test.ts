@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { jsonLogic } from '../jsonLogic';
+import { jsonLogic } from '..';
 
 describe('Lodash operators', function () {
   describe('Arrays', function () {});

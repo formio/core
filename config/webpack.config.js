@@ -5,7 +5,6 @@ module.exports = {
   mode: 'development',
   entry: {
     'formio.core.js': './lib/index.js',
-    'formio.modules.js': './lib/modules/index.js',
     'formio.js': './lib/sdk/index.js',
     'formio.utils.js': './lib/utils/index.js',
     'formio.process.js': './lib/process/index.js',

@@ -246,7 +246,7 @@ import {
   toPath,
   uniqueId,
 } from 'lodash';
-export const _: any = {
+export const operators: Record<string, any> = {
   chunk,
   compact,
   concat,

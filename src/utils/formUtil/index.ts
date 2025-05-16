@@ -1346,17 +1346,24 @@ export function getComponentErrorField(component: Component, context: Validation
   return Evaluator.interpolate(toInterpolate, context);
 }
 
+/**
+ * Normalize a context object so that it contains the correct paths and data, and so it can pass into and out of a sandbox for evaluation
+ * @param context
+ * @returns
+ */
 export function normalizeContext(context: any): any {
-  const { data, paths, local } = context;
-  return paths
-    ? {
-        ...context,
-        ...{
-          path: paths.localDataPath,
-          data: getComponentLocalData(paths, data, local),
-        },
-      }
-    : context;
+  const { data, paths, local, path, form, submission, row, component, instance, value } = context;
+  return {
+    path: paths ? paths.localDataPath : path,
+    data: paths ? getComponentLocalData(paths, data, local) : data,
+    form,
+    submission,
+    row,
+    component,
+    instance,
+    value,
+    input: value,
+  };
 }
 
 export { eachComponent, eachComponentData, eachComponentAsync, eachComponentDataAsync };

@@ -5,6 +5,7 @@ import {
   ProcessorInfo,
   ProcessorFnSync,
   ConditionsScope,
+  ProcessorFn,
 } from 'types';
 
 type ClearHiddenScope = ProcessorScope & {
@@ -16,7 +17,7 @@ type ClearHiddenScope = ProcessorScope & {
 /**
  * This processor function checks components for the `hidden` property and unsets corresponding data
  */
-export const clearHiddenProcess: ProcessorFnSync<ClearHiddenScope> = (context) => {
+export const clearHiddenProcessSync: ProcessorFnSync<ClearHiddenScope> = (context) => {
   const { component, data, value, scope, path } = context;
 
   // No need to unset the value if it's undefined
@@ -45,8 +46,13 @@ export const clearHiddenProcess: ProcessorFnSync<ClearHiddenScope> = (context) =
   }
 };
 
+export const clearHiddenProcess: ProcessorFn<ClearHiddenScope> = async (context) => {
+  return clearHiddenProcessSync(context);
+};
+
 export const clearHiddenProcessInfo: ProcessorInfo<ProcessorContext<ClearHiddenScope>, void> = {
   name: 'clearHidden',
   shouldProcess: () => true,
-  processSync: clearHiddenProcess,
+  process: clearHiddenProcess,
+  processSync: clearHiddenProcessSync,
 };

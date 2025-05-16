@@ -16,7 +16,7 @@ import {
   LogicActionValue,
 } from 'types/AdvancedLogic';
 import { get, set, clone, isEqual, assign } from 'lodash';
-import { evaluate, interpolate } from 'modules/jsonlogic';
+import { evaluate, interpolate } from 'utils/utils';
 import { setComponentScope } from 'utils/formUtil';
 
 export const hasLogic = (context: LogicContext): boolean => {
@@ -109,7 +109,7 @@ export function setActionStringProperty(
     ? (action as any)[action.property.component]
     : action.text;
   const currentValue = get(component, property, '');
-  const newValue = interpolate({ ...context, value: '' }, textValue, (evalContext: any) => {
+  const newValue = interpolate(textValue, { ...context, value: '' }, (evalContext: any) => {
     evalContext.value = currentValue;
   });
   if (newValue !== currentValue) {
@@ -132,7 +132,7 @@ export function setActionProperty(context: LogicContext, action: LogicActionProp
 export function setValueProperty(context: LogicContext, action: LogicActionValue) {
   const { component, data, path } = context;
   const oldValue = get(data, path);
-  const newValue = evaluate(context, action.value, 'value', (evalContext: any) => {
+  const newValue = evaluate(action.value, context, 'value', false, (evalContext: any) => {
     evalContext.value = clone(oldValue);
   });
   if (
@@ -152,9 +152,10 @@ export function setMergeComponentSchema(
   const { component, data, path } = context;
   const oldValue = get(data, path);
   const schema = evaluate(
-    { ...context, value: {} },
     action.schemaDefinition,
+    { ...context, value: {} },
     'schema',
+    false,
     (evalContext: any) => {
       evalContext.value = clone(oldValue);
     },

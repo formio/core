@@ -3,6 +3,7 @@
 ### Changed
 
 - Change 2.5.x to fork from 2.4.x
+- FIO-9783: refactor Evaluator for performance improvements
 
 ## 2.4.1
 
@@ -119,6 +120,45 @@
 
 ### Changed
 
+- FIO-8228: Expanding the types for Project Roles and Access Information
+- FIO-8544: Replace async callbacks with async/await
+- FIO-9942: Fix issue with disabling evaluations
+- FIO-9668: Fix custom error messages are not highlighted
+- update exported evaluator to be 'extendable' version
+- FIO-9776: Excluded Address2 field from required validation
+- FIO-9642: enhance error information
+- FIO-8409: added serverOverride processor and tests
+- FIO-8118: removed datetime value from submission if null is submitted
+- FIO-8117 removed survey from data if value is falsy
+- FIO-8119: remove tags from data if value is null
+- Added .idea to gitignore for webstorm users
+- FIO-9357 fixed calculation based on DataSource component
+
+## 2.4.1
+
+### Changed
+
+- FIO-9737: add deprecated tag to the unwind method
+- FIO-9908: fixed an issue where conditional setting with "show" set as a string does not work well
+
+## 2.4.0
+
+### Changed
+
+- FIO-9934 fixed appearing extra validation messages
+- FIO-9874: fixed an issue where operands disappear
+- Update dompurify@3.2.4
+- FIO-9796: Fixed issue where the conditions from a previous run may be in the wrong state for conditionally hidden.
+- Hotfix/fix type aliases
+- FIO-9649: update componentMatches fn to not omit layout components; add tests
+- FIO-9668: Fix custom error messages are not highlighted
+- FIO-9508: includeAll flag now works with nested components
+- FIO-9511: fixed day component min/max validation message
+- FIO-9467: Fix rendering table component in wizard
+- FIO-9465: fix conditionals path for panel component
+- FIO-9357 fixed calculation based on DataSource component
+- FIO-9266/FIO-9267/FIO-9268: Fixes an issue where nested form validation will be skipped if parent form submits empty data
+- FIO-9159: add intentionallyHidden ephemeral state and breaking change to clearOnHide behavior
 - Regression | Nested Form | Components in Nested forms should not validate hidden components without Validate When Hidden = true
 - FIO-8347: Added ability to skip mask validation
 - FIO-8273 fixed advanced logic for data components
@@ -134,153 +174,41 @@
 ### Changed
 
 - Official Release
-
-## 2.3.0-rc.23
-
-### Changed
-
 - FIO-9021: Fixed eachComponentData iteration for nested forms
-
-## 2.3.0-rc.22
-
-### Changed
-
 - FIO-9344 fixed require validation for day component
 - FIO-9329: fix issue where validateWhenHidden now validates hidden and conditionally hidden components
-
-## 2.3.0-rc.21
-
-### Changed
-
 - FIO-9280 updated validation of value property
 - FIO-9299: ensure eachComponent does not mutate a component's path
-
-## 2.3.0-rc.20
-
-### Changed
-
 - FIO-9308: Fixed the paths with nested forms by ensuring we are always dealing with the absolute paths with clearOnHide, conditions, filters, and validations
-
-## 2.3.0-rc.19
-
-### Changed
-
 - FIO-9255: fixed an issue where nested forms lose data after submission if some parent has conditional components
-
-## 2.3.0-rc.18
-
-### Changed
-
 - FIO-9261: fixed an issue where empty multiple value for url and datetime causes validation errors
-
-## 2.3.0-rc.17
-
-### Changed
-
 - FIO-9201: Fix DataTable in quick inline embed issues
-
-## 2.3.0-rc.16
-
-### Changed
-
 - FIO-9201: Fix DataTable in quick inline embed issues
-
-## 2.3.0-rc.15
-
-### Changed
-
 - FIO-9244: fixed an issue where Radio component with Allow only available values checked does not submit
-
-## 2.3.0-rc.14
-
-### Changed
-
 - FIO-9189: fixed an issue where data is lost after submission for the conditionally visible field when the condition is based on select resource
 - FIO-9219: condition is not equal to based on select box
-
-## 2.3.0-rc.13
-
-### Changed
-
 - FIO-9186: fixed an issue where front-end validation is skipped for the components inside layout component inside editGrid
 - FIO-8632: Fixes an issue where required validation is not triggered for multiple value components like Select if it has no values added
-
-## 2.3.0-rc.12
-
-### Changed
-
 - FIO-9086: use for validation only dataFormat (data storage format)
 - FIO-9202: fixed an issue where the data for the component inside fieldset insdie wizard is lost after submission
 - FIO-9220: remove hiddenChildren
-
-### Changed
-
-## 2.3.0-rc.11
-
-### Changed
-
 - FIO-9160: added support of different condition formats for selectboxes
-
-## 2.3.0-rc.10
-
-### Changed
-
 - FIO-9143 fixed getValidationFormat error
-
-## 2.3.0-rc.9
-
-### Changed
-
 - FIO-8731: Update fix to nested hidden components
 - FIO-9002: fix issue with conditionally hidden duplicate nested form paths
-
-## 2.3.0-rc.8
-
-### Changed
-
 - FIO-8723: Clear values from submission for hidden comp with clearOnHide flag
 - FIO-8954: added Allow only available values validation for Data Source Type = URL
 - FIO-9085: Fix address submission logic
-
-## 2.3.0-rc.7
-
-### Changed
-
 - FIO-9059: fixed an issue where the string type returns for textarea with json type
-
-## 2.3.0-rc.6
-
-### Changed
-
 - FIO-9033 tagpad data is not saved
-
-## 2.3.0-rc.5
-
-### Changed
-
 - FIO-9085: Fix components data removed from submission when conditional set for Address component value
 - FIO-8414: Fix required validation not working in Data Grid
-
-## 2.3.0-rc.4
-
-### Changed
-
 - FIO-8986 fixed nornalization for day with default value and hidden fields
 - FIO-9055: separate rowPath from componentPath in getComponentActualValue fn
-
-## 2.3.0-rc.3
-
-### Changed
-
 - FIO-8986 fixed validation for Day component with two hidden fields
 - FIO-8798: update normalization for day component
 - FIO-8626: Updated conditionally hidden logic
 - Increment minor version
-
-## 2.3.0-rc.1
-
-### Changed
-
 - updated thresholds to current values
 - FIO-8450: Fix custom error message for unique validation
 - FIO-8598 fixed normalization of radio component values depending on storage type
