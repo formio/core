@@ -1,3 +1,10 @@
+## 2.6.0-rc.2
+
+### Changed
+
+- FIO-9885: Fixes an issue where conditionally hidden layout components could cause data loss of the conditionally hidden Nested Form
+- FIO-10124: fixes an issue where HTML and Content components are clearing sibling components when nested in a container
+
 ## 2.6.0-rc.1
 
 ## 2.5.0-rc.2
