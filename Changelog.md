@@ -3,7 +3,7 @@
 ### Changed
 
 - Change 2.5.x to fork from 2.4.x
-- FIO-9783: refactor Evaluator for performance improvements
+- FIO-9783: refactor evaluator for downstream performance improvements
 
 ## 2.4.1
 
