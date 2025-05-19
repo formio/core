@@ -1,6 +1,7 @@
 import { Component } from './Component';
 import { DataObject } from './DataObject';
 import { Form } from './Form';
+import { Evaluator } from 'utils/Evaluator';
 
 export type PassedComponentInstance = {
   evalContext: () => {
@@ -16,8 +17,8 @@ export type PassedComponentInstance = {
     form: Form;
     options: Record<string, any>;
   };
-  evaluate: (expression: string, additionalContext?: Record<string, any>) => any;
-  interpolate: (text: string, additionalContext?: Record<string, any>) => string;
+  evaluate?: typeof Evaluator.evaluate;
+  interpolate?: typeof Evaluator.interpolate;
   shouldSkipValidation: (data?: DataObject, row?: DataObject) => boolean;
   loadedOptions?: Array<{ invalid: boolean; value: any; label: string }>;
 };

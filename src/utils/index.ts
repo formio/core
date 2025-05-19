@@ -1,11 +1,12 @@
-export { Evaluator, EvaluatorOptions, BaseEvaluator } from './Evaluator';
-export { JSONLogicEvaluator } from '../modules/jsonlogic';
 export { sanitize } from './sanitize';
 export { override } from './override';
 export { unwind } from './unwind';
+export { Evaluator, registerEvaluator, EvaluatorOptions, DefaultEvaluator } from './Evaluator';
+export { jsonLogic } from './jsonlogic';
 export * as Utils from './formUtil';
 export * as dom from './dom';
 export * from './utils';
+export * from './i18n';
 export * from './date';
 export * from './mask';
 export * from './fastCloneDeep';
