@@ -599,6 +599,7 @@ export function componentInfo(component: any) {
   const isLayout = getModelType(component) === 'none';
   const isInput =
     (!component.hasOwnProperty('input') && !component.components) || !!component.input;
+
   return {
     hasColumns,
     hasRows,
