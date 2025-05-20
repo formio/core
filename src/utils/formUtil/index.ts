@@ -187,7 +187,11 @@ export function getModelType(component: Component): keyof typeof MODEL_TYPES_OF_
   }
 
   // Otherwise check for components that assert no value.
-  if (modelType === 'any' && component.input === false) {
+  if (
+    modelType === 'any' &&
+    (component.input === false ||
+      ((component as HasChildComponents).components && !component.input))
+  ) {
     modelType = 'none';
   }
 
@@ -446,7 +450,7 @@ export function componentMatches(
       if (
         !currentMatch ||
         (dataPath && dataModel && currentDataModel) || // Replace the current match if this is a dataPath and both are dataModels.
-        (!dataPath && dataIndex === paths.dataIndex) // Replace the current match if this is not a dataPath and the indexes are the same.
+        (!dataPath && !isNil(paths.dataIndex) && dataIndex === paths.dataIndex) // Replace the current match if this is not a dataPath and the indexes are the same.
       ) {
         if (dataPath) {
           const dataPaths = {
@@ -633,7 +637,8 @@ export function componentInfo(component: any) {
   const hasComps = component.components && Array.isArray(component.components);
   const isContent = getModelType(component) === 'content';
   const isLayout = getModelType(component) === 'none';
-  const isInput = !component.hasOwnProperty('input') || !!component.input;
+  const isInput =
+    (!component.hasOwnProperty('input') && !component.components) || !!component.input;
   return {
     hasColumns,
     hasRows,
