@@ -8,8 +8,8 @@ import {
   FilterContext,
 } from 'types';
 import { get, set } from 'lodash';
-import { Evaluator } from 'utils';
-import { getComponentKey, normalizeContext } from 'utils/formUtil';
+import { evaluate, interpolate } from 'utils';
+import { getComponentKey } from 'utils/formUtil';
 
 export const shouldFetch = (context: FetchContext): boolean => {
   const { component, config } = context;
@@ -23,7 +23,7 @@ export const shouldFetch = (context: FetchContext): boolean => {
 };
 
 export const fetchProcess: ProcessorFn<FetchScope> = async (context: FetchContext) => {
-  const { component, row, evalContext, path, scope, config } = context;
+  const { component, row, path, scope, config } = context;
   let _fetch: FetchFn | null = null;
   try {
     _fetch = context.fetch ? context.fetch : fetch;
@@ -38,10 +38,7 @@ export const fetchProcess: ProcessorFn<FetchScope> = async (context: FetchContex
     return;
   }
   if (!scope.fetched) scope.fetched = {};
-  const evalContextValue = evalContext
-    ? evalContext(normalizeContext(context))
-    : normalizeContext(context);
-  const url = Evaluator.interpolateString(get(component, 'fetch.url', ''), evalContextValue);
+  const url = interpolate(get(component, 'fetch.url', ''), context);
   if (!url) {
     return;
   }
@@ -66,7 +63,7 @@ export const fetchProcess: ProcessorFn<FetchScope> = async (context: FetchContex
   request.headers['Accept'] = '*/*';
   request.headers['user-agent'] = 'Form.io DataSource Component';
   get(component, 'fetch.headers', []).map((header: any) => {
-    header.value = Evaluator.interpolateString(header.value, evalContextValue);
+    header.value = interpolate(header.value, context);
     if (header.value && header.key) {
       request.headers[header.key] = header.value;
     }
@@ -79,7 +76,7 @@ export const fetchProcess: ProcessorFn<FetchScope> = async (context: FetchContex
 
   const body = get(component, 'fetch.specifyBody', '');
   if (request.method === 'POST') {
-    request.body = JSON.stringify(Evaluator.evaluate(body, evalContextValue, 'body'));
+    request.body = JSON.stringify(evaluate(body, context, 'body'));
   }
 
   try {
@@ -93,10 +90,10 @@ export const fetchProcess: ProcessorFn<FetchScope> = async (context: FetchContex
       row,
       key,
       mapFunction
-        ? Evaluator.evaluate(
+        ? evaluate(
             mapFunction,
             {
-              ...evalContextValue,
+              ...context,
               ...{ responseData: result },
             },
             'value',

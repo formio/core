@@ -1,9 +1,8 @@
-import { JSONLogicEvaluator } from 'modules/jsonlogic';
+import { evaluate } from 'utils';
 import { FieldError } from 'error';
 import { RuleFn, RuleFnSync, ValidationContext } from 'types';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 import { isObject } from 'lodash';
-import { normalizeContext } from 'utils/formUtil';
 
 export const shouldValidate = (context: ValidationContext) => {
   const { component } = context;
@@ -18,24 +17,15 @@ export const validateJson: RuleFn = async (context: ValidationContext) => {
 };
 
 export const validateJsonSync: RuleFnSync = (context: ValidationContext) => {
-  const { component, value, evalContext } = context;
+  const { component, value } = context;
   if (!shouldValidate(context)) {
     return null;
   }
 
   const func = component?.validate?.json;
-  const evalContextValue = evalContext
-    ? evalContext(normalizeContext(context))
-    : normalizeContext(context);
-  evalContextValue.value = value || null;
-  const valid: true | string = JSONLogicEvaluator.evaluate(
-    func,
-    {
-      ...evalContextValue,
-      input: value,
-    },
-    'valid',
-  );
+  const valid: true | string = evaluate(func, context, 'valid', false, (context) => {
+    context.value = value || null;
+  });
   if (valid === null) {
     return null;
   }

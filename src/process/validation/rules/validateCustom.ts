@@ -1,7 +1,6 @@
 import { RuleFn, RuleFnSync, ProcessorInfo, ValidationContext } from 'types';
 import { FieldError, ProcessorError } from 'error';
-import { Evaluator } from 'utils';
-import { normalizeContext } from 'utils/formUtil';
+import { evaluate } from 'utils';
 
 export const validateCustom: RuleFn = async (context: ValidationContext) => {
   return validateCustomSync(context);
@@ -17,30 +16,26 @@ export const shouldValidate = (context: ValidationContext) => {
 };
 
 export const validateCustomSync: RuleFnSync = (context: ValidationContext) => {
-  const { component, data, row, value, index, instance, evalContext } = context;
+  const { component, index, instance, value, data, row, submission } = context;
   const customValidation = component.validate?.custom;
   try {
-    if (!shouldValidate(context)) {
+    if (!shouldValidate(context) || !customValidation) {
       return null;
     }
 
-    const ctx = instance?.evalContext
-      ? instance.evalContext()
-      : evalContext
-        ? evalContext(normalizeContext(context))
-        : normalizeContext(context);
-    const evalContextValue = {
-      ...ctx,
-      component,
-      data,
-      row,
-      rowIndex: typeof index === 'number' ? index : ctx.rowIndex,
-      instance,
-      valid: true,
-      input: value,
-    };
+    const validationContext: any = instance?.evalContext ? instance.evalContext() : context;
 
-    const isValid = Evaluator.evaluate(customValidation, evalContextValue, 'valid', true, {}, {});
+    // We have to augment some of the evalContext values here if the evalContext comes from the instance
+    const isValid = evaluate(customValidation, validationContext, 'valid', true, (context) => {
+      context.component = component;
+      context.data = data;
+      context.row = row;
+      context.rowIndex = typeof index === 'number' ? index : validationContext.rowIndex;
+      context.instance = instance;
+      context.valid = true;
+      context.input = value;
+      context.submission = submission;
+    });
 
     if (isValid === null || isValid === true) {
       return null;
