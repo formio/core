@@ -1,0 +1,165 @@
+{
+  "_id": "683586f0b87c1191f3b13714",
+  "title": "test def value",
+  "name": "testDefValue",
+  "path": "testdefvalue",
+  "type": "form",
+  "display": "form",
+  "owner": "637b2e6b48c1227e60b1f910",
+  "components": [
+    {
+      "label": "Text Field",
+      "applyMaskOn": "change",
+      "tableView": true,
+      "validateWhenHidden": false,
+      "key": "textField1",
+      "type": "textfield",
+      "input": true
+    },
+    {
+      "label": "Select",
+      "widget": "choicesjs",
+      "tableView": true,
+      "data": {
+        "values": [
+          {
+            "label": "one",
+            "value": "one"
+          },
+          {
+            "label": "two",
+            "value": "two"
+          }
+        ]
+      },
+      "validateWhenHidden": false,
+      "key": "select1",
+      "type": "select",
+      "input": true,
+      "defaultValue": "one"
+    },
+    {
+      "label": "Edit Grid",
+      "tableView": false,
+      "validateWhenHidden": false,
+      "rowDrafts": false,
+      "key": "editGrid1",
+      "displayAsTable": false,
+      "type": "editgrid",
+      "input": true,
+      "components": [
+        {
+          "label": "Checkbox",
+          "tableView": false,
+          "validateWhenHidden": false,
+          "key": "checkbox",
+          "type": "checkbox",
+          "input": true,
+          "defaultValue": true
+        }
+      ]
+    },
+    {
+      "label": "Text Field",
+      "applyMaskOn": "change",
+      "tableView": true,
+      "validateWhenHidden": false,
+      "key": "textField",
+      "type": "textfield",
+      "input": true,
+      "defaultValue": "test"
+    },
+    {
+      "label": "Number",
+      "applyMaskOn": "change",
+      "mask": false,
+      "tableView": false,
+      "delimiter": false,
+      "requireDecimal": false,
+      "inputFormat": "plain",
+      "truncateMultipleSpaces": false,
+      "validateWhenHidden": false,
+      "key": "number",
+      "type": "number",
+      "input": true,
+      "defaultValue": 1111
+    },
+    {
+      "label": "Text Area",
+      "applyMaskOn": "change",
+      "autoExpand": false,
+      "tableView": true,
+      "customDefaultValue": "value = 'testtt'",
+      "validateWhenHidden": false,
+      "key": "textArea",
+      "type": "textarea",
+      "input": true
+    },
+    {
+      "label": "Select",
+      "widget": "choicesjs",
+      "tableView": true,
+      "defaultValue": 2,
+      "data": {
+        "values": [
+          {
+            "label": "1",
+            "value": "1"
+          },
+          {
+            "label": "2",
+            "value": "2"
+          },
+          {
+            "label": "3",
+            "value": "3"
+          }
+        ]
+      },
+      "validateWhenHidden": false,
+      "key": "select",
+      "conditional": {
+        "show": true,
+        "when": "number",
+        "eq": "555"
+      },
+      "type": "select",
+      "input": true
+    },
+    {
+      "label": "Edit Grid",
+      "tableView": false,
+      "customDefaultValue": "value = [{textArea: 'test'},{textArea: 'test222'}]",
+      "validateWhenHidden": false,
+      "rowDrafts": false,
+      "key": "editGrid",
+      "displayAsTable": false,
+      "type": "editgrid",
+      "input": true,
+      "components": [
+        {
+          "label": "Text Area",
+          "applyMaskOn": "change",
+          "autoExpand": false,
+          "tableView": true,
+          "validateWhenHidden": false,
+          "key": "textArea",
+          "type": "textarea",
+          "input": true
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "label": "Submit",
+      "key": "submit",
+      "disableOnInvalid": true,
+      "input": true,
+      "tableView": false
+    }
+  ],
+  "project": "6811ed7a80ba48135398df84",
+  "created": "2025-05-27T09:33:36.903Z",
+  "modified": "2025-05-27T13:32:30.625Z",
+  "machineName": "lszihwhpgvtoncg:testDefValue"
+}
