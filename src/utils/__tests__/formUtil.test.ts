@@ -1777,6 +1777,39 @@ describe('formUtil', function () {
       const expected = 'any';
       expect(actual).to.equal(expected);
     });
+
+    it('Should return the correct model type for a custom component with input type', function () {
+      const component = {
+        type: 'customComponent',
+        input: true,
+        key: 'customComponent',
+        components: {
+          key: 'textFieldCustom',
+          type: 'textField',
+          input: true,
+        },
+      };
+      const actual = getModelType(component);
+      const expected = 'none';
+      expect(actual).to.equal(expected);
+    });
+
+    it('Should return the correct model type for a custom component with tree type', function () {
+      const component = {
+        type: 'customComponent',
+        input: false,
+        tree: true,
+        key: 'customComponent',
+        components: {
+          key: 'textFieldCustom',
+          type: 'textField',
+          input: true,
+        },
+      };
+      const actual = getModelType(component);
+      const expected = 'any';
+      expect(actual).to.equal(expected);
+    });
   });
 
   describe('findComponent', function () {
