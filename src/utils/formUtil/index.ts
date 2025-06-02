@@ -187,7 +187,11 @@ export function getModelType(component: Component): keyof typeof MODEL_TYPES_OF_
   }
 
   // Otherwise check for components that assert no value.
-  if (modelType === 'any' && component.input === false) {
+  if (
+    modelType === 'any' &&
+    (component.input === false || (component as any).components) &&
+    !(component as any).tree
+  ) {
     modelType = 'none';
   }
 
