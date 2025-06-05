@@ -1,3 +1,9 @@
+## 2.5.0-rc.4
+
+### Changed
+
+- FIO-10215: add options, scope to normalized context
+
 ## 2.5.0-rc.3
 
 ### Changed
