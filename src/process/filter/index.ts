@@ -6,7 +6,7 @@ export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterC
   const { scope, component, path } = context;
   const { value } = context;
   if (!scope.filter) scope.filter = {};
-  if (value !== undefined) {
+  if (value !== undefined || component.type === 'datasource') {
     const modelType = getModelType(component);
     switch (modelType) {
       case 'dataObject':
