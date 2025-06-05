@@ -14,6 +14,7 @@ import {
   skipValidForConditionallyHiddenComp,
   skipValidForLogicallyHiddenComp,
   skipValidWithHiddenParentComp,
+  formWithDefaultValues,
 } from './fixtures';
 import _ from 'lodash';
 
@@ -5512,6 +5513,80 @@ describe('Process Tests', function () {
     context.processors = ProcessTargets.evaluator;
     await process(context);
     assert.deepEqual(context.data, submission.data);
+  });
+
+  it('Should set default value for components that do not have any value in submission object', async function () {
+    const submission = {
+      data: {
+        submit: true,
+      },
+      state: 'submitted',
+    };
+
+    const context = {
+      form: formWithDefaultValues,
+      submission,
+      data: submission.data,
+      components: formWithDefaultValues.components,
+      processors: ProcessTargets.submission,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    await process(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    await process(context);
+    assert.deepEqual(context.data, {
+      submit: true,
+      select1: 'one',
+      textField: 'test',
+      textArea: 'testtt',
+      editGrid: [
+        {
+          textArea: 'test',
+        },
+        {
+          textArea: 'test222',
+        },
+      ],
+    });
+  });
+
+  it('Should not set default value for components that have empty value/own value in submission object', async function () {
+    const submission = {
+      data: {
+        textField: '',
+        textArea: 'own value',
+        editGrid: [],
+        submit: true,
+      },
+      state: 'submitted',
+    };
+
+    const context = {
+      form: formWithDefaultValues,
+      submission,
+      data: submission.data,
+      components: formWithDefaultValues.components,
+      processors: ProcessTargets.submission,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    await process(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    await process(context);
+    assert.deepEqual(context.data, {
+      textField: '',
+      textArea: 'own value',
+      editGrid: [],
+      submit: true,
+      select1: 'one',
+    });
   });
 
   describe('Required component validation in nested form in DataGrid/EditGrid', function () {
