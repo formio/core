@@ -5,11 +5,13 @@ import skipValidForLogicallyHiddenComp from './skipValidForLogicallyHiddenComp.j
 import skipValidWithHiddenParentComp from './skipValidWithHiddenParentComp.json';
 import addressComponentWithOtherCondComponents from './addressComponentWithOtherCondComponents.json';
 import addressComponentWithOtherCondComponents2 from './addressComponentWithOtherCondComponents2.json';
+import conditionalWithSelectBoxes from './conditionalWithSelectBoxes.json';
 import forDataGridRequired from './forDataGridRequired.json';
 import data1a from './data1a.json';
 import form1 from './form1.json';
 import subs from './subs.json';
 import requiredFieldInsideEditGrid from './requiredFieldInsideConditionalEditGrid.json';
+import formWithDefaultValues from './componentsWithDefaultValues.json';
 
 export {
   addressComponentWithOtherCondComponents,
@@ -20,8 +22,10 @@ export {
   skipValidForConditionallyHiddenComp,
   skipValidWithHiddenParentComp,
   forDataGridRequired,
+  conditionalWithSelectBoxes,
   data1a,
   form1,
   subs,
   requiredFieldInsideEditGrid,
+  formWithDefaultValues,
 };

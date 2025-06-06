@@ -2,7 +2,7 @@ import fs from 'fs';
 import get from 'lodash/get';
 import { expect } from 'chai';
 
-import { Component } from 'types';
+import { BaseComponent, Component } from 'types';
 import {
   getContextualRowData,
   eachComponentDataAsync,
@@ -99,6 +99,140 @@ describe('formUtil', function () {
       expect(component, 'Component should be found');
       expect(component!.key).to.equal('myPanel');
       expect(component!.type).to.equal('panel');
+    });
+
+    it('Should return correct component if the form has container with tabs inside', function () {
+      const comps = [
+        {
+          label: 'Text Field',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textField4',
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Container',
+          tableView: false,
+          validateWhenHidden: false,
+          key: 'container',
+          type: 'container',
+          input: true,
+          components: [
+            {
+              collapsible: false,
+              key: 'panel',
+              type: 'panel',
+              label: 'Panel',
+              input: false,
+              tableView: false,
+              components: [
+                {
+                  label: 'Text Field',
+                  applyMaskOn: 'change',
+                  tableView: true,
+                  validateWhenHidden: false,
+                  key: 'textField',
+                  type: 'textfield',
+                  input: true,
+                },
+              ],
+            },
+            {
+              collapsible: false,
+              key: 'panel1',
+              type: 'panel',
+              label: 'Panel',
+              input: false,
+              tableView: false,
+              components: [
+                {
+                  label: 'Text Field',
+                  applyMaskOn: 'change',
+                  tableView: true,
+                  validateWhenHidden: false,
+                  key: 'textField1',
+                  type: 'textfield',
+                  input: true,
+                },
+              ],
+            },
+            {
+              label: 'Text Field',
+              applyMaskOn: 'change',
+              tableView: true,
+              validateWhenHidden: false,
+              key: 'textField4',
+              type: 'textfield',
+              input: true,
+            },
+            {
+              label: 'Tabs',
+              key: 'tabs',
+              type: 'tabs',
+              input: false,
+              tableView: false,
+              components: [
+                {
+                  label: 'Tab 1',
+                  key: 'tab1',
+                  components: [
+                    {
+                      label: 'Text Field',
+                      applyMaskOn: 'change',
+                      tableView: true,
+                      validateWhenHidden: false,
+                      key: 'textField2',
+                      type: 'textfield',
+                      input: true,
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              label: 'Tabs',
+              components: [
+                {
+                  label: 'Tab 1',
+                  key: 'tab2',
+                  components: [
+                    {
+                      label: 'Text Field',
+                      applyMaskOn: 'change',
+                      tableView: true,
+                      validateWhenHidden: false,
+                      key: 'textField3',
+                      type: 'textfield',
+                      input: true,
+                    },
+                  ],
+                },
+              ],
+              key: 'tabs1',
+              type: 'tabs',
+              input: false,
+              tableView: false,
+            },
+          ],
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ];
+      const component = getComponent(comps, 'container');
+      expect((component as BaseComponent).type).to.equal('container');
+      expect((component as BaseComponent).key).to.equal('container');
+      const component2 = getComponent(comps, 'tabs1');
+      expect((component2 as BaseComponent).key).to.equal('tabs1');
+      const component3 = getComponent(comps, 'textField2');
+      expect((component3 as BaseComponent).key).to.equal('textField2');
     });
   });
 
