@@ -28,6 +28,7 @@ export const eachComponentDataAsync = async (
   local: boolean = false,
   parent?: Component,
   parentPaths?: ComponentPaths,
+  noScopeReset?: boolean,
 ) => {
   if (!components) {
     return;
@@ -53,7 +54,9 @@ export const eachComponentDataAsync = async (
           compParent,
         )) === true
       ) {
-        resetComponentScope(component);
+        if (!noScopeReset) {
+          resetComponentScope(component);
+        }
         return true;
       }
       if (isComponentNestedDataType(component)) {
@@ -75,6 +78,7 @@ export const eachComponentDataAsync = async (
                 local,
                 component,
                 compPaths,
+                noScopeReset,
               );
             }
           } else if (includeAll) {
@@ -86,13 +90,18 @@ export const eachComponentDataAsync = async (
               local,
               component,
               compPaths,
+              noScopeReset,
             );
           }
-          resetComponentScope(component);
+          if (!noScopeReset) {
+            resetComponentScope(component);
+          }
           return true;
         } else {
           if (!includeAll && !shouldProcessComponent(component, row, value)) {
-            resetComponentScope(component);
+            if (!noScopeReset) {
+              resetComponentScope(component);
+            }
             return true;
           }
           await eachComponentDataAsync(
@@ -103,9 +112,12 @@ export const eachComponentDataAsync = async (
             local,
             component,
             compPaths,
+            noScopeReset,
           );
         }
-        resetComponentScope(component);
+        if (!noScopeReset) {
+          resetComponentScope(component);
+        }
         return true;
       } else if (!component.type || getModelType(component) === 'none') {
         const info = componentInfo(component);
@@ -120,6 +132,7 @@ export const eachComponentDataAsync = async (
               local,
               component,
               compPaths,
+              noScopeReset,
             );
           }
         } else if (info.hasRows) {
@@ -135,6 +148,7 @@ export const eachComponentDataAsync = async (
                   local,
                   component,
                   compPaths,
+                  noScopeReset,
                 );
               }
             }
@@ -148,12 +162,17 @@ export const eachComponentDataAsync = async (
             local,
             component,
             compPaths,
+            noScopeReset,
           );
         }
-        resetComponentScope(component);
+        if (!noScopeReset) {
+          resetComponentScope(component);
+        }
         return true;
       }
-      resetComponentScope(component);
+      if (!noScopeReset) {
+        resetComponentScope(component);
+      }
       return false;
     },
     true,
