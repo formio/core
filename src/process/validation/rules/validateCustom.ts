@@ -16,7 +16,7 @@ export const shouldValidate = (context: ValidationContext) => {
 };
 
 export const validateCustomSync: RuleFnSync = (context: ValidationContext) => {
-  const { component, index, instance, value, data, row, submission } = context;
+  const { component, index, instance, value, data, row } = context;
   const customValidation = component.validate?.custom;
   try {
     if (!shouldValidate(context) || !customValidation) {
@@ -34,7 +34,6 @@ export const validateCustomSync: RuleFnSync = (context: ValidationContext) => {
       context.instance = instance;
       context.valid = true;
       context.input = value;
-      context.submission = submission;
     });
 
     if (isValid === null || isValid === true) {
