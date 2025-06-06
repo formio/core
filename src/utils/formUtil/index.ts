@@ -507,6 +507,10 @@ export function getComponentFromPath(
         componentMatches(component, paths || {}, path, dataIndex, matches);
       },
       includeAll,
+      false,
+      undefined,
+      undefined,
+      true,
     );
   } else {
     eachComponent(
@@ -1353,7 +1357,19 @@ export function getComponentErrorField(component: Component, context: Validation
  * @returns
  */
 export function normalizeContext(context: any): any {
-  const { data, paths, local, path, form, submission, row, component, instance, value } = context;
+  const {
+    data,
+    paths,
+    local,
+    path,
+    form,
+    submission,
+    row,
+    component,
+    instance,
+    value,
+    options = {},
+  } = context;
   return {
     path: paths ? paths.localDataPath : path,
     data: paths ? getComponentLocalData(paths, data, local) : data,
@@ -1364,6 +1380,7 @@ export function normalizeContext(context: any): any {
     instance,
     value,
     input: value,
+    options,
   };
 }
 

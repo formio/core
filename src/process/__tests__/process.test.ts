@@ -13,6 +13,7 @@ import {
   skipValidForConditionallyHiddenComp,
   skipValidForLogicallyHiddenComp,
   skipValidWithHiddenParentComp,
+  requiredFieldInsideEditGrid,
 } from './fixtures';
 import _ from 'lodash';
 
@@ -6521,6 +6522,28 @@ describe('Process Tests', function () {
       context.processors = ProcessTargets.evaluator;
       processSync(context);
       assert.equal(!!context.data.textField, false);
+    });
+
+    it('Should not show validation errors for required component inside conditionally hidden editGrid', async function () {
+      const components = requiredFieldInsideEditGrid;
+      const submission = {
+        data: {
+          selectGrids: '',
+          submit: true,
+        },
+      };
+      const context = {
+        submission,
+        data: submission.data,
+        components,
+        processors: ProcessTargets.submission,
+        scope: {} as { errors: Record<string, unknown>[] },
+      };
+      processSync(context);
+      submission.data = context.data;
+      context.processors = ProcessTargets.evaluator;
+      processSync(context);
+      expect(context.scope.errors.length).to.equal(0);
     });
   });
 });
