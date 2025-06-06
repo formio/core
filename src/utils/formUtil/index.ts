@@ -1353,7 +1353,8 @@ export function getComponentErrorField(component: Component, context: Validation
  * @returns
  */
 export function normalizeContext(context: any): any {
-  const { data, paths, local, path, form, submission, row, component, instance, value } = context;
+  const { data, paths, local, path, form, submission, row, component, instance, value, config } =
+    context;
   return {
     path: paths ? paths.localDataPath : path,
     data: paths ? getComponentLocalData(paths, data, local) : data,
@@ -1364,6 +1365,7 @@ export function normalizeContext(context: any): any {
     instance,
     value,
     input: value,
+    config,
   };
 }
 
