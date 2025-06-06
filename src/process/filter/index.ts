@@ -1,7 +1,14 @@
-import { FilterContext, FilterScope, ProcessorFn, ProcessorFnSync, ProcessorInfo } from 'types';
-import { set } from 'lodash';
+import {
+  DefaultValueScope,
+  FilterContext,
+  FilterScope,
+  ProcessorFn,
+  ProcessorFnSync,
+  ProcessorInfo,
+} from 'types';
+import { set, has, each } from 'lodash';
 import { get, isObject } from 'lodash';
-import { getModelType } from 'utils/formUtil';
+import { getComponent, getModelType } from 'utils/formUtil';
 export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterContext) => {
   const { scope, component, path } = context;
   const { value } = context;
@@ -52,7 +59,7 @@ export const filterProcess: ProcessorFn<FilterScope> = async (context: FilterCon
 };
 
 export const filterPostProcess: ProcessorFnSync<FilterScope> = (context: FilterContext) => {
-  const { scope, submission } = context;
+  const { scope, submission, form } = context;
   const filtered = {};
   for (const path in scope.filter) {
     if (scope.filter[path].include) {
@@ -67,6 +74,20 @@ export const filterPostProcess: ProcessorFnSync<FilterScope> = (context: FilterC
       set(filtered, path, value);
     }
   }
+
+  each((scope as DefaultValueScope).defaultValues || [], ({ path, value }) => {
+    if (!has(filtered, path)) {
+      const component = getComponent(form?.components || [], path, true);
+      // do not set default value for number and currency components as we cannot define for sure if the empty value is submitted or not
+      const noDefaultValue = component && getModelType(component) === 'number';
+      if (!noDefaultValue) {
+        const normalizedDefaultValue = has(submission?.data, path)
+          ? get(submission?.data, path)
+          : value;
+        set(filtered, path, normalizedDefaultValue);
+      }
+    }
+  });
   context.data = filtered;
 };
 
