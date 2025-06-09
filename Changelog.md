@@ -1,3 +1,9 @@
+## 2.5.0-rc.5
+
+### Changed
+
+- FIO-10263: rely on instance level evaluation context to provide us with submission variable
+
 ## 2.5.0-rc.4
 
 ### Changed
