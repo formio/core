@@ -54,6 +54,7 @@ export const emptyValueIsArray = (component: Component) => {
     case 'file':
       return true;
     case 'select':
+    case 'datetime':
     case 'textfield':
       return !!component.multiple;
     case 'tags':
