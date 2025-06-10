@@ -6373,6 +6373,7 @@ describe('Process Tests', function () {
           ],
         },
       ];
+
       const submission = {
         data: {
           selector: false,
@@ -6381,6 +6382,7 @@ describe('Process Tests', function () {
           },
         },
       };
+
       const context = {
         submission,
         data: submission.data,
