@@ -511,6 +511,10 @@ export function getComponentFromPath(
         componentMatches(component, paths || {}, path, dataIndex, matches);
       },
       includeAll,
+      false,
+      undefined,
+      undefined,
+      true,
     );
   } else {
     eachComponent(

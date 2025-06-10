@@ -10,6 +10,7 @@ import forDataGridRequired from './forDataGridRequired.json';
 import data1a from './data1a.json';
 import form1 from './form1.json';
 import subs from './subs.json';
+import requiredFieldInsideEditGrid from './requiredFieldInsideConditionalEditGrid.json';
 import formWithDefaultValues from './componentsWithDefaultValues.json';
 
 export {
@@ -25,5 +26,6 @@ export {
   data1a,
   form1,
   subs,
+  requiredFieldInsideEditGrid,
   formWithDefaultValues,
 };
