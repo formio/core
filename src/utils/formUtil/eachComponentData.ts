@@ -36,6 +36,7 @@ export const eachComponentData = (
   local: boolean = false,
   parent?: Component,
   parentPaths?: ComponentPaths,
+  noScopeReset?: boolean,
 ) => {
   if (!components) {
     return;
@@ -56,7 +57,9 @@ export const eachComponentData = (
           compPaths,
         ) === true
       ) {
-        resetComponentScope(component);
+        if (!noScopeReset) {
+          resetComponentScope(component);
+        }
         return true;
       }
       if (isComponentNestedDataType(component)) {
@@ -81,6 +84,7 @@ export const eachComponentData = (
                 local,
                 component,
                 compPaths,
+                noScopeReset,
               );
             }
           } else if (includeAll || isUndefined(value)) {
@@ -92,13 +96,18 @@ export const eachComponentData = (
               local,
               component,
               compPaths,
+              noScopeReset,
             );
           }
-          resetComponentScope(component);
+          if (!noScopeReset) {
+            resetComponentScope(component);
+          }
           return true;
         } else {
           if (!includeAll && !shouldProcessComponent(component, row, value)) {
-            resetComponentScope(component);
+            if (!noScopeReset) {
+              resetComponentScope(component);
+            }
             return true;
           }
           eachComponentData(
@@ -109,15 +118,27 @@ export const eachComponentData = (
             local,
             component,
             compPaths,
+            noScopeReset,
           );
         }
-        resetComponentScope(component);
+        if (!noScopeReset) {
+          resetComponentScope(component);
+        }
         return true;
       } else if (!component.type || getModelType(component) === 'none') {
         const info = componentInfo(component);
         if (info.hasColumns) {
           (component as HasColumns).columns.forEach((column: any) =>
-            eachComponentData(column.components, data, fn, includeAll, local, component, compPaths),
+            eachComponentData(
+              column.components,
+              data,
+              fn,
+              includeAll,
+              local,
+              component,
+              compPaths,
+              noScopeReset,
+            ),
           );
         } else if (info.hasRows) {
           (component as HasRows).rows.forEach((row: any) => {
@@ -131,6 +152,7 @@ export const eachComponentData = (
                   local,
                   component,
                   compPaths,
+                  noScopeReset,
                 ),
               );
             }
@@ -144,12 +166,17 @@ export const eachComponentData = (
             local,
             component,
             compPaths,
+            noScopeReset,
           );
         }
-        resetComponentScope(component);
+        if (!noScopeReset) {
+          resetComponentScope(component);
+        }
         return true;
       }
-      resetComponentScope(component);
+      if (!noScopeReset) {
+        resetComponentScope(component);
+      }
       return false;
     },
     true,
