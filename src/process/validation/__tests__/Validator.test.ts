@@ -38,4 +38,60 @@ describe('Validator', function () {
     }
     expect(errors).to.have.length(7);
   });
+
+  it('Validator should show 2 errors for invalid datetime value', async function () {
+    const data = {
+      dateTime: [],
+      submit: false,
+    };
+    const component = {
+      label: 'Date / Time',
+      tableView: false,
+      datePicker: {
+        disableWeekends: false,
+        disableWeekdays: false,
+      },
+      enableMinDateInput: false,
+      enableMaxDateInput: false,
+      validateWhenHidden: false,
+      key: 'dateTime',
+      type: 'datetime',
+      input: true,
+      widget: {
+        type: 'calendar',
+        displayInTimezone: 'viewer',
+        locale: 'en',
+        useLocaleSettings: false,
+        allowInput: true,
+        mode: 'single',
+        enableTime: true,
+        noCalendar: false,
+        format: 'yyyy-MM-dd hh:mm a',
+        hourIncrement: 1,
+        minuteIncrement: 1,
+        time_24hr: false,
+        minDate: null,
+        disableWeekends: false,
+        disableWeekdays: false,
+        maxDate: null,
+      },
+    };
+
+    const path = component.key;
+    const scope: ValidationScope = { errors: [] };
+    await validateProcess({
+      component,
+      scope,
+      data,
+      row: data,
+      path,
+      value: get(data, component.key),
+      processor: ProcessorType.Validate,
+      rules,
+    });
+
+    expect(scope.errors).to.have.length(2);
+    expect(scope.errors[0].errorKeyOrMessage).to.equal('invalidDate');
+    expect(scope.errors[1].errorKeyOrMessage).to.equal('nonarray');
+  });
 });
