@@ -5555,6 +5555,105 @@ describe('Process Tests', function () {
     });
   });
 
+  it('Should not set default values (when it is falsy) for components that do not have any value in submission object', async function () {
+    const submission = {
+      data: {
+        submit: true,
+      },
+      state: 'submitted',
+    };
+
+    const components = [
+      {
+        label: 'Checkbox',
+        tableView: false,
+        key: 'checkbox',
+        defaultValue: false,
+        type: 'checkbox',
+        input: true,
+      },
+      {
+        label: 'Text Field',
+        applyMaskOn: 'change',
+        tableView: true,
+        defaultValue: '',
+        key: 'textField',
+        type: 'textfield',
+        input: true,
+      },
+      {
+        label: 'Data Grid',
+        reorder: false,
+        addAnotherPosition: 'bottom',
+        layoutFixed: false,
+        enableRowGroups: false,
+        defaultValue: [],
+        initEmpty: false,
+        tableView: false,
+        key: 'dataGrid',
+        type: 'datagrid',
+        input: true,
+        components: [
+          {
+            label: 'Number',
+            applyMaskOn: 'change',
+            mask: false,
+            tableView: false,
+            delimiter: false,
+            requireDecimal: false,
+            inputFormat: 'plain',
+            truncateMultipleSpaces: false,
+            key: 'number',
+            type: 'number',
+            input: true,
+          },
+        ],
+      },
+      {
+        label: 'Number',
+        applyMaskOn: 'change',
+        mask: false,
+        tableView: false,
+        delimiter: false,
+        defaultValue: 0,
+        requireDecimal: false,
+        inputFormat: 'plain',
+        truncateMultipleSpaces: false,
+        key: 'number',
+        type: 'number',
+        input: true,
+      },
+      {
+        type: 'button',
+        label: 'Submit',
+        key: 'submit',
+        disableOnInvalid: true,
+        input: true,
+        tableView: false,
+      },
+    ];
+
+    const context = {
+      form: { components, display: 'form' },
+      submission,
+      data: submission.data,
+      components: components,
+      processors: ProcessTargets.submission,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    await process(context);
+    submission.data = context.data;
+    context.processors = ProcessTargets.evaluator;
+    await process(context);
+    assert.deepEqual(context.data, {
+      submit: true,
+      dataGrid: [],
+    });
+  });
+
   it('Should not set default value for components that have empty value/own value in submission object', async function () {
     const submission = {
       data: {
