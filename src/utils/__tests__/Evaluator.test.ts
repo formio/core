@@ -1,6 +1,7 @@
 import { Evaluator } from '../Evaluator';
 import { assert } from 'chai';
 import { noop } from 'lodash';
+import { normalizeContext } from 'utils/formUtil';
 
 describe('Evaluator', function () {
   it('Should be able to interpolate a string with Evaluator', function () {
@@ -227,6 +228,21 @@ describe('Evaluator', function () {
         getUTCDate: (date: string) => new Date(date).toUTCString(),
       }),
       '<span>Sun, 02 May 2021 21:00:00 GMT</span>',
+    );
+  });
+
+  it('Should interpolate a string with public config', function () {
+    const noramlizedContext = normalizeContext({
+      config: {
+        appUrl: 'http://localhost:3000/idwqwhclwioyqbw',
+      },
+    });
+    assert.equal(
+      Evaluator.interpolate(
+        `<span>{{ config.appUrl }}/product/submission</span>`,
+        noramlizedContext,
+      ),
+      '<span>http://localhost:3000/idwqwhclwioyqbw/product/submission</span>',
     );
   });
 

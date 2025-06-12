@@ -1375,6 +1375,7 @@ export function normalizeContext(context: any): any {
     value,
     options,
     scope,
+    config,
   } = context;
   return {
     path: paths ? paths.localDataPath : path,
@@ -1387,6 +1388,7 @@ export function normalizeContext(context: any): any {
     instance,
     value,
     input: value,
+    config,
     options,
   };
 }
