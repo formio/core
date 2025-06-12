@@ -76,10 +76,6 @@ export const filterPostProcess: ProcessorFnSync<FilterScope> = (context: FilterC
   }
 
   each((scope as DefaultValueScope).defaultValues || [], ({ path, value }) => {
-    if (!value) {
-      return;
-    }
-
     if (!has(filtered, path)) {
       const component = getComponent(form?.components || [], path, true);
       // do not set default value for number and currency components as we cannot define for sure if the empty value is submitted or not
