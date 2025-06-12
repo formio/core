@@ -86,7 +86,9 @@ export const serverDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
     return;
   }
   let defaultValue = null;
-  if (component.defaultValue !== undefined && component.defaultValue !== null) {
+
+  // do not set false default values on server to provide compatibility with 8.x
+  if (component.defaultValue) {
     defaultValue = component.defaultValue;
     if (component.multiple && !Array.isArray(defaultValue)) {
       defaultValue = defaultValue ? [defaultValue] : [];
@@ -96,7 +98,7 @@ export const serverDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
       value: defaultValue,
     });
   }
-  if (defaultValue !== null && defaultValue !== undefined) {
+  if (defaultValue) {
     set(data, path, defaultValue);
   }
 };
