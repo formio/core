@@ -5,4 +5,7 @@ export type ProcessorFn<ProcessorScope> = (
 export type ProcessorFnSync<ProcessorScope> = (context: ProcessorContext<ProcessorScope>) => void;
 export type ProcessorPostFn<ProcessorScope> = (
   context: ProcessorContext<ProcessorScope>,
+) => Promise<boolean | undefined>;
+export type ProcessorPostFnSync<ProcessorScope> = (
+  context: ProcessorContext<ProcessorScope>,
 ) => boolean | undefined;

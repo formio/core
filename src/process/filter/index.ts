@@ -5,6 +5,7 @@ import {
   ProcessorFnSync,
   ProcessorInfo,
   ProcessorPostFn,
+  ProcessorPostFnSync,
 } from 'types';
 import { has, set } from 'lodash';
 import { get } from 'lodash';
@@ -21,7 +22,7 @@ export const filterProcess: ProcessorFn<FilterScope> = async (context: FilterCon
   return filterProcessSync(context);
 };
 
-export const filterPostProcess: ProcessorPostFn<FilterScope> = (
+export const filterPostProcessSync: ProcessorPostFnSync<FilterScope> = (
   context: FilterContext,
 ): boolean | undefined => {
   const { scope, path, data, component, value } = context;
@@ -60,10 +61,15 @@ export const filterPostProcess: ProcessorPostFn<FilterScope> = (
   }
 };
 
+export const filterPostProcess: ProcessorPostFn<FilterScope> = async (context: FilterContext) => {
+  return filterPostProcessSync(context);
+};
+
 export const filterProcessInfo: ProcessorInfo<FilterContext, void> = {
   name: 'filter',
   process: filterProcess,
   processSync: filterProcessSync,
   postProcess: filterPostProcess,
+  postProcessSync: filterPostProcessSync,
   shouldProcess: () => true,
 };

@@ -1,6 +1,6 @@
 import { FilterScope, ProcessContext, ProcessTarget, ProcessorInfo, ProcessorScope } from 'types';
 import { eachComponentData, eachComponentDataAsync } from 'utils/formUtil';
-import { postProcessOne, processOne, processOneSync } from './processOne';
+import { postProcessOne, postProcessOneSync, processOne, processOneSync } from './processOne';
 import {
   defaultValueProcessInfo,
   serverDefaultValueProcessInfo,
@@ -62,7 +62,7 @@ export async function process<ProcessScope>(
     parentPaths,
     false,
     async (component, compData, row, path, components, index, parent, paths) => {
-      postProcessOne<ProcessScope>({
+      await postProcessOne<ProcessScope>({
         ...context,
         data: compData,
         component,
@@ -118,7 +118,7 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
     parentPaths,
     false,
     (component, compData, row, path, components, index, parent, paths) => {
-      postProcessOne<ProcessScope>({
+      postProcessOneSync<ProcessScope>({
         ...context,
         data: compData,
         component,
