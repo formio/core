@@ -1,11 +1,6 @@
+import { DataObject } from 'types/DataObject';
 import { ProcessorScope } from '..';
 export type FilterScope = {
-  filter: Record<
-    string,
-    {
-      compModelType: string;
-      include: boolean;
-      value?: any;
-    }
-  >;
+  filtered?: DataObject;
+  filter?: Record<string, boolean>;
 } & ProcessorScope;

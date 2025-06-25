@@ -29,6 +29,7 @@ export const eachComponentDataAsync = async (
   parent?: Component,
   parentPaths?: ComponentPaths,
   noScopeReset?: boolean,
+  afterFn?: EachComponentDataAsyncCallback,
 ) => {
   if (!components) {
     return;
@@ -43,6 +44,20 @@ export const eachComponentDataAsync = async (
       compPaths: ComponentPaths | undefined,
     ) => {
       const row = getContextualRowData(component, data, compPaths, local);
+      const callAfterFn = async () => {
+        if (afterFn) {
+          await afterFn(
+            component,
+            data,
+            row,
+            (component.modelType === 'none' ? compPaths?.fullPath : compPaths?.dataPath) || '',
+            componentComponents,
+            compPaths?.dataIndex,
+            compParent,
+            compPaths,
+          );
+        }
+      };
       if (
         (await fn(
           component,
@@ -52,8 +67,10 @@ export const eachComponentDataAsync = async (
           componentComponents,
           compPaths?.dataIndex,
           compParent,
+          compPaths,
         )) === true
       ) {
+        await callAfterFn();
         if (!noScopeReset) {
           resetComponentScope(component);
         }
@@ -67,6 +84,9 @@ export const eachComponentDataAsync = async (
         ) {
           if (Array.isArray(value) && value.length) {
             for (let i = 0; i < value.length; i++) {
+              if (!value[i]) {
+                continue;
+              }
               if (compPaths) {
                 compPaths.dataIndex = i;
               }
@@ -79,7 +99,11 @@ export const eachComponentDataAsync = async (
                 component,
                 compPaths,
                 noScopeReset,
+                afterFn,
               );
+            }
+            if (compPaths) {
+              compPaths.dataIndex = undefined;
             }
           } else if (includeAll) {
             await eachComponentDataAsync(
@@ -91,14 +115,18 @@ export const eachComponentDataAsync = async (
               component,
               compPaths,
               noScopeReset,
+              afterFn,
             );
           }
+          await callAfterFn();
           if (!noScopeReset) {
             resetComponentScope(component);
           }
           return true;
         } else {
-          if (!includeAll && !shouldProcessComponent(component, row, value)) {
+          const shouldProcess = shouldProcessComponent(component, value, compPaths);
+          if (!includeAll && !shouldProcess) {
+            await callAfterFn();
             if (!noScopeReset) {
               resetComponentScope(component);
             }
@@ -113,8 +141,10 @@ export const eachComponentDataAsync = async (
             component,
             compPaths,
             noScopeReset,
+            afterFn,
           );
         }
+        await callAfterFn();
         if (!noScopeReset) {
           resetComponentScope(component);
         }
@@ -133,6 +163,7 @@ export const eachComponentDataAsync = async (
               component,
               compPaths,
               noScopeReset,
+              afterFn,
             );
           }
         } else if (info.hasRows) {
@@ -149,6 +180,7 @@ export const eachComponentDataAsync = async (
                   component,
                   compPaths,
                   noScopeReset,
+                  afterFn,
                 );
               }
             }
@@ -163,13 +195,16 @@ export const eachComponentDataAsync = async (
             component,
             compPaths,
             noScopeReset,
+            afterFn,
           );
         }
+        await callAfterFn();
         if (!noScopeReset) {
           resetComponentScope(component);
         }
         return true;
       }
+      await callAfterFn();
       if (!noScopeReset) {
         resetComponentScope(component);
       }
