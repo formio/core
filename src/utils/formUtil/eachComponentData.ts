@@ -37,6 +37,7 @@ export const eachComponentData = (
   parent?: Component,
   parentPaths?: ComponentPaths,
   noScopeReset?: boolean,
+  afterFn?: EachComponentDataCallback,
 ) => {
   if (!components) {
     return;
@@ -45,6 +46,20 @@ export const eachComponentData = (
     components,
     (component, compPath, componentComponents, compParent, compPaths) => {
       const row = getContextualRowData(component, data, compPaths, local);
+      const callAfterFn = () => {
+        if (afterFn) {
+          return afterFn(
+            component,
+            data,
+            row,
+            (component.modelType === 'none' ? compPaths?.fullPath : compPaths?.dataPath) || '',
+            componentComponents,
+            compPaths?.dataIndex,
+            compParent,
+            compPaths,
+          );
+        }
+      };
       if (
         fn(
           component,
@@ -57,6 +72,7 @@ export const eachComponentData = (
           compPaths,
         ) === true
       ) {
+        callAfterFn();
         if (!noScopeReset) {
           resetComponentScope(component);
         }
@@ -73,6 +89,9 @@ export const eachComponentData = (
         ) {
           if (Array.isArray(value) && value.length) {
             for (let i = 0; i < value.length; i++) {
+              if (!value[i]) {
+                continue;
+              }
               if (compPaths) {
                 compPaths.dataIndex = i;
               }
@@ -85,7 +104,11 @@ export const eachComponentData = (
                 component,
                 compPaths,
                 noScopeReset,
+                afterFn,
               );
+            }
+            if (compPaths) {
+              compPaths.dataIndex = undefined;
             }
           } else if (includeAll || isUndefined(value)) {
             eachComponentData(
@@ -97,14 +120,18 @@ export const eachComponentData = (
               component,
               compPaths,
               noScopeReset,
+              afterFn,
             );
           }
+          callAfterFn();
           if (!noScopeReset) {
             resetComponentScope(component);
           }
           return true;
         } else {
-          if (!includeAll && !shouldProcessComponent(component, row, value)) {
+          const shouldProcess = shouldProcessComponent(component, value, compPaths);
+          if (!includeAll && !shouldProcess) {
+            callAfterFn();
             if (!noScopeReset) {
               resetComponentScope(component);
             }
@@ -119,8 +146,10 @@ export const eachComponentData = (
             component,
             compPaths,
             noScopeReset,
+            afterFn,
           );
         }
+        callAfterFn();
         if (!noScopeReset) {
           resetComponentScope(component);
         }
@@ -138,6 +167,7 @@ export const eachComponentData = (
               component,
               compPaths,
               noScopeReset,
+              afterFn,
             ),
           );
         } else if (info.hasRows) {
@@ -153,6 +183,7 @@ export const eachComponentData = (
                   component,
                   compPaths,
                   noScopeReset,
+                  afterFn,
                 ),
               );
             }
@@ -167,13 +198,16 @@ export const eachComponentData = (
             component,
             compPaths,
             noScopeReset,
+            afterFn,
           );
         }
+        callAfterFn();
         if (!noScopeReset) {
           resetComponentScope(component);
         }
         return true;
       }
+      callAfterFn();
       if (!noScopeReset) {
         resetComponentScope(component);
       }

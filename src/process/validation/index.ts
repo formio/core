@@ -9,6 +9,7 @@ import {
   ValidationScope,
   SkipValidationFn,
   ConditionsContext,
+  ProcessorPostFn,
 } from 'types';
 import { evaluationRules, rules, serverRules } from './rules';
 import find from 'lodash/find';
@@ -376,6 +377,13 @@ export const validateAllProcessSync: ProcessorFnSync<ValidationScope> = (
   return validateProcessSync(context);
 };
 
+export const validatePostProcessSync: ProcessorPostFn<ValidationScope> = (
+  context: ValidationContext,
+): boolean | undefined => {
+  validateAllProcessSync(context);
+  return;
+};
+
 export const validateCustomProcessInfo: ProcessorInfo<ValidationContext, void> = {
   name: 'validateCustom',
   process: validateCustomProcess,
@@ -394,6 +402,12 @@ export const validateProcessInfo: ProcessorInfo<ValidationContext, void> = {
   name: 'validate',
   process: validateAllProcess,
   processSync: validateAllProcessSync,
+  shouldProcess: shouldValidateAll,
+};
+
+export const postValidateProcessInfo: ProcessorInfo<ValidationContext, void> = {
+  name: 'validate',
+  postProcess: validatePostProcessSync,
   shouldProcess: shouldValidateAll,
 };
 

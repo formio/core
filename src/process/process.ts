@@ -1,6 +1,6 @@
-import { ProcessContext, ProcessTarget, ProcessorInfo, ProcessorScope } from 'types';
+import { FilterScope, ProcessContext, ProcessTarget, ProcessorInfo, ProcessorScope } from 'types';
 import { eachComponentData, eachComponentDataAsync } from 'utils/formUtil';
-import { processOne, processOneSync } from './processOne';
+import { postProcessOne, processOne, processOneSync } from './processOne';
 import {
   defaultValueProcessInfo,
   serverDefaultValueProcessInfo,
@@ -15,6 +15,7 @@ import {
   simpleConditionProcessInfo,
 } from './conditions';
 import {
+  postValidateProcessInfo,
   validateCustomProcessInfo,
   validateProcessInfo,
   validateServerProcessInfo,
@@ -23,14 +24,12 @@ import { filterProcessInfo } from './filter';
 import { normalizeProcessInfo } from './normalize';
 import { dereferenceProcessInfo } from './dereference';
 import { clearHiddenProcessInfo } from './clearHidden';
-import { hideChildrenProcessorInfo } from './hideChildren';
 import { serverOverrideProcessInfo } from './serverOverride';
 
 export async function process<ProcessScope>(
   context: ProcessContext<ProcessScope>,
 ): Promise<ProcessScope> {
-  const { instances, components, data, scope, flat, processors, local, parent, parentPaths } =
-    context;
+  const { instances, components, data, scope, flat, local, parent, parentPaths } = context;
   await eachComponentDataAsync(
     components,
     data,
@@ -61,19 +60,32 @@ export async function process<ProcessScope>(
     local,
     parent,
     parentPaths,
+    false,
+    async (component, compData, row, path, components, index, parent, paths) => {
+      postProcessOne<ProcessScope>({
+        ...context,
+        data: compData,
+        component,
+        components,
+        path,
+        paths,
+        row,
+        index,
+        instance: instances
+          ? instances[component.modelType === 'none' && paths?.fullPath ? paths.fullPath : path]
+          : undefined,
+        parent,
+      });
+    },
   );
-  for (let i = 0; i < processors?.length; i++) {
-    const processor = processors[i];
-    if (processor.postProcess) {
-      processor.postProcess(context);
-    }
+  if ((scope as FilterScope).filtered) {
+    context.data = (scope as FilterScope).filtered || {};
   }
   return scope;
 }
 
 export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>): ProcessScope {
-  const { instances, components, data, scope, flat, processors, local, parent, parentPaths } =
-    context;
+  const { instances, components, data, scope, flat, local, parent, parentPaths } = context;
   eachComponentData(
     components,
     data,
@@ -104,12 +116,26 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
     local,
     parent,
     parentPaths,
+    false,
+    (component, compData, row, path, components, index, parent, paths) => {
+      postProcessOne<ProcessScope>({
+        ...context,
+        data: compData,
+        component,
+        components,
+        path,
+        paths,
+        row,
+        index,
+        instance: instances
+          ? instances[component.modelType === 'none' && paths?.fullPath ? paths.fullPath : path]
+          : undefined,
+        parent,
+      });
+    },
   );
-  for (let i = 0; i < processors?.length; i++) {
-    const processor = processors[i];
-    if (processor.postProcess) {
-      processor.postProcess(context);
-    }
+  if ((scope as FilterScope).filtered) {
+    context.data = (scope as FilterScope).filtered || {};
   }
   return scope;
 }
@@ -132,9 +158,23 @@ export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
   validate: validateProcessInfo,
   validateCustom: validateCustomProcessInfo,
   validateServer: validateServerProcessInfo,
-  hideChildren: hideChildrenProcessorInfo,
 };
 
+export const Processors: ProcessorInfo<any, any>[] = [
+  serverOverrideProcessInfo,
+  filterProcessInfo,
+  defaultValueProcessInfo,
+  normalizeProcessInfo,
+  dereferenceProcessInfo,
+  fetchProcessInfo,
+  calculateProcessInfo,
+  conditionProcessInfo,
+  logicProcessInfo,
+  clearHiddenProcessInfo,
+  postValidateProcessInfo,
+];
+
+// Deprecated: Use Processors instead
 export const ProcessTargets: ProcessTarget = {
   submission: [
     serverOverrideProcessInfo,
@@ -151,7 +191,6 @@ export const ProcessTargets: ProcessTarget = {
     calculateProcessInfo,
     logicProcessInfo,
     conditionProcessInfo,
-    hideChildrenProcessorInfo,
     clearHiddenProcessInfo,
     validateProcessInfo,
   ],
