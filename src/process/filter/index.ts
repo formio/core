@@ -1,56 +1,20 @@
 import {
-  DefaultValueScope,
   FilterContext,
   FilterScope,
   ProcessorFn,
   ProcessorFnSync,
   ProcessorInfo,
+  ProcessorPostFn,
+  ProcessorPostFnSync,
 } from 'types';
-import { set, has, each } from 'lodash';
-import { get, isObject } from 'lodash';
-import { getComponent, getModelType } from 'utils/formUtil';
+import { has, set } from 'lodash';
+import { get } from 'lodash';
+import { getModelType } from 'utils/formUtil';
 export const filterProcessSync: ProcessorFnSync<FilterScope> = (context: FilterContext) => {
-  const { scope, component, path } = context;
-  const { value } = context;
+  const { scope, path, value } = context;
   if (!scope.filter) scope.filter = {};
   if (value !== undefined) {
-    const modelType = getModelType(component);
-    switch (modelType) {
-      case 'dataObject':
-        scope.filter[path] = {
-          compModelType: modelType,
-          include: true,
-          value: { data: {} },
-        };
-        break;
-      case 'nestedArray':
-        scope.filter[path] = {
-          compModelType: modelType,
-          include: true,
-          value: [],
-        };
-        break;
-      case 'nestedDataArray':
-        scope.filter[path] = {
-          compModelType: modelType,
-          include: true,
-          value: Array.isArray(value) ? value.map((v) => ({ ...v, data: {} })) : [],
-        };
-        break;
-      case 'object':
-        scope.filter[path] = {
-          compModelType: modelType,
-          include: true,
-          value: component.type === 'address' ? false : {},
-        };
-        break;
-      default:
-        scope.filter[path] = {
-          compModelType: modelType,
-          include: true,
-        };
-        break;
-    }
+    scope.filter[path] = true;
   }
 };
 
@@ -58,37 +22,47 @@ export const filterProcess: ProcessorFn<FilterScope> = async (context: FilterCon
   return filterProcessSync(context);
 };
 
-export const filterPostProcess: ProcessorFnSync<FilterScope> = (context: FilterContext) => {
-  const { scope, submission, form } = context;
-  const filtered = {};
-  for (const path in scope.filter) {
-    if (scope.filter[path].include) {
-      let value = get(submission?.data, path);
-      if (scope.filter[path].value) {
-        if (isObject(value) && scope.filter[path].value?.data) {
-          value = { ...value, ...scope.filter[path].value };
-        } else {
-          value = scope.filter[path].value;
-        }
-      }
-      set(filtered, path, value);
+export const filterPostProcessSync: ProcessorPostFnSync<FilterScope> = (
+  context: FilterContext,
+): boolean | undefined => {
+  const { scope, path, data, component, value } = context;
+  if (!scope.filter) scope.filter = {};
+  if (value === undefined || !scope.filter[path]) {
+    return;
+  }
+  scope.filtered = scope.filtered || {};
+  const modelType = getModelType(component);
+  if (
+    component.type === 'address' ||
+    (modelType !== 'dataObject' &&
+      modelType !== 'nestedArray' &&
+      modelType !== 'nestedDataArray' &&
+      modelType !== 'object')
+  ) {
+    set(scope.filtered, path, value);
+  } else {
+    if (modelType === 'dataObject') {
+      set(data, `${path}.data`, get(scope.filtered, `${path}.data`, value?.data || {}));
+      set(scope.filtered, path, get(data, path));
+    } else if (modelType === 'nestedDataArray') {
+      const filtered: any = get(scope.filtered, path, []);
+      set(
+        scope.filtered,
+        path,
+        value.map((item: any, index: number) => {
+          return { ...item, data: filtered[index]?.data || {} };
+        }),
+      );
+    } else if (!has(scope.filtered, path)) {
+      set(scope.filtered, path, value);
+    } else {
+      set(data, path, get(scope.filtered, path, value));
     }
   }
+};
 
-  each((scope as DefaultValueScope).defaultValues || [], ({ path, value }) => {
-    if (!has(filtered, path)) {
-      const component = getComponent(form?.components || [], path, true);
-      // do not set default value for number and currency components as we cannot define for sure if the empty value is submitted or not
-      const noDefaultValue = component && getModelType(component) === 'number';
-      if (!noDefaultValue) {
-        const normalizedDefaultValue = has(submission?.data, path)
-          ? get(submission?.data, path)
-          : value;
-        set(filtered, path, normalizedDefaultValue);
-      }
-    }
-  });
-  context.data = filtered;
+export const filterPostProcess: ProcessorPostFn<FilterScope> = async (context: FilterContext) => {
+  return filterPostProcessSync(context);
 };
 
 export const filterProcessInfo: ProcessorInfo<FilterContext, void> = {
@@ -96,5 +70,6 @@ export const filterProcessInfo: ProcessorInfo<FilterContext, void> = {
   process: filterProcess,
   processSync: filterProcessSync,
   postProcess: filterPostProcess,
+  postProcessSync: filterPostProcessSync,
   shouldProcess: () => true,
 };

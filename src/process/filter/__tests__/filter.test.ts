@@ -1,8 +1,13 @@
 import { expect } from 'chai';
 
-import { filterProcessSync } from '../';
+import { filterProcessSync, filterPostProcess } from '../';
 import { generateProcessorContext } from '../../__tests__/fixtures/util';
 import { FilterScope, ProcessorContext } from 'types';
+
+const filterProcess = async (context: ProcessorContext<FilterScope>) => {
+  filterProcessSync(context);
+  filterPostProcess(context);
+};
 
 describe('Filter processor', function () {
   it('Should not filter empty array value for dataGrid component', async function () {
@@ -24,9 +29,9 @@ describe('Filter processor', function () {
       dataGrid: [],
     };
     const context: any = generateProcessorContext(dataGridComp, data);
-    filterProcessSync(context);
+    filterProcess(context);
     expect(context.scope.filter).to.deep.equal({
-      dataGrid: { compModelType: 'nestedArray', include: true, value: [] },
+      dataGrid: true,
     });
   });
 
@@ -48,9 +53,9 @@ describe('Filter processor', function () {
       editGrid: [],
     };
     const context: any = generateProcessorContext(editGridComp, data);
-    filterProcessSync(context);
+    filterProcess(context);
     expect(context.scope.filter).to.deep.equal({
-      editGrid: { compModelType: 'nestedArray', include: true, value: [] },
+      editGrid: true,
     });
   });
 
@@ -73,9 +78,9 @@ describe('Filter processor', function () {
       dataTable: [],
     };
     const context: any = generateProcessorContext(dataTableComp, data);
-    filterProcessSync(context);
+    filterProcess(context);
     expect(context.scope.filter).to.deep.equal({
-      dataTable: { compModelType: 'nestedArray', include: true, value: [] },
+      dataTable: true,
     });
   });
 
@@ -128,32 +133,28 @@ describe('Filter processor', function () {
       ],
     };
     const context: any = generateProcessorContext(tagpadComp, data);
-    filterProcessSync(context);
-    expect(context.scope.filter).to.deep.equal({
-      tagpad: {
-        compModelType: 'nestedDataArray',
-        include: true,
-        value: [
-          {
-            coordinate: {
-              x: 83,
-              y: 61,
-              width: 280,
-              height: 133,
-            },
-            data: {},
+    filterProcess(context);
+    expect(context.scope.filtered).to.deep.equal({
+      tagpad: [
+        {
+          coordinate: {
+            x: 83,
+            y: 61,
+            width: 280,
+            height: 133,
           },
-          {
-            coordinate: {
-              x: 194,
-              y: 93,
-              width: 280,
-              height: 133,
-            },
-            data: {},
+          data: {},
+        },
+        {
+          coordinate: {
+            x: 194,
+            y: 93,
+            width: 280,
+            height: 133,
           },
-        ],
-      },
+          data: {},
+        },
+      ],
     });
   });
 
@@ -184,11 +185,11 @@ describe('Filter processor', function () {
     };
 
     const context: ProcessorContext<FilterScope> = generateProcessorContext(dataMapComp, data);
-    filterProcessSync(context);
-    expect(context.scope.filter).to.deep.equal({
+    filterProcess(context);
+    expect(context.scope.filtered).to.deep.equal({
       dataMap: {
-        compModelType: 'map',
-        include: true,
+        foo: 'bar',
+        baz: 'biz',
       },
     });
   });
