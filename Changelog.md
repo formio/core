@@ -1,3 +1,9 @@
+## 2.5.0-rc.6
+
+### Changed
+
+- FIO-10295: Adding paths to the normalizeContext method.
+
 ## 2.5.0-rc.5
 
 ### Changed
