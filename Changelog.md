@@ -1,3 +1,9 @@
+## 2.5.0
+
+### Changed
+
+- Official Release
+
 ## 2.5.0-rc.6
 
 ### Changed
