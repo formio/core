@@ -1,3 +1,9 @@
+## 2.5.1-rc.1
+
+### Changed
+
+- FIO-9776: Excluded Address2 field from required validation
+
 ## 2.5.0
 
 ### Changed
