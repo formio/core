@@ -6,12 +6,15 @@ import {
   ProcessorInfo,
   FetchScope,
 } from 'types';
-import { set } from 'lodash';
+import { set, isUndefined } from 'lodash';
 import { evaluate } from 'utils';
 
 export const shouldCalculate = (context: CalculationContext): boolean => {
-  const { component, config } = context;
+  const { component, config, value, parent } = context;
   if (!component.calculateValue || (config?.server && !component.calculateServer)) {
+    return false;
+  }
+  if (isUndefined(value) && parent?.modelType === 'nestedArray') {
     return false;
   }
   return true;

@@ -81,4 +81,35 @@ describe('Calculation processor', function () {
     const context: ProcessContext<CalculationScope> = await processForm(form, submission);
     expect(context.data.c).to.equal(6);
   });
+
+  it('Should not add calculated editGrid row vlaue to the blank submission ', async function () {
+    const form = {
+      components: [
+        {
+          label: 'Edit Grid',
+          key: 'editGrid',
+          type: 'editgrid',
+          input: true,
+          components: [
+            {
+              label: 'Set me on server',
+              calculateValue: 'value = "Value set on server"',
+              calculateServer: true,
+              key: 'fieldA',
+              type: 'textfield',
+              input: true,
+            },
+          ],
+        },
+      ],
+    };
+
+    const submission = {
+      data: {},
+      server: true,
+    };
+
+    const context: ProcessContext<CalculationScope> = await processForm(form, submission);
+    expect(context.data).to.deep.equal({});
+  });
 });
