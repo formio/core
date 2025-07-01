@@ -195,7 +195,7 @@ export function getModelType(component: Component): keyof typeof MODEL_TYPES_OF_
     modelType = 'none';
   }
 
-  // To speed up performance of getModelType, we will set the modelType on the component as a non-enumerable property.
+  // To speed up performance of getModelType, we will set the modelType on the component
   Object.defineProperty(component, 'modelType', {
     enumerable: false,
     writable: true,
@@ -1416,6 +1416,7 @@ export function normalizeContext(context: any): any {
   return {
     path: paths ? paths.localDataPath : path,
     data: paths ? getComponentLocalData(paths, data, local) : data,
+    paths,
     form,
     scope,
     submission,
