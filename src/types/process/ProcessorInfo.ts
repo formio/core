@@ -4,7 +4,7 @@ export type ProcessorInfo<ProcessorContext, ProcessorReturnType> = {
   fullValue?: boolean;
   process?: (context: ProcessorContext) => Promise<ProcessorReturnType>;
   processSync?: (context: ProcessorContext) => ProcessorReturnType;
-  postProcess?: (context: ProcessorContext) => Promise<boolean | undefined>;
-  postProcessSync?: (context: ProcessorContext) => boolean | undefined;
+  postProcess?: (context: ProcessorContext) => Promise<void>;
+  postProcessSync?: (context: ProcessorContext) => void;
   shouldProcess: ProcessCheckFn<ProcessorContext>;
 };

@@ -55,10 +55,7 @@ export async function postProcessOne<ProcessorScope>(context: ProcessorsContext<
   context.processor = ProcessorType.Custom;
   for (const processor of processors) {
     if (processor?.postProcess) {
-      if ((await processor.postProcess(context)) === true) {
-        // If this postProcess returns true, it indicates that this field does not need further post-processing.
-        break;
-      }
+      await processor.postProcess(context);
     }
   }
 }
@@ -69,10 +66,7 @@ export function postProcessOneSync<ProcessorScope>(context: ProcessorsContext<Pr
   context.processor = ProcessorType.Custom;
   for (const processor of processors) {
     if (processor?.postProcessSync) {
-      if (processor.postProcessSync(context) === true) {
-        // If this postProcess returns true, it indicates that this field does not need further post-processing.
-        break;
-      }
+      processor.postProcessSync(context);
     }
   }
 }

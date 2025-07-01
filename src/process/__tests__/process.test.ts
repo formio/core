@@ -1125,6 +1125,59 @@ describe('Process Tests', function () {
     expect(context.data.child.data).to.not.have.property('invalid');
   });
 
+  it('Should produce errors for a multivalue textfield with a required value', async function () {
+    const submission = { data: {} };
+    const form = {
+      components: [
+        {
+          input: true,
+          tableView: true,
+          inputType: 'text',
+          inputMask: '',
+          label: 'Text Field',
+          key: 'textField',
+          placeholder: '',
+          prefix: '',
+          suffix: '',
+          multiple: true,
+          defaultValue: '',
+          protected: false,
+          unique: false,
+          persistent: true,
+          validate: {
+            required: true,
+            minLength: '',
+            maxLength: '',
+            pattern: '',
+            custom: '',
+            customPrivate: false,
+          },
+          conditional: {
+            show: null,
+            when: null,
+            eq: '',
+          },
+          type: 'textfield',
+        },
+      ],
+    };
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    assert.equal((context.scope as any).errors.length, 2);
+    assert.equal((context.scope as any).errors[0].ruleName, 'array');
+    assert.equal((context.scope as any).errors[1].ruleName, 'required');
+  });
+
   it('Should process nested form data correctly', async function () {
     const submission = {
       data: {

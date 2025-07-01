@@ -380,16 +380,14 @@ export const validateAllProcessSync: ProcessorFnSync<ValidationScope> = (
 
 export const validatePostProcess: ProcessorPostFn<ValidationScope> = async (
   context: ValidationContext,
-): Promise<boolean | undefined> => {
+): Promise<void> => {
   await validateAllProcess(context);
-  return;
 };
 
 export const validatePostProcessSync: ProcessorPostFnSync<ValidationScope> = (
   context: ValidationContext,
-): boolean | undefined => {
+): void => {
   validateAllProcessSync(context);
-  return;
 };
 
 export const validateCustomProcessInfo: ProcessorInfo<ValidationContext, void> = {
