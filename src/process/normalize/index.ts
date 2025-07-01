@@ -424,7 +424,7 @@ export const normalizeProcessSync: ProcessorFnSync<NormalizeScope> = (context) =
   }
 
   // Next perform component-type-agnostic transformations (i.e. super())
-  if (component.multiple && !Array.isArray(value)) {
+  if (component.multiple && !component.validate?.required && !Array.isArray(value)) {
     set(data, path, value ? [value] : []);
     scope.normalize[path].normalized = true;
   }
