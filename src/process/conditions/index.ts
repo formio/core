@@ -162,5 +162,5 @@ export const conditionProcessInfo: ProcessorInfo<ConditionsContext, void> = {
   name: 'conditions',
   process: conditionProcess,
   processSync: conditionProcessSync,
-  shouldProcess: hasSimpleConditions,
+  shouldProcess: hasConditions,
 };

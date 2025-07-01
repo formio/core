@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import assert from 'node:assert';
 import type { ContainerComponent, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
-import { process, processSync, ProcessTargets } from '../index';
+import { process, processSync, Processors } from '../index';
 import { fastCloneDeep } from 'utils';
 import {
   addressComponentWithOtherCondComponents,
@@ -905,7 +905,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -913,8 +913,6 @@ describe('Process Tests', function () {
     };
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     assert.equal(context.scope.errors.length, 0);
   });
 
@@ -1046,7 +1044,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -1054,8 +1052,6 @@ describe('Process Tests', function () {
     };
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     assert.equal(_.get(context.submission.data, 'form1.data.form.data.textField'), 'one 1');
     assert.equal(_.get(context.submission.data, 'form1.data.form.data.textField1'), 'two 2');
   });
@@ -1116,7 +1112,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -1127,6 +1123,171 @@ describe('Process Tests', function () {
       child: { _id: 'submission id', data: { input: 'test' } },
     });
     expect(context.data.child.data).to.not.have.property('invalid');
+  });
+
+  it('Should produce errors for a multivalue textfield with a required value', async function () {
+    const submission = { data: {} };
+    const form = {
+      components: [
+        {
+          input: true,
+          tableView: true,
+          inputType: 'text',
+          inputMask: '',
+          label: 'Text Field',
+          key: 'textField',
+          placeholder: '',
+          prefix: '',
+          suffix: '',
+          multiple: true,
+          defaultValue: '',
+          protected: false,
+          unique: false,
+          persistent: true,
+          validate: {
+            required: true,
+            minLength: '',
+            maxLength: '',
+            pattern: '',
+            custom: '',
+            customPrivate: false,
+          },
+          conditional: {
+            show: null,
+            when: null,
+            eq: '',
+          },
+          type: 'textfield',
+        },
+      ],
+    };
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    assert.equal((context.scope as any).errors.length, 2);
+    assert.equal((context.scope as any).errors[0].ruleName, 'array');
+    assert.equal((context.scope as any).errors[1].ruleName, 'required');
+  });
+
+  it('Sets a value based on advanced conditions', async function () {
+    const form = {
+      components: [
+        {
+          properties: {},
+          tags: [],
+          labelPosition: 'top',
+          hideLabel: false,
+          type: 'textfield',
+          conditional: {
+            eq: '',
+            when: null,
+            show: '',
+          },
+          validate: {
+            customPrivate: false,
+            custom: '',
+            pattern: '',
+            maxLength: '',
+            minLength: '',
+            required: false,
+          },
+          clearOnHide: true,
+          hidden: false,
+          persistent: true,
+          unique: false,
+          protected: false,
+          defaultValue: '',
+          multiple: false,
+          suffix: '',
+          prefix: '',
+          placeholder: '',
+          key: 'test',
+          label: 'Test',
+          inputMask: '',
+          inputType: 'text',
+          tableView: true,
+          input: true,
+        },
+        {
+          properties: {},
+          tags: [],
+          labelPosition: 'top',
+          hideLabel: false,
+          type: 'textfield',
+          conditional: {
+            eq: '',
+            when: null,
+            show: '',
+          },
+          validate: {
+            customPrivate: false,
+            custom: '',
+            pattern: '',
+            maxLength: '',
+            minLength: '',
+            required: false,
+          },
+          clearOnHide: true,
+          hidden: false,
+          persistent: true,
+          unique: false,
+          protected: false,
+          defaultValue: '',
+          multiple: false,
+          suffix: '',
+          prefix: '',
+          placeholder: '',
+          key: 'changeme',
+          label: 'Change me',
+          inputMask: '',
+          inputType: 'text',
+          tableView: true,
+          input: true,
+          logic: [
+            {
+              name: 'Test 1',
+              trigger: {
+                javascript: "result = data.test === '1';",
+                type: 'javascript',
+              },
+              actions: [
+                {
+                  name: 'Set Value',
+                  type: 'value',
+                  value: "value = 'Foo'",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const submission = {
+      data: { test: '1' },
+    };
+    const context: any = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    assert.equal(context.data.test, '1');
+    assert.equal(context.data.changeme, 'Foo');
   });
 
   it('Should process nested form data correctly', async function () {
@@ -1203,7 +1364,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -1387,7 +1548,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -1395,8 +1556,6 @@ describe('Process Tests', function () {
     };
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     assert.equal(context.scope.errors.length, 0);
     assert.equal(context.data.showA, true);
     assert.equal(context.data.showB, true);
@@ -1583,7 +1742,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -1591,8 +1750,6 @@ describe('Process Tests', function () {
     };
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     assert.equal(context.scope.errors.length, 0);
     assert.equal(context.data.showA, false);
     assert.equal(context.data.showB, true);
@@ -1723,7 +1880,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: parentForm.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -1731,8 +1888,6 @@ describe('Process Tests', function () {
     };
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     assert.equal(context.data.showA, false);
     assert(!context.data.hasOwnProperty('childA'), 'The childA form should not be present.');
     assert.deepEqual(context.data.childB.data, {
@@ -1778,7 +1933,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -1863,7 +2018,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -1954,7 +2109,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -2044,7 +2199,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -2134,7 +2289,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -2238,7 +2393,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -2343,7 +2498,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -2447,7 +2602,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -2551,7 +2706,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -2603,7 +2758,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -2674,7 +2829,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -2768,7 +2923,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -2869,7 +3024,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -2976,7 +3131,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -3097,7 +3252,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -3226,7 +3381,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -3331,7 +3486,7 @@ describe('Process Tests', function () {
       submission: firstInvalidSubmission,
       data: firstInvalidSubmission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: {} as ValidationScope,
     };
     processSync(context);
@@ -3346,7 +3501,7 @@ describe('Process Tests', function () {
       submission: secondInvalidSubmission,
       data: secondInvalidSubmission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: {} as ValidationScope,
     };
     processSync(context);
@@ -3361,7 +3516,7 @@ describe('Process Tests', function () {
       submission: validSubmission,
       data: validSubmission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: {} as ValidationScope,
     };
     processSync(context);
@@ -3434,7 +3589,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors: [] },
       config: { server: true },
     };
@@ -3509,7 +3664,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -3560,7 +3715,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -3609,7 +3764,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.evaluator,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -3707,7 +3862,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -3715,8 +3870,6 @@ describe('Process Tests', function () {
     };
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     assert.equal(context.scope.errors.length, 0);
     assert.deepEqual(context.data.form, { _id: '66c455fc0f00757fd4b0e79b', data: {} });
   });
@@ -3729,7 +3882,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -3737,8 +3890,6 @@ describe('Process Tests', function () {
     };
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     expect(context.submission.data.number).to.be.equal(1);
     expect(context.submission.data.textField).to.be.equal('some text');
   });
@@ -3751,7 +3902,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -3759,8 +3910,6 @@ describe('Process Tests', function () {
     };
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     expect(context.submission.data.number1).to.be.equal(1);
     expect(context.submission.data.number2).to.be.equal(2);
   });
@@ -3824,7 +3973,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -3832,8 +3981,6 @@ describe('Process Tests', function () {
     };
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     assert.equal(context.scope.errors.length, 0);
   });
 
@@ -3845,7 +3992,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -3853,8 +4000,6 @@ describe('Process Tests', function () {
     };
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     (context.scope as any).conditionals.forEach((v: any) =>
       assert.equal(v.conditionallyHidden, false),
     );
@@ -3993,7 +4138,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors },
       config: {
         server: true,
@@ -4001,8 +4146,6 @@ describe('Process Tests', function () {
     };
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     (context.scope as any).conditionals.forEach((v: any) =>
       assert.equal(v.conditionallyHidden, false),
     );
@@ -4095,7 +4238,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors, conditionals },
       config: {
         server: true,
@@ -4104,8 +4247,6 @@ describe('Process Tests', function () {
 
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     expect(context.scope.conditionals).to.have.length(1);
     expect(context.scope.conditionals?.[0].conditionallyHidden).to.equal(false);
     assert.equal(context.scope.errors.length, 0);
@@ -4245,7 +4386,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors, conditionals },
       config: {
         server: true,
@@ -4254,8 +4395,6 @@ describe('Process Tests', function () {
 
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     assert.deepEqual(context.data, { textField: '', textAreaFieldSet: 'test' });
     context.scope.conditionals.forEach((cond: any) => {
       expect(cond.conditionallyHidden).to.be.equal(true);
@@ -4374,7 +4513,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors, conditionals },
       config: {
         server: true,
@@ -4383,8 +4522,6 @@ describe('Process Tests', function () {
 
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     assert.deepEqual(context.data.textFieldShowOnTest1, 'test');
     context.scope.conditionals.forEach((cond: any) => {
       assert.equal(cond.conditionallyHidden, cond.path !== 'textFieldShowOnTest1');
@@ -4739,7 +4876,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors, conditionals },
       config: {
         server: true,
@@ -4748,8 +4885,6 @@ describe('Process Tests', function () {
 
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     assert.deepEqual(context.data, data);
     context.scope.conditionals.forEach((cond: any) => {
       assert.equal(
@@ -4808,14 +4943,12 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
       },
     };
-    processSync(context);
-    context.processors = ProcessTargets.evaluator;
     const scope = processSync(context);
     expect((scope as ValidationScope).errors).to.have.length(2);
   });
@@ -4876,14 +5009,12 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
       },
     };
-    processSync(context);
-    context.processors = ProcessTargets.evaluator;
     const scope = processSync(context);
     expect((scope as ValidationScope).errors).to.have.length(3);
   });
@@ -5021,7 +5152,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -5029,8 +5160,6 @@ describe('Process Tests', function () {
     };
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     // Note that we DID omit textField3, which has clearOnHide enabled by default
     assert.deepEqual(context.data, {
       checkbox: true,
@@ -5191,7 +5320,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -5199,8 +5328,6 @@ describe('Process Tests', function () {
     };
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     // Note that we DID omit textField3, which has clearOnHide enabled by default
     assert.deepEqual(context.data, {
       checkbox: false,
@@ -5285,7 +5412,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: { errors, conditionals },
       config: {
         server: true,
@@ -5294,8 +5421,6 @@ describe('Process Tests', function () {
 
     processSync(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
     assert.deepEqual(context.scope.errors.length, 0);
   });
 
@@ -5495,7 +5620,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: form.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: {},
       fetch: (): Promise<Response> => {
         return Promise.resolve({
@@ -5511,8 +5636,6 @@ describe('Process Tests', function () {
     };
     await process(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    await process(context);
     assert.deepEqual(context.data, submission.data);
   });
 
@@ -5529,7 +5652,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: formWithDefaultValues.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -5537,8 +5660,6 @@ describe('Process Tests', function () {
     };
     await process(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    await process(context);
     assert.deepEqual(context.data, {
       submit: true,
       select1: 'one',
@@ -5638,7 +5759,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -5646,8 +5767,6 @@ describe('Process Tests', function () {
     };
     await process(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    await process(context);
     assert.deepEqual(context.data, {
       submit: true,
       dataGrid: [],
@@ -5670,7 +5789,7 @@ describe('Process Tests', function () {
       submission,
       data: submission.data,
       components: formWithDefaultValues.components,
-      processors: ProcessTargets.submission,
+      processors: Processors,
       scope: {},
       config: {
         server: true,
@@ -5678,8 +5797,6 @@ describe('Process Tests', function () {
     };
     await process(context);
     submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    await process(context);
     assert.deepEqual(context.data, {
       textField: '',
       textArea: 'own value',
@@ -5740,14 +5857,12 @@ describe('Process Tests', function () {
           submission,
           data: submission.data,
           components,
-          processors: ProcessTargets.submission,
+          processors: Processors,
           scope: {},
           config: {
             server: true,
           },
         };
-        processSync(context);
-        context.processors = ProcessTargets.evaluator;
         processSync(context);
         expect(context.data).to.deep.equal({
           dataGrid: [{ form: { data: { textField: 'test' } } }],
@@ -5813,14 +5928,12 @@ describe('Process Tests', function () {
           submission,
           data: submission.data,
           components,
-          processors: ProcessTargets.submission,
+          processors: Processors,
           scope: {},
           config: {
             server: true,
           },
         };
-        processSync(context);
-        context.processors = ProcessTargets.evaluator;
         processSync(context);
         assert.equal(context.data.radio, 'yes');
       });
@@ -5845,14 +5958,12 @@ describe('Process Tests', function () {
           submission,
           data: submission.data,
           components,
-          processors: ProcessTargets.submission,
+          processors: Processors,
           scope: {},
           config: {
             server: true,
           },
         };
-        processSync(context);
-        context.processors = ProcessTargets.evaluator;
         processSync(context);
         expect((context.scope as ValidationScope).errors).to.have.length(1);
       });
@@ -5865,15 +5976,13 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components: form.components,
-        processors: ProcessTargets.submission,
+        processors: Processors,
         scope: {},
         config: {
           server: true,
         },
       };
 
-      processSync(context);
-      context.processors = ProcessTargets.evaluator;
       processSync(context);
       expect((context.scope as ValidationScope).errors).to.have.length(0);
     });
@@ -5885,15 +5994,13 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components: form.components,
-        processors: ProcessTargets.submission,
+        processors: Processors,
         scope: {},
         config: {
           server: true,
         },
       };
 
-      await process(context);
-      context.processors = ProcessTargets.evaluator;
       await process(context);
       expect((context.scope as ValidationScope).errors).to.have.length(0);
     });
@@ -5905,15 +6012,13 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components: form.components,
-        processors: ProcessTargets.submission,
+        processors: Processors,
         scope: {},
         config: {
           server: true,
         },
       };
 
-      processSync(context as any);
-      context.processors = ProcessTargets.evaluator;
       processSync(context as any);
       expect((context.scope as ValidationScope).errors).to.have.length(0);
     });
@@ -5925,7 +6030,7 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components: form.components,
-        processors: ProcessTargets.submission,
+        processors: Processors,
         scope: {},
         config: {
           server: true,
@@ -5933,9 +6038,6 @@ describe('Process Tests', function () {
       };
 
       processSync(context);
-      context.processors = ProcessTargets.evaluator;
-      processSync(context);
-
       expect((context.scope as ValidationScope).errors).to.have.length(1);
     });
 
@@ -6006,7 +6108,7 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components: form.components,
-        processors: ProcessTargets.submission,
+        processors: Processors,
         scope: { errors },
         config: {
           server: true,
@@ -6014,8 +6116,6 @@ describe('Process Tests', function () {
       };
       processSync(context);
       submission.data = context.data;
-      context.processors = ProcessTargets.evaluator;
-      processSync(context);
       assert.equal(context.scope.errors.length, 1);
       assert.equal(context.scope.errors[0].ruleName, 'required');
     });
@@ -6041,14 +6141,12 @@ describe('Process Tests', function () {
           submission,
           data: submission.data,
           components,
-          processors: ProcessTargets.submission,
+          processors: Processors,
           scope: {},
           config: {
             server: true,
           },
         };
-        processSync(context);
-        context.processors = ProcessTargets.evaluator;
         processSync(context);
         expect(context.data).to.deep.equal({ editGrid: [] });
       });
@@ -6077,14 +6175,12 @@ describe('Process Tests', function () {
           submission,
           data: submission.data,
           components,
-          processors: ProcessTargets.submission,
+          processors: Processors,
           scope: {},
           config: {
             server: true,
           },
         };
-        processSync(context);
-        context.processors = ProcessTargets.evaluator;
         processSync(context);
         console.log(JSON.stringify(context.data, null, 2));
 
@@ -6114,14 +6210,12 @@ describe('Process Tests', function () {
           submission,
           data: submission.data,
           components,
-          processors: ProcessTargets.submission,
+          processors: Processors,
           scope: {},
           config: {
             server: true,
           },
         };
-        processSync(context);
-        context.processors = ProcessTargets.evaluator;
         processSync(context);
         expect((context.scope as ValidationScope).errors).to.have.length(1);
       });
@@ -6131,12 +6225,13 @@ describe('Process Tests', function () {
   describe('clearOnHide', function () {
     it('Should not include submission data from conditionally hidden containers when clearOnHide ("Omit Data When Conditionally Hidden" is true', async function () {
       const { form, submission } = clearOnHideWithCustomCondition;
+      const clonedSubmission = JSON.parse(JSON.stringify(submission));
       const context = {
         form,
-        submission,
-        data: submission.data,
+        submission: clonedSubmission,
+        data: clonedSubmission.data,
         components: form.components,
-        processors: ProcessTargets.submission,
+        processors: Processors,
         scope: {},
         config: {
           server: true,
@@ -6144,9 +6239,6 @@ describe('Process Tests', function () {
       };
 
       processSync(context);
-      context.processors = ProcessTargets.evaluator;
-      processSync(context);
-
       expect(context.data).to.deep.equal({
         candidates: [{ candidate: { data: {} } }],
         submit: true,
@@ -6155,14 +6247,15 @@ describe('Process Tests', function () {
 
     it('Should not return fields from conditionally hidden containers, clearOnHide = false', async function () {
       const { form, submission } = clearOnHideWithCustomCondition;
+      const clonedSubmission = JSON.parse(JSON.stringify(submission));
       const containerComponent = getComponent(form.components, 'section6') as ContainerComponent;
       containerComponent.clearOnHide = false;
       const context = {
         form,
-        submission,
-        data: submission.data,
+        submission: clonedSubmission,
+        data: clonedSubmission.data,
         components: form.components,
-        processors: ProcessTargets.submission,
+        processors: Processors,
         scope: {},
         config: {
           server: true,
@@ -6170,9 +6263,6 @@ describe('Process Tests', function () {
       };
 
       processSync(context);
-      context.processors = ProcessTargets.evaluator;
-      processSync(context);
-
       expect(context.data).to.deep.equal({
         candidates: [{ candidate: { data: { section6: {} } } }],
         submit: true,
@@ -6186,7 +6276,7 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components: form.components,
-        processors: ProcessTargets.submission,
+        processors: Processors,
         scope: { errors: [] },
         config: {
           server: true,
@@ -6194,9 +6284,6 @@ describe('Process Tests', function () {
       };
 
       processSync(context);
-      context.processors = ProcessTargets.evaluator;
-      processSync(context);
-
       expect(context.data).to.deep.equal({
         candidates: [{ candidate: { data: { section6: { c: {}, d: [] } } } }],
         submit: true,
@@ -6213,7 +6300,7 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components: form.components,
-        processors: ProcessTargets.submission,
+        processors: Processors,
         scope: {},
         config: {
           server: true,
@@ -6221,9 +6308,6 @@ describe('Process Tests', function () {
       };
 
       processSync(context);
-      context.processors = ProcessTargets.evaluator;
-      processSync(context);
-
       expect(context.data).to.deep.equal({
         candidates: [{ candidate: { data: { section6: { c: {}, d: [] } } } }],
         submit: true,
@@ -6252,7 +6336,7 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components,
-        processors: ProcessTargets.evaluator,
+        processors: Processors,
         scope: {},
       };
       processSync(context);
@@ -6281,7 +6365,7 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components,
-        processors: ProcessTargets.evaluator,
+        processors: Processors,
         scope: {},
       };
       processSync(context);
@@ -6320,7 +6404,7 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components,
-        processors: ProcessTargets.evaluator,
+        processors: Processors,
         scope: {},
       };
       processSync(context);
@@ -6359,7 +6443,7 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components,
-        processors: ProcessTargets.evaluator,
+        processors: Processors,
         scope: {},
       };
       processSync(context);
@@ -6398,7 +6482,7 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components,
-        processors: ProcessTargets.evaluator,
+        processors: Processors,
         scope: {},
       };
       processSync(context);
@@ -6437,7 +6521,7 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components,
-        processors: ProcessTargets.evaluator,
+        processors: Processors,
         scope: {},
       };
       processSync(context);
@@ -6485,7 +6569,7 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components,
-        processors: ProcessTargets.evaluator,
+        processors: Processors,
         scope: {},
       };
       processSync(context);
@@ -6533,7 +6617,7 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components,
-        processors: ProcessTargets.evaluator,
+        processors: Processors,
         scope: {},
       };
       processSync(context);
@@ -6582,7 +6666,7 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components,
-        processors: ProcessTargets.evaluator,
+        processors: Processors,
         scope: {},
       };
       processSync(context);
@@ -6624,7 +6708,7 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components,
-        processors: ProcessTargets.evaluator,
+        processors: Processors,
         scope: {} as { errors: Record<string, unknown>[] },
       };
       processSync(context);
@@ -6713,13 +6797,11 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components,
-        processors: ProcessTargets.submission,
+        processors: Processors,
         scope: {} as { errors: Record<string, unknown>[] },
       };
       processSync(context);
       submission.data = context.data;
-      context.processors = ProcessTargets.evaluator;
-      processSync(context);
       assert.equal(!!context.data.textField, false);
     });
 
@@ -6735,13 +6817,11 @@ describe('Process Tests', function () {
         submission,
         data: submission.data,
         components,
-        processors: ProcessTargets.submission,
+        processors: Processors,
         scope: {} as { errors: Record<string, unknown>[] },
       };
       processSync(context);
       submission.data = context.data;
-      context.processors = ProcessTargets.evaluator;
-      processSync(context);
       expect(context.scope.errors.length).to.equal(0);
     });
   });
