@@ -49,7 +49,7 @@ function setDefaultValue(context: DefaultValueContext, defaultValue: any) {
 
   // If this component is not already included in the filter and is not a number, then include it from the default.
   if (!scope.filter) scope.filter = {};
-  if (!scope.filter[path] && getModelType(component) !== 'number') {
+  if (!scope.filter.hasOwnProperty(path) && getModelType(component) !== 'number') {
     scope.filter[path] = true;
   }
 }
