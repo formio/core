@@ -1,2 +1,2 @@
-import { ProcessorScope } from '..';
-export type LogicScope = {} & ProcessorScope;
+import { FilterScope } from '..';
+export type LogicScope = {} & FilterScope;

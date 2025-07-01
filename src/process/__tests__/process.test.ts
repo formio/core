@@ -1178,6 +1178,118 @@ describe('Process Tests', function () {
     assert.equal((context.scope as any).errors[1].ruleName, 'required');
   });
 
+  it('Sets a value based on advanced conditions', async function () {
+    const form = {
+      components: [
+        {
+          properties: {},
+          tags: [],
+          labelPosition: 'top',
+          hideLabel: false,
+          type: 'textfield',
+          conditional: {
+            eq: '',
+            when: null,
+            show: '',
+          },
+          validate: {
+            customPrivate: false,
+            custom: '',
+            pattern: '',
+            maxLength: '',
+            minLength: '',
+            required: false,
+          },
+          clearOnHide: true,
+          hidden: false,
+          persistent: true,
+          unique: false,
+          protected: false,
+          defaultValue: '',
+          multiple: false,
+          suffix: '',
+          prefix: '',
+          placeholder: '',
+          key: 'test',
+          label: 'Test',
+          inputMask: '',
+          inputType: 'text',
+          tableView: true,
+          input: true,
+        },
+        {
+          properties: {},
+          tags: [],
+          labelPosition: 'top',
+          hideLabel: false,
+          type: 'textfield',
+          conditional: {
+            eq: '',
+            when: null,
+            show: '',
+          },
+          validate: {
+            customPrivate: false,
+            custom: '',
+            pattern: '',
+            maxLength: '',
+            minLength: '',
+            required: false,
+          },
+          clearOnHide: true,
+          hidden: false,
+          persistent: true,
+          unique: false,
+          protected: false,
+          defaultValue: '',
+          multiple: false,
+          suffix: '',
+          prefix: '',
+          placeholder: '',
+          key: 'changeme',
+          label: 'Change me',
+          inputMask: '',
+          inputType: 'text',
+          tableView: true,
+          input: true,
+          logic: [
+            {
+              name: 'Test 1',
+              trigger: {
+                javascript: "result = data.test === '1';",
+                type: 'javascript',
+              },
+              actions: [
+                {
+                  name: 'Set Value',
+                  type: 'value',
+                  value: "value = 'Foo'",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const submission = {
+      data: { test: '1' },
+    };
+    const context: any = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    assert.equal(context.data.test, '1');
+    assert.equal(context.data.changeme, 'Foo');
+  });
+
   it('Should process nested form data correctly', async function () {
     const submission = {
       data: {
