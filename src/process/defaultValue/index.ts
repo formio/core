@@ -7,7 +7,7 @@ import {
 } from 'types';
 import { set, has } from 'lodash';
 import { evaluate } from 'utils';
-import { getComponentKey } from 'utils/formUtil';
+import { getComponentKey, getModelType } from 'utils/formUtil';
 
 export const hasCustomDefaultValue = (context: DefaultValueContext): boolean => {
   const { component } = context;
@@ -35,10 +35,29 @@ export const customDefaultValueProcess: ProcessorFn<ConditionsScope> = async (
   return customDefaultValueProcessSync(context);
 };
 
+function setDefaultValue(context: DefaultValueContext, defaultValue: any) {
+  const { component, data, scope, path } = context;
+  if (defaultValue === null || defaultValue === undefined) {
+    return;
+  }
+  if (!scope.defaultValues) scope.defaultValues = [];
+  scope.defaultValues.push({
+    path,
+    value: defaultValue,
+  });
+  set(data, path, defaultValue);
+
+  // If this component is not already included in the filter and is not a number, then include it from the default.
+  if (!scope.filter) scope.filter = {};
+  if (!scope.filter.hasOwnProperty(path) && getModelType(component) !== 'number') {
+    scope.filter[path] = true;
+  }
+}
+
 export const customDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
   context: DefaultValueContext,
 ) => {
-  const { component, row, data, scope, path } = context;
+  const { component, row, scope } = context;
   if (!hasCustomDefaultValue(context)) {
     return;
   }
@@ -58,14 +77,8 @@ export const customDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
     if (component.multiple && !Array.isArray(defaultValue)) {
       defaultValue = defaultValue ? [defaultValue] : [];
     }
-    scope.defaultValues.push({
-      path,
-      value: defaultValue,
-    });
   }
-  if (defaultValue !== null && defaultValue !== undefined) {
-    set(data, path, defaultValue);
-  }
+  setDefaultValue(context, defaultValue);
 };
 
 export const serverDefaultValueProcess: ProcessorFn<ConditionsScope> = async (
@@ -77,7 +90,7 @@ export const serverDefaultValueProcess: ProcessorFn<ConditionsScope> = async (
 export const serverDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
   context: DefaultValueContext,
 ) => {
-  const { component, row, data, scope, path } = context;
+  const { component, row, scope } = context;
   if (!hasServerDefaultValue(context)) {
     return;
   }
@@ -86,19 +99,13 @@ export const serverDefaultValueProcessSync: ProcessorFnSync<ConditionsScope> = (
     return;
   }
   let defaultValue = null;
-  if (component.defaultValue !== undefined && component.defaultValue !== null) {
+  if (component.defaultValue) {
     defaultValue = component.defaultValue;
     if (component.multiple && !Array.isArray(defaultValue)) {
       defaultValue = defaultValue ? [defaultValue] : [];
     }
-    scope.defaultValues.push({
-      path,
-      value: defaultValue,
-    });
   }
-  if (defaultValue !== null && defaultValue !== undefined) {
-    set(data, path, defaultValue);
-  }
+  setDefaultValue(context, defaultValue);
 };
 
 export const defaultValueProcess: ProcessorFn<ConditionsScope> = async (

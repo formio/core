@@ -120,6 +120,12 @@ export enum ComponentPath {
    * The "localDataPath" to the TextField component from the perspective of a configuration within the Form, would be "dataGrid[1].textField"
    */
   localDataPath = 'localDataPath',
+
+  /**
+   * The contextual "row" path for the component.
+   */
+  localContextualRowPath = 'localContextualRowPath',
+  contextualRowPath = 'contextualRowPath',
 }
 
 /**
@@ -133,6 +139,8 @@ export type ComponentPaths = {
   dataPath?: string;
   localDataPath?: string;
   dataIndex?: number;
+  contextualRowPath?: string;
+  localContextualRowPath?: string;
 };
 
 export type EachComponentDataAsyncCallback = (
