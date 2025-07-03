@@ -141,7 +141,7 @@ export function setValueProperty(context: LogicContext, action: LogicActionValue
   ) {
     set(data, path, newValue);
     if (!scope.filter) scope.filter = {};
-    if (!scope.filter.hasOwnProperty(path)) {
+    if (!(scope as any).clearHidden?.hasOwnProperty(path)) {
       scope.filter[path] = true;
     }
     return true;

@@ -6421,5 +6421,86 @@ describe('Process Tests', function () {
       submission.data = context.data;
       expect(context.scope.errors.length).to.equal(0);
     });
+
+    it('Should not add undefined values for components.', async function () {
+      const form = {
+        components: [
+          {
+            input: true,
+            tableView: true,
+            inputType: 'text',
+            inputMask: '',
+            label: 'fname',
+            key: 'fname',
+            placeholder: '',
+            prefix: '',
+            suffix: '',
+            multiple: false,
+            defaultValue: '',
+            protected: false,
+            unique: false,
+            persistent: true,
+            validate: {
+              required: true,
+              minLength: '',
+              maxLength: '',
+              pattern: '',
+              custom: '',
+              customPrivate: false,
+            },
+            conditional: {
+              show: '',
+              when: null,
+              eq: '',
+            },
+            type: 'textfield',
+          },
+          {
+            input: true,
+            tableView: true,
+            inputType: 'text',
+            inputMask: '',
+            label: 'lname',
+            key: 'lname',
+            placeholder: '',
+            prefix: '',
+            suffix: '',
+            multiple: false,
+            defaultValue: '',
+            protected: false,
+            unique: false,
+            persistent: true,
+            validate: {
+              required: true,
+              minLength: '',
+              maxLength: '',
+              pattern: '',
+              custom: '',
+              customPrivate: false,
+            },
+            conditional: {
+              show: '',
+              when: null,
+              eq: '',
+            },
+            type: 'textfield',
+          },
+        ],
+      };
+      const submission = {
+        data: {},
+      };
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: Processors,
+        scope: {},
+      };
+      processSync(context);
+      assert(!context.data.hasOwnProperty('fname'));
+      assert(!context.data.hasOwnProperty('lname'));
+    });
   });
 });
