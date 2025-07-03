@@ -1,3 +1,12 @@
+## [Unreleased: 2.5.1-rc.2]
+
+### Changed
+
+- FIO-9942: Fix issue with disabling evaluations
+- FIO-10201: fixed an issue where validation is triggered for components inside conditionally hidden editGrid
+- FIO-10225: fixed server side calculation with appUrl setting
+- FIO-10337: Refactored the core data processors to significantly improve performance
+
 ## 2.5.1-rc.1
 
 ### Changed
