@@ -10,7 +10,7 @@ import {
   SurveyComponent,
   DateTimeComponent,
 } from 'types';
-import { normalizeProcessSync } from '../';
+import { normalizeProcessSync, NormalizeScope } from '../';
 import { generateProcessorContext } from '../../__tests__/fixtures/util';
 
 describe('Normalize processor', function () {
@@ -354,9 +354,9 @@ describe('Normalize processor', function () {
     const data = {
       tags: null,
     };
-    const context: ProcessorContext<ProcessorScope> = generateProcessorContext(tagsComponent, data);
+    const context: ProcessorContext<NormalizeScope> = generateProcessorContext(tagsComponent, data);
     normalizeProcessSync(context);
-    expect(context.data).to.deep.equal({});
+    expect(context.scope?.filter?.tags).to.equal(false);
   });
 
   it('Should remove the survey component from the submission object if data is set falsy values', async function () {
@@ -387,21 +387,21 @@ describe('Normalize processor', function () {
       type: 'survey',
       input: true,
     };
-    const context1: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {
+    const context1: ProcessorContext<NormalizeScope> = generateProcessorContext(surveyComponent, {
       survey: null,
     });
     normalizeProcessSync(context1);
-    expect(context1.data).to.deep.equal({});
-    const context2: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {
+    expect(context1.scope?.filter?.survey).to.equal(false);
+    const context2: ProcessorContext<NormalizeScope> = generateProcessorContext(surveyComponent, {
       survey: 0,
     });
     normalizeProcessSync(context2);
-    expect(context2.data).to.deep.equal({});
-    const context3: ProcessorContext<ProcessorScope> = generateProcessorContext(surveyComponent, {
+    expect(context2.scope?.filter?.survey).to.equal(undefined);
+    const context3: ProcessorContext<NormalizeScope> = generateProcessorContext(surveyComponent, {
       survey: '',
     });
     normalizeProcessSync(context3);
-    expect(context3.data).to.deep.equal({});
+    expect(context3.scope?.filter?.survey).to.equal(undefined);
   });
 
   it('Should remove the datetime component from the submission object if data is set to null', async function () {
@@ -438,11 +438,11 @@ describe('Normalize processor', function () {
     const data = {
       dateTime: null,
     };
-    const context: ProcessorContext<ProcessorScope> = generateProcessorContext(
+    const context: ProcessorContext<NormalizeScope> = generateProcessorContext(
       dateTimeComponent,
       data,
     );
     normalizeProcessSync(context);
-    expect(context.data).to.deep.equal({});
+    expect(context.scope?.filter?.dateTime).to.deep.equal(false);
   });
 });
