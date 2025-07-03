@@ -1,91 +1,98 @@
-[{
-        "key": "selectGrids",
-        "type": "radio",
-        "input": true,
-        "label": "Select grids",
-        "inline": false,
-        "values": [{
-                "label": "Show grid 1",
-                "value": "showGrid1",
-                "shortcut": ""
-            },
-            {
-                "label": "Show grid 2",
-                "value": "showGrid2",
-                "shortcut": ""
-            }
-        ],
+[
+  {
+    "key": "selectGrids",
+    "type": "radio",
+    "input": true,
+    "label": "Select grids",
+    "inline": false,
+    "values": [
+      {
+        "label": "Show grid 1",
+        "value": "showGrid1",
+        "shortcut": ""
+      },
+      {
+        "label": "Show grid 2",
+        "value": "showGrid2",
+        "shortcut": ""
+      }
+    ],
+    "tableView": false,
+    "validateWhenHidden": false,
+    "optionsLabelPosition": "right"
+  },
+  {
+    "key": "grid2",
+    "type": "editgrid",
+    "input": true,
+    "label": "Grid 2",
+    "rowDrafts": false,
+    "tableView": false,
+    "components": [
+      {
+        "label": "Checkbox",
         "tableView": false,
         "validateWhenHidden": false,
-        "optionsLabelPosition": "right"
-    },
-    {
-        "key": "grid2",
-        "type": "editgrid",
-        "input": true,
-        "label": "Grid 2",
-        "rowDrafts": false,
-        "tableView": false,
-        "components": [{
-                "label": "Checkbox",
-                "tableView": false,
-                "validateWhenHidden": false,
-                "key": "checkbox",
-                "type": "checkbox",
-                "input": true
-            },
-            {
-                "label": "Text Field",
-                "applyMaskOn": "change",
-                "tableView": true,
-                "validate": {
-                    "required": true
-                },
-                "validateWhenHidden": false,
-                "key": "textField",
-                "conditional": {
-                    "show": true,
-                    "conjunction": "all",
-                    "conditions": [{
-                        "component": "grid2.checkbox",
-                        "operator": "isEqual",
-                        "value": true
-                    }]
-                },
-                "type": "textfield",
-                "input": true
-            },
-            {
-                "key": "requiredField",
-                "type": "textfield",
-                "input": true,
-                "label": "Required field",
-                "validate": {
-                    "required": true
-                },
-                "tableView": true,
-                "applyMaskOn": "change",
-                "validateWhenHidden": false
-            }
-        ],
-        "conditional": {
-            "show": true,
-            "conditions": [{
-                "value": "showGrid2",
-                "operator": "isEqual",
-                "component": "selectGrids"
-            }],
-            "conjunction": "all"
+        "key": "checkbox",
+        "type": "checkbox",
+        "input": true
+      },
+      {
+        "label": "Text Field",
+        "applyMaskOn": "change",
+        "tableView": true,
+        "validate": {
+          "required": true
         },
-        "displayAsTable": false,
-        "validateWhenHidden": false
-    },
-    {
-        "key": "submit",
-        "type": "button",
+        "validateWhenHidden": false,
+        "key": "textField",
+        "conditional": {
+          "show": true,
+          "conjunction": "all",
+          "conditions": [
+            {
+              "component": "grid2.checkbox",
+              "operator": "isEqual",
+              "value": true
+            }
+          ]
+        },
+        "type": "textfield",
+        "input": true
+      },
+      {
+        "key": "requiredField",
+        "type": "textfield",
         "input": true,
-        "label": "Submit",
-        "tableView": false,
-        "disableOnInvalid": true
-    }
+        "label": "Required field",
+        "validate": {
+          "required": true
+        },
+        "tableView": true,
+        "applyMaskOn": "change",
+        "validateWhenHidden": false
+      }
+    ],
+    "conditional": {
+      "show": true,
+      "conditions": [
+        {
+          "value": "showGrid2",
+          "operator": "isEqual",
+          "component": "selectGrids"
+        }
+      ],
+      "conjunction": "all"
+    },
+    "displayAsTable": false,
+    "validateWhenHidden": false
+  },
+  {
+    "key": "submit",
+    "type": "button",
+    "input": true,
+    "label": "Submit",
+    "tableView": false,
+    "disableOnInvalid": true
+  }
 ]
