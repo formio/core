@@ -102,7 +102,7 @@ export const fetchProcess: ProcessorFn<FetchScope> = async (context: FetchContex
 
     // Make sure the value does not get filtered for now...
     if (!scope.filter) scope.filter = {};
-    if (!scope.filter.hasOwnProperty(path)) {
+    if (!(scope as any).clearHidden?.hasOwnProperty(path)) {
       scope.filter[path] = true;
     }
     scope.fetched[path] = get(row, key);

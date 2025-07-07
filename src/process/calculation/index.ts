@@ -51,7 +51,7 @@ export const calculateProcessSync: ProcessorFnSync<CalculationScope> = (
     });
     set(data, path, newValue);
     if (!scope.filter) scope.filter = {};
-    if (!scope.filter.hasOwnProperty(path)) {
+    if (!(scope as any).clearHidden?.hasOwnProperty(path)) {
       scope.filter[path] = true;
     }
   }
