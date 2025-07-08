@@ -92,21 +92,7 @@ export const validateMultipleSync: RuleFnSync = (context: ValidationContext) => 
   const valueIsArray = Array.isArray(value);
 
   if (shouldBeMultipleArray) {
-    if (valueIsArray && underlyingValueShouldBeArray) {
-      if (value.length === 0) {
-        return isRequired ? new FieldError('array_nonempty', { ...context, setting: true }) : null;
-      }
-
-      // TODO: We need to be permissive here for file components, which have an array model type but don't have an underlying array value
-      // (in other words, a file component's data object will always be a single array regardless of whether or not multiple is set)
-      // In the future, we could consider checking the underlying value's type to determine if it should be an array
-      // return Array.isArray(value[0]) ? null : new FieldError('array', { ...context, setting: true });
-      return null;
-    } else if (valueIsArray && !underlyingValueShouldBeArray) {
-      if (value.length === 0) {
-        return isRequired ? new FieldError('array_nonempty', { ...context, setting: true }) : null;
-      }
-
+    if (valueIsArray && !underlyingValueShouldBeArray) {
       return Array.isArray(value[0]) && compModelType !== 'any'
         ? new FieldError('nonarray', { ...context, setting: true })
         : null;

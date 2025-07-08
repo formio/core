@@ -1,7 +1,8 @@
-import { expect } from 'chai';
-import { ValidationContext } from 'types';
+import { assert, expect } from 'chai';
+import { ValidationContext, ValidationScope } from 'types';
 import { shouldValidate as shouldValidateRegexPattern } from '../rules/validateRegexPattern';
 import { shouldValidate as shouldValidateRequired } from '../rules/validateRequired';
+import { processSync, ProcessTargets } from 'processes';
 
 const textFieldComponent = {
   type: 'textfield',
@@ -88,5 +89,53 @@ describe('Multiple values', function () {
     };
     const shouldValidateRegexRuleWithValues = shouldValidateRegexPattern(contextWithValues);
     expect(shouldValidateRegexRuleWithValues).to.be.equal(true);
+  });
+
+  it('Should return only a single require error message for File component with Multiple Values and require', async function () {
+    const form = {
+      components: [
+        {
+          label: 'Upload',
+          tableView: false,
+          storage: 'base64',
+          webcam: false,
+          capture: false,
+          fileTypes: [
+            {
+              label: '',
+              value: '',
+            },
+          ],
+          multiple: true,
+          validate: {
+            required: true,
+          },
+          validateWhenHidden: false,
+          key: 'file',
+          type: 'file',
+          input: true,
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        file: [],
+      },
+    };
+
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: ProcessTargets.evaluator,
+      scope: { errors },
+      config: {},
+    };
+    processSync(context);
+    expect((context.scope as ValidationScope).errors).to.have.length(1);
+    assert.equal(context.scope.errors[0].ruleName, 'required');
   });
 });
