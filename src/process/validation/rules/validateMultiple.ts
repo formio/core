@@ -57,6 +57,8 @@ export const emptyValueIsArray = (component: Component) => {
     case 'datetime':
     case 'textfield':
       return !!component.multiple;
+    case 'survey':
+      return false;
     case 'tags':
       return (component as TagsComponent).storeas !== 'string';
     default:
