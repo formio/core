@@ -94,4 +94,59 @@ describe('Validator', function () {
     expect(scope.errors[0].errorKeyOrMessage).to.equal('invalidDate');
     expect(scope.errors[1].errorKeyOrMessage).to.equal('nonarray');
   });
+
+   it('Validator should show error for survey if array is submitted', async function () {
+    const data = {
+      survey: [],
+      submit: true,
+    };
+    const component = {
+      label: 'Survey',
+      tableView: false,
+      questions: [
+        {
+          label: 'q 1',
+          value: 'q1',
+          tooltip: '',
+        },
+        {
+          label: 'q 2',
+          value: 'q2',
+          tooltip: '',
+        },
+      ],
+      values: [
+        {
+          label: 'ans 1',
+          value: 'ans1',
+          tooltip: '',
+        },
+        {
+          label: 'ans 2',
+          value: 'ans2',
+          tooltip: '',
+        },
+      ],
+      validateWhenHidden: false,
+      key: 'survey',
+      type: 'survey',
+      input: true,
+    };
+
+    const path = component.key;
+    const scope: ValidationScope = { errors: [] };
+    await validateProcess({
+      component,
+      scope,
+      data,
+      row: data,
+      path,
+      value: get(data, component.key),
+      processor: ProcessorType.Validate,
+      rules,
+    });
+
+    expect(scope.errors).to.have.length(1);
+    expect(scope.errors[0].errorKeyOrMessage).to.equal('nonarray');
+  });
 });
