@@ -1,3 +1,9 @@
+## 2.5.1-rc.3
+
+### Changed
+
+- FIO-10202: fixed an issue where Edit Grid with calculateOnServer: true field adds empty row on Blank Submission
+
 ## 2.5.1-rc.2
 
 ### Changed
