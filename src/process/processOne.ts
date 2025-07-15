@@ -33,10 +33,6 @@ export async function processOne<ProcessorScope>(context: ProcessorsContext<Proc
   // If the component has ephemeral state, then we need to reset it in case this is e.g. a data grid,
   // in which each row needs to be validated independently
   resetEphermalState(component);
-
-  if (!context.row) {
-    return;
-  }
   context.processor = ProcessorType.Custom;
   for (const processor of processors) {
     if (processor?.process) {
@@ -69,10 +65,6 @@ export function processOneSync<ProcessorScope>(context: ProcessorsContext<Proces
 
   // If the component has ephemeral state, then we need to reset the ephemeral state in case this is e.g. a data grid, in which each row needs to be validated independently
   resetEphermalState(component);
-
-  if (!context.row) {
-    return;
-  }
   context.processor = ProcessorType.Custom;
   for (const processor of processors) {
     if (processor?.processSync) {

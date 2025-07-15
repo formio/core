@@ -34,10 +34,6 @@ export async function process<ProcessScope>(
     components,
     data,
     async (component, compData, row, path, components, index, parent) => {
-      // Skip processing if row is null or undefined
-      if (!row) {
-        return;
-      }
       await processOne<ProcessScope>({
         ...context,
         data: compData,
@@ -74,10 +70,6 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
     components,
     data,
     (component, compData, row, path, components, index, parent) => {
-      // Skip processing if row is null or undefined
-      if (!row) {
-        return;
-      }
       processOneSync<ProcessScope>({
         ...context,
         data: compData,
