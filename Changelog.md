@@ -1,3 +1,9 @@
+## 2.3.4-rc.1
+
+### Changed
+
+- FIO-10408: Fixed issues with the nested field validations
+
 ## 2.3.3
 
 ### Changed
