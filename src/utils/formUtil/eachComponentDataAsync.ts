@@ -40,30 +40,40 @@ export const eachComponentDataAsync = async (
       ) {
         return true;
       }
+      const modelType = getModelType(component);
       if (isComponentNestedDataType(component)) {
-        const value = get(data, compPath, data);
-        if (Array.isArray(value)) {
-          for (let i = 0; i < value.length; i++) {
-            const nestedComponentPath =
-              getModelType(component) === 'nestedDataArray'
-                ? `${compPath}[${i}].data`
-                : `${compPath}[${i}]`;
+        const value = get(data, compPath);
+        if (modelType === 'nestedArray' || modelType === 'nestedDataArray') {
+          if (Array.isArray(value) && value.length) {
+            for (let i = 0; i < value.length; i++) {
+              const nestedComponentPath =
+                modelType === 'nestedDataArray' ? `${compPath}[${i}].data` : `${compPath}[${i}]`;
+              await eachComponentDataAsync(
+                component.components,
+                data,
+                fn,
+                nestedComponentPath,
+                i,
+                component,
+                includeAll,
+              );
+            }
+            return true;
+          } else if (includeAll) {
             await eachComponentDataAsync(
               component.components,
               data,
               fn,
-              nestedComponentPath,
-              i,
+              modelType === 'nestedDataArray' ? `${compPath}[0].data` : `${compPath}[0]`,
+              0,
               component,
               includeAll,
             );
+          } else {
+            // This is an empty nested array, so we do not need to process the children.
+            return true;
           }
-          return true;
-        } else if (isEmpty(row) && !includeAll) {
-          // Tree components may submit empty objects; since we've already evaluated the parent tree/layout component, we won't worry about constituent elements
-          return true;
-        }
-        if (getModelType(component) === 'dataObject') {
+        } else if (modelType === 'dataObject') {
           const nestedFormValue: any = get(data, component.path);
           const noReferenceAttached = nestedFormValue?._id
             ? isEmpty(nestedFormValue.data) && !has(nestedFormValue, 'form')
@@ -100,7 +110,7 @@ export const eachComponentDataAsync = async (
           );
         }
         return true;
-      } else if (getModelType(component) === 'none') {
+      } else if (modelType === 'none') {
         const info = componentInfo(component);
         if (info.hasColumns) {
           const columnsComponent = component as HasColumns;
