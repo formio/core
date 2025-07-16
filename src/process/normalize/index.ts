@@ -19,7 +19,7 @@ import {
   NumberComponent,
 } from 'types';
 
-type NormalizeScope = DefaultValueScope & {
+export type NormalizeScope = DefaultValueScope & {
   normalize?: {
     [path: string]: any;
   };
@@ -371,45 +371,41 @@ export const normalizeProcessSync: ProcessorFnSync<NormalizeScope> = (context) =
     type: component.type,
     normalized: false,
   };
-  // First check for component-type-specific transformations
+  let newValue = value;
   if (isAddressComponent(component)) {
-    set(data, path, normalizeAddressComponentValue(component, value));
-    scope.normalize[path].normalized = true;
+    newValue = normalizeAddressComponentValue(component, value);
   } else if (isDayComponent(component)) {
-    set(data, path, normalizeDayComponentValue(component, form, value));
-    scope.normalize[path].normalized = true;
+    newValue = normalizeDayComponentValue(component, form, value);
   } else if (isEmailComponent(component)) {
-    if (value && typeof value === 'string') {
-      set(data, path, value.toLowerCase());
-      scope.normalize[path].normalized = true;
-    }
+    newValue = value && isString(value) ? value.trim().toLowerCase() : value;
   } else if (isRadioComponent(component)) {
-    set(data, path, normalizeRadioComponentValue(value, component.dataType));
-    scope.normalize[path].normalized = true;
+    newValue = normalizeRadioComponentValue(value, component.dataType);
   } else if (isSelectComponent(component)) {
-    set(data, path, normalizeSelectComponentValue(component, value));
-    scope.normalize[path].normalized = true;
+    newValue = normalizeSelectComponentValue(component, value);
   } else if (isSelectBoxesComponent(component)) {
-    set(data, path, normalizeSelectBoxesComponentValue(value));
-    scope.normalize[path].normalized = true;
+    newValue = normalizeSelectBoxesComponentValue(value);
   } else if (isTagsComponent(component)) {
-    set(data, path, normalizeTagsComponentValue(component, value));
-    scope.normalize[path].normalized = true;
+    newValue = normalizeTagsComponentValue(component, value);
   } else if (isTextFieldComponent(component)) {
-    set(data, path, normalizeTextFieldComponentValue(component, defaultValues, value, path));
-    scope.normalize[path].normalized = true;
+    newValue = normalizeTextFieldComponentValue(component, defaultValues, value, path);
   } else if (isTimeComponent(component)) {
-    set(data, path, normalizeTimeComponentValue(component, value));
-    scope.normalize[path].normalized = true;
+    newValue = normalizeTimeComponentValue(component, value);
   } else if (isNumberComponent(component)) {
-    set(data, path, normalizeNumberComponentValue(component, value));
-    scope.normalize[path].normalized = true;
+    newValue = normalizeNumberComponentValue(component, value);
   }
 
-  // Next perform component-type-agnostic transformations (i.e. super())
-  if (component.multiple && !Array.isArray(value)) {
-    set(data, path, value ? [value] : []);
+  if (component.multiple && !component.validate?.required && !Array.isArray(value)) {
+    newValue = value ? [value] : [];
+  }
+
+  if (newValue === undefined || newValue === null) {
+    scope.filter = scope.filter || {};
+    scope.filter[path] = false;
+  } else if (value !== newValue && !(scope as any).clearHidden?.hasOwnProperty(path)) {
+    set(data, path, newValue);
     scope.normalize[path].normalized = true;
+    scope.filter = scope.filter || {};
+    scope.filter[path] = true;
   }
 };
 

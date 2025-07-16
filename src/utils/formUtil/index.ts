@@ -267,23 +267,33 @@ export function componentPath(
   const relative =
     type === ComponentPath.localPath ||
     type === ComponentPath.fullLocalPath ||
-    type === ComponentPath.localDataPath;
+    type === ComponentPath.localDataPath ||
+    type === ComponentPath.localContextualRowPath;
 
   // Full paths include all layout component ids in the path.
   const fullPath = type === ComponentPath.fullPath || type === ComponentPath.fullLocalPath;
 
   // See if this is a data path.
-  const dataPath = type === ComponentPath.dataPath || type === ComponentPath.localDataPath;
+  const dataPath =
+    type === ComponentPath.dataPath ||
+    type === ComponentPath.localDataPath ||
+    type === ComponentPath.contextualRowPath ||
+    type === ComponentPath.localContextualRowPath;
 
   // Determine if this component should include its key.
-  const includeKey = fullPath || (!!component.type && compModel !== 'none');
+  const includeKey =
+    fullPath || (!!component.type && compModel !== 'none' && compModel !== 'content');
 
   // The key is provided if the component can have data or if we are fetching the full path.
   const key = includeKey ? getComponentKey(component) : '';
 
+  // If this is a contextual row path.
+  const contextual =
+    type === ComponentPath.contextualRowPath || type === ComponentPath.localContextualRowPath;
+
   if (!parent) {
     // Return the key if there is no parent.
-    return key;
+    return contextual ? '' : key;
   }
 
   // Get the parent model type.
@@ -291,11 +301,16 @@ export function componentPath(
 
   // If there is a parent, then we only return the key if the parent is a nested form and it is a relative path.
   if (relative && parentModel === 'dataObject') {
-    return key;
+    return contextual ? '' : key;
   }
 
   // Return the parent path.
-  let parentPath = parentPaths?.hasOwnProperty(type) ? parentPaths[type] || '' : '';
+  const parentType = contextual
+    ? relative
+      ? ComponentPath.localDataPath
+      : ComponentPath.dataPath
+    : type;
+  let parentPath = parentPaths?.hasOwnProperty(parentType) ? parentPaths[parentType] || '' : '';
 
   // For data paths (where we wish to get the path to the data), we need to ensure we append the parent
   // paths to the end of the path so that any component within this component properly references their data.
@@ -306,6 +321,11 @@ export function componentPath(
     if (parentModel === 'dataObject' || parentModel === 'nestedDataArray') {
       parentPath += '.data';
     }
+  }
+
+  // If this is a contextual row path, then return here.
+  if (contextual) {
+    return parentPath;
   }
 
   // Return the parent path with its relative component path (if applicable).
@@ -332,6 +352,18 @@ export function getComponentPaths(
     dataPath: componentPath(component, parent, parentPaths, ComponentPath.dataPath),
     localDataPath: componentPath(component, parent, parentPaths, ComponentPath.localDataPath),
     dataIndex: parentPaths?.dataIndex,
+    contextualRowPath: componentPath(
+      component,
+      parent,
+      parentPaths,
+      ComponentPath.contextualRowPath,
+    ),
+    localContextualRowPath: componentPath(
+      component,
+      parent,
+      parentPaths,
+      ComponentPath.localContextualRowPath,
+    ),
   };
 }
 
@@ -545,25 +577,23 @@ export function getComponentKey(component: Component) {
   return component.key;
 }
 
-export function getContextualRowPath(
-  component: Component,
-  paths?: ComponentPaths,
-  local?: boolean,
-): string {
-  if (!paths) {
-    return '';
-  }
-  const dataPath = local ? paths.localDataPath : paths.dataPath;
-  return dataPath?.replace(new RegExp(`.?${escapeRegExp(getComponentKey(component))}$`), '') || '';
-}
-
 export function getContextualRowData(
   component: Component,
   data: any,
   paths?: ComponentPaths,
   local?: boolean,
 ): any {
-  const rowPath = getContextualRowPath(component, paths, local);
+  if (
+    paths?.hasOwnProperty('localContextualRowPath') &&
+    paths?.hasOwnProperty('contextualRowPath')
+  ) {
+    const rowPath = local ? paths?.localContextualRowPath : paths?.contextualRowPath;
+    return rowPath ? get(data, rowPath, null) : data;
+  }
+  // Fallback to the less performant regex method.
+  const dataPath = local ? paths?.localDataPath : paths?.dataPath;
+  const rowPath =
+    dataPath?.replace(new RegExp(`.?${escapeRegExp(getComponentKey(component))}$`), '') || '';
   return rowPath ? get(data, rowPath, null) : data;
 }
 
@@ -576,13 +606,20 @@ export function getComponentLocalData(paths: ComponentPaths, data: any, local?: 
   return parentPath ? get(data, parentPath, null) : data;
 }
 
-export function shouldProcessComponent(comp: Component, row: any, value: any): boolean {
+export function shouldProcessComponent(
+  comp: Component,
+  value: any,
+  paths?: ComponentPaths,
+): boolean {
   if (getModelType(comp) === 'dataObject') {
     const noReferenceAttached = value?._id ? isEmpty(value.data) && !has(value, 'form') : false;
     const shouldBeCleared =
       (!comp.hasOwnProperty('clearOnHide') || comp.clearOnHide) &&
       (comp.hidden || comp.scope?.conditionallyHidden);
-    const shouldSkipProcessingNestedFormData = noReferenceAttached || shouldBeCleared;
+    // Also skip processing if the value is empty and the form is in an array component.
+    const emptyInDataGrid = !value && paths?.dataIndex !== undefined;
+    const shouldSkipProcessingNestedFormData =
+      noReferenceAttached || (shouldBeCleared && !comp.validateWhenHidden) || emptyInDataGrid;
     if (shouldSkipProcessingNestedFormData) {
       return false;
     }

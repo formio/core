@@ -130,7 +130,7 @@ export function setActionProperty(context: LogicContext, action: LogicActionProp
 }
 
 export function setValueProperty(context: LogicContext, action: LogicActionValue) {
-  const { component, data, path } = context;
+  const { component, data, path, scope } = context;
   const oldValue = get(data, path);
   const newValue = evaluate(action.value, context, 'value', false, (evalContext: any) => {
     evalContext.value = clone(oldValue);
@@ -140,6 +140,10 @@ export function setValueProperty(context: LogicContext, action: LogicActionValue
     !(component.clearOnHide && conditionallyHidden(context as ProcessorContext<ConditionsScope>))
   ) {
     set(data, path, newValue);
+    if (!scope.filter) scope.filter = {};
+    if (!(scope as any).clearHidden?.hasOwnProperty(path)) {
+      scope.filter[path] = true;
+    }
     return true;
   }
   return false;

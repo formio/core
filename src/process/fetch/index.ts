@@ -5,7 +5,6 @@ import {
   FetchScope,
   FetchFn,
   DataSourceComponent,
-  FilterContext,
 } from 'types';
 import { get, set } from 'lodash';
 import { evaluate, interpolate } from 'utils';
@@ -102,8 +101,10 @@ export const fetchProcess: ProcessorFn<FetchScope> = async (context: FetchContex
     );
 
     // Make sure the value does not get filtered for now...
-    if (!(scope as FilterContext).filter) (scope as FilterContext).filter = {};
-    (scope as FilterContext).filter[path] = true;
+    if (!scope.filter) scope.filter = {};
+    if (!(scope as any).clearHidden?.hasOwnProperty(path)) {
+      scope.filter[path] = true;
+    }
     scope.fetched[path] = get(row, key);
   } catch (err: any) {
     console.log(err.message);
