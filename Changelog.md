@@ -1,3 +1,9 @@
+## [Unreleased: 2.5.1-rc.4]
+
+### Changed
+
+ - FIO-10337, FIO-10028: Added performance and data processing improvements
+
 ## 2.5.1-rc.3
 
 ### Changed
