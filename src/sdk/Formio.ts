@@ -8,7 +8,6 @@ import cookies from 'browser-cookies';
 const { fetch, Headers } = fetchPonyfill();
 import Plugins from './Plugins';
 import { attachResourceToDom } from 'utils';
-import { ResourceToDomOptions } from 'types';
 declare const OktaAuth: any;
 
 /**
@@ -2395,11 +2394,6 @@ export class Formio {
         Formio.libraries[name].resolve = resolve;
         Formio.libraries[name].reject = reject;
       });
-
-      (resourceToDomOptions as ResourceToDomOptions).onerror = (e) => {
-        // reject library promise if script fails to load
-        Formio.libraries[name].reject(e);
-      };
 
       const callbackName: any = `${name}Callback`;
 

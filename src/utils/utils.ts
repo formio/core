@@ -46,7 +46,7 @@ export function unescapeHTML(str: string) {
 }
 
 export function attachResourceToDom(options: ResourceToDomOptions) {
-  const { name, formio, onload, rootElement, onerror } = options;
+  const { name, formio, onload, rootElement } = options;
   let { src } = options;
   src = Array.isArray(src) ? src : [src];
   src.forEach((lib: any) => {
@@ -91,14 +91,6 @@ export function attachResourceToDom(options: ResourceToDomOptions) {
         onload(formio.libraries[name].ready);
       });
     }
-
-    element.addEventListener('error', (e) => {
-      console.warn(`Unable to load script ${name}`);
-      if (typeof onerror === 'function') {
-        onerror(e);
-      }
-    });
-
     if (rootElement) {
       rootElement.insertAdjacentElement('afterend', element);
       return;
