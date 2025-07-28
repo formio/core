@@ -1,3 +1,9 @@
+## [Unreleased: 2.5.1-rc.7]
+
+### Changed
+
+- Revert "FIO-10299: fixed an issue where calendar widget does not open when the locale loading fails"
+
 ## 2.5.1-rc.6
 
 ### Changed
