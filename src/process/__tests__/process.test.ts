@@ -5493,6 +5493,227 @@ describe('Process Tests', function () {
     assert.deepEqual(context.data, submission.data);
   });
 
+  it('Should return required validation error when the simple conditional value is set as a sting instead of boolean', async function () {
+    const form = {
+      key: 'form',
+      type: 'form',
+      input: true,
+      components: [
+        {
+          label: 'Text Field',
+          placeholder: 'Text Field',
+          tableView: true,
+          defaultValue: 'Text Field Default Value',
+          validate: {
+            required: true,
+          },
+          unique: true,
+          errorLabel: 'TF Custom Error Label',
+          key: 'textField',
+          properties: {
+            pdfLabel: 'Text Field PDF Label',
+          },
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'triggerConditionalLogic',
+                operator: 'isEqual',
+                value: 'false',
+              },
+            ],
+          },
+          logic: [
+            {
+              name: 'Non-required',
+              trigger: {
+                type: 'simple',
+                simple: {
+                  show: true,
+                  conjunction: 'all',
+                  conditions: [
+                    {
+                      component: 'triggerLogicMakeNonRequired',
+                      operator: 'isEqual',
+                      value: 'true',
+                    },
+                  ],
+                },
+              },
+              actions: [
+                {
+                  name: 'Non-required',
+                  type: 'property',
+                  property: {
+                    label: 'Required',
+                    value: 'validate.required',
+                    type: 'boolean',
+                  },
+                  state: false,
+                },
+              ],
+            },
+            {
+              name: 'Disabled',
+              trigger: {
+                type: 'simple',
+                simple: {
+                  show: true,
+                  conjunction: 'all',
+                  conditions: [
+                    {
+                      component: 'triggerLogicMakeDisabled',
+                      operator: 'isEqual',
+                      value: 'true',
+                    },
+                  ],
+                },
+              },
+              actions: [
+                {
+                  name: 'Disabled',
+                  type: 'property',
+                  property: {
+                    label: 'Disabled',
+                    value: 'disabled',
+                    type: 'boolean',
+                  },
+                  state: true,
+                },
+              ],
+            },
+            {
+              name: 'Change Value',
+              trigger: {
+                type: 'simple',
+                simple: {
+                  show: true,
+                  conjunction: 'all',
+                  conditions: [
+                    {
+                      component: 'checkbox4',
+                      operator: 'isEqual',
+                      value: 'true',
+                    },
+                  ],
+                },
+              },
+              actions: [
+                {
+                  name: 'Change Value',
+                  type: 'value',
+                  value: 'value = "Modified Value";',
+                },
+              ],
+            },
+          ],
+          overlay: {
+            page: 1,
+            left: '100',
+            top: '300',
+            width: '400',
+            height: '30',
+          },
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Trigger Conditional logic & hide components',
+          tableView: false,
+          defaultValue: false,
+          key: 'triggerConditionalLogic',
+          overlay: {
+            page: 1,
+            left: '100',
+            top: '1200',
+            width: '30',
+            height: '30',
+          },
+          type: 'checkbox',
+          input: true,
+        },
+        {
+          label: 'Trigger Logic & make non-required',
+          tableView: false,
+          defaultValue: false,
+          key: 'triggerLogicMakeNonRequired',
+          overlay: {
+            page: 1,
+            left: 100,
+            top: '1250',
+            width: '30',
+            height: '30',
+          },
+          type: 'checkbox',
+          input: true,
+        },
+        {
+          label: 'Trigger Logic & make disabled',
+          tableView: false,
+          key: 'triggerLogicMakeDisabled',
+          overlay: {
+            page: 1,
+            left: 100,
+            top: '1300',
+            width: '30',
+            height: '30',
+          },
+          type: 'checkbox',
+          input: true,
+          defaultValue: false,
+        },
+        {
+          label: 'Trigger Logic & change values <i>(except File, Signature)</i>',
+          tableView: false,
+          defaultValue: false,
+          key: 'checkbox4',
+          overlay: {
+            page: 1,
+            left: '100',
+            top: '1350',
+            width: '30',
+            height: '30',
+          },
+          type: 'checkbox',
+          input: true,
+        },
+        {
+          label: 'Submit',
+          tableView: false,
+          key: 'submit',
+          type: 'button',
+          input: true,
+          saveOnEnter: false,
+        },
+      ],
+    };
+    const submission = {
+      data: {
+        checkbox4: false,
+        submit: true,
+        textField: '',
+        triggerConditionalLogic: false,
+        triggerLogicMakeDisabled: false,
+        triggerLogicMakeNonRequired: false,
+      },
+      state: 'submitted',
+    };
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    const scope = processSync(context as any);
+    expect((scope as ValidationScope).errors).to.have.length(1);
+  });
+
   describe('Required component validation in nested form in DataGrid/EditGrid', function () {
     const nestedForm = {
       key: 'form',
