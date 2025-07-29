@@ -20,7 +20,7 @@ export default class IsEqualTo extends ConditionOperator {
       return get(value, comparedValue, false);
     }
     if (
-      value &&
+      (value || value === false) &&
       comparedValue &&
       typeof value !== typeof comparedValue &&
       isString(comparedValue)
