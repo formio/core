@@ -1,4 +1,4 @@
-## [Unreleased: 2.5.1-rc.8]
+## 2.5.1-rc.8
 
 ### Changed
 
