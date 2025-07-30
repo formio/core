@@ -1,3 +1,9 @@
+## [Unreleased: 2.5.1-rc.8]
+
+### Changed
+
+- FIO-10379-10380: fixed an issue where validation, logic and conditions do not work property when the checkbox value is set as a string in conditions settings
+
 ## 2.5.1-rc.7
 
 ### Changed
