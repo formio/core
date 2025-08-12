@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import assert from 'node:assert';
-import type { ContainerComponent, ValidationScope } from 'types';
+import type { ContainerComponent, ProcessContext, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
 import { process, processSync, Processors } from '../index';
 import { fastCloneDeep } from 'utils';
@@ -16,6 +16,7 @@ import {
   skipValidWithHiddenParentComp,
   requiredFieldInsideEditGrid,
   formWithDefaultValues,
+  requiredValidationDisabledByLogic,
 } from './fixtures';
 import _ from 'lodash';
 
@@ -6025,6 +6026,26 @@ describe('Process Tests', function () {
     };
     const scope = processSync(context as any);
     expect((scope as ValidationScope).errors).to.have.length(1);
+  });
+
+  it('Should not trigger validation errors for components that remove required property by logic', async function () {
+    const form = requiredValidationDisabledByLogic;
+    const submission = {
+      data: {
+        b: '',
+        skipRequired: true,
+      },
+    };
+    const context = {
+      form,
+      submission: submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: {} as ValidationScope,
+    } as ProcessContext<ValidationScope>;
+    processSync(context);
+    expect(context.scope.errors.length).to.equal(0);
   });
 
   describe('Required component validation in nested form in DataGrid/EditGrid', function () {
