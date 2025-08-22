@@ -1,3 +1,9 @@
+## 2.5.1-rc.9
+
+### Changed
+
+- FIO-10111: fixed an issue where getComponent returns wrong data component when this data component has layout components inside
+
 ## 2.5.1-rc.8
 
 ### Changed
