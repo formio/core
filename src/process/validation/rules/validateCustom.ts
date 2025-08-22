@@ -40,7 +40,7 @@ export const validateCustomSync: RuleFnSync = (context: ValidationContext) => {
 
     const isValid = Evaluator.evaluate(customValidation, evalContextValue, 'valid', true, {}, {});
 
-    if (isValid === null || isValid === true) {
+    if (isValid === null || isValid === true || isValid === undefined) {
       return null;
     }
 

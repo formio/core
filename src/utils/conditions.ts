@@ -52,6 +52,12 @@ export function checkCustomConditional(
     return null;
   }
   const value = evaluate(context, condition, variable, evalContext as EvaluatorFn);
+  // For reverse compatability... if "show" is never set, then it should be shown. This
+  // comes from the following legacy behavior
+  // https://github.com/formio/formio.js/blob/973b214ec6bf23d8679d0f5007b3522528abd36d/src/utils/utils.js#L311C33-L311C37
+  if (value === undefined) {
+    return true;
+  }
   if (value === null) {
     return null;
   }
