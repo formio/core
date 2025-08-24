@@ -1,4 +1,4 @@
-## [Unreleased: 2.3.0-patch.1]
+## 2.3.0-patch.1
 
 ### Changed
 
