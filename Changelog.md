@@ -1,3 +1,9 @@
+## [Unreleased: 2.3.0-patch.1]
+
+### Changed
+
+- FIO-10554: Fixed issue where if you do not set the variable in a calculation, that unexpected behavior occurs
+
 ## 2.3.0-rc.20
 
 ### Changed
