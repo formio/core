@@ -1931,9 +1931,10 @@ export class Formio {
    * @param {string} url - The URL of the Base API url.
    */
   static setBaseUrl(url: string) {
-    Formio.baseUrl = url;
+    const normalizedUrl = url.replace(/\/+$/, '');
+    Formio.baseUrl = normalizedUrl;
     if (!Formio.projectUrlSet) {
-      Formio.projectUrl = url;
+      Formio.projectUrl = normalizedUrl;
     }
   }
 
