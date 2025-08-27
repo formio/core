@@ -15,7 +15,7 @@ import {
   LogicActionPropertyString,
   LogicActionValue,
 } from 'types/AdvancedLogic';
-import { get, set, clone, isEqual, assign } from 'lodash';
+import { get, set, clone, isEqual, assign, unset } from 'lodash';
 import { evaluate, interpolate } from 'modules/jsonlogic';
 import { registerEphermalState } from './utils';
 import { getComponentAbsolutePath } from './formUtil';
@@ -31,6 +31,9 @@ export const hasLogic = (context: LogicContext): boolean => {
 
 export const checkTrigger = (context: LogicContext, trigger: any): boolean => {
   let shouldTrigger: boolean | null = false;
+  if (!trigger) {
+    return false;
+  }
   switch (trigger.type) {
     case 'simple':
       if (isLegacyConditional(trigger.simple)) {
@@ -136,6 +139,7 @@ export function setValueProperty(context: LogicContext, action: LogicActionValue
   const oldValue = get(data, path);
   const newValue = evaluate(context, action.value, 'value', (evalContext: any) => {
     evalContext.value = clone(oldValue);
+    evalContext.result = context.result;
   });
   if (
     !isEqual(oldValue, newValue) &&
@@ -159,6 +163,7 @@ export function setMergeComponentSchema(
     'schema',
     (evalContext: any) => {
       evalContext.value = clone(oldValue);
+      evalContext.result = context.result;
     },
   );
   const merged = assign({}, component, schema);
@@ -181,10 +186,13 @@ export const applyActions = (context: LogicContext): boolean => {
   }
   return logic.reduce((changed, logicItem) => {
     const { actions, trigger } = logicItem;
-    if (!trigger || !actions || !actions.length || !checkTrigger(context, trigger)) {
+    const result = checkTrigger(context, trigger);
+    if (!trigger || !actions || !actions.length || !result) {
       return changed;
     }
-    return actions.reduce((changed, action) => {
+    // remove trigger result of current logic block to the evaluation context
+    context.result = result;
+    const actionsResult = actions.reduce((changed, action) => {
       switch (action.type) {
         case 'property':
           if (setActionProperty(context, action)) {
@@ -204,5 +212,8 @@ export const applyActions = (context: LogicContext): boolean => {
           return changed;
       }
     }, changed);
+    // remove result of current logic block from context
+    unset(context, 'result');
+    return actionsResult;
   }, false);
 };
