@@ -1,3 +1,9 @@
+## [Unreleased: 2.3.0-patch.2]
+
+### Changed
+
+FIO-10588: fixed an issue where logic with the result variable does not work properly on server side
+
 ## 2.3.0-patch.1
 
 ### Changed
