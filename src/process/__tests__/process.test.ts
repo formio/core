@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import assert from 'node:assert';
-import type { ContainerComponent, ValidationScope } from 'types';
+import type { ContainerComponent, ProcessContext, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
 import { process, processSync, Processors } from '../index';
 import { fastCloneDeep } from 'utils';
@@ -16,6 +16,7 @@ import {
   skipValidWithHiddenParentComp,
   requiredFieldInsideEditGrid,
   formWithDefaultValues,
+  requiredValidationDisabledByLogic,
 } from './fixtures';
 import _ from 'lodash';
 
@@ -6027,6 +6028,26 @@ describe('Process Tests', function () {
     expect((scope as ValidationScope).errors).to.have.length(1);
   });
 
+  it('Should not trigger validation errors for components that remove required property by logic', async function () {
+    const form = requiredValidationDisabledByLogic;
+    const submission = {
+      data: {
+        b: '',
+        skipRequired: true,
+      },
+    };
+    const context = {
+      form,
+      submission: submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: {} as ValidationScope,
+    } as ProcessContext<ValidationScope>;
+    processSync(context);
+    expect(context.scope.errors.length).to.equal(0);
+  });
+
   describe('Required component validation in nested form in DataGrid/EditGrid', function () {
     const nestedForm = {
       key: 'form',
@@ -7125,6 +7146,185 @@ describe('Process Tests', function () {
       processSync(context);
       assert(!context.data.hasOwnProperty('fname'));
       assert(!context.data.hasOwnProperty('lname'));
+    });
+
+     it('Should not return the error for required component with logic where result var is used', async function () {
+      const form = {
+        components: [
+          {
+            label: 'Registration number required',
+            applyMaskOn: 'change',
+            tableView: true,
+            case: 'uppercase',
+            validate: {
+              required: true,
+              maxLength: 50,
+            },
+            validateWhenHidden: false,
+            key: 'plateNumber2',
+            logic: [
+              {
+                name: 'keep letter and number',
+                trigger: {
+                  type: 'javascript',
+                  javascript: 'result=row[component.key];',
+                },
+                actions: [
+                  {
+                    name: 'set',
+                    type: 'value',
+                    value: "value=result.replace(/[^a-zA-Z0-9]/g, '');\n",
+                  },
+                ],
+              },
+            ],
+            type: 'textfield',
+            input: true,
+            keyModified: true,
+          },
+          {
+            label: 'Submit',
+            showValidations: false,
+            tableView: false,
+            key: 'submit',
+            type: 'button',
+            input: true,
+          },
+        ],
+      };
+      const submission = {
+        data: { plateNumber2: 'TEST', submit: true },
+      };
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: Processors,
+        scope: {},
+      };
+      processSync(context as any);
+      assert.equal(context.data.plateNumber2, 'TEST');
+      assert.equal((context.scope as any).errors.length, 0);
+    });
+
+    it('Should return the value formatted by logic where result var is used', async function () {
+      const form = {
+        components: [
+          {
+            label: 'Registration number required',
+            applyMaskOn: 'change',
+            tableView: true,
+            case: 'uppercase',
+            validate: {
+              required: true,
+              maxLength: 50,
+            },
+            validateWhenHidden: false,
+            key: 'plateNumber2',
+            logic: [
+              {
+                name: 'keep letter and number',
+                trigger: {
+                  type: 'javascript',
+                  javascript: 'result=row[component.key];',
+                },
+                actions: [
+                  {
+                    name: 'set',
+                    type: 'value',
+                    value: "value=result.replace(/[^a-zA-Z0-9]/g, '');\n",
+                  },
+                ],
+              },
+            ],
+            type: 'textfield',
+            input: true,
+            keyModified: true,
+          },
+          {
+            label: 'Submit',
+            showValidations: false,
+            tableView: false,
+            key: 'submit',
+            type: 'button',
+            input: true,
+          },
+        ],
+      };
+      const submission = {
+        data: { plateNumber2: 'TEST 123 TEST', submit: true },
+      };
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: Processors,
+        scope: {},
+      };
+      processSync(context as any);
+      assert.equal(context.data.plateNumber2, 'TEST123TEST');
+      assert.equal((context.scope as any).errors.length, 0);
+    });
+
+    it('Should return the error for required component with logic where result var is used', async function () {
+      const form = {
+        components: [
+          {
+            label: 'Registration number required',
+            applyMaskOn: 'change',
+            tableView: true,
+            case: 'uppercase',
+            validate: {
+              required: true,
+              maxLength: 50,
+            },
+            validateWhenHidden: false,
+            key: 'plateNumber2',
+            logic: [
+              {
+                name: 'keep letter and number',
+                trigger: {
+                  type: 'javascript',
+                  javascript: 'result=row[component.key];',
+                },
+                actions: [
+                  {
+                    name: 'set',
+                    type: 'value',
+                    value: "value=result.replace(/[^a-zA-Z0-9]/g, '');\n",
+                  },
+                ],
+              },
+            ],
+            type: 'textfield',
+            input: true,
+            keyModified: true,
+          },
+          {
+            label: 'Submit',
+            showValidations: false,
+            tableView: false,
+            key: 'submit',
+            type: 'button',
+            input: true,
+          },
+        ],
+      };
+      const submission = {
+        data: { plateNumber2: '', submit: true },
+      };
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: Processors,
+        scope: {},
+      };
+      processSync(context as any);
+      assert.equal((context.scope as any).errors.length, 1);
     });
   });
 });
