@@ -12,6 +12,7 @@ import form1 from './form1.json';
 import subs from './subs.json';
 import requiredFieldInsideEditGrid from './requiredFieldInsideConditionalEditGrid.json';
 import formWithDefaultValues from './componentsWithDefaultValues.json';
+import requiredValidationDisabledByLogic from './requiredValidationDisabledByLogic.json';
 
 export {
   addressComponentWithOtherCondComponents,
@@ -28,4 +29,5 @@ export {
   subs,
   requiredFieldInsideEditGrid,
   formWithDefaultValues,
+  requiredValidationDisabledByLogic,
 };
