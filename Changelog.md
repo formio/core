@@ -1,3 +1,9 @@
+## 2.5.1
+
+### Changed
+
+- Official Release
+
 ## 2.5.1-rc.9
 
 ### Changed
