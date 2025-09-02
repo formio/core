@@ -2,6 +2,9 @@
 
 This library is the core data processing engine behind the Form.io platform. It is a set of isomorphic APIs that allow for complex orchestration (e.g. calculated values, conditionally hidden components, complex logic, etc.) of JSON form and submission definitions.
 
+> [!IMPORTANT]
+> As of 2 September 2025, the `master` branch will be renamed `master_old` and the default branch will be called `main`. `main` will be based on the `5.2.x` branch, which is the latest stable release. See [here](https://github.com/formio/core/issues/290) for more details about this change.
+
 ### Usage
 
 @formio/core is available as an npm package. You can install it using the package manager of your choice:
