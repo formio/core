@@ -16,7 +16,7 @@ export type FormAction = {
   method: Array<string>;
   condition?: any;
   priority: number;
-  settings: any;
+  settings: ActionSettings | Record<string, unknown>;
   form: FormId;
   // Database timestamps
   deleted: Date | string;

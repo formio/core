@@ -99,3 +99,10 @@ export type ProjectApiCalls = {
   used: ProjectUsage;
   reset: Date | string;
 };
+
+export type ProjectRole = {
+  title: string;
+  description: string;
+  admin: boolean;
+  default: boolean;
+};
