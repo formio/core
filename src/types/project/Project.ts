@@ -106,3 +106,17 @@ export type ProjectRole = {
   admin: boolean;
   default: boolean;
 };
+
+export type ProjectFormAccess = {
+  _id: string;
+  title?: string;
+  name?: string;
+  path?: string;
+  access?: Access[];
+  submissionAccess?: Access[];
+};
+
+export type ProjectAccessInfo = {
+  roles: Record<string, ProjectRole>;
+  forms?: Record<string, ProjectFormAccess>;
+};
