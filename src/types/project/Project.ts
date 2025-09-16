@@ -101,10 +101,11 @@ export type ProjectApiCalls = {
 };
 
 export type ProjectRole = {
-  title: string;
-  description: string;
-  admin: boolean;
-  default: boolean;
+  _id?: string;
+  title?: string;
+  description?: string;
+  admin?: boolean;
+  default?: boolean;
 };
 
 export type ProjectFormAccess = {
