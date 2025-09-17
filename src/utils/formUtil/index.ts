@@ -1413,6 +1413,8 @@ export function normalizeContext(context: any): any {
     scope,
     config,
   } = context;
+
+  const { database, ...safeConfig } = config || {};
   return {
     path: paths ? paths.localDataPath : path,
     data: paths ? getComponentLocalData(paths, data, local) : data,
@@ -1425,7 +1427,7 @@ export function normalizeContext(context: any): any {
     instance,
     value,
     input: value,
-    config,
+    config: safeConfig,
     options,
   };
 }
