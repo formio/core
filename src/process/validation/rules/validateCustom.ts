@@ -36,7 +36,7 @@ export const validateCustomSync: RuleFnSync = (context: ValidationContext) => {
       context.input = value;
     });
 
-    if (isValid === null || isValid === true) {
+    if (isValid === null || isValid === true || isValid === undefined) {
       return null;
     }
 
