@@ -341,8 +341,7 @@ export type PanelComponent = NestedComponent & {
 };
 
 export type PasswordComponent = TextFieldComponent;
-
-export type PhoneNumberComponent = NumberComponent & { inputMode: 'decimal' };
+export type PhoneNumberComponent = TextFieldComponent;
 
 export type ListComponent = BaseComponent & {
   values?: { label: string; value: string; shortcut?: string }[];
