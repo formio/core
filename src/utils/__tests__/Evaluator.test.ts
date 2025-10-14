@@ -272,28 +272,19 @@ describe('Evaluator', function () {
     // Simulate the checkCustomConditional logic
     const context = { data: {}, form: {}, paths: {}, local: {} };
     // Script does not set 'show', so result should be true
-    assert.equal(
-      Evaluator.evaluate('if (false) { show = false; }', context, 'show'),
-      undefined
-    );
+    assert.equal(Evaluator.evaluate('if (false) { show = false; }', context, 'show'), undefined);
     // The checkCustomConditional logic would treat undefined as true
     // So, simulate that logic here
     const value = Evaluator.evaluate('if (false) { show = false; }', context, 'show');
     assert.equal(value === undefined ? true : value, true);
 
     // Script sets show = false
-    assert.equal(
-      Evaluator.evaluate('show = false;', context, 'show'),
-      false
-    );
+    assert.equal(Evaluator.evaluate('show = false;', context, 'show'), false);
     const value2 = Evaluator.evaluate('show = false;', context, 'show');
     assert.equal(value2 === undefined ? true : value2, false);
 
     // Script sets show = true
-    assert.equal(
-      Evaluator.evaluate('show = true;', context, 'show'),
-      true
-    );
+    assert.equal(Evaluator.evaluate('show = true;', context, 'show'), true);
     const value3 = Evaluator.evaluate('show = true;', context, 'show');
     assert.equal(value3 === undefined ? true : value3, true);
   });

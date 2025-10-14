@@ -29,7 +29,7 @@
     "show-coverage": "open coverage/lcov-report/index.html",
     "lint": "eslint src",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky && yarn build"
   },
   "repository": {
     "type": "git",

@@ -6724,7 +6724,7 @@ describe('Process Tests', function () {
       assert(!context.data.hasOwnProperty('lname'));
     });
 
-     it('Should not return the error for required component with logic where result var is used', async function () {
+    it('Should not return the error for required component with logic where result var is used', async function () {
       const form = {
         components: [
           {
