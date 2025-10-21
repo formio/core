@@ -19,6 +19,7 @@ export type ProcessorContext<ProcessorScope> = {
   form?: Form;
   paths?: ComponentPaths;
   submission?: Submission;
+  current?: Submission; // The current submission from database.
   components?: Component[];
   instance?: PassedComponentInstance;
   process?: ProcessType;

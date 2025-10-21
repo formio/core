@@ -3,22 +3,22 @@ import { SimpleConditional } from './BaseComponent';
 
 export type LogicTriggerSimple = {
   type: 'simple';
-  simple: SimpleConditional;
+  simple?: SimpleConditional;
 };
 
 export type LogicTriggerJavascript = {
   type: 'javascript';
-  javascript: string;
+  javascript?: string;
 };
 
 export type LogicTriggerJson = {
   type: 'json';
-  json: RulesLogic;
+  json?: RulesLogic;
 };
 
 export type LogicTriggerEvent = {
   type: 'event';
-  event: string;
+  event?: string;
 };
 
 export type LogicTrigger =

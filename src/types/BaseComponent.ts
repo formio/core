@@ -1,6 +1,7 @@
 import { RulesLogic } from 'json-logic-js';
 import { AdvancedLogic } from './AdvancedLogic';
 import { getModelType } from 'utils/formUtil';
+import { Access, BasicAccessType } from './Access';
 export type JSONConditional = { json: RulesLogic };
 export type LegacyConditional = {
   show: boolean | string | null;
@@ -83,6 +84,8 @@ export type BaseComponent = {
     height: string;
   };
   allowCalculateOverride?: boolean;
+  submissionAccess?: Access[];
+  defaultPermission?: BasicAccessType;
   encrypted?: boolean;
   showCharCount?: boolean;
   showWordCount?: boolean;
