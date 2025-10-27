@@ -23,7 +23,7 @@ export const filterProcess: ProcessorFn<FilterScope> = async (context: FilterCon
 };
 
 export const getModelTypeDefaultValue = (modelType: string, context: FilterContext): any | undefined=> {
-  const modelTypeDefaultValues: {[modelType]: () => any} = {
+  const modelTypeDefaultValues: {[modelType: string]: () => any} = {
     dataObject:  () => ({ data: {} }),
     nestedArray: () => [],
     nestedDataArray: () => { 
