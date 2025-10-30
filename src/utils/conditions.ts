@@ -37,17 +37,22 @@ export function conditionallyHidden(context: ConditionsContext) {
  * @returns {*}
  */
 export function checkCustomConditional(
-  condition: string,
+  condition: string | ((...args: any[]) => boolean),
   context: ConditionsContext,
   variable: string = 'show',
 ): boolean | null {
   if (!condition) {
     return null;
   }
-  // For reverse compatability... if "show" is never set, then it should be shown. This
-  // comes from the following legacy behavior
-  // https://github.com/formio/formio.js/blob/973b214ec6bf23d8679d0f5007b3522528abd36d/src/utils/utils.js#L311C33-L311C37
-  const value = evaluate(`${variable} = true; ${condition};`, context, variable);
+  let value;
+  if (typeof condition === 'function') {
+    value = evaluate(condition, context, variable);
+  } else {
+    // For reverse compatability... if "show" is never set, then it should be shown. This
+    // comes from the following legacy behavior
+    // https://github.com/formio/formio.js/blob/973b214ec6bf23d8679d0f5007b3522528abd36d/src/utils/utils.js#L311C33-L311C37
+    value = evaluate(`${variable} = true; ${condition};`, context, variable);
+  }
 
   if (value === null) {
     return null;

@@ -128,7 +128,7 @@ export type EvaluatorFn = (context: EvaluatorContext) => any;
  * @returns {*} - Returns the result of the evaluation
  */
 export function evaluate(
-  evaluation: string,
+  evaluation: string | ((...args: any) => any),
   context: EvaluatorContext,
   ret: string = 'result',
   interpolate: boolean = false,
