@@ -1,4 +1,4 @@
-import { isEmpty, isUndefined, difference } from 'lodash';
+import { isEmpty, isUndefined, difference, isObject } from 'lodash';
 import { FieldError, ProcessorError } from 'error';
 import { evaluate } from 'utils';
 import {
@@ -10,9 +10,9 @@ import {
   FetchFn,
   SelectBoxesComponent,
 } from 'types';
-import { isObject, isPromise } from '../util';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 import { getErrorMessage } from 'utils/error';
+import { isPromise } from '../util';
 
 function isValidatableRadioComponent(component: any): component is RadioComponent {
   return component && component.type === 'radio' && !!component.validate?.onlyAvailableItems;
