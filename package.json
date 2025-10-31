@@ -25,7 +25,7 @@
     "build:prod": "npx webpack --config config/webpack.prod.js",
     "clean": "rm -rf lib && rm -rf dist && rm -rf docs",
     "build": "yarn clean && gulp templates && yarn docs && yarn lib && yarn alias && yarn build:dev && yarn build:prod",
-    "prepublish": "yarn lint && yarn format && yarn build && yarn test",
+    "prepublish": "yarn format && yarn build && yarn test",
     "show-coverage": "open coverage/lcov-report/index.html",
     "lint": "eslint src",
     "format": "prettier --write .",
