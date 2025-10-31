@@ -124,6 +124,7 @@ export type ButtonComponent = BaseComponent & {
   action: string;
   disableOnInvalid: boolean;
   theme: string;
+  event?: string;
 };
 
 export type CheckboxComponent = BaseComponent & {
@@ -450,6 +451,7 @@ export type SelectComponentOptions = ListComponent & {
   customOptions?: Record<string, string>; // TODO: with flatpickr I type these, should I do the same with ChoicesJS?
   useExactSearch?: boolean;
   disableLimit?: boolean;
+  noRefreshOnScroll?: boolean;
 };
 
 export type SelectComponent = (

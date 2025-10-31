@@ -6723,5 +6723,463 @@ describe('Process Tests', function () {
       assert(!context.data.hasOwnProperty('fname'));
       assert(!context.data.hasOwnProperty('lname'));
     });
+
+     it('Should not return the error for required component with logic where result var is used', async function () {
+      const form = {
+        components: [
+          {
+            label: 'Registration number required',
+            applyMaskOn: 'change',
+            tableView: true,
+            case: 'uppercase',
+            validate: {
+              required: true,
+              maxLength: 50,
+            },
+            validateWhenHidden: false,
+            key: 'plateNumber2',
+            logic: [
+              {
+                name: 'keep letter and number',
+                trigger: {
+                  type: 'javascript',
+                  javascript: 'result=row[component.key];',
+                },
+                actions: [
+                  {
+                    name: 'set',
+                    type: 'value',
+                    value: "value=result.replace(/[^a-zA-Z0-9]/g, '');\n",
+                  },
+                ],
+              },
+            ],
+            type: 'textfield',
+            input: true,
+            keyModified: true,
+          },
+          {
+            label: 'Submit',
+            showValidations: false,
+            tableView: false,
+            key: 'submit',
+            type: 'button',
+            input: true,
+          },
+        ],
+      };
+      const submission = {
+        data: { plateNumber2: 'TEST', submit: true },
+      };
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: Processors,
+        scope: {},
+      };
+      processSync(context as any);
+      assert.equal(context.data.plateNumber2, 'TEST');
+      assert.equal((context.scope as any).errors.length, 0);
+    });
+
+    it('Should return the value formatted by logic where result var is used', async function () {
+      const form = {
+        components: [
+          {
+            label: 'Registration number required',
+            applyMaskOn: 'change',
+            tableView: true,
+            case: 'uppercase',
+            validate: {
+              required: true,
+              maxLength: 50,
+            },
+            validateWhenHidden: false,
+            key: 'plateNumber2',
+            logic: [
+              {
+                name: 'keep letter and number',
+                trigger: {
+                  type: 'javascript',
+                  javascript: 'result=row[component.key];',
+                },
+                actions: [
+                  {
+                    name: 'set',
+                    type: 'value',
+                    value: "value=result.replace(/[^a-zA-Z0-9]/g, '');\n",
+                  },
+                ],
+              },
+            ],
+            type: 'textfield',
+            input: true,
+            keyModified: true,
+          },
+          {
+            label: 'Submit',
+            showValidations: false,
+            tableView: false,
+            key: 'submit',
+            type: 'button',
+            input: true,
+          },
+        ],
+      };
+      const submission = {
+        data: { plateNumber2: 'TEST 123 TEST', submit: true },
+      };
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: Processors,
+        scope: {},
+      };
+      processSync(context as any);
+      assert.equal(context.data.plateNumber2, 'TEST123TEST');
+      assert.equal((context.scope as any).errors.length, 0);
+    });
+
+    it('Should return the error for required component with logic where result var is used', async function () {
+      const form = {
+        components: [
+          {
+            label: 'Registration number required',
+            applyMaskOn: 'change',
+            tableView: true,
+            case: 'uppercase',
+            validate: {
+              required: true,
+              maxLength: 50,
+            },
+            validateWhenHidden: false,
+            key: 'plateNumber2',
+            logic: [
+              {
+                name: 'keep letter and number',
+                trigger: {
+                  type: 'javascript',
+                  javascript: 'result=row[component.key];',
+                },
+                actions: [
+                  {
+                    name: 'set',
+                    type: 'value',
+                    value: "value=result.replace(/[^a-zA-Z0-9]/g, '');\n",
+                  },
+                ],
+              },
+            ],
+            type: 'textfield',
+            input: true,
+            keyModified: true,
+          },
+          {
+            label: 'Submit',
+            showValidations: false,
+            tableView: false,
+            key: 'submit',
+            type: 'button',
+            input: true,
+          },
+        ],
+      };
+      const submission = {
+        data: { plateNumber2: '', submit: true },
+      };
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: Processors,
+        scope: {},
+      };
+      processSync(context as any);
+      assert.equal((context.scope as any).errors.length, 1);
+    });
+
+    it('Should correctly filter components values and not allow values for non-exisitent components inside nested componets ', async function () {
+      const form = {
+        components: [
+          {
+            label: 'Form',
+            tableView: true,
+            components: [
+              {
+                label: 'Number child',
+                applyMaskOn: 'change',
+                mask: false,
+                tableView: false,
+                delimiter: false,
+                requireDecimal: false,
+                inputFormat: 'plain',
+                truncateMultipleSpaces: false,
+                validateWhenHidden: false,
+                key: 'numberChild',
+                type: 'number',
+                input: true,
+              },
+              {
+                type: 'button',
+                label: 'Submit',
+                key: 'submit',
+                disableOnInvalid: true,
+                input: true,
+                tableView: false,
+              },
+            ],
+            form: '68e61e24ce6bfc5c1c7a7132',
+            useOriginalRevision: false,
+            reference: false,
+            key: 'form',
+            type: 'form',
+            input: true,
+          },
+          {
+            label: 'Text Field Parent',
+            applyMaskOn: 'change',
+            tableView: true,
+            validateWhenHidden: false,
+            key: 'textFieldParent',
+            type: 'textfield',
+            input: true,
+          },
+          {
+            label: 'Data Grid',
+            reorder: false,
+            addAnotherPosition: 'bottom',
+            layoutFixed: false,
+            enableRowGroups: false,
+            initEmpty: false,
+            tableView: false,
+            defaultValue: [{}],
+            validateWhenHidden: false,
+            key: 'dataGrid',
+            type: 'datagrid',
+            input: true,
+            components: [
+              {
+                label: 'Number',
+                applyMaskOn: 'change',
+                mask: false,
+                tableView: false,
+                delimiter: false,
+                requireDecimal: false,
+                inputFormat: 'plain',
+                truncateMultipleSpaces: false,
+                validateWhenHidden: false,
+                key: 'number',
+                type: 'number',
+                input: true,
+              },
+            ],
+          },
+          {
+            label: 'Tagpad',
+            imageUrl:
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPpAh63HncAuJOC6TxWkGLYpS0WwNXswz9MA&s',
+            tableView: false,
+            validateWhenHidden: false,
+            key: 'tagpad',
+            type: 'tagpad',
+            input: true,
+            components: [
+              {
+                label: 'Number',
+                applyMaskOn: 'change',
+                mask: false,
+                tableView: false,
+                delimiter: false,
+                requireDecimal: false,
+                inputFormat: 'plain',
+                truncateMultipleSpaces: false,
+                validateWhenHidden: false,
+                key: 'number',
+                type: 'number',
+                input: true,
+              },
+            ],
+          },
+          {
+            label: 'Container',
+            tableView: false,
+            validateWhenHidden: false,
+            key: 'container',
+            type: 'container',
+            input: true,
+            components: [
+              {
+                label: 'Number',
+                applyMaskOn: 'change',
+                mask: false,
+                tableView: false,
+                delimiter: false,
+                requireDecimal: false,
+                inputFormat: 'plain',
+                truncateMultipleSpaces: false,
+                validateWhenHidden: false,
+                key: 'number',
+                type: 'number',
+                input: true,
+              },
+            ],
+          },
+          {
+            type: 'button',
+            label: 'Submit',
+            key: 'submit',
+            disableOnInvalid: true,
+            input: true,
+            tableView: false,
+          },
+        ],
+      };
+      const submission = {
+        data: {
+          textFieldParent: '',
+          dataGrid: [
+            {
+              textFieldFake: 'rwe',
+            },
+          ],
+          tagpad: [
+            {
+              coordinate: {
+                x: 200,
+                y: 96,
+                width: 599,
+                height: 335,
+              },
+              data: {
+                numberFakeTagPad: 111,
+              },
+            },
+          ],
+          container: {
+            numberFake: 444,
+          },
+          submit: true,
+          form: {
+            data: {
+              textField11: 'unexpectedValue',
+              textField2: 'anyValue',
+            },
+          },
+        },
+      };
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: Processors,
+        scope: {},
+      };
+      processSync(context as any);
+      assert.deepEqual(context.data, {
+        form: {
+          data: {},
+        },
+        textFieldParent: '',
+        dataGrid: [],
+        tagpad: [
+          {
+            coordinate: {
+              x: 200,
+              y: 96,
+              width: 599,
+              height: 335,
+            },
+            data: {},
+          },
+        ],
+        container: {},
+        submit: true,
+      });
+
+      const mixedSubmission = {
+        data: {
+          addSubmission: true,
+          textFieldParent: 'test1',
+          dataGrid: [
+            {
+              textFieldFake: 'rwe',
+              number: 222,
+            },
+            {
+              number: 333,
+            },
+          ],
+          tagpad: [
+            {
+              coordinate: {
+                x: 200,
+                y: 96,
+                width: 599,
+                height: 335,
+              },
+              data: {
+                numberFakeTagPad: 111,
+                number: 123,
+              },
+            },
+          ],
+          container: {
+            numberFake: 444,
+            number: 444,
+          },
+          submit: true,
+          form: {
+            data: {
+              numberChild: 111,
+              textField11: 'unexpectedValue',
+              textField2: 'anyValue',
+            },
+          },
+        },
+      };
+
+      (context as any).submission = mixedSubmission;
+      (context as any).data = mixedSubmission.data;
+      processSync(context as any);
+      assert.deepEqual(context.data, {
+        form: {
+          data: {
+            numberChild: 111,
+          },
+        },
+        textFieldParent: 'test1',
+        dataGrid: [
+          {
+            number: 222,
+          },
+          {
+            number: 333,
+          },
+        ],
+        tagpad: [
+          {
+            coordinate: {
+              x: 200,
+              y: 96,
+              width: 599,
+              height: 335,
+            },
+            data: {
+              number: 123,
+            },
+          },
+        ],
+        container: {
+          number: 444,
+        },
+        submit: true,
+      });
+    });
   });
 });

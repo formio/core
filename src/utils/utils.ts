@@ -53,7 +53,7 @@ export function unescapeHTML(str: string) {
 }
 
 export function attachResourceToDom(options: ResourceToDomOptions) {
-  const { name, formio, onload, rootElement } = options;
+  const { name, formio, onload, rootElement, onerror } = options;
   let { src } = options;
   src = Array.isArray(src) ? src : [src];
   src.forEach((lib: any) => {
@@ -98,6 +98,14 @@ export function attachResourceToDom(options: ResourceToDomOptions) {
         onload(formio.libraries[name].ready);
       });
     }
+
+    element.addEventListener('error', (e) => {
+      console.warn(`Unable to load script ${name}`);
+      if (typeof onerror === 'function') {
+        onerror(e);
+      }
+    });
+
     if (rootElement) {
       rootElement.insertAdjacentElement('afterend', element);
       return;
@@ -127,7 +135,7 @@ export type EvaluatorFn = (context: EvaluatorContext) => any;
  * @returns {*} - Returns the result of the evaluation
  */
 export function evaluate(
-  evaluation: string,
+  evaluation: string | ((...args: any) => any),
   context: EvaluatorContext,
   ret: string = 'result',
   interpolate: boolean = false,
