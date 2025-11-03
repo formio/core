@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import assert from 'node:assert';
 import type { ContainerComponent, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
-import { process, processSync, Processors } from '../index';
+import { process, processSync, Processors, interpolateErrors } from '../index';
 import { fastCloneDeep } from 'utils';
 import {
   addressComponentWithOtherCondComponents,
@@ -18,6 +18,98 @@ import {
 import _ from 'lodash';
 
 describe('Process Tests', function () {
+  it('Should not expose validation setting details in validation error when secret validation is enabled', async function () {
+    const submission = { data: { testField: 'test' } };
+    const form = {
+      components: [
+        {
+          label: 'Text Field',
+          applyMaskOn: 'change',
+          tableView: true,
+          encrypted: true,
+          validate: {
+            custom: "valid = (input === 'Joe') ? true : 'Your name must be \"Joe\"';",
+            customPrivate: true,
+          },
+          validateWhenHidden: false,
+          key: 'textField',
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Submit',
+          tableView: false,
+          key: 'submit',
+          type: 'button',
+          input: true,
+          saveOnEnter: false,
+        },
+      ],
+    };
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    assert.equal((context.scope as any).errors.length, 1);
+    assert.equal((context.scope as any).errors[0].ruleName, 'custom');
+    const errors = interpolateErrors((context.scope as any).errors);
+    assert.equal(errors[0].context.setting, '');
+  });
+
+  it('Should expose validation setting details in validation error when secret validation is not enabled', async function () {
+    const submission = { data: { testField: 'test' } };
+    const form = {
+      components: [
+        {
+          label: 'Text Field',
+          applyMaskOn: 'change',
+          tableView: true,
+          encrypted: true,
+          validate: {
+            custom: "valid = (input === 'Joe') ? true : 'Your name must be \"Joe\"';",
+            customPrivate: false,
+          },
+          validateWhenHidden: false,
+          key: 'textField',
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Submit',
+          tableView: false,
+          key: 'submit',
+          type: 'button',
+          input: true,
+          saveOnEnter: false,
+        },
+      ],
+    };
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    assert.equal((context.scope as any).errors.length, 1);
+    assert.equal((context.scope as any).errors[0].ruleName, 'custom');
+    const errors = interpolateErrors((context.scope as any).errors);
+    assert.equal(!!errors[0].context.setting, true);
+  });
+
   it('Should submit data within a nested form.', async function () {
     const form = {
       _id: {},

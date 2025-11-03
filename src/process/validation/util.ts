@@ -44,6 +44,10 @@ export function isPromise(value: any): value is Promise<any> {
   );
 }
 
+export function keepErrorSettingInSecret(rule: string, component: Component): boolean {
+  return rule === 'custom' && !!component.validate?.customPrivate;
+}
+
 export function isObject(obj: any): obj is object {
   return obj != null && (typeof obj === 'object' || typeof obj === 'function');
 }
@@ -84,7 +88,7 @@ export const interpolateErrors = (errors: FieldError[], lang: string = 'en') => 
         label: context.component.label || context.component.placeholder || context.component.key,
         path: context.path,
         value: context.value,
-        setting: context.setting,
+        setting: keepErrorSettingInSecret(error.ruleName, context.component) ? '' : context.setting,
         index: context.index || 0,
       },
     };
