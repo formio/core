@@ -93,4 +93,5 @@ export type BaseComponent = {
   conflictId?: string;
   errors?: Record<string, string>;
   truncateMultipleSpaces?: boolean;
+  serverOverride?: Record<string, any>;
 };

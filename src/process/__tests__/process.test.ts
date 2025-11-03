@@ -109,6 +109,99 @@ describe('Process Tests', function () {
     const errors = interpolateErrors((context.scope as any).errors);
     assert.equal(!!errors[0].context.setting, true);
   });
+  
+  it('Should override the component settings with serverOverride and clear hidden value', async function () {
+      const components = [
+        {
+          label: 'Number',
+          applyMaskOn: 'change',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          validateWhenHidden: false,
+          key: 'number',
+          type: 'number',
+          input: true,
+        },
+        {
+          label: 'Text Field',
+          applyMaskOn: 'change',
+          tableView: true,
+          clearOnHide: false,
+          serverOverride: {
+            clearOnHide: true,
+          },
+          validateWhenHidden: false,
+          key: 'textField',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'number',
+                operator: 'isEqual',
+                value: 55,
+              },
+            ],
+          },
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Text Area',
+          applyMaskOn: 'change',
+          autoExpand: false,
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textArea',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 'number',
+                operator: 'isEqual',
+                value: 5,
+              },
+            ],
+          },
+          type: 'textarea',
+          input: true,
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ];
+      const submission = {
+        data: {
+          textField: 'should be cleared on server',
+          submit: true,
+          number: 5,
+          textArea: 'visible value',
+        },
+      };
+    const context = {
+      form: components,
+      submission,
+      data: submission.data,
+      components: components,
+      processors: Processors,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    assert.equal(!!context.data.textField, false);
+  });
 
   it('Should submit data within a nested form.', async function () {
     const form = {

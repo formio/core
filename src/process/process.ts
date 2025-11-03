@@ -24,6 +24,7 @@ import { filterProcessInfo } from './filter';
 import { normalizeProcessInfo } from './normalize';
 import { dereferenceProcessInfo } from './dereference';
 import { clearHiddenProcessInfo } from './clearHidden';
+import { serverOverrideProcessInfo } from './serverOverride';
 
 export async function process<ProcessScope>(
   context: ProcessContext<ProcessScope>,
@@ -140,6 +141,7 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
 }
 
 export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
+  serverOverride: serverOverrideProcessInfo,
   filter: filterProcessInfo,
   defaultValue: defaultValueProcessInfo,
   serverDefaultValue: serverDefaultValueProcessInfo,
@@ -159,6 +161,7 @@ export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
 };
 
 export const Processors: ProcessorInfo<any, any>[] = [
+  serverOverrideProcessInfo,
   filterProcessInfo,
   defaultValueProcessInfo,
   normalizeProcessInfo,
@@ -174,6 +177,7 @@ export const Processors: ProcessorInfo<any, any>[] = [
 // Deprecated: Use Processors instead
 export const ProcessTargets: ProcessTarget = {
   submission: [
+    serverOverrideProcessInfo,
     filterProcessInfo,
     serverDefaultValueProcessInfo,
     normalizeProcessInfo,
