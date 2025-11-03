@@ -1,7 +1,7 @@
 import { FieldError, ProcessorError } from 'error';
 import { SelectComponent, RuleFn, ValidationContext, FetchFn } from 'types';
-import { Evaluator } from 'utils';
-import { isEmptyObject, toBoolean } from '../util';
+import { Evaluator, isEmptyObject } from 'utils';
+import { toBoolean } from '../util';
 import { getErrorMessage } from 'utils/error';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
