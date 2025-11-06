@@ -45,15 +45,14 @@ export const getModelTypeDefaultValue = (modelType: string, context: FilterConte
 export const filterPostProcessSync: ProcessorPostFnSync<FilterScope> = (
   context: FilterContext,
 ): boolean | undefined => {
-
   const { scope, path, data, component, value } = context;
-
-
+  scope.filtered = scope.filtered || {};
   if (!scope.filter) scope.filter = {};
+
   if (value === undefined || !scope.filter[path]) {
     return;
   }
-  scope.filtered = scope.filtered || {};
+
   const modelType = getModelType(component);
   if (
     component.type === 'address' ||

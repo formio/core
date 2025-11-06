@@ -18,6 +18,93 @@ import {
 import _ from 'lodash';
 
 describe('Process Tests', function () {
+  it('Should remove non-existing values from submission data', async function () {
+    const form = {
+      components: [
+        {
+          label: 'Text Field',
+          applyMaskOn: 'change',
+          tableView: true,
+          validateWhenHidden: false,
+          key: 'textField',
+          type: 'textfield',
+          input: true,
+        },
+        {
+          label: 'Number',
+          applyMaskOn: 'change',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          validateWhenHidden: false,
+          key: 'number',
+          type: 'number',
+          input: true,
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+    let submission: any = {
+      data: {
+        fakeField: 'someValue',
+      },
+    };
+
+    const errors: any = [];
+
+    let context = {
+      _,
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    assert.deepEqual(context.data, {});
+    submission = {
+      data: {
+        fakeField: 'someValue',
+        textField: 'test',
+        number: 123,
+      },
+    };
+
+    context = {
+      _,
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    submission.data = context.data;
+    assert.deepEqual(context.data, {
+      textField: 'test',
+      number: 123,
+    });
+  });
+  
   it('Should not expose validation setting details in validation error when secret validation is enabled', async function () {
     const submission = { data: { testField: 'test' } };
     const form = {
