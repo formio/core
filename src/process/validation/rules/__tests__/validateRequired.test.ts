@@ -10,7 +10,7 @@ import {
   simpleSelectBoxes,
   simpleRadioField,
   simpleCheckBoxField,
-  requiredAddressManualMode,
+  requiredAddressManualMode, requiredContainerComponent,
 } from './fixtures/components';
 import { processOne } from 'processes/processOne';
 import { generateProcessorContext } from './fixtures/util';
@@ -252,5 +252,13 @@ describe('validateRequired', function () {
     const context = generateProcessorContext(component, data);
     const result = await validateRequired(context);
     expect(result).to.equal(null);
+  });
+
+  it('Validating a container component', async function () {
+    const component = { ...requiredContainerComponent };
+    const data = { textField: '' };
+    const context = generateProcessorContext(component, data);
+    const result = await validateRequired(context);
+    expect(result).to.be.instanceOf(FieldError);
   });
 });

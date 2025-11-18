@@ -6,6 +6,7 @@ import {
   ValidationContext,
   AddressComponent,
   DayComponent,
+  ContainerComponent,
 } from 'types';
 import { isEmptyObject, doesArrayDataHaveValue } from '../util';
 import { isComponentNestedDataType } from 'utils/formUtil';
@@ -17,6 +18,10 @@ const isAddressComponent = (component: any): component is AddressComponent => {
 
 const isDayComponent = (component: any): component is DayComponent => {
   return component.type === 'day';
+};
+
+const isContainerComponent = (component: any): component is ContainerComponent => {
+  return component.type === 'container';
 };
 
 const isAddressComponentDataObject = (value: any): value is AddressComponentDataObject => {
@@ -38,7 +43,7 @@ const isComponentThatCannotHaveFalseValue = (component: any): boolean => {
 const valueIsPresent = (
   value: any,
   considerFalseTruthy: boolean,
-  isNestedDatatype?: boolean,
+  shouldSkipObjectValue?: boolean,
 ): boolean => {
   // Evaluate for 3 out of 6 falsy values ("", null, undefined), don't check for 0
   // and only check for false under certain conditions
@@ -59,9 +64,9 @@ const valueIsPresent = (
     return false;
   }
   // Recursively evaluate
-  else if (typeof value === 'object' && !isNestedDatatype) {
+  else if (typeof value === 'object' && !shouldSkipObjectValue) {
     return Object.values(value).some((val) =>
-      valueIsPresent(val, considerFalseTruthy, isNestedDatatype),
+      valueIsPresent(val, considerFalseTruthy, shouldSkipObjectValue),
     );
   }
   // If value is an array, check it's children have value
@@ -99,7 +104,7 @@ export const validateRequiredSync: RuleFnSync = (context: ValidationContext) => 
   } else if (isComponentThatCannotHaveFalseValue(component)) {
     return !valueIsPresent(value, false, isComponentNestedDataType(component)) ? error : null;
   }
-  return !valueIsPresent(value, true, isComponentNestedDataType(component)) ? error : null;
+  return !valueIsPresent(value, true, isComponentNestedDataType(component) && !isContainerComponent(component)) ? error : null;
 };
 
 export const validateRequiredInfo: ProcessorInfo<ValidationContext, FieldError | null> = {
