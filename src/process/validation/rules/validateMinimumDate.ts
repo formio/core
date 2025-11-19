@@ -1,9 +1,9 @@
 import { ProcessorError, FieldError } from 'error';
 import { DateTimeComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import {
-  convertFormatToMoment,
   dayjs,
   getDateSetting,
+  getFormattedDateSetting,
 } from 'utils/date';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
@@ -46,11 +46,11 @@ export const validateMinimumDateSync: RuleFnSync = (context: ValidationContext) 
     return null;
   }
 
-  minDate = (component as DateTimeComponent).enableTime ? dayjs(minDate) : dayjs(minDate).startOf('day');
+  minDate = (component as DateTimeComponent).widget?.enableTime ? dayjs(minDate) : dayjs(minDate).startOf('day');
 
   const error = new FieldError('minDate', {
     ...context,
-    minDate: minDate,
+    minDate: getFormattedDateSetting(minDate, component as DateTimeComponent, context.submission?.metadata?.timezone),
     setting: String(minDate),
   });
   return date.isAfter(minDate) || date.isSame(minDate) ? null : error;

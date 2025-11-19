@@ -1,9 +1,9 @@
 import { ProcessorError, FieldError } from 'error';
 import { DateTimeComponent, RuleFn, RuleFnSync, ValidationContext } from 'types';
 import {
-  convertFormatToMoment,
   dayjs,
   getDateSetting,
+  getFormattedDateSetting,
 } from 'utils/date';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
@@ -45,11 +45,11 @@ export const validateMaximumDateSync: RuleFnSync = (context: ValidationContext) 
   if (maxDate === null) {
     return null;
   }
-  maxDate = (component as DateTimeComponent).enableTime ? dayjs(maxDate) : dayjs(maxDate).endOf('day');
+  maxDate = (component as DateTimeComponent).widget?.enableTime ? dayjs(maxDate) : dayjs(maxDate).endOf('day');
 
   const error = new FieldError('maxDate', {
     ...context,
-    maxDate: maxDate,
+    maxDate: getFormattedDateSetting(maxDate, component as DateTimeComponent, context.submission?.metadata?.timezone),
     setting: String(maxDate),
   });
   return date.isBefore(maxDate) || date.isSame(maxDate) ? null : error;

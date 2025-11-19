@@ -18,6 +18,96 @@ import {
 import _ from 'lodash';
 
 describe('Process Tests', function () {
+  it('Should return correct errors for invalid dateTime with max/min validation enabled', async function () {
+    const submission = {
+      data: {
+        dateTime: '0000-00-00T00:00:00Z',
+        submit: true,
+      },
+      state: 'submitted',
+      metadata: {
+        timezone: 'Europe/Minsk',
+      },
+    };
+    const form = {
+      components: [
+        {
+          label: 'Date / Time',
+          tableView: false,
+          datePicker: {
+            disableWeekends: false,
+            disableWeekdays: false,
+            minDate: '2025-07-01T12:00:00+03:00',
+            maxDate: '2025-07-31T12:00:00+03:00',
+          },
+          enableMinDateInput: false,
+          enableMaxDateInput: false,
+          validateWhenHidden: false,
+          key: 'dateTime',
+          type: 'datetime',
+          input: true,
+          widget: {
+            type: 'calendar',
+            displayInTimezone: 'viewer',
+            locale: 'en',
+            useLocaleSettings: false,
+            allowInput: true,
+            mode: 'single',
+            enableTime: true,
+            noCalendar: false,
+            format: 'yyyy-MM-dd hh:mm a',
+            hourIncrement: 1,
+            minuteIncrement: 1,
+            time_24hr: false,
+            minDate: '2025-07-01T12:00:00+03:00',
+            disableWeekends: false,
+            disableWeekdays: false,
+            maxDate: '2025-07-31T12:00:00+03:00',
+          },
+        },
+        {
+          label: 'Submit',
+          tableView: false,
+          key: 'submit',
+          type: 'button',
+          input: true,
+          saveOnEnter: false,
+        },
+      ],
+    };
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    assert.equal((context.scope as any).errors.length, 3);
+    const errors = interpolateErrors((context.scope as any).errors);
+    const expectedErrors = [
+      'Date / Time is not a valid date',
+      'Date / Time should not contain date after 2025-07-31 12:00 PM GMT+3',
+      'Date / Time should not contain date before 2025-07-01 12:00 PM GMT+3',
+    ];
+    assert.equal(
+      _.some(expectedErrors, (err) => errors[0].message === err),
+      true,
+    );
+    assert.equal(
+      _.some(expectedErrors, (err) => errors[1].message === err),
+      true,
+    );
+    assert.equal(
+      _.some(expectedErrors, (err) => errors[2].message === err),
+      true,
+    );
+  });
+
   it('Should remove non-existing values from submission data', async function () {
     const form = {
       components: [
