@@ -270,7 +270,7 @@ export const validateProcessSync: ValidationProcessorFnSync = (context) => {
     const otherRules = rules.filter((rule) => !rule.fullValue);
     for (let i = 0; i < value.length; i++) {
       const amendedPath = `${path}[${i}]`;
-      let amendedValue = get(data, amendedPath);
+      let amendedValue = ((instance as any)?.inEditGrid) ? value[i] : get(data, amendedPath);
       if (instance?.shouldSkipValidation(data)) {
         return;
       }
