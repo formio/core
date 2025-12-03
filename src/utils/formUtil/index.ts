@@ -1429,6 +1429,9 @@ export function normalizeContext(context: any): any {
     input: value,
     config: safeConfig,
     options,
+    t: (text: string): string => {
+      return text;
+    }
   };
 }
 
