@@ -44,7 +44,7 @@ export async function process<ProcessScope>(
         row,
         index,
         instance: instances
-          ? instances[component.modelType === 'none' && paths?.fullPath ? paths.fullPath : path]
+          ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
           : undefined,
         parent,
       });
@@ -72,7 +72,7 @@ export async function process<ProcessScope>(
         row,
         index,
         instance: instances
-          ? instances[component.modelType === 'none' && paths?.fullPath ? paths.fullPath : path]
+          ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
           : undefined,
         parent,
       });
@@ -100,7 +100,7 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
         row,
         index,
         instance: instances
-          ? instances[component.modelType === 'none' && paths?.fullPath ? paths.fullPath : path]
+          ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
           : undefined,
         parent,
       });
@@ -128,7 +128,7 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
         row,
         index,
         instance: instances
-          ? instances[component.modelType === 'none' && paths?.fullPath ? paths.fullPath : path]
+          ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
           : undefined,
         parent,
       });
