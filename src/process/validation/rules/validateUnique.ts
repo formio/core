@@ -1,6 +1,6 @@
+import { isEmptyObject } from 'utils';
 import { FieldError } from '../../../error/FieldError';
 import { RuleFn, ValidationContext } from '../../../types/index';
-import { isEmptyObject } from '../util';
 import { ProcessorError } from 'error';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
 
