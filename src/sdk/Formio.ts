@@ -515,7 +515,7 @@ export class Formio {
     }
 
     let url = (this as any)[_url] + query;
-    if (type === 'form' && !isNaN(parseInt(this.vId))) {
+    if (type === 'form' && !isNaN(parseInt(this.vId)) && parseInt(this.vId) !== 0) {
       url += url.indexOf('?') === -1 ? '?' : '&';
       url += `formRevision=${this.vId}`;
     }
