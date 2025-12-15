@@ -1,11 +1,12 @@
 import { RoleId } from 'types/Role';
-
 export type Access = {
   type: AccessType;
   roles: RoleId[];
+  resources?: string[];
 };
-
+export type BasicAccessType = 'read' | 'write' | 'create' | 'admin';
 export type AccessType =
+  | 'self'
   | 'create_own'
   | 'create_all'
   | 'read_own'
