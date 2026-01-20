@@ -1211,8 +1211,8 @@ const isSelectBoxesComponent = (component: any): component is SelectBoxesCompone
   component?.type === 'selectboxes';
 const isTextAreaComponent = (component: any): component is TextAreaComponent =>
   component?.type === 'textarea';
-const isTextFieldComponent = (component: any): component is TextFieldComponent =>
-  component?.type === 'textfield';
+const isComponentWithMaskValue = (component: any): component is TextFieldComponent =>
+  component?.type === 'textfield' || component?.type === 'phoneNumber';
 
 export function getEmptyValue(component: Component) {
   switch (component.type) {
@@ -1312,7 +1312,7 @@ export function isComponentDataEmpty(
         ? isValueEmpty(component, value.trim())
         : isValueEmpty(component, value)
       : isValueEmpty(component, trimBlanks(value));
-  } else if (isTextFieldComponent(component)) {
+  } else if (isComponentWithMaskValue(component)) {
     if (component.allowMultipleMasks && !!component.inputMasks && !!component.inputMasks.length) {
       return (
         isValueEmpty(component, value) ||

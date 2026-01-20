@@ -39,8 +39,8 @@ const isSelectComponent = (component: any): component is SelectComponent =>
 const isSelectBoxesComponent = (component: any): component is SelectBoxesComponent =>
   component.type === 'selectboxes';
 const isTagsComponent = (component: any): component is TagsComponent => component.type === 'tags';
-const isTextFieldComponent = (component: any): component is TextFieldComponent =>
-  component.type === 'textfield';
+const isComponentWithMaskValue = (component: any): component is TextFieldComponent =>
+  component.type === 'textfield' || component.type === 'phoneNumber';
 const isTimeComponent = (component: any): component is TimeComponent => component.type === 'time';
 const isNumberComponent = (component: any): component is NumberComponent =>
   component.type === 'number';
@@ -386,7 +386,7 @@ export const normalizeProcessSync: ProcessorFnSync<NormalizeScope> = (context) =
     newValue = normalizeSelectBoxesComponentValue(value);
   } else if (isTagsComponent(component)) {
     newValue = normalizeTagsComponentValue(component, value);
-  } else if (isTextFieldComponent(component)) {
+  } else if (isComponentWithMaskValue(component)) {
     newValue = normalizeTextFieldComponentValue(component, defaultValues, value, path);
   } else if (isTimeComponent(component)) {
     newValue = normalizeTimeComponentValue(component, value);
