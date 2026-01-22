@@ -35,15 +35,14 @@ export const validateMinimumDateSync: RuleFnSync = (context: ValidationContext) 
     );
   }
 
-  const enableTime = (component as DateTimeComponent).widget?.enableTime;
-  const date = enableTime ? dayjs(value) : dayjs(value).utc().startOf('day');
+  const date = dayjs(value);
   let minDate = getDateSetting((component as DateTimeComponent).widget?.minDate);
 
   if (minDate === null) {
     return null;
   }
 
-  minDate = enableTime ? dayjs(minDate) : dayjs(minDate).utc().startOf('day');
+  minDate = (component as DateTimeComponent).widget?.enableTime ? dayjs(minDate) : dayjs(minDate).startOf('day');
 
   const error = new FieldError('minDate', {
     ...context,

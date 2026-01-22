@@ -39,14 +39,13 @@ export const validateMaximumDateSync: RuleFnSync = (context: ValidationContext) 
     );
   }
 
-  const enableTime = (component as DateTimeComponent).widget?.enableTime;
-  const date = enableTime ? dayjs(value): dayjs(value).utc().startOf('day');
+  const date = dayjs(value);
   let maxDate = getDateSetting((component as DateTimeComponent).widget?.maxDate);
 
   if (maxDate === null) {
     return null;
   }
-  maxDate = enableTime ? dayjs(maxDate): dayjs(maxDate).utc().endOf('day');
+  maxDate = (component as DateTimeComponent).widget?.enableTime ? dayjs(maxDate) : dayjs(maxDate).endOf('day');
 
   const error = new FieldError('maxDate', {
     ...context,
