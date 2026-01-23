@@ -70,10 +70,20 @@ describe('validateUrl', function () {
     expect(result).to.equal(null);
   });
 
-  xit('Validating a URL component whose data contains a valid localhost URL returns null', async function () {
+  it('Validating a URL component whose data contains a valid localhost URL returns null', async function () {
     const component = simpleUrlField;
     const data = {
       component: 'http://localhost:3000',
+    };
+    const context = generateProcessorContext(component, data);
+    const result = await validateUrl(context);
+    expect(result).to.equal(null);
+  });
+
+  it('Validating a URL component whose data contains a valid URL without TLD returns null', async function () {
+    const component = simpleUrlField;
+    const data = {
+      component: 'https://host.docker.internal',
     };
     const context = generateProcessorContext(component, data);
     const result = await validateUrl(context);
