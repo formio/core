@@ -144,8 +144,7 @@ export function checkSimpleConditional(
 
   const conditionsResult = filter(
     map(conditions, (cond) => {
-      const { operator } = cond;
-      const { value: comparedValue, component: conditionComponentPath } = cond;
+      const { operator, value: comparedValue, component: conditionComponentPath } = cond;
       if (!conditionComponentPath) {
         // Ignore conditions if there is no component path.
         return null;

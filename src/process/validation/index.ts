@@ -16,6 +16,7 @@ import { evaluationRules, rules, serverRules } from './rules';
 import find from 'lodash/find';
 import get from 'lodash/get';
 import pick from 'lodash/pick';
+import has from 'lodash/has';
 import { getErrorMessage } from 'utils/error';
 import { FieldError } from 'error';
 import {
@@ -92,7 +93,11 @@ export function isForcedHidden(
   isConditionallyHidden: ConditionallyHidden,
 ): boolean {
   const { component } = context;
-  if (component.scope?.conditionallyHidden || isConditionallyHidden(context as ConditionsContext)) {
+  // if conditionsl were checked earlier, take the result from scope
+  const conditionallyHidden = has(component, 'scope.conditionallyHidden') 
+    ? component.scope?.conditionallyHidden 
+    : isConditionallyHidden(context as ConditionsContext);
+  if (conditionallyHidden ) {
     return true;
   }
   if (component.scope?.intentionallyHidden) {

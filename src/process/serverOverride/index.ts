@@ -1,4 +1,4 @@
-import { assign } from 'lodash';
+import { assign, isEmpty } from 'lodash';
 import {
   ProcessorFnSync,
   ProcessorFn,
@@ -13,6 +13,9 @@ export const serverOverrideProcess: ProcessorFn<ProcessorScope> = async (context
 
 export const serverOverrideProcessSync: ProcessorFnSync<ProcessorScope> = (context) => {
   const { component } = context;
+  if (isEmpty(component.serverOverride)) {
+    return;
+  }
   assign(component, component.serverOverride || {});
 };
 
