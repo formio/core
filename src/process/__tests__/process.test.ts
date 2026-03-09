@@ -18,6 +18,248 @@ import {
 import _ from 'lodash';
 
 describe('Process Tests', function () {
+  it('Should not calculate default value for number component when server option is provided', async function () {
+    const submission = {
+      data: {},
+    };
+    const form = {
+      components: [
+        {
+          label: 'Number 000123   8',
+          applyMaskOn: 'change',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          customDefaultValue: "value = '000123';",
+          validateWhenHidden: false,
+          key: 'numberHotdogs8',
+          type: 'number',
+          input: true,
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    assert.deepEqual(context.data, {});
+  });
+
+  it('Should calculate and normalize number values', async function () {
+    const submission = {
+      data: {},
+    };
+    const form = {
+      components: [
+        {
+          label: 'Number 1 000123 ',
+          applyMaskOn: 'change',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          calculateValue: "value = '000123';",
+          calculateServer: true,
+          validateWhenHidden: false,
+          key: 'number1',
+          type: 'number',
+          input: true,
+        },
+        {
+          label: "Number 2 '000123 num'",
+          applyMaskOn: 'change',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          calculateValue: 'value = 000123;',
+          calculateServer: true,
+          validateWhenHidden: false,
+          key: 'number2',
+          type: 'number',
+          input: true,
+        },
+        {
+          label: "Number 3 '0'",
+          applyMaskOn: 'change',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          calculateValue: 'value = 0;',
+          calculateServer: true,
+          validateWhenHidden: false,
+          key: 'number3',
+          type: 'number',
+          input: true,
+        },
+        {
+          label: "Number 4 '0000.0123' string",
+          applyMaskOn: 'change',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          calculateValue: 'value = "000.0123";',
+          calculateServer: true,
+          validateWhenHidden: false,
+          key: 'number4',
+          type: 'number',
+          input: true,
+        },
+        {
+          label: "Number 5 '123'",
+          applyMaskOn: 'change',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          calculateValue: 'value = "123";',
+          calculateServer: true,
+          validateWhenHidden: false,
+          key: 'number5',
+          type: 'number',
+          input: true,
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    assert.deepEqual(context.data, {
+      number1: 123,
+      number2: 83,
+      number3: 0,
+      number4: 0.0123,
+      number5: 123,
+    });
+  });
+
+  it('Should calculate number values and return validation error for invalid number values', async function () {
+    const submission = {
+      data: {},
+    };
+    const form = {
+      components: [
+        {
+          label: "Number 6 'test'",
+          applyMaskOn: 'change',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          calculateValue: 'value = "test";',
+          calculateServer: true,
+          validateWhenHidden: false,
+          key: 'number6',
+          type: 'number',
+          input: true,
+        },
+        {
+          label: "Number 7 'arr'",
+          applyMaskOn: 'change',
+          mask: false,
+          tableView: false,
+          delimiter: false,
+          requireDecimal: false,
+          inputFormat: 'plain',
+          truncateMultipleSpaces: false,
+          calculateValue: 'value = [];',
+          calculateServer: true,
+          validateWhenHidden: false,
+          key: 'number7',
+          type: 'number',
+          input: true,
+        },
+        {
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          disableOnInvalid: true,
+          input: true,
+          tableView: false,
+        },
+      ],
+    };
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: {},
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    processSync(context);
+    assert.equal((context.scope as any).errors.length, 2);
+    const errors = interpolateErrors((context.scope as any).errors);
+    const expectedErrors = [
+      "Number 6 'test' is not a valid number.",
+      "Number 7 'arr' is not a valid number.",
+    ];
+
+    assert.equal(
+      _.some(expectedErrors, (err) => errors[0].message === err),
+      true,
+    );
+
+    assert.equal(
+      _.some(expectedErrors, (err) => errors[1].message === err),
+      true,
+    );
+  });
+
   it('Should return correct errors for invalid dateTime with max/min validation enabled', async function () {
     const submission = {
       data: {
@@ -6452,7 +6694,6 @@ describe('Process Tests', function () {
           },
         };
         processSync(context);
-        console.log(JSON.stringify(context.data, null, 2));
 
         expect((context.scope as ValidationScope).errors).to.have.length(0);
         expect(context.data).to.deep.equal({
