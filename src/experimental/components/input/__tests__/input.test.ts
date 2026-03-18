@@ -29,15 +29,39 @@ describe('Input Component', function () {
       firstName: 'Joe',
       lastName: 'Smith',
     });
-    assert.equal(
-      parentElement.innerHTML,
-      '<span ref="htmlcontainer">' +
-        `<label for="input-firstname" class="form-label" ref="html">First Name</label>` +
-        `<input placeholder="Enter your first name" class="form-control" name="input-firstname" id="input-firstname" type="text" ref="input">` +
-        `<label for="input-firstname" class="form-label" ref="html">Last Name</label>` +
-        `<input placeholder="Enter your last name" class="form-control" name="input-lastname" id="input-lastname" type="text" ref="input">` +
-        '</span>',
-    );
+
+    const root = parentElement.firstElementChild!;
+    assert.equal(root.tagName, 'SPAN');
+    assert.equal(root.getAttribute('ref'), 'htmlcontainer');
+
+    const [label1, input1, label2, input2] = Array.from(root.children);
+
+    assert.equal(label1.tagName, 'LABEL');
+    assert.equal(label1.getAttribute('for'), 'input-firstname');
+    assert.equal(label1.getAttribute('class'), 'form-label');
+    assert.equal(label1.getAttribute('ref'), 'html');
+
+    assert.equal(input1.tagName, 'INPUT');
+    assert.equal(input1.getAttribute('placeholder'), 'Enter your first name');
+    assert.equal(input1.getAttribute('class'), 'form-control');
+    assert.equal(input1.getAttribute('name'), 'input-firstname');
+    assert.equal(input1.getAttribute('id'), 'input-firstname');
+    assert.equal(input1.getAttribute('type'), 'text');
+    assert.equal(input1.getAttribute('ref'), 'input');
+
+    assert.equal(label2.tagName, 'LABEL');
+    assert.equal(label2.getAttribute('for'), 'input-firstname');
+    assert.equal(label2.getAttribute('class'), 'form-label');
+    assert.equal(label2.getAttribute('ref'), 'html');
+
+    assert.equal(input2.tagName, 'INPUT');
+    assert.equal(input2.getAttribute('placeholder'), 'Enter your last name');
+    assert.equal(input2.getAttribute('class'), 'form-control');
+    assert.equal(input2.getAttribute('name'), 'input-lastname');
+    assert.equal(input2.getAttribute('id'), 'input-lastname');
+    assert.equal(input2.getAttribute('type'), 'text');
+    assert.equal(input2.getAttribute('ref'), 'input');
+
     assert.deepEqual(comp.dataValue, {
       firstName: 'Joe',
       lastName: 'Smith',

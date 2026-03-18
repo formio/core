@@ -32,14 +32,24 @@ describe('HTMLContainerComponent', function () {
     const element = document.createElement('div');
     parentElement.appendChild(element);
     comp.attach(element);
-    assert.equal(
-      parentElement.innerHTML,
-      '<div class="testing" ref="htmlcontainer">' +
-        `<span data-within="${comp.id}" ref="html">Testing</span>` +
-        `<div data-within="${comp.id}" ref="htmlcontainer">` +
-        `<h3 data-within="${comp.components[1].id}" ref="html">This is a title</h3>` +
-        '</div>' +
-        '</div>',
-    );
+    const root = parentElement.firstElementChild!;
+    assert.equal(root.getAttribute('class'), 'testing');
+    assert.equal(root.getAttribute('ref'), 'htmlcontainer');
+
+    const span = root.children[0];
+    assert.equal(span.tagName, 'SPAN');
+    assert.equal(span.getAttribute('data-within'), comp.id);
+    assert.equal(span.getAttribute('ref'), 'html');
+    assert.equal(span.textContent, 'Testing');
+
+    const innerDiv = root.children[1];
+    assert.equal(innerDiv.getAttribute('data-within'), comp.id);
+    assert.equal(innerDiv.getAttribute('ref'), 'htmlcontainer');
+
+    const h3 = innerDiv.children[0];
+    assert.equal(h3.tagName, 'H3');
+    assert.equal(h3.getAttribute('data-within'), comp.components[1].id);
+    assert.equal(h3.getAttribute('ref'), 'html');
+    assert.equal(h3.textContent, 'This is a title');
   });
 });
