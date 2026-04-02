@@ -8,6 +8,7 @@ import {
   HasRows,
   ComponentPaths,
   HasChildComponents,
+  LocalRoot,
 } from 'types';
 import {
   isComponentNestedDataType,
@@ -30,6 +31,7 @@ export const eachComponentDataAsync = async (
   parentPaths?: ComponentPaths,
   noScopeReset?: boolean,
   afterFn?: EachComponentDataAsyncCallback,
+  localRoot?: LocalRoot
 ) => {
   if (!components) {
     return;
@@ -55,6 +57,7 @@ export const eachComponentDataAsync = async (
             compPaths?.dataIndex,
             compParent,
             compPaths,
+            localRoot
           );
         }
       };
@@ -68,6 +71,7 @@ export const eachComponentDataAsync = async (
           compPaths?.dataIndex,
           compParent,
           compPaths,
+          localRoot
         )) === true
       ) {
         await callAfterFn();
@@ -100,6 +104,7 @@ export const eachComponentDataAsync = async (
                 compPaths,
                 noScopeReset,
                 afterFn,
+                localRoot
               );
             }
             if (compPaths) {
@@ -116,6 +121,7 @@ export const eachComponentDataAsync = async (
               compPaths,
               noScopeReset,
               afterFn,
+              localRoot
             );
           }
           await callAfterFn();
@@ -142,6 +148,12 @@ export const eachComponentDataAsync = async (
             compPaths,
             noScopeReset,
             afterFn,
+            getModelType(component) === 'dataObject' 
+              ? {
+                component,
+                data: get(data, `${compPaths?.dataPath}.data`, data) as DataObject
+              }
+              : localRoot
           );
         }
         await callAfterFn();
@@ -164,6 +176,7 @@ export const eachComponentDataAsync = async (
               compPaths,
               noScopeReset,
               afterFn,
+              localRoot
             );
           }
         } else if (info.hasRows) {
@@ -181,6 +194,7 @@ export const eachComponentDataAsync = async (
                   compPaths,
                   noScopeReset,
                   afterFn,
+                  localRoot
                 );
               }
             }
@@ -196,6 +210,7 @@ export const eachComponentDataAsync = async (
             compPaths,
             noScopeReset,
             afterFn,
+            localRoot
           );
         }
         await callAfterFn();

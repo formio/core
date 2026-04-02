@@ -1,0 +1,391 @@
+{
+    "_id": "698dca6a60dd629eefe24c2f",
+    "title": "Wizard A",
+    "name": "wizardA",
+    "path": "wizarda",
+    "type": "form",
+    "display": "wizard",
+    "components": [{
+        "title": "Wizard A Part A",
+        "breadcrumbClickable": true,
+        "buttonSettings": {
+            "previous": true,
+            "cancel": true,
+            "next": true
+        },
+        "navigateOnEnter": false,
+        "saveOnEnter": false,
+        "scrollToTop": false,
+        "collapsible": false,
+        "key": "wizardAPartA",
+        "type": "panel",
+        "label": "Page 1",
+        "input": false,
+        "tableView": false,
+        "components": [{
+                "label": "HTML",
+                "attrs": [{
+                    "attr": "",
+                    "value": ""
+                }],
+                "content": "<h2><b>Wizard A Part A</b></h2>",
+                "refreshOnChange": false,
+                "key": "html1a",
+                "type": "htmlelement",
+                "input": false,
+                "tableView": false
+            },
+            {
+                "label": "Wizard",
+                "applyMaskOn": "change",
+                "tableView": true,
+                "validateWhenHidden": false,
+                "key": "wizard",
+                "type": "textfield",
+                "widget": "",
+                "input": true,
+                "widget.type": "input"
+            },
+            {
+                "label": "Wizard B1",
+                "tableView": true,
+                "form": "698dca6a60dd629eefe24c28",
+                "useOriginalRevision": false,
+                "reference": false,
+                "key": "wizardB1",
+                "customConditional": "show = data.wizard === 'B1';",
+                "type": "form",
+                "input": true,
+                "components": [{
+                    "label": "Wizard B Part B",
+                    "title": "Wizard B Part B",
+                    "breadcrumbClickable": true,
+                    "buttonSettings": {
+                        "previous": true,
+                        "cancel": true,
+                        "next": true
+                    },
+                    "navigateOnEnter": false,
+                    "saveOnEnter": false,
+                    "scrollToTop": false,
+                    "collapsible": false,
+                    "key": "wizardBPartB",
+                    "type": "panel",
+                    "input": false,
+                    "tableView": false,
+                    "components": [{
+                            "label": "HTML",
+                            "attrs": [{
+                                "attr": "",
+                                "value": ""
+                            }],
+                            "content": "<h2><b>Wizard B Part B</b></h2>\n<div>page apiKey is [wizardBPartB]</div>",
+                            "refreshOnChange": false,
+                            "key": "html1a",
+                            "type": "htmlelement",
+                            "input": false,
+                            "tableView": false
+                        },
+                        {
+                            "label": "Wizard C",
+                            "tableView": true,
+                            "form": "698dca6a60dd629eefe24c21",
+                            "useOriginalRevision": false,
+                            "reference": false,
+                            "key": "wizardC",
+                            "type": "form",
+                            "input": true,
+                            "components": [{
+                                "title": "Wizard C Part A",
+                                "breadcrumbClickable": true,
+                                "buttonSettings": {
+                                    "previous": true,
+                                    "cancel": true,
+                                    "next": true
+                                },
+                                "navigateOnEnter": false,
+                                "saveOnEnter": false,
+                                "scrollToTop": false,
+                                "collapsible": false,
+                                "key": "wizardCPartA",
+                                "type": "panel",
+                                "label": "Page 4",
+                                "input": false,
+                                "tableView": false,
+                                "components": [{
+                                        "label": "HTML",
+                                        "attrs": [{
+                                            "attr": "",
+                                            "value": ""
+                                        }],
+                                        "content": "Wizard C",
+                                        "refreshOnChange": false,
+                                        "key": "html1",
+                                        "type": "htmlelement",
+                                        "input": false,
+                                        "tableView": false
+                                    },
+                                    {
+                                        "label": "Form",
+                                        "optionsLabelPosition": "right",
+                                        "inline": false,
+                                        "tableView": false,
+                                        "values": [{
+                                                "label": "A",
+                                                "value": "a",
+                                                "shortcut": ""
+                                            },
+                                            {
+                                                "label": "B",
+                                                "value": "b",
+                                                "shortcut": ""
+                                            }
+                                        ],
+                                        "validateWhenHidden": false,
+                                        "key": "form1",
+                                        "type": "radio",
+                                        "input": true
+                                    },
+                                    {
+                                        "label": "Container",
+                                        "tableView": false,
+                                        "validateWhenHidden": false,
+                                        "key": "container",
+                                        "type": "container",
+                                        "input": true,
+                                        "conditional": {
+                                            "show": true,
+                                            "conjunction": "all",
+                                            "conditions": [{
+                                                "component": "form1",
+                                                "operator": "isEqual",
+                                                "value": "a"
+                                            }]
+                                        },
+                                        "components": [{
+                                            "label": "FOrm show on A",
+                                            "tableView": true,
+                                            "form": "698dca6a60dd629eefe24c19",
+                                            "lazyLoad": false,
+                                            "useOriginalRevision": false,
+                                            "reference": false,
+                                            "key": "form",
+                                            "type": "form",
+                                            "input": true,
+                                            "components": [{
+                                                    "label": "Wizard base 1",
+                                                    "attrs": [{
+                                                        "attr": "",
+                                                        "value": ""
+                                                    }],
+                                                    "content": "Wizard base 1",
+                                                    "refreshOnChange": false,
+                                                    "key": "wizardBase1",
+                                                    "type": "htmlelement",
+                                                    "input": false,
+                                                    "tableView": false
+                                                },
+                                                {
+                                                    "label": "Text Field",
+                                                    "applyMaskOn": "change",
+                                                    "tableView": true,
+                                                    "validate": {
+                                                        "required": true
+                                                    },
+                                                    "validateWhenHidden": false,
+                                                    "key": "textField",
+                                                    "type": "textfield",
+                                                    "input": true
+                                                },
+                                                {
+                                                    "type": "button",
+                                                    "label": "Submit",
+                                                    "key": "submit",
+                                                    "disableOnInvalid": true,
+                                                    "input": true,
+                                                    "tableView": false
+                                                }
+                                            ]
+                                        }]
+                                    }
+                                ]
+                            }]
+                        }
+                    ]
+                }]
+            },
+            {
+                "label": "Wizard B2",
+                "tableView": true,
+                "form": "698dca6a60dd629eefe24c28",
+                "useOriginalRevision": false,
+                "reference": false,
+                "key": "wizardB2",
+                "customConditional": "show =data.wizard === 'B2';",
+                "type": "form",
+                "input": true,
+                "components": [{
+                    "label": "Wizard B Part B",
+                    "title": "Wizard B Part B",
+                    "breadcrumbClickable": true,
+                    "buttonSettings": {
+                        "previous": true,
+                        "cancel": true,
+                        "next": true
+                    },
+                    "navigateOnEnter": false,
+                    "saveOnEnter": false,
+                    "scrollToTop": false,
+                    "collapsible": false,
+                    "key": "wizardBPartB",
+                    "type": "panel",
+                    "input": false,
+                    "tableView": false,
+                    "components": [{
+                            "label": "HTML",
+                            "attrs": [{
+                                "attr": "",
+                                "value": ""
+                            }],
+                            "content": "<h2><b>Wizard B Part B</b></h2>\n<div>page apiKey is [wizardBPartB]</div>",
+                            "refreshOnChange": false,
+                            "key": "html1a",
+                            "type": "htmlelement",
+                            "input": false,
+                            "tableView": false
+                        },
+                        {
+                            "label": "Wizard C",
+                            "tableView": true,
+                            "form": "698dca6a60dd629eefe24c21",
+                            "useOriginalRevision": false,
+                            "reference": false,
+                            "key": "wizardC",
+                            "type": "form",
+                            "input": true,
+                            "components": [{
+                                "title": "Wizard C Part A",
+                                "breadcrumbClickable": true,
+                                "buttonSettings": {
+                                    "previous": true,
+                                    "cancel": true,
+                                    "next": true
+                                },
+                                "navigateOnEnter": false,
+                                "saveOnEnter": false,
+                                "scrollToTop": false,
+                                "collapsible": false,
+                                "key": "wizardCPartA",
+                                "type": "panel",
+                                "label": "Page 4",
+                                "input": false,
+                                "tableView": false,
+                                "components": [{
+                                        "label": "HTML",
+                                        "attrs": [{
+                                            "attr": "",
+                                            "value": ""
+                                        }],
+                                        "content": "Wizard C",
+                                        "refreshOnChange": false,
+                                        "key": "html1",
+                                        "type": "htmlelement",
+                                        "input": false,
+                                        "tableView": false
+                                    },
+                                    {
+                                        "label": "Form",
+                                        "optionsLabelPosition": "right",
+                                        "inline": false,
+                                        "tableView": false,
+                                        "values": [{
+                                                "label": "A",
+                                                "value": "a",
+                                                "shortcut": ""
+                                            },
+                                            {
+                                                "label": "B",
+                                                "value": "b",
+                                                "shortcut": ""
+                                            }
+                                        ],
+                                        "validateWhenHidden": false,
+                                        "key": "form1",
+                                        "type": "radio",
+                                        "input": true
+                                    },
+                                    {
+                                        "label": "Container",
+                                        "tableView": false,
+                                        "validateWhenHidden": false,
+                                        "key": "container",
+                                        "type": "container",
+                                        "input": true,
+                                        "conditional": {
+                                            "show": true,
+                                            "conjunction": "all",
+                                            "conditions": [{
+                                                "component": "form1",
+                                                "operator": "isEqual",
+                                                "value": "a"
+                                            }]
+                                        },
+                                        "components": [{
+                                            "label": "FOrm show on A",
+                                            "tableView": true,
+                                            "form": "698dca6a60dd629eefe24c19",
+                                            "lazyLoad": false,
+                                            "useOriginalRevision": false,
+                                            "reference": false,
+                                            "key": "form",
+                                            "type": "form",
+                                            "input": true,
+                                            "components": [{
+                                                    "label": "Wizard base 1",
+                                                    "attrs": [{
+                                                        "attr": "",
+                                                        "value": ""
+                                                    }],
+                                                    "content": "Wizard base 1",
+                                                    "refreshOnChange": false,
+                                                    "key": "wizardBase1",
+                                                    "type": "htmlelement",
+                                                    "input": false,
+                                                    "tableView": false
+                                                },
+                                                {
+                                                    "label": "Text Field",
+                                                    "applyMaskOn": "change",
+                                                    "tableView": true,
+                                                    "validate": {
+                                                        "required": true
+                                                    },
+                                                    "validateWhenHidden": false,
+                                                    "key": "textField",
+                                                    "type": "textfield",
+                                                    "input": true
+                                                },
+                                                {
+                                                    "type": "button",
+                                                    "label": "Submit",
+                                                    "key": "submit",
+                                                    "disableOnInvalid": true,
+                                                    "input": true,
+                                                    "tableView": false
+                                                }
+                                            ]
+                                        }]
+                                    }
+                                ]
+                            }]
+                        }
+                    ]
+                }]
+            }
+        ]
+    }],
+    "machineName": "tlfhcnqchlscwdb:wizardA",
+    "project": "6983135338b1cbfa7471e015",
+    "created": "2026-02-12T12:41:14.783Z",
+    "modified": "2026-02-12T13:05:23.871Z"
+}

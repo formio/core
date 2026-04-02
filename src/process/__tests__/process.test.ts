@@ -15,10 +15,71 @@ import {
   skipValidForLogicallyHiddenComp,
   skipValidWithHiddenParentComp,
   requiredFieldInsideEditGrid,
+  formWithDeeplyNestedConditionalWizards
 } from './fixtures';
 import _ from 'lodash';
 
 describe('Process Tests', function () {
+  it('Should not remove data of conditionally visible nested nested wizard when the main form has another conditional nested nested form with the same component keys inside', async function () {
+    const form = formWithDeeplyNestedConditionalWizards;
+    const data = {
+      wizard: 'B1',
+      wizardB1: {
+        data: {
+          wizardC: { data: { form1: 'a', container: { form: { data: { textField: 'test' } } } } },
+        },
+      },
+    };
+    const submission = {
+      data: fastCloneDeep(data),
+    };
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    processSync(context);
+    const submissionData = context.data;
+    assert.deepEqual(submissionData, data);
+  });
+
+  it('(async) Should not remove data of conditionally visible nested nested wizard when the main form has another conditional nested nested form with the same component keys inside', async function () {
+    const form = formWithDeeplyNestedConditionalWizards;
+    const data = {
+      wizard: 'B1',
+      wizardB1: {
+        data: {
+          wizardC: { data: { form1: 'a', container: { form: { data: { textField: 'test' } } } } },
+        },
+      },
+    };
+    const submission = {
+      data: fastCloneDeep(data),
+    };
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: Processors,
+      scope: { errors },
+      config: {
+        server: true,
+      },
+    };
+    await process(context);
+    const submissionData = context.data;
+    assert.deepEqual(submissionData, data);
+  });
+  
   it('Should not calculate default value for number component when server option is provided', async function () {
     const submission = {
       data: {},

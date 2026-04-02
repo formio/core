@@ -33,7 +33,7 @@ export async function process<ProcessScope>(
   await eachComponentDataAsync(
     components,
     data,
-    async (component, compData, row, path, components, index, parent, paths) => {
+    async (component, compData, row, path, components, index, parent, paths, localRoot) => {
       await processOne<ProcessScope>({
         ...context,
         data: compData,
@@ -47,6 +47,7 @@ export async function process<ProcessScope>(
           ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
           : undefined,
         parent,
+        localRoot
       });
       if (flat) {
         return true;
@@ -61,7 +62,7 @@ export async function process<ProcessScope>(
     parent,
     parentPaths,
     false,
-    async (component, compData, row, path, components, index, parent, paths) => {
+    async (component, compData, row, path, components, index, parent, paths, localRoot) => {
       await postProcessOne<ProcessScope>({
         ...context,
         data: compData,
@@ -75,6 +76,7 @@ export async function process<ProcessScope>(
           ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
           : undefined,
         parent,
+        localRoot
       });
     },
   );
@@ -89,7 +91,7 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
   eachComponentData(
     components,
     data,
-    (component, compData, row, path, components, index, parent, paths) => {
+    (component, compData, row, path, components, index, parent, paths, localRoot) => {
       processOneSync<ProcessScope>({
         ...context,
         data: compData,
@@ -103,6 +105,7 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
           ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
           : undefined,
         parent,
+        localRoot
       });
       if (flat) {
         return true;
@@ -117,7 +120,7 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
     parent,
     parentPaths,
     false,
-    (component, compData, row, path, components, index, parent, paths) => {
+    (component, compData, row, path, components, index, parent, paths, localRoot) => {
       postProcessOneSync<ProcessScope>({
         ...context,
         data: compData,
@@ -131,6 +134,7 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
           ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
           : undefined,
         parent,
+        localRoot
       });
     },
   );

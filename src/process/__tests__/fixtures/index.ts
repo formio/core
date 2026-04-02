@@ -11,6 +11,7 @@ import data1a from './data1a.json';
 import form1 from './form1.json';
 import subs from './subs.json';
 import requiredFieldInsideEditGrid from './requiredFieldInsideConditionalEditGrid.json';
+import formWithDeeplyNestedConditionalWizards from './formWithDeeplyNestedConditionalWizards.json'
 
 export {
   addressComponentWithOtherCondComponents,
@@ -26,4 +27,5 @@ export {
   form1,
   subs,
   requiredFieldInsideEditGrid,
+  formWithDeeplyNestedConditionalWizards
 };

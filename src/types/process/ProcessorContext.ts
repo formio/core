@@ -3,6 +3,7 @@ import {
   ComponentPaths,
   DataObject,
   Form,
+  LocalRoot,
   PassedComponentInstance,
   ProcessorInfo,
   ProcessorType,
@@ -29,6 +30,7 @@ export type ProcessorContext<ProcessorScope> = {
   local?: boolean; // If the "data" being passed to the processors is local to the nested form.
   scope: ProcessorScope;
   parent?: Component | null;
+  localRoot?: LocalRoot;
   evalContext?: (context: ProcessorContext<ProcessorScope>) => any;
 };
 

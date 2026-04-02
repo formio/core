@@ -2,7 +2,7 @@ import { has, isObject, map, every, some, find, filter, isString } from 'lodash'
 import { getComponent, getComponentValue } from './formUtil';
 import ConditionOperators from './operators';
 import { evaluate } from './utils';
-import { ConditionsContext, JSONConditional, LegacyConditional, SimpleConditional } from 'types';
+import { ConditionsContext, Form, JSONConditional, LegacyConditional, SimpleConditional } from 'types';
 
 export const isJSONConditional = (conditional: any): conditional is JSONConditional => {
   return conditional && conditional.json && isObject(conditional.json);
@@ -133,7 +133,8 @@ export function checkSimpleConditional(
   conditional: SimpleConditional,
   context: ConditionsContext,
 ): boolean | null {
-  const { component, data, instance, form, paths, local } = context;
+  const { component, data, instance, form, paths, local, localRoot } = context;
+  const {data: localRootData, component: localRootComponent } = localRoot || {};
   if (!conditional || !isSimpleConditional(conditional)) {
     return null;
   }
@@ -149,15 +150,17 @@ export function checkSimpleConditional(
         // Ignore conditions if there is no component path.
         return null;
       }
-      const formComponents = form?.components || [];
+      const formComponents = localRootComponent?.components || form?.components || [];
+
       const conditionComponent = getComponent(
         formComponents,
         conditionComponentPath,
         true,
         paths?.dataIndex,
       );
+
       const value = conditionComponent
-        ? getComponentValue(form, data, conditionComponentPath, paths?.dataIndex, local)
+        ? getComponentValue((localRootComponent as Form) || form, localRootData || data, conditionComponentPath, paths?.dataIndex, local)
         : null;
       const ConditionOperator = ConditionOperators[operator];
       return ConditionOperator
