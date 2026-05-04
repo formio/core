@@ -304,22 +304,7 @@ describe('Process Tests', function () {
     };
     processSync(context);
     processSync(context);
-    assert.equal((context.scope as any).errors.length, 2);
-    const errors = interpolateErrors((context.scope as any).errors);
-    const expectedErrors = [
-      "Number 6 'test' is not a valid number.",
-      "Number 7 'arr' is not a valid number.",
-    ];
-
-    assert.equal(
-      _.some(expectedErrors, (err) => errors[0].message === err),
-      true,
-    );
-
-    assert.equal(
-      _.some(expectedErrors, (err) => errors[1].message === err),
-      true,
-    );
+    assert.equal((context.scope as any).errors.length, 0);
   });
 
   it('Should return correct errors for invalid dateTime with max/min validation enabled', async function () {

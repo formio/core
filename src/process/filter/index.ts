@@ -50,6 +50,9 @@ export const filterPostProcessSync: ProcessorPostFnSync<FilterScope> = (
   if (!scope.filter) scope.filter = {};
 
   if (value === undefined || !scope.filter[path]) {
+    if (component.type === 'number') {
+      set(data, path, null);
+    }
     return;
   }
 
