@@ -37,6 +37,7 @@ export type SubmissionMetadata = {
   userAgent?: string;
   pathName?: string;
   onLine?: boolean;
+  language?: string;
   headers?: Record<string, string>;
   [key: string]: any;
 };
