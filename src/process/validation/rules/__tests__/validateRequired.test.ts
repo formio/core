@@ -277,4 +277,33 @@ describe('validateRequired', function () {
     const result = await validateRequired(context);
     expect(result).to.equal(null);
   });
+
+  it('Validating a multiple select with a value when path is local but data is the root submission', async function () {
+    const component = {
+      type: 'select',
+      key: 'select',
+      input: true,
+      multiple: true,
+      validate: { required: true },
+      data: {
+        values: [
+          { label: 'A', value: 'a' },
+          { label: 'B', value: 'b' },
+        ],
+      },
+    };
+    const data = {
+      form: {
+        data: {
+          select: ['b'],
+        },
+      },
+    };
+    const context = generateProcessorContext(component, data) as ProcessorsContext<ValidationScope>;
+    context.value = ['b'];
+    context.path = 'select';
+    context.processors = [validateProcessInfo];
+    await processOne(context);
+    expect(context.scope.errors.length).to.equal(0);
+  });
 });

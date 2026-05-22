@@ -6703,6 +6703,63 @@ describe('Process Tests', function () {
       assert.equal(context.scope.errors[0].ruleName, 'required');
     });
 
+    it('Should not validate required for a multiple select with a value inside a nested form', async function () {
+      const form = {
+        type: 'form',
+        components: [
+          {
+            label: 'Form',
+            key: 'form',
+            type: 'form',
+            input: true,
+            components: [
+              {
+                label: 'Select',
+                widget: 'choicesjs',
+                multiple: true,
+                data: {
+                  values: [
+                    { label: 'A', value: 'a' },
+                    { label: 'B', value: 'b' },
+                    { label: 'C', value: 'c' },
+                  ],
+                },
+                validate: { required: true },
+                key: 'select',
+                type: 'select',
+                input: true,
+              },
+            ],
+          },
+        ],
+      };
+
+      const submission = {
+        data: {
+          form: {
+            data: {
+              select: ['b'],
+            },
+          },
+        },
+      };
+
+      const errors: any = [];
+      const context = {
+        form,
+        submission,
+        data: submission.data,
+        components: form.components,
+        processors: Processors,
+        scope: { errors },
+        config: {
+          server: true,
+        },
+      };
+      processSync(context);
+      assert.equal(context.scope.errors.length, 0);
+    });
+
     describe('For EditGrid:', function () {
       const components = [
         {
