@@ -26,6 +26,21 @@ export interface FormioOptions {
   project?: string;
 
   useSessionToken?: boolean;
+
+  /**
+   * An instance-specific fetch function to override the global Formio.fetch.
+   * Expected to match the standard Web Fetch API signature:
+   * `(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>`
+   * 
+   * @example
+   * new Formio('https://api.form.io', { 
+   *   fetch: async (url, options) => {
+   *     // Inject custom logic here
+   *     return await window.fetch(url, options);
+   *   }
+   * })
+   */
+  fetch?: any;
 }
 
 /**
@@ -109,6 +124,11 @@ export class Formio {
    * A direct interface to the Form.io fetch polyfill.
    */
   public static fetch: any = fetch;
+
+  /**
+   * An instance-specific fetch function to override the global Formio.fetch.
+   */
+  public fetch?: any;
 
   /**
    * A direct interface to the Form.io fetch Headers polyfill.
@@ -262,6 +282,9 @@ export class Formio {
 
     if (options.useSessionToken) {
       Formio.useSessionToken(options as any);
+    }
+    if (options.hasOwnProperty('fetch') && options.fetch) {
+      this.fetch = options.fetch;
     }
     if (options.hasOwnProperty('base') && options.base) {
       this.base = options.base;
@@ -1592,7 +1615,8 @@ export class Formio {
     }
 
     const requestToken = options.headers['x-jwt-token'];
-    const result = Plugins.pluginAlter('wrapFetchRequestPromise', Formio.fetch(url, options), {
+    const customFetch = (opts && opts.formio && opts.formio.fetch) || (opts && opts.fetch) || Formio.fetch;
+    const result = Plugins.pluginAlter('wrapFetchRequestPromise', customFetch(url, options), {
       url,
       method,
       data,
