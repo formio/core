@@ -8,3 +8,4 @@ dist
 # ignore nyc output
 .nyc_output
 coverage
+src/experimental/components/templates/bootstrap/datatable/html.ejs.js

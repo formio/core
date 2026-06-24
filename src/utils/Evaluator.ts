@@ -132,9 +132,7 @@ export class DefaultEvaluator {
       return returnVal;
     } else if (typeof func === 'string') {
       if (ret) {
-        func = `var ${ret};
-        ${func};
-        return ${ret}`;
+        func = `var ${ret};${func};return ${ret}`;
       }
       if (options.formModule) {
         func = `const module = ${options.formModule};

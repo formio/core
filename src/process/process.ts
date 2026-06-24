@@ -168,12 +168,12 @@ export const Processors: ProcessorInfo<any, any>[] = [
   serverOverrideProcessInfo,
   filterProcessInfo,
   defaultValueProcessInfo,
+  normalizeProcessInfo,
   dereferenceProcessInfo,
   fetchProcessInfo,
   calculateProcessInfo,
   conditionProcessInfo,
   logicProcessInfo,
-  normalizeProcessInfo,
   clearHiddenProcessInfo,
   postValidateProcessInfo,
 ];

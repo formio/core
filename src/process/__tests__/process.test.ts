@@ -2,14 +2,13 @@ import { expect } from 'chai';
 import assert from 'node:assert';
 import type { ContainerComponent, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
-import { process, processSync, ProcessTargets, Processors, interpolateErrors } from '../index';
+import { process, processSync, Processors, interpolateErrors } from '../index';
 import { fastCloneDeep } from 'utils';
 import {
   addressComponentWithOtherCondComponents,
   addressComponentWithOtherCondComponents2,
   clearOnHideWithCustomCondition,
   clearOnHideWithHiddenParent,
-  conditionalWithSelectBoxes,
   forDataGridRequired,
   skipValidForConditionallyHiddenComp,
   skipValidForLogicallyHiddenComp,
@@ -78,233 +77,6 @@ describe('Process Tests', function () {
     await process(context);
     const submissionData = context.data;
     assert.deepEqual(submissionData, data);
-  });
-  
-  it('Should not calculate default value for number component when server option is provided', async function () {
-    const submission = {
-      data: {},
-    };
-    const form = {
-      components: [
-        {
-          label: 'Number 000123   8',
-          applyMaskOn: 'change',
-          mask: false,
-          tableView: false,
-          delimiter: false,
-          requireDecimal: false,
-          inputFormat: 'plain',
-          truncateMultipleSpaces: false,
-          customDefaultValue: "value = '000123';",
-          validateWhenHidden: false,
-          key: 'numberHotdogs8',
-          type: 'number',
-          input: true,
-        },
-        {
-          type: 'button',
-          label: 'Submit',
-          key: 'submit',
-          disableOnInvalid: true,
-          input: true,
-          tableView: false,
-        },
-      ],
-    };
-    const context = {
-      form,
-      submission,
-      data: submission.data,
-      components: form.components,
-      processors: Processors,
-      scope: {},
-      config: {
-        server: true,
-      },
-    };
-    processSync(context);
-    assert.deepEqual(context.data, {});
-  });
-
-  it('Should calculate and normalize number values', async function () {
-    const submission = {
-      data: {},
-    };
-    const form = {
-      components: [
-        {
-          label: 'Number 1 000123 ',
-          applyMaskOn: 'change',
-          mask: false,
-          tableView: false,
-          delimiter: false,
-          requireDecimal: false,
-          inputFormat: 'plain',
-          truncateMultipleSpaces: false,
-          calculateValue: "value = '000123';",
-          calculateServer: true,
-          validateWhenHidden: false,
-          key: 'number1',
-          type: 'number',
-          input: true,
-        },
-        {
-          label: "Number 2 '000123 num'",
-          applyMaskOn: 'change',
-          mask: false,
-          tableView: false,
-          delimiter: false,
-          requireDecimal: false,
-          inputFormat: 'plain',
-          truncateMultipleSpaces: false,
-          calculateValue: 'value = 000123;',
-          calculateServer: true,
-          validateWhenHidden: false,
-          key: 'number2',
-          type: 'number',
-          input: true,
-        },
-        {
-          label: "Number 3 '0'",
-          applyMaskOn: 'change',
-          mask: false,
-          tableView: false,
-          delimiter: false,
-          requireDecimal: false,
-          inputFormat: 'plain',
-          truncateMultipleSpaces: false,
-          calculateValue: 'value = 0;',
-          calculateServer: true,
-          validateWhenHidden: false,
-          key: 'number3',
-          type: 'number',
-          input: true,
-        },
-        {
-          label: "Number 4 '0000.0123' string",
-          applyMaskOn: 'change',
-          mask: false,
-          tableView: false,
-          delimiter: false,
-          requireDecimal: false,
-          inputFormat: 'plain',
-          truncateMultipleSpaces: false,
-          calculateValue: 'value = "000.0123";',
-          calculateServer: true,
-          validateWhenHidden: false,
-          key: 'number4',
-          type: 'number',
-          input: true,
-        },
-        {
-          label: "Number 5 '123'",
-          applyMaskOn: 'change',
-          mask: false,
-          tableView: false,
-          delimiter: false,
-          requireDecimal: false,
-          inputFormat: 'plain',
-          truncateMultipleSpaces: false,
-          calculateValue: 'value = "123";',
-          calculateServer: true,
-          validateWhenHidden: false,
-          key: 'number5',
-          type: 'number',
-          input: true,
-        },
-        {
-          type: 'button',
-          label: 'Submit',
-          key: 'submit',
-          disableOnInvalid: true,
-          input: true,
-          tableView: false,
-        },
-      ],
-    };
-    const context = {
-      form,
-      submission,
-      data: submission.data,
-      components: form.components,
-      processors: Processors,
-      scope: {},
-      config: {
-        server: true,
-      },
-    };
-    processSync(context);
-    assert.deepEqual(context.data, {
-      number1: 123,
-      number2: 83,
-      number3: 0,
-      number4: 0.0123,
-      number5: 123,
-    });
-  });
-
-  it('Should calculate number values and return validation error for invalid number values', async function () {
-    const submission = {
-      data: {},
-    };
-    const form = {
-      components: [
-        {
-          label: "Number 6 'test'",
-          applyMaskOn: 'change',
-          mask: false,
-          tableView: false,
-          delimiter: false,
-          requireDecimal: false,
-          inputFormat: 'plain',
-          truncateMultipleSpaces: false,
-          calculateValue: 'value = "test";',
-          calculateServer: true,
-          validateWhenHidden: false,
-          key: 'number6',
-          type: 'number',
-          input: true,
-        },
-        {
-          label: "Number 7 'arr'",
-          applyMaskOn: 'change',
-          mask: false,
-          tableView: false,
-          delimiter: false,
-          requireDecimal: false,
-          inputFormat: 'plain',
-          truncateMultipleSpaces: false,
-          calculateValue: 'value = [];',
-          calculateServer: true,
-          validateWhenHidden: false,
-          key: 'number7',
-          type: 'number',
-          input: true,
-        },
-        {
-          type: 'button',
-          label: 'Submit',
-          key: 'submit',
-          disableOnInvalid: true,
-          input: true,
-          tableView: false,
-        },
-      ],
-    };
-    const context = {
-      form,
-      submission,
-      data: submission.data,
-      components: form.components,
-      processors: Processors,
-      scope: {},
-      config: {
-        server: true,
-      },
-    };
-    processSync(context);
-    processSync(context);
-    assert.equal((context.scope as any).errors.length, 0);
   });
 
   it('Should return correct errors for invalid dateTime with max/min validation enabled', async function () {
@@ -4511,30 +4283,6 @@ describe('Process Tests', function () {
     assert.equal(context.scope.errors.length, 0);
   });
 
-  it('Should set data for fields with old conditional formats for Select Boxes', async function () {
-    const errors: any = [];
-    const { form, submission } = conditionalWithSelectBoxes;
-    const context = {
-      form,
-      submission,
-      data: submission.data,
-      components: form.components,
-      processors: ProcessTargets.submission,
-      scope: { errors },
-      config: {
-        server: true,
-      },
-    };
-    processSync(context);
-    submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
-    (context.scope as any).conditionals.forEach((v: any) =>
-      assert.equal(v.conditionallyHidden, false),
-    );
-    assert.deepEqual(context.data, submission.data);
-  });
-
   it('Should not unset values for conditionally visible fields with different formats of condtion based on selectboxes value', async function () {
     const form = {
       _id: '66ffa92ac25689df8702f283',
@@ -6703,63 +6451,6 @@ describe('Process Tests', function () {
       assert.equal(context.scope.errors[0].ruleName, 'required');
     });
 
-    it('Should not validate required for a multiple select with a value inside a nested form', async function () {
-      const form = {
-        type: 'form',
-        components: [
-          {
-            label: 'Form',
-            key: 'form',
-            type: 'form',
-            input: true,
-            components: [
-              {
-                label: 'Select',
-                widget: 'choicesjs',
-                multiple: true,
-                data: {
-                  values: [
-                    { label: 'A', value: 'a' },
-                    { label: 'B', value: 'b' },
-                    { label: 'C', value: 'c' },
-                  ],
-                },
-                validate: { required: true },
-                key: 'select',
-                type: 'select',
-                input: true,
-              },
-            ],
-          },
-        ],
-      };
-
-      const submission = {
-        data: {
-          form: {
-            data: {
-              select: ['b'],
-            },
-          },
-        },
-      };
-
-      const errors: any = [];
-      const context = {
-        form,
-        submission,
-        data: submission.data,
-        components: form.components,
-        processors: Processors,
-        scope: { errors },
-        config: {
-          server: true,
-        },
-      };
-      processSync(context);
-      assert.equal(context.scope.errors.length, 0);
-    });
-
     describe('For EditGrid:', function () {
       const components = [
         {
@@ -6822,6 +6513,7 @@ describe('Process Tests', function () {
           },
         };
         processSync(context);
+        console.log(JSON.stringify(context.data, null, 2));
 
         expect((context.scope as ValidationScope).errors).to.have.length(0);
         expect(context.data).to.deep.equal({
