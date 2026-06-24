@@ -306,27 +306,3 @@ export const requiredAddressManualMode: any = {
     },
   ],
 };
-
-export const requiredContainerComponent: any = {
-  label: 'Container',
-  hideLabel: false,
-  tableView: false,
-  validate: {
-    required: true,
-  },
-  validateWhenHidden: false,
-  key: 'container',
-  type: 'container',
-  input: true,
-  components: [
-    {
-      label: 'Text Field',
-      applyMaskOn: 'change',
-      tableView: true,
-      validateWhenHidden: false,
-      key: 'textField',
-      type: 'textfield',
-      input: true,
-    },
-  ],
-};

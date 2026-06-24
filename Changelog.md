@@ -1,12 +1,5 @@
 # @formio/core
 
-## 2.5.2
-
-### Patch Changes
-
-- 9fe7d91: FIO-10299: fixed an issue where calendar widget does not open when the locale loading fails
-- 1fa6e27: FIO-10588: fixed an issue where logic with the result variable does not work properly on server side
-
 ## 2.5.2-rc.0
 
 ### Patch Changes
@@ -573,6 +566,7 @@
 ### Breaking Changes
 
 - This version of the renderer will now produce different "binary" build files. The following are created.
+
   - dist/formio.core.js => The complete core binary. This used to be "dist/index.js".
   - dist/formio.base.js => The base components of the core library. This used to be "dist/base/index.js"
   - dist/formio.components.js => The extended components classes of the core library. This used to be "dist/components/index.js"

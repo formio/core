@@ -22,40 +22,15 @@ export const filterProcess: ProcessorFn<FilterScope> = async (context: FilterCon
   return filterProcessSync(context);
 };
 
-export const getModelTypeDefaultValue = (modelType: string, context: FilterContext): any | undefined=> {
-  const modelTypeDefaultValues: {[modelType: string]: () => any} = {
-    dataObject:  () => ({ data: {} }),
-    nestedArray: () => [],
-    nestedDataArray: () => { 
-      const { value } = context;
-      return Array.isArray(value) ? value.map((v) => ({ ...v, data: {} })) : [];
-    },
-    object: () => {
-      const { component } = context;
-      return component.type === 'address' ? false : {};
-    },
-  };
-
-  if (modelTypeDefaultValues[modelType]) {
-    return modelTypeDefaultValues[modelType]();
-  }
-  return;
-}
-
 export const filterPostProcessSync: ProcessorPostFnSync<FilterScope> = (
   context: FilterContext,
 ): boolean | undefined => {
   const { scope, path, data, component, value } = context;
-  scope.filtered = scope.filtered || {};
   if (!scope.filter) scope.filter = {};
-
   if (value === undefined || !scope.filter[path]) {
-    if (component.type === 'number') {
-      set(data, path, null);
-    }
     return;
   }
-
+  scope.filtered = scope.filtered || {};
   const modelType = getModelType(component);
   if (
     component.type === 'address' ||
@@ -67,23 +42,21 @@ export const filterPostProcessSync: ProcessorPostFnSync<FilterScope> = (
     set(scope.filtered, path, value);
   } else {
     if (modelType === 'dataObject') {
-      set(data, `${path}.data`, get(scope.filtered, `${path}.data`, getModelTypeDefaultValue(modelType, context).data));
+      set(data, `${path}.data`, get(scope.filtered, `${path}.data`, value?.data || {}));
       set(scope.filtered, path, get(data, path));
     } else if (modelType === 'nestedDataArray') {
-      const filtered: any = get(scope.filtered, path);
+      const filtered: any = get(scope.filtered, path, []);
       set(
         scope.filtered,
         path,
-        filtered 
-          ? (value || []).map((item: any, index: number) => {
-              return { ...item, data: filtered[index]?.data || {} };
-            })
-          : getModelTypeDefaultValue(modelType, context),
+        value.map((item: any, index: number) => {
+          return { ...item, data: filtered[index]?.data || {} };
+        }),
       );
     } else if (!has(scope.filtered, path)) {
-      set(scope.filtered, path, getModelTypeDefaultValue(modelType, context) || value);
+      set(scope.filtered, path, value);
     } else {
-      set(data, path, get(scope.filtered, path, getModelTypeDefaultValue(modelType, context) || value));
+      set(data, path, get(scope.filtered, path, value));
     }
   }
 };

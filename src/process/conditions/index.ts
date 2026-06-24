@@ -103,7 +103,9 @@ export const conditionalProcess = (context: ConditionsContext, isHidden: Conditi
   }
 
   conditionalComp.conditionallyHidden = isHidden(context) === true;
-  setComponentScope(component, 'conditionallyHidden', !!conditionalComp.conditionallyHidden);
+  if (conditionalComp.conditionallyHidden) {
+    setComponentScope(component, 'conditionallyHidden', true);
+  }
 };
 
 export const customConditionProcess: ProcessorFn<ConditionsScope> = async (

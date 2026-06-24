@@ -2,7 +2,7 @@ import { has, isObject, map, every, some, find, filter, isString } from 'lodash'
 import { getComponent, getComponentValue } from './formUtil';
 import ConditionOperators from './operators';
 import { evaluate } from './utils';
-import { ConditionsContext, Form, JSONConditional, LegacyConditional, SimpleConditional } from 'types';
+import { ConditionsContext, JSONConditional, LegacyConditional, SimpleConditional } from 'types';
 
 export const isJSONConditional = (conditional: any): conditional is JSONConditional => {
   return conditional && conditional.json && isObject(conditional.json);
@@ -37,23 +37,14 @@ export function conditionallyHidden(context: ConditionsContext) {
  * @returns {*}
  */
 export function checkCustomConditional(
-  condition: string | ((...args: any[]) => boolean),
+  condition: string,
   context: ConditionsContext,
   variable: string = 'show',
 ): boolean | null {
   if (!condition) {
     return null;
   }
-  let value;
-  if (typeof condition === 'function') {
-    value = evaluate(condition, context, variable);
-  } else {
-    // For reverse compatability... if "show" is never set, then it should be shown. This
-    // comes from the following legacy behavior
-    // https://github.com/formio/formio.js/blob/973b214ec6bf23d8679d0f5007b3522528abd36d/src/utils/utils.js#L311C33-L311C37
-    value = evaluate(`${variable} = true; ${condition};`, context, variable);
-  }
-
+  const value = evaluate(condition, context, variable);
   if (value === null) {
     return null;
   }
@@ -133,8 +124,7 @@ export function checkSimpleConditional(
   conditional: SimpleConditional,
   context: ConditionsContext,
 ): boolean | null {
-  const { component, data, instance, form, paths, local, localRoot } = context;
-  const {data: localRootData, component: localRootComponent } = localRoot || {};
+  const { component, data, instance, form, paths, local } = context;
   if (!conditional || !isSimpleConditional(conditional)) {
     return null;
   }
@@ -145,22 +135,21 @@ export function checkSimpleConditional(
 
   const conditionsResult = filter(
     map(conditions, (cond) => {
-      const { operator, value: comparedValue, component: conditionComponentPath } = cond;
+      const { operator } = cond;
+      const { value: comparedValue, component: conditionComponentPath } = cond;
       if (!conditionComponentPath) {
         // Ignore conditions if there is no component path.
         return null;
       }
-      const formComponents = localRootComponent?.components || form?.components || [];
-
+      const formComponents = form?.components || [];
       const conditionComponent = getComponent(
         formComponents,
         conditionComponentPath,
         true,
         paths?.dataIndex,
       );
-
       const value = conditionComponent
-        ? getComponentValue((localRootComponent as Form) || form, localRootData || data, conditionComponentPath, paths?.dataIndex, local)
+        ? getComponentValue(form, data, conditionComponentPath, paths?.dataIndex, local)
         : null;
       const ConditionOperator = ConditionOperators[operator];
       return ConditionOperator

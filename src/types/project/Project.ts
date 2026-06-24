@@ -25,11 +25,10 @@ export type Project = {
   stageTitle: string;
   machineName: string;
   config?: Record<string, string>;
-  
   protect: boolean;
   settings?: ProjectSettings;
   remoteSecret?: string;
-  builderConfig?: any;
+
   formDefaults: {
     revisions?: 'current' | 'original';
   };
@@ -99,26 +98,4 @@ export type ProjectApiCalls = {
   limit: ProjectUsage;
   used: ProjectUsage;
   reset: Date | string;
-};
-
-export type ProjectRole = {
-  _id?: string;
-  title?: string;
-  description?: string;
-  admin?: boolean;
-  default?: boolean;
-};
-
-export type ProjectFormAccess = {
-  _id: string;
-  title?: string;
-  name?: string;
-  path?: string;
-  access?: Access[];
-  submissionAccess?: Access[];
-};
-
-export type ProjectAccessInfo = {
-  roles: Record<string, ProjectRole>;
-  forms?: Record<string, ProjectFormAccess>;
 };

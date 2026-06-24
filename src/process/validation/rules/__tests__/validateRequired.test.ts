@@ -10,7 +10,7 @@ import {
   simpleSelectBoxes,
   simpleRadioField,
   simpleCheckBoxField,
-  requiredAddressManualMode, requiredContainerComponent,
+  requiredAddressManualMode,
 } from './fixtures/components';
 import { processOne } from 'processes/processOne';
 import { generateProcessorContext } from './fixtures/util';
@@ -252,58 +252,5 @@ describe('validateRequired', function () {
     const context = generateProcessorContext(component, data);
     const result = await validateRequired(context);
     expect(result).to.equal(null);
-  });
-
-  it('Validating a container component', async function () {
-    const component = { ...requiredContainerComponent };
-    const data = { textField: '' };
-    const context = generateProcessorContext(component, data);
-    const result = await validateRequired(context);
-    expect(result).to.be.instanceOf(FieldError);
-  });
-
-  it('Validating a texField invalid value with multiple spaces', async function () {
-    const component = { ...simpleTextField, validate: { required: true }, key: 'textField' };
-    const data = { textField: '    ' };
-    const context = generateProcessorContext(component, data);
-    const result = await validateRequired(context);
-    expect(result).to.be.instanceOf(FieldError);
-  });
-
-  it('Validating a texField valid value with multiple spaces', async function () {
-    const component = { ...simpleTextField, validate: { required: true }, key: 'textField' };
-    const data = { textField: '  test  ' };
-    const context = generateProcessorContext(component, data);
-    const result = await validateRequired(context);
-    expect(result).to.equal(null);
-  });
-
-  it('Validating a multiple select with a value when path is local but data is the root submission', async function () {
-    const component = {
-      type: 'select',
-      key: 'select',
-      input: true,
-      multiple: true,
-      validate: { required: true },
-      data: {
-        values: [
-          { label: 'A', value: 'a' },
-          { label: 'B', value: 'b' },
-        ],
-      },
-    };
-    const data = {
-      form: {
-        data: {
-          select: ['b'],
-        },
-      },
-    };
-    const context = generateProcessorContext(component, data) as ProcessorsContext<ValidationScope>;
-    context.value = ['b'];
-    context.path = 'select';
-    context.processors = [validateProcessInfo];
-    await processOne(context);
-    expect(context.scope.errors.length).to.equal(0);
   });
 });
