@@ -420,7 +420,7 @@ export function componentMatches(
 ) {
   let dataProperty = '';
   if (component.type === 'selectboxes') {
-    const valuePath = new RegExp(`(\\.?${escapeRegExp(component.key)})(\\.[^\\.]+)$`);
+    const valuePath = new RegExp(`(\\.${escapeRegExp(component.key)})(\\.[^\\.]+)$`);
     const pathMatches = path.match(valuePath);
     if (pathMatches?.length === 3) {
       dataProperty = pathMatches[2];
@@ -1211,8 +1211,8 @@ const isSelectBoxesComponent = (component: any): component is SelectBoxesCompone
   component?.type === 'selectboxes';
 const isTextAreaComponent = (component: any): component is TextAreaComponent =>
   component?.type === 'textarea';
-const isComponentWithMaskValue = (component: any): component is TextFieldComponent =>
-  component?.type === 'textfield' || component?.type === 'phoneNumber';
+const isTextFieldComponent = (component: any): component is TextFieldComponent =>
+  component?.type === 'textfield';
 
 export function getEmptyValue(component: Component) {
   switch (component.type) {
@@ -1312,7 +1312,7 @@ export function isComponentDataEmpty(
         ? isValueEmpty(component, value.trim())
         : isValueEmpty(component, value)
       : isValueEmpty(component, trimBlanks(value));
-  } else if (isComponentWithMaskValue(component)) {
+  } else if (isTextFieldComponent(component)) {
     if (component.allowMultipleMasks && !!component.inputMasks && !!component.inputMasks.length) {
       return (
         isValueEmpty(component, value) ||
@@ -1429,9 +1429,6 @@ export function normalizeContext(context: any): any {
     input: value,
     config: safeConfig,
     options,
-    t: (text: string): string => {
-      return text;
-    }
   };
 }
 

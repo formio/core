@@ -124,7 +124,6 @@ export type ButtonComponent = BaseComponent & {
   action: string;
   disableOnInvalid: boolean;
   theme: string;
-  event?: string;
 };
 
 export type CheckboxComponent = BaseComponent & {
@@ -342,7 +341,8 @@ export type PanelComponent = NestedComponent & {
 };
 
 export type PasswordComponent = TextFieldComponent;
-export type PhoneNumberComponent = TextFieldComponent;
+
+export type PhoneNumberComponent = NumberComponent & { inputMode: 'decimal' };
 
 export type ListComponent = BaseComponent & {
   values?: { label: string; value: string; shortcut?: string }[];
@@ -451,7 +451,6 @@ export type SelectComponentOptions = ListComponent & {
   customOptions?: Record<string, string>; // TODO: with flatpickr I type these, should I do the same with ChoicesJS?
   useExactSearch?: boolean;
   disableLimit?: boolean;
-  noRefreshOnScroll?: boolean;
 };
 
 export type SelectComponent = (

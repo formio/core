@@ -5,14 +5,12 @@ import { validateEmailInfo } from './validateEmail';
 import { validateJsonInfo } from './validateJson';
 import { validateMaskInfo } from './validateMask';
 import { validateMaximumDayInfo } from './validateMaximumDay';
-import { validateMaximumDateInfo } from './validateMaximumDate';
 import { validateMaximumLengthInfo } from './validateMaximumLength';
 import { validateMaximumSelectedCountInfo } from './validateMaximumSelectedCount';
 import { validateMaximumValueInfo } from './validateMaximumValue';
 import { validateMaximumWordsInfo } from './validateMaximumWords';
 import { validateMaximumYearInfo } from './validateMaximumYear';
 import { validateMinimumDayInfo } from './validateMinimumDay';
-import { validateMinimumDateInfo } from './validateMinimumDate';
 import { validateMinimumLengthInfo } from './validateMinimumLength';
 import { validateMinimumSelectedCountInfo } from './validateMinimumSelectedCount';
 import { validateMinimumValueInfo } from './validateMinimumValue';
@@ -35,14 +33,12 @@ export const clientRules: ValidationRuleInfo[] = [
   validateJsonInfo,
   validateMaskInfo,
   validateMaximumDayInfo,
-  validateMaximumDateInfo,
   validateMaximumLengthInfo,
   validateMaximumSelectedCountInfo,
   validateMaximumValueInfo,
   validateMaximumWordsInfo,
   validateMaximumYearInfo,
   validateMinimumDayInfo,
-  validateMinimumDateInfo,
   validateMinimumLengthInfo,
   validateMinimumSelectedCountInfo,
   validateMinimumValueInfo,
