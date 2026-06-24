@@ -1,5 +1,17 @@
 # @formio/core
 
+## 2.5.4
+
+### Patch Changes
+
+- 17bcb81: Changed the way how required validation works for Container component
+
+## 2.5.4-api96.0
+
+### Patch Changes
+
+- 17bcb81: Changed the way how required validation works for Container component
+
 ## 2.5.3
 
 ### Patch Changes
