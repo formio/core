@@ -1,4 +1,4 @@
-import { Component, HasChildComponents } from './Component';
+import { Component } from './Component';
 import { DataObject } from './DataObject';
 
 /**
@@ -152,7 +152,6 @@ export type EachComponentDataAsyncCallback = (
   index?: number,
   parent?: Component | null,
   paths?: ComponentPaths,
-  localRoot?: LocalRoot
 ) => Promise<boolean | void>;
 
 export type EachComponentDataCallback = (
@@ -164,7 +163,6 @@ export type EachComponentDataCallback = (
   index?: number,
   parent?: Component | null,
   paths?: ComponentPaths,
-  localRoot?: LocalRoot
 ) => boolean | void;
 
 export type EachComponentCallback = (
@@ -184,9 +182,3 @@ export type EachComponentAsyncCallback = (
 ) => Promise<boolean | void>;
 
 export type FetchFn = (url: string, options?: RequestInit) => Promise<any>;
-
-export type LocalRoot = {
-  component: HasChildComponents;
-  data: DataObject
-};
-

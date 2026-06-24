@@ -1,5 +1,126 @@
 # @formio/core
 
+## 2.6.3
+
+### Patch Changes
+
+- b9b71dc: No actual changes, just forcing a bump to ensure we override the previous version
+
+## 2.6.3-api97.1
+
+### Patch Changes
+
+- b9b71dc: No actual changes, just forcing a bump to ensure we override the previous version
+
+## 2.6.2
+
+### Patch Changes
+
+- 868314e: FIO-11371: update dompurify from 3.2.4 to >=3.3.2, upgrade tests
+- 260eeb0: FIO-11230: improved validator performance
+
+## 2.6.2-api97.0
+
+### Patch Changes
+
+- 868314e: FIO-11371: update dompurify from 3.2.4 to >=3.3.2, upgrade tests
+- 260eeb0: FIO-11230: improved validator performance
+
+## 2.6.1
+
+### Patch Changes
+
+- 4e88b7a: FIO-10899: fixed an issue where instance is not available for evaluations on server-side for content components
+- cc8eb1c: FIO-11051: fixed an issue where Select components with save as reference don't dereference their data on programmatic submission, resulting in validation errors
+
+## 2.6.1-api97.0
+
+### Patch Changes
+
+- 4e88b7a: FIO-10899: fixed an issue where instance is not available for evaluations on server-side for content components
+- cc8eb1c: FIO-11051: fixed an issue where Select components with save as reference don't dereference their data on programmatic submission, resulting in validation errors
+
+## 2.6.0
+
+### Minor Changes
+
+- 3126796: prevent package version conflict with 9.6.6
+
+### Patch Changes
+
+- 319d032: Integrate previous OSS portal work into nirvana
+- 98f7031: Changed the way how required validation works for Container component
+- 03303d5: FIO-10903: fixed an issue where trnalstion function is not available in evaluations on server
+- 61dd4b0: Re-introduced OSS portal
+- 6ffefd3: Made DateTime component to perform min/max date validation on erroneuos manual input
+- 52e802a: FIO-8409: added serverOverride option
+- 5334cf2: FIO-10579: fixed an issue where advanced conditionals work incorrectly when 'show' is undefined
+- 65d5e88: FIO-11002 fixed an issue with display of the submission after adding form revision
+- df5ec66: FIO-10825: fixed an issue where validation setting is exposed in validation error context when secret validation is enabled
+- 685a230: FIO-10737: fixed an issue where values for non-existing components inside nested components are not cleaned up after submission
+- bc152a0: FIO-10888: fixed an issue where incorrect validation errors are returned for min-max dateTime validation when invalid date is submitted
+- 5a600df: Fix Allow Multiple Masks Phone number not saving issue.
+- 73e3abd: FIO-10912 fixed an issue with saving row of the Edit grid witn nested multiple values component and require validation
+- bd39aee: Fixes a logical flaw in the way that custom conditionals are evaluated.
+
+## 2.6.0-rc.5
+
+### Patch Changes
+
+- 5a600df: Fix Allow Multiple Masks Phone number not saving issue.
+
+## 2.6.0-rc.4
+
+### Patch Changes
+
+- 98f7031: Changed the way how required validation works for Container component
+
+## 2.6.0-rc.3
+
+### Patch Changes
+
+- 03303d5: FIO-10903: fixed an issue where trnalstion function is not available in evaluations on server
+- 65d5e88: FIO-11002 fixed an issue with display of the submission after adding form revision
+
+## 2.6.0-rc.2
+
+### Minor Changes
+
+- 3126796: prevent package version conflict with 9.6.6
+
+## 2.6.0-rc.1
+
+### Patch Changes
+
+- bc152a0: FIO-10888: fixed an issue where incorrect validation errors are returned for min-max dateTime validation when invalid date is submitted
+- 73e3abd: FIO-10912 fixed an issue with saving row of the Edit grid witn nested multiple values component and require validation
+
+## 2.6.0-rc.0
+
+### Patch Changes
+
+- 319d032: Integrate previous OSS portal work into nirvana
+- 61dd4b0: Re-introduced OSS portal
+- 6ffefd3: Made DateTime component to perform min/max date validation on erroneuos manual input
+- 52e802a: FIO-8409: added serverOverride option
+- 5334cf2: FIO-10579: fixed an issue where advanced conditionals work incorrectly when 'show' is undefined
+- df5ec66: FIO-10825: fixed an issue where validation setting is exposed in validation error context when secret validation is enabled
+- 685a230: FIO-10737: fixed an issue where values for non-existing components inside nested components are not cleaned up after submission
+- 35ad101: Fixed an issue where non-existent data is not removed from the submission object during filter.
+- bd39aee: Fixes a logical flaw in the way that custom conditionals are evaluated.
+
+## 2.5.4
+
+### Patch Changes
+
+- 17bcb81: Changed the way how required validation works for Container component
+
+## 2.5.4-api96.0
+
+### Patch Changes
+
+- 17bcb81: Changed the way how required validation works for Container component
+
 ## 2.5.3
 
 ### Patch Changes
