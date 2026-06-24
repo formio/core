@@ -346,7 +346,7 @@ const normalizeSingleNumberComponentValue = (component: NumberComponent, value: 
     return +value;
   }
 
-  return undefined;
+  return value;
 };
 
 const normalizeNumberComponentValue = (component: NumberComponent, value: any) => {

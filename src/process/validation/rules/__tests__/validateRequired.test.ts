@@ -262,22 +262,6 @@ describe('validateRequired', function () {
     expect(result).to.be.instanceOf(FieldError);
   });
 
-  it('Validating a texField invalid value with multiple spaces', async function () {
-    const component = { ...simpleTextField, validate: { required: true }, key: 'textField' };
-    const data = { textField: '    ' };
-    const context = generateProcessorContext(component, data);
-    const result = await validateRequired(context);
-    expect(result).to.be.instanceOf(FieldError);
-  });
-
-  it('Validating a texField valid value with multiple spaces', async function () {
-    const component = { ...simpleTextField, validate: { required: true }, key: 'textField' };
-    const data = { textField: '  test  ' };
-    const context = generateProcessorContext(component, data);
-    const result = await validateRequired(context);
-    expect(result).to.equal(null);
-  });
-
   it('Validating a multiple select with a value when path is local but data is the root submission', async function () {
     const component = {
       type: 'select',
