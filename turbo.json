@@ -1,0 +1,32 @@
+{
+  "extends": [
+    "//"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "!src/experimental/components/templates/bootstrap/datatable/html.ejs.js",
+        "config/**",
+        "src/**",
+        "experimental.d.ts",
+        "experimental.js",
+        "gulpfile.js",
+        "index.html",
+        "package.json",
+        "tsconfig.json",
+        "turbo.json",
+        "types.d.ts",
+        "types.js"
+      ],
+      "outputs": [
+        "src/experimental/components/templates/bootstrap/datatable/html.ejs.js",
+        "dist/**",
+        "lib/**",
+        "docs/**"
+      ]
+    }
+  }
+}

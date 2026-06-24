@@ -4,29 +4,22 @@ import {
   ConditionsScope,
   ProcessorInfo,
   DefaultValueContext,
-  Component,
 } from 'types';
 import { set, has } from 'lodash';
 import { evaluate } from 'utils';
 import { getComponentKey, getModelType } from 'utils/formUtil';
 
-const shouldSkipDefaultValue = (component:Component, config: any) => {
-  // do not calculate default value for number components on the server side 
-  // as we cannot determine with certainty if value is removed intentionally
-  return config?.server && getModelType(component) === 'number';
-}
-
 export const hasCustomDefaultValue = (context: DefaultValueContext): boolean => {
-  const { component, config } = context;
-  if (!component.customDefaultValue || shouldSkipDefaultValue(component, config)) {
+  const { component } = context;
+  if (!component.customDefaultValue) {
     return false;
   }
   return true;
 };
 
 export const hasServerDefaultValue = (context: DefaultValueContext): boolean => {
-  const { component, config } = context;
-  if (!component.hasOwnProperty('defaultValue') || shouldSkipDefaultValue(component, config)) {
+  const { component } = context;
+  if (!component.hasOwnProperty('defaultValue')) {
     return false;
   }
   return true;

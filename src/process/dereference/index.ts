@@ -80,19 +80,18 @@ export const dereferenceProcess: ProcessorFn<DereferenceScope> = async (context)
         return;
       }
 
-      const vmCompatibleReferences = fastCloneDeep(references);
-      scope.dereference[path] = vmCompatibleReferences;
+      scope.dereference[path] = references;
 
       if (component.multiple) {
         each(value, (item: Record<string, any>) => {
           const itemId = item._id?.toString();
-          const reference = find(vmCompatibleReferences, (refItem: Submission) => refItem._id?.toString() === itemId);
+          const reference = find(references, (refItem: Submission) => refItem._id?.toString() === itemId);
           if (isObject(reference)) {
             assign(item, reference);
           }
         });
       } else {
-        assign(value, vmCompatibleReferences[0]);
+        assign(value, references[0]);
       }
     }
   } catch (err: any) {

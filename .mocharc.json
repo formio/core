@@ -1,0 +1,14 @@
+{
+  "node-option": [
+    "import=tsx"
+  ],
+  "require": [
+    "mock-local-storage",
+    "jsdom-global/register"
+  ],
+  "spec": "src/**/__tests__/**/*.test.ts",
+  "timeout": 0,
+  "bail": true,
+  "exit": true
+  
+}
