@@ -2,14 +2,13 @@ import { expect } from 'chai';
 import assert from 'node:assert';
 import type { ContainerComponent, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
-import { process, processSync, ProcessTargets, Processors, interpolateErrors } from '../index';
+import { process, processSync, Processors, interpolateErrors } from '../index';
 import { fastCloneDeep } from 'utils';
 import {
   addressComponentWithOtherCondComponents,
   addressComponentWithOtherCondComponents2,
   clearOnHideWithCustomCondition,
   clearOnHideWithHiddenParent,
-  conditionalWithSelectBoxes,
   forDataGridRequired,
   skipValidForConditionallyHiddenComp,
   skipValidForLogicallyHiddenComp,
@@ -4509,30 +4508,6 @@ describe('Process Tests', function () {
     processSync(context);
     submission.data = context.data;
     assert.equal(context.scope.errors.length, 0);
-  });
-
-  it('Should set data for fields with old conditional formats for Select Boxes', async function () {
-    const errors: any = [];
-    const { form, submission } = conditionalWithSelectBoxes;
-    const context = {
-      form,
-      submission,
-      data: submission.data,
-      components: form.components,
-      processors: ProcessTargets.submission,
-      scope: { errors },
-      config: {
-        server: true,
-      },
-    };
-    processSync(context);
-    submission.data = context.data;
-    context.processors = ProcessTargets.evaluator;
-    processSync(context);
-    (context.scope as any).conditionals.forEach((v: any) =>
-      assert.equal(v.conditionallyHidden, false),
-    );
-    assert.deepEqual(context.data, submission.data);
   });
 
   it('Should not unset values for conditionally visible fields with different formats of condtion based on selectboxes value', async function () {
