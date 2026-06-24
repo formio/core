@@ -7,7 +7,6 @@ import {
   HasColumns,
   HasRows,
   ComponentPaths,
-  LocalRoot,
 } from 'types';
 import {
   isComponentNestedDataType,
@@ -39,7 +38,6 @@ export const eachComponentData = (
   parentPaths?: ComponentPaths,
   noScopeReset?: boolean,
   afterFn?: EachComponentDataCallback,
-  localRoot?: LocalRoot
 ) => {
   if (!components) {
     return;
@@ -59,7 +57,6 @@ export const eachComponentData = (
             compPaths?.dataIndex,
             compParent,
             compPaths,
-            localRoot
           );
         }
       };
@@ -73,7 +70,6 @@ export const eachComponentData = (
           compPaths?.dataIndex,
           compParent,
           compPaths,
-          localRoot
         ) === true
       ) {
         callAfterFn();
@@ -109,7 +105,6 @@ export const eachComponentData = (
                 compPaths,
                 noScopeReset,
                 afterFn,
-                localRoot
               );
             }
             if (compPaths) {
@@ -126,7 +121,6 @@ export const eachComponentData = (
               compPaths,
               noScopeReset,
               afterFn,
-              localRoot
             );
           }
           callAfterFn();
@@ -153,12 +147,6 @@ export const eachComponentData = (
             compPaths,
             noScopeReset,
             afterFn,
-            getModelType(component) === 'dataObject' 
-              ? {
-                component,
-                data: get(data, `${compPaths?.dataPath}.data`, data) as DataObject
-              }
-              : localRoot
           );
         }
         callAfterFn();
@@ -180,7 +168,6 @@ export const eachComponentData = (
               compPaths,
               noScopeReset,
               afterFn,
-              localRoot
             ),
           );
         } else if (info.hasRows) {
@@ -197,7 +184,6 @@ export const eachComponentData = (
                   compPaths,
                   noScopeReset,
                   afterFn,
-                  localRoot
                 ),
               );
             }
@@ -213,7 +199,6 @@ export const eachComponentData = (
             compPaths,
             noScopeReset,
             afterFn,
-            localRoot
           );
         }
         callAfterFn();
