@@ -1,8 +1,7 @@
 import { FieldError, ProcessorError } from 'error';
 import { SelectComponent, RuleFn, ValidationContext } from 'types';
-import { toBoolean } from '../util';
+import { isEmptyObject, toBoolean } from '../util';
 import { ProcessorInfo } from 'types/process/ProcessorInfo';
-import { isEmptyObject } from 'utils';
 
 const isValidatableSelectComponent = (component: any): component is SelectComponent => {
   return (

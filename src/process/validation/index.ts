@@ -16,7 +16,6 @@ import { evaluationRules, rules, serverRules } from './rules';
 import find from 'lodash/find';
 import get from 'lodash/get';
 import pick from 'lodash/pick';
-import has from 'lodash/has';
 import { getErrorMessage } from 'utils/error';
 import { FieldError } from 'error';
 import {
@@ -93,11 +92,7 @@ export function isForcedHidden(
   isConditionallyHidden: ConditionallyHidden,
 ): boolean {
   const { component } = context;
-  // if conditionsl were checked earlier, take the result from scope
-  const conditionallyHidden = has(component, 'scope.conditionallyHidden') 
-    ? component.scope?.conditionallyHidden 
-    : isConditionallyHidden(context as ConditionsContext);
-  if (conditionallyHidden ) {
+  if (component.scope?.conditionallyHidden || isConditionallyHidden(context as ConditionsContext)) {
     return true;
   }
   if (component.scope?.intentionallyHidden) {
@@ -153,30 +148,6 @@ export function shouldValidateCustom(context: ValidationContext): boolean {
   return !shouldSkipValidationCustom(context);
 }
 
-/**
- * Resolve a single value from a multiple-value component for per-index validation.
- * EditGrid rows use the context value directly. Otherwise read from submission data when
- * indexed paths exist, and fall back to the context value when they do not (e.g. nested
- * form fields where path is local but data is the root submission).
- */
-export function getMultipleComponentValue(
-  data: ValidationContext['data'],
-  path: string,
-  index: number,
-  value: unknown[],
-  instance?: ValidationContext['instance'],
-): unknown {
-  if ((instance as any)?.inEditGrid) {
-    return value[index];
-  }
-  const amendedPath = `${path}[${index}]`;
-  const dataValue = get(data, amendedPath);
-  if (dataValue !== undefined) {
-    return dataValue;
-  }
-  return value[index];
-}
-
 export function shouldValidateServer(context: ValidationContext): boolean {
   const { component } = context;
   if (component.customConditional) {
@@ -222,7 +193,7 @@ export const validateProcess: ValidationProcessorFn = async (context) => {
     const otherRules = rules.filter((rule) => !rule.fullValue);
     for (let i = 0; i < value.length; i++) {
       const amendedPath = `${path}[${i}]`;
-      let amendedValue = getMultipleComponentValue(data, path, i, value, instance);
+      let amendedValue = get(data, amendedPath);
       if (instance?.shouldSkipValidation(data)) {
         return;
       }
@@ -299,7 +270,7 @@ export const validateProcessSync: ValidationProcessorFnSync = (context) => {
     const otherRules = rules.filter((rule) => !rule.fullValue);
     for (let i = 0; i < value.length; i++) {
       const amendedPath = `${path}[${i}]`;
-      let amendedValue = getMultipleComponentValue(data, path, i, value, instance);
+      let amendedValue = ((instance as any)?.inEditGrid) ? value[i] : get(data, amendedPath);
       if (instance?.shouldSkipValidation(data)) {
         return;
       }

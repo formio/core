@@ -33,7 +33,7 @@ export async function process<ProcessScope>(
   await eachComponentDataAsync(
     components,
     data,
-    async (component, compData, row, path, components, index, parent, paths, localRoot) => {
+    async (component, compData, row, path, components, index, parent, paths) => {
       await processOne<ProcessScope>({
         ...context,
         data: compData,
@@ -44,10 +44,9 @@ export async function process<ProcessScope>(
         row,
         index,
         instance: instances
-          ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
+          ? instances[component.modelType === 'none' && paths?.fullPath ? paths.fullPath : path]
           : undefined,
         parent,
-        localRoot
       });
       if (flat) {
         return true;
@@ -62,7 +61,7 @@ export async function process<ProcessScope>(
     parent,
     parentPaths,
     false,
-    async (component, compData, row, path, components, index, parent, paths, localRoot) => {
+    async (component, compData, row, path, components, index, parent, paths) => {
       await postProcessOne<ProcessScope>({
         ...context,
         data: compData,
@@ -73,10 +72,9 @@ export async function process<ProcessScope>(
         row,
         index,
         instance: instances
-          ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
+          ? instances[component.modelType === 'none' && paths?.fullPath ? paths.fullPath : path]
           : undefined,
         parent,
-        localRoot
       });
     },
   );
@@ -91,7 +89,7 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
   eachComponentData(
     components,
     data,
-    (component, compData, row, path, components, index, parent, paths, localRoot) => {
+    (component, compData, row, path, components, index, parent, paths) => {
       processOneSync<ProcessScope>({
         ...context,
         data: compData,
@@ -102,10 +100,9 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
         row,
         index,
         instance: instances
-          ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
+          ? instances[component.modelType === 'none' && paths?.fullPath ? paths.fullPath : path]
           : undefined,
         parent,
-        localRoot
       });
       if (flat) {
         return true;
@@ -120,7 +117,7 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
     parent,
     parentPaths,
     false,
-    (component, compData, row, path, components, index, parent, paths, localRoot) => {
+    (component, compData, row, path, components, index, parent, paths) => {
       postProcessOneSync<ProcessScope>({
         ...context,
         data: compData,
@@ -131,10 +128,9 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
         row,
         index,
         instance: instances
-          ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
+          ? instances[component.modelType === 'none' && paths?.fullPath ? paths.fullPath : path]
           : undefined,
         parent,
-        localRoot
       });
     },
   );
@@ -168,12 +164,12 @@ export const Processors: ProcessorInfo<any, any>[] = [
   serverOverrideProcessInfo,
   filterProcessInfo,
   defaultValueProcessInfo,
+  normalizeProcessInfo,
   dereferenceProcessInfo,
   fetchProcessInfo,
   calculateProcessInfo,
   conditionProcessInfo,
   logicProcessInfo,
-  normalizeProcessInfo,
   clearHiddenProcessInfo,
   postValidateProcessInfo,
 ];
