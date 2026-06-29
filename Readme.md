@@ -2,6 +2,12 @@
 
 This library is the core data processing engine behind the Form.io platform. It is a set of isomorphic APIs that allow for complex orchestration (e.g. calculated values, conditionally hidden components, complex logic, etc.) of JSON form and submission definitions.
 
+Official Documentation
+--------------------------
+For the latest documentation, release information, and guides, always refer to the official Form.io Help Documentation available here:
+
+**[https://help.form.io](https://help.form.io/deploy/maintenance-and-migration#new-validation-engine)**
+
 ### Usage
 
 @formio/core is available as an npm package. You can install it using the package manager of your choice:
@@ -89,10 +95,6 @@ console.assert(resultScope['addExclamation']?.lastName === true);
 console.assert(submission.data.firstName === 'John!');
 console.assert(submission.data.lastName === 'Doe!');
 ```
-
-### Debugging
-
-Debugging the Form.io Enterprise Server can be challenging because of the added complexity of the @formio/vm library (which sandboxes the @formio/core processors for safe execution of untrusted JavaScript on the server). [Instructions on how to debug can be found here.](https://formio.atlassian.net/wiki/spaces/SD/pages/184025089/Debugging+formio+core)
 
 ### Experimental
 
