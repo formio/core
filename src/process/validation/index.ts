@@ -94,10 +94,10 @@ export function isForcedHidden(
 ): boolean {
   const { component } = context;
   // if conditionsl were checked earlier, take the result from scope
-  const conditionallyHidden = has(component, 'scope.conditionallyHidden') 
-    ? component.scope?.conditionallyHidden 
+  const conditionallyHidden = has(component, 'scope.conditionallyHidden')
+    ? component.scope?.conditionallyHidden
     : isConditionallyHidden(context as ConditionsContext);
-  if (conditionallyHidden ) {
+  if (conditionallyHidden) {
     return true;
   }
   if (component.scope?.intentionallyHidden) {
@@ -159,6 +159,7 @@ export function shouldValidateCustom(context: ValidationContext): boolean {
  * indexed paths exist, and fall back to the context value when they do not (e.g. nested
  * form fields where path is local but data is the root submission).
  */
+// GOTCHA(G-CORE04)
 export function getMultipleComponentValue(
   data: ValidationContext['data'],
   path: string,

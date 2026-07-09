@@ -4,6 +4,7 @@ import { databaseRules } from './databaseRules';
 import { evaluationRules } from './evaluationRules';
 import { asynchronousRules } from './asynchronousRules';
 
+// GOTCHA(G-CORE05)
 export const serverRules: ValidationRuleInfo[] = [...asynchronousRules, ...databaseRules];
 export const rules: ValidationRuleInfo[] = [...clientRules, ...evaluationRules];
 export { clientRules, databaseRules, evaluationRules };

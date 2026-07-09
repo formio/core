@@ -285,5 +285,11 @@ export function componentHasValue(component: Component, value: any): boolean {
   } else if (isComponentThatCannotHaveFalseValue(component)) {
     return !valueIsPresent(value, false, isComponentNestedDataType(component)) ? false : true;
   }
-  return !valueIsPresent(value, true, isComponentNestedDataType(component) && !isContainerComponent(component)) ? false : true;
+  return !valueIsPresent(
+    value,
+    true,
+    isComponentNestedDataType(component) && !isContainerComponent(component),
+  )
+    ? false
+    : true;
 }

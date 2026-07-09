@@ -21,6 +21,7 @@ import {
 import { eachComponentAsync } from './eachComponentAsync';
 
 // Async each component data.
+// GOTCHA(G-CORE02), GOTCHA(G-CORE03)
 export const eachComponentDataAsync = async (
   components: Component[],
   data: DataObject,
@@ -31,7 +32,7 @@ export const eachComponentDataAsync = async (
   parentPaths?: ComponentPaths,
   noScopeReset?: boolean,
   afterFn?: EachComponentDataAsyncCallback,
-  localRoot?: LocalRoot
+  localRoot?: LocalRoot,
 ) => {
   if (!components) {
     return;
@@ -57,7 +58,7 @@ export const eachComponentDataAsync = async (
             compPaths?.dataIndex,
             compParent,
             compPaths,
-            localRoot
+            localRoot,
           );
         }
       };
@@ -71,7 +72,7 @@ export const eachComponentDataAsync = async (
           compPaths?.dataIndex,
           compParent,
           compPaths,
-          localRoot
+          localRoot,
         )) === true
       ) {
         await callAfterFn();
@@ -104,7 +105,7 @@ export const eachComponentDataAsync = async (
                 compPaths,
                 noScopeReset,
                 afterFn,
-                localRoot
+                localRoot,
               );
             }
             if (compPaths) {
@@ -121,7 +122,7 @@ export const eachComponentDataAsync = async (
               compPaths,
               noScopeReset,
               afterFn,
-              localRoot
+              localRoot,
             );
           }
           await callAfterFn();
@@ -148,12 +149,12 @@ export const eachComponentDataAsync = async (
             compPaths,
             noScopeReset,
             afterFn,
-            getModelType(component) === 'dataObject' 
+            getModelType(component) === 'dataObject'
               ? {
-                component,
-                data: get(data, `${compPaths?.dataPath}.data`, data) as DataObject
-              }
-              : localRoot
+                  component,
+                  data: get(data, `${compPaths?.dataPath}.data`, data) as DataObject,
+                }
+              : localRoot,
           );
         }
         await callAfterFn();
@@ -176,7 +177,7 @@ export const eachComponentDataAsync = async (
               compPaths,
               noScopeReset,
               afterFn,
-              localRoot
+              localRoot,
             );
           }
         } else if (info.hasRows) {
@@ -194,7 +195,7 @@ export const eachComponentDataAsync = async (
                   compPaths,
                   noScopeReset,
                   afterFn,
-                  localRoot
+                  localRoot,
                 );
               }
             }
@@ -210,7 +211,7 @@ export const eachComponentDataAsync = async (
             compPaths,
             noScopeReset,
             afterFn,
-            localRoot
+            localRoot,
           );
         }
         await callAfterFn();

@@ -15,7 +15,7 @@ import {
   skipValidForLogicallyHiddenComp,
   skipValidWithHiddenParentComp,
   requiredFieldInsideEditGrid,
-  formWithDeeplyNestedConditionalWizards
+  formWithDeeplyNestedConditionalWizards,
 } from './fixtures';
 import _ from 'lodash';
 
@@ -79,7 +79,7 @@ describe('Process Tests', function () {
     const submissionData = context.data;
     assert.deepEqual(submissionData, data);
   });
-  
+
   it('Should not calculate default value for number component when server option is provided', async function () {
     const submission = {
       data: {},
@@ -483,7 +483,7 @@ describe('Process Tests', function () {
       number: 123,
     });
   });
-  
+
   it('Should not expose validation setting details in validation error when secret validation is enabled', async function () {
     const submission = { data: { testField: 'test' } };
     const form = {
@@ -575,85 +575,85 @@ describe('Process Tests', function () {
     const errors = interpolateErrors((context.scope as any).errors);
     assert.equal(!!errors[0].context.setting, true);
   });
-  
+
   it('Should override the component settings with serverOverride and clear hidden value', async function () {
-      const components = [
-        {
-          label: 'Number',
-          applyMaskOn: 'change',
-          mask: false,
-          tableView: false,
-          delimiter: false,
-          requireDecimal: false,
-          inputFormat: 'plain',
-          truncateMultipleSpaces: false,
-          validateWhenHidden: false,
-          key: 'number',
-          type: 'number',
-          input: true,
+    const components = [
+      {
+        label: 'Number',
+        applyMaskOn: 'change',
+        mask: false,
+        tableView: false,
+        delimiter: false,
+        requireDecimal: false,
+        inputFormat: 'plain',
+        truncateMultipleSpaces: false,
+        validateWhenHidden: false,
+        key: 'number',
+        type: 'number',
+        input: true,
+      },
+      {
+        label: 'Text Field',
+        applyMaskOn: 'change',
+        tableView: true,
+        clearOnHide: false,
+        serverOverride: {
+          clearOnHide: true,
         },
-        {
-          label: 'Text Field',
-          applyMaskOn: 'change',
-          tableView: true,
-          clearOnHide: false,
-          serverOverride: {
-            clearOnHide: true,
-          },
-          validateWhenHidden: false,
-          key: 'textField',
-          conditional: {
-            show: true,
-            conjunction: 'all',
-            conditions: [
-              {
-                component: 'number',
-                operator: 'isEqual',
-                value: 55,
-              },
-            ],
-          },
-          type: 'textfield',
-          input: true,
+        validateWhenHidden: false,
+        key: 'textField',
+        conditional: {
+          show: true,
+          conjunction: 'all',
+          conditions: [
+            {
+              component: 'number',
+              operator: 'isEqual',
+              value: 55,
+            },
+          ],
         },
-        {
-          label: 'Text Area',
-          applyMaskOn: 'change',
-          autoExpand: false,
-          tableView: true,
-          validateWhenHidden: false,
-          key: 'textArea',
-          conditional: {
-            show: true,
-            conjunction: 'all',
-            conditions: [
-              {
-                component: 'number',
-                operator: 'isEqual',
-                value: 5,
-              },
-            ],
-          },
-          type: 'textarea',
-          input: true,
+        type: 'textfield',
+        input: true,
+      },
+      {
+        label: 'Text Area',
+        applyMaskOn: 'change',
+        autoExpand: false,
+        tableView: true,
+        validateWhenHidden: false,
+        key: 'textArea',
+        conditional: {
+          show: true,
+          conjunction: 'all',
+          conditions: [
+            {
+              component: 'number',
+              operator: 'isEqual',
+              value: 5,
+            },
+          ],
         },
-        {
-          type: 'button',
-          label: 'Submit',
-          key: 'submit',
-          disableOnInvalid: true,
-          input: true,
-          tableView: false,
-        },
-      ];
-      const submission = {
-        data: {
-          textField: 'should be cleared on server',
-          submit: true,
-          number: 5,
-          textArea: 'visible value',
-        },
-      };
+        type: 'textarea',
+        input: true,
+      },
+      {
+        type: 'button',
+        label: 'Submit',
+        key: 'submit',
+        disableOnInvalid: true,
+        input: true,
+        tableView: false,
+      },
+    ];
+    const submission = {
+      data: {
+        textField: 'should be cleared on server',
+        submit: true,
+        number: 5,
+        textArea: 'visible value',
+      },
+    };
     const context = {
       form: components,
       submission,
@@ -7455,7 +7455,7 @@ describe('Process Tests', function () {
       assert(!context.data.hasOwnProperty('lname'));
     });
 
-     it('Should not return the error for required component with logic where result var is used', async function () {
+    it('Should not return the error for required component with logic where result var is used', async function () {
       const form = {
         components: [
           {
