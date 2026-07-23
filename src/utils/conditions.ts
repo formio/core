@@ -2,7 +2,13 @@ import { has, isObject, map, every, some, find, filter, isString } from 'lodash'
 import { getComponent, getComponentValue } from './formUtil';
 import ConditionOperators from './operators';
 import { evaluate } from './utils';
-import { ConditionsContext, Form, JSONConditional, LegacyConditional, SimpleConditional } from 'types';
+import {
+  ConditionsContext,
+  Form,
+  JSONConditional,
+  LegacyConditional,
+  SimpleConditional,
+} from 'types';
 
 export const isJSONConditional = (conditional: any): conditional is JSONConditional => {
   return conditional && conditional.json && isObject(conditional.json);
@@ -134,7 +140,7 @@ export function checkSimpleConditional(
   context: ConditionsContext,
 ): boolean | null {
   const { component, data, instance, form, paths, local, localRoot } = context;
-  const {data: localRootData, component: localRootComponent } = localRoot || {};
+  const { data: localRootData, component: localRootComponent } = localRoot || {};
   if (!conditional || !isSimpleConditional(conditional)) {
     return null;
   }
@@ -160,7 +166,13 @@ export function checkSimpleConditional(
       );
 
       const value = conditionComponent
-        ? getComponentValue((localRootComponent as Form) || form, localRootData || data, conditionComponentPath, paths?.dataIndex, local)
+        ? getComponentValue(
+            (localRootComponent as Form) || form,
+            localRootData || data,
+            conditionComponentPath,
+            paths?.dataIndex,
+            local,
+          )
         : null;
       const ConditionOperator = ConditionOperators[operator];
       return ConditionOperator

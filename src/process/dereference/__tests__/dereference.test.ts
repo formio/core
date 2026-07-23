@@ -84,10 +84,7 @@ describe('Dereference processor', function () {
       data: { name: 'Orange' },
     };
     const data: any = {
-      fruit: [
-        { _id: '507f1f77bcf86cd799439011' },
-        { _id: 'aaa1f77bcf86cd799439022' },
-      ],
+      fruit: [{ _id: '507f1f77bcf86cd799439011' }, { _id: 'aaa1f77bcf86cd799439022' }],
     };
 
     await runProcess([selectComponent({ multiple: true })], data, async () => [refA, refB]);

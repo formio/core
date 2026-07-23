@@ -139,7 +139,7 @@ export class DefaultEvaluator {
       if (options.formModule) {
         func = `const module = ${options.formModule};
           if (module.options?.form?.evalContext) {
-            Object.keys(module.options.form.evalContext).forEach((key) => globalThis[key] = module[key]);
+            Object.keys(module.options.form.evalContext).forEach((key) => globalThis[key] = module.options.form.evalContext[key]);
           }
           ${func};
         `;

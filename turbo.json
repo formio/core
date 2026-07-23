@@ -1,12 +1,8 @@
 {
-  "extends": [
-    "//"
-  ],
+  "extends": ["//"],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "inputs": [
         "!src/experimental/components/templates/bootstrap/datatable/html.ejs.js",
         "config/**",

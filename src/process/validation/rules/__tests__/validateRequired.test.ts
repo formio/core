@@ -10,7 +10,8 @@ import {
   simpleSelectBoxes,
   simpleRadioField,
   simpleCheckBoxField,
-  requiredAddressManualMode, requiredContainerComponent,
+  requiredAddressManualMode,
+  requiredContainerComponent,
 } from './fixtures/components';
 import { processOne } from 'processes/processOne';
 import { generateProcessorContext } from './fixtures/util';

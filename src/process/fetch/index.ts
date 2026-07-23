@@ -10,6 +10,7 @@ import { get, set } from 'lodash';
 import { evaluate, interpolate } from 'utils';
 import { getComponentKey } from 'utils/formUtil';
 
+// GOTCHA(G-PRM05)
 export const shouldFetch = (context: FetchContext): boolean => {
   const { component, config } = context;
   if (

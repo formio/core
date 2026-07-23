@@ -44,10 +44,14 @@ export async function process<ProcessScope>(
         row,
         index,
         instance: instances
-          ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
+          ? instances[
+              ['none', 'content'].includes(component.modelType || '') && paths?.fullPath
+                ? paths.fullPath
+                : path
+            ]
           : undefined,
         parent,
-        localRoot
+        localRoot,
       });
       if (flat) {
         return true;
@@ -73,10 +77,14 @@ export async function process<ProcessScope>(
         row,
         index,
         instance: instances
-          ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
+          ? instances[
+              ['none', 'content'].includes(component.modelType || '') && paths?.fullPath
+                ? paths.fullPath
+                : path
+            ]
           : undefined,
         parent,
-        localRoot
+        localRoot,
       });
     },
   );
@@ -102,10 +110,14 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
         row,
         index,
         instance: instances
-          ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
+          ? instances[
+              ['none', 'content'].includes(component.modelType || '') && paths?.fullPath
+                ? paths.fullPath
+                : path
+            ]
           : undefined,
         parent,
-        localRoot
+        localRoot,
       });
       if (flat) {
         return true;
@@ -131,10 +143,14 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
         row,
         index,
         instance: instances
-          ? instances[(['none', 'content']).includes(component.modelType || '') && paths?.fullPath ? paths.fullPath : path]
+          ? instances[
+              ['none', 'content'].includes(component.modelType || '') && paths?.fullPath
+                ? paths.fullPath
+                : path
+            ]
           : undefined,
         parent,
-        localRoot
+        localRoot,
       });
     },
   );
@@ -164,6 +180,7 @@ export const ProcessorMap: Record<string, ProcessorInfo<any, any>> = {
   validateServer: validateServerProcessInfo,
 };
 
+// GOTCHA(G-CORE01)
 export const Processors: ProcessorInfo<any, any>[] = [
   serverOverrideProcessInfo,
   filterProcessInfo,

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
 import { ProcessorContext, ProcessorScope, TextFieldComponent } from 'types';
-import { serverOverrideProcessSync } from '../index'
+import { serverOverrideProcessSync } from '../index';
 import { generateProcessorContext } from '../../__tests__/fixtures/util';
 
 describe('Server Override processor', function () {

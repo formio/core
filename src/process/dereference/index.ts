@@ -69,8 +69,7 @@ export const dereferenceProcess: ProcessorFn<DereferenceScope> = async (context)
       // Modify the components in place; we have to do this now as opposed to a "post-processor" step because
       // eachComponentDataAsync will immediately turn around and introspect these components in the case of Data Table
       component.components = vmCompatibleComponents;
-    } 
-    else if (selectResourceDereference) {
+    } else if (selectResourceDereference) {
       if (isEmpty(value) || !isObject(value)) {
         return;
       }
@@ -86,7 +85,10 @@ export const dereferenceProcess: ProcessorFn<DereferenceScope> = async (context)
       if (component.multiple) {
         each(value, (item: Record<string, any>) => {
           const itemId = item._id?.toString();
-          const reference = find(vmCompatibleReferences, (refItem: Submission) => refItem._id?.toString() === itemId);
+          const reference = find(
+            vmCompatibleReferences,
+            (refItem: Submission) => refItem._id?.toString() === itemId,
+          );
           if (isObject(reference)) {
             assign(item, reference);
           }

@@ -42,7 +42,9 @@ export const validateMinimumDateSync: RuleFnSync = (context: ValidationContext) 
     return null;
   }
 
-  minDate = (component as DateTimeComponent).widget?.enableTime ? dayjs(minDate) : dayjs(minDate).startOf('day');
+  minDate = (component as DateTimeComponent).widget?.enableTime
+    ? dayjs(minDate)
+    : dayjs(minDate).startOf('day');
 
   const error = new FieldError('minDate', {
     ...context,
