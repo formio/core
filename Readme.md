@@ -2,8 +2,8 @@
 
 This library is the core data processing engine behind the Form.io platform. It is a set of isomorphic APIs that allow for complex orchestration (e.g. calculated values, conditionally hidden components, complex logic, etc.) of JSON form and submission definitions.
 
-Official Documentation
---------------------------
+## Official Documentation
+
 For the latest documentation, release information, and guides, always refer to the official Form.io Help Documentation available here:
 
 **[https://help.form.io](https://help.form.io/deploy/maintenance-and-migration#new-validation-engine)**

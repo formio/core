@@ -701,9 +701,9 @@ export function isLayoutComponent(component: Component) {
   return Boolean(
     ((component as ColumnsComponent).columns &&
       Array.isArray((component as ColumnsComponent).columns)) ||
-      ((component as TableComponent).rows && Array.isArray((component as TableComponent).rows)) ||
-      ((component as HasChildComponents).components &&
-        Array.isArray((component as HasChildComponents).components)),
+    ((component as TableComponent).rows && Array.isArray((component as TableComponent).rows)) ||
+    ((component as HasChildComponents).components &&
+      Array.isArray((component as HasChildComponents).components)),
   );
 }
 
@@ -803,13 +803,13 @@ export function removeComponent(components: Component[], path: string) {
 export function hasCondition(component: Component) {
   return Boolean(
     component.customConditional ||
-      (component.conditional &&
-        ((component.conditional as LegacyConditional).when ||
-          (component.conditional as JSONConditional).json ||
-          ((component.conditional as SimpleConditional).conjunction &&
-            (isBoolean((component.conditional as SimpleConditional).show) ||
-              (component.conditional as SimpleConditional).show) &&
-            !isEmpty((component.conditional as SimpleConditional).conditions)))),
+    (component.conditional &&
+      ((component.conditional as LegacyConditional).when ||
+        (component.conditional as JSONConditional).json ||
+        ((component.conditional as SimpleConditional).conjunction &&
+          (isBoolean((component.conditional as SimpleConditional).show) ||
+            (component.conditional as SimpleConditional).show) &&
+          !isEmpty((component.conditional as SimpleConditional).conditions)))),
   );
 }
 
@@ -1431,7 +1431,7 @@ export function normalizeContext(context: any): any {
     options,
     t: (text: string): string => {
       return text;
-    }
+    },
   };
 }
 

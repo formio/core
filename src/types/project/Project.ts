@@ -25,7 +25,7 @@ export type Project = {
   stageTitle: string;
   machineName: string;
   config?: Record<string, string>;
-  
+
   protect: boolean;
   settings?: ProjectSettings;
   remoteSecret?: string;

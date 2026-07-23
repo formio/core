@@ -22,11 +22,14 @@ export const filterProcess: ProcessorFn<FilterScope> = async (context: FilterCon
   return filterProcessSync(context);
 };
 
-export const getModelTypeDefaultValue = (modelType: string, context: FilterContext): any | undefined=> {
-  const modelTypeDefaultValues: {[modelType: string]: () => any} = {
-    dataObject:  () => ({ data: {} }),
+export const getModelTypeDefaultValue = (
+  modelType: string,
+  context: FilterContext,
+): any | undefined => {
+  const modelTypeDefaultValues: { [modelType: string]: () => any } = {
+    dataObject: () => ({ data: {} }),
     nestedArray: () => [],
-    nestedDataArray: () => { 
+    nestedDataArray: () => {
       const { value } = context;
       return Array.isArray(value) ? value.map((v) => ({ ...v, data: {} })) : [];
     },
@@ -40,7 +43,7 @@ export const getModelTypeDefaultValue = (modelType: string, context: FilterConte
     return modelTypeDefaultValues[modelType]();
   }
   return;
-}
+};
 
 export const filterPostProcessSync: ProcessorPostFnSync<FilterScope> = (
   context: FilterContext,
@@ -50,6 +53,7 @@ export const filterPostProcessSync: ProcessorPostFnSync<FilterScope> = (
   if (!scope.filter) scope.filter = {};
 
   if (value === undefined || !scope.filter[path]) {
+    // GOTCHA(G-CORE06)
     if (component.type === 'number') {
       set(data, path, null);
     }
@@ -67,14 +71,18 @@ export const filterPostProcessSync: ProcessorPostFnSync<FilterScope> = (
     set(scope.filtered, path, value);
   } else {
     if (modelType === 'dataObject') {
-      set(data, `${path}.data`, get(scope.filtered, `${path}.data`, getModelTypeDefaultValue(modelType, context).data));
+      set(
+        data,
+        `${path}.data`,
+        get(scope.filtered, `${path}.data`, getModelTypeDefaultValue(modelType, context).data),
+      );
       set(scope.filtered, path, get(data, path));
     } else if (modelType === 'nestedDataArray') {
       const filtered: any = get(scope.filtered, path);
       set(
         scope.filtered,
         path,
-        filtered 
+        filtered
           ? (value || []).map((item: any, index: number) => {
               return { ...item, data: filtered[index]?.data || {} };
             })
@@ -83,7 +91,11 @@ export const filterPostProcessSync: ProcessorPostFnSync<FilterScope> = (
     } else if (!has(scope.filtered, path)) {
       set(scope.filtered, path, getModelTypeDefaultValue(modelType, context) || value);
     } else {
-      set(data, path, get(scope.filtered, path, getModelTypeDefaultValue(modelType, context) || value));
+      set(
+        data,
+        path,
+        get(scope.filtered, path, getModelTypeDefaultValue(modelType, context) || value),
+      );
     }
   }
 };

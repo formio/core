@@ -2,7 +2,14 @@ import { expect } from 'chai';
 import assert from 'node:assert';
 import type { ContainerComponent, ValidationScope } from 'types';
 import { getComponent } from 'utils/formUtil';
-import { process, processSync, ProcessTargets, Processors, interpolateErrors } from '../index';
+import {
+  process,
+  processSync,
+  ProcessTargets,
+  Processors,
+  postValidateProcessInfo,
+  interpolateErrors,
+} from '../index';
 import { fastCloneDeep } from 'utils';
 import {
   addressComponentWithOtherCondComponents,
@@ -15,7 +22,7 @@ import {
   skipValidForLogicallyHiddenComp,
   skipValidWithHiddenParentComp,
   requiredFieldInsideEditGrid,
-  formWithDeeplyNestedConditionalWizards
+  formWithDeeplyNestedConditionalWizards,
 } from './fixtures';
 import _ from 'lodash';
 
@@ -79,7 +86,7 @@ describe('Process Tests', function () {
     const submissionData = context.data;
     assert.deepEqual(submissionData, data);
   });
-  
+
   it('Should not calculate default value for number component when server option is provided', async function () {
     const submission = {
       data: {},
@@ -483,7 +490,7 @@ describe('Process Tests', function () {
       number: 123,
     });
   });
-  
+
   it('Should not expose validation setting details in validation error when secret validation is enabled', async function () {
     const submission = { data: { testField: 'test' } };
     const form = {
@@ -575,85 +582,85 @@ describe('Process Tests', function () {
     const errors = interpolateErrors((context.scope as any).errors);
     assert.equal(!!errors[0].context.setting, true);
   });
-  
+
   it('Should override the component settings with serverOverride and clear hidden value', async function () {
-      const components = [
-        {
-          label: 'Number',
-          applyMaskOn: 'change',
-          mask: false,
-          tableView: false,
-          delimiter: false,
-          requireDecimal: false,
-          inputFormat: 'plain',
-          truncateMultipleSpaces: false,
-          validateWhenHidden: false,
-          key: 'number',
-          type: 'number',
-          input: true,
+    const components = [
+      {
+        label: 'Number',
+        applyMaskOn: 'change',
+        mask: false,
+        tableView: false,
+        delimiter: false,
+        requireDecimal: false,
+        inputFormat: 'plain',
+        truncateMultipleSpaces: false,
+        validateWhenHidden: false,
+        key: 'number',
+        type: 'number',
+        input: true,
+      },
+      {
+        label: 'Text Field',
+        applyMaskOn: 'change',
+        tableView: true,
+        clearOnHide: false,
+        serverOverride: {
+          clearOnHide: true,
         },
-        {
-          label: 'Text Field',
-          applyMaskOn: 'change',
-          tableView: true,
-          clearOnHide: false,
-          serverOverride: {
-            clearOnHide: true,
-          },
-          validateWhenHidden: false,
-          key: 'textField',
-          conditional: {
-            show: true,
-            conjunction: 'all',
-            conditions: [
-              {
-                component: 'number',
-                operator: 'isEqual',
-                value: 55,
-              },
-            ],
-          },
-          type: 'textfield',
-          input: true,
+        validateWhenHidden: false,
+        key: 'textField',
+        conditional: {
+          show: true,
+          conjunction: 'all',
+          conditions: [
+            {
+              component: 'number',
+              operator: 'isEqual',
+              value: 55,
+            },
+          ],
         },
-        {
-          label: 'Text Area',
-          applyMaskOn: 'change',
-          autoExpand: false,
-          tableView: true,
-          validateWhenHidden: false,
-          key: 'textArea',
-          conditional: {
-            show: true,
-            conjunction: 'all',
-            conditions: [
-              {
-                component: 'number',
-                operator: 'isEqual',
-                value: 5,
-              },
-            ],
-          },
-          type: 'textarea',
-          input: true,
+        type: 'textfield',
+        input: true,
+      },
+      {
+        label: 'Text Area',
+        applyMaskOn: 'change',
+        autoExpand: false,
+        tableView: true,
+        validateWhenHidden: false,
+        key: 'textArea',
+        conditional: {
+          show: true,
+          conjunction: 'all',
+          conditions: [
+            {
+              component: 'number',
+              operator: 'isEqual',
+              value: 5,
+            },
+          ],
         },
-        {
-          type: 'button',
-          label: 'Submit',
-          key: 'submit',
-          disableOnInvalid: true,
-          input: true,
-          tableView: false,
-        },
-      ];
-      const submission = {
-        data: {
-          textField: 'should be cleared on server',
-          submit: true,
-          number: 5,
-          textArea: 'visible value',
-        },
-      };
+        type: 'textarea',
+        input: true,
+      },
+      {
+        type: 'button',
+        label: 'Submit',
+        key: 'submit',
+        disableOnInvalid: true,
+        input: true,
+        tableView: false,
+      },
+    ];
+    const submission = {
+      data: {
+        textField: 'should be cleared on server',
+        submit: true,
+        number: 5,
+        textArea: 'visible value',
+      },
+    };
     const context = {
       form: components,
       submission,
@@ -2763,6 +2770,37 @@ describe('Process Tests', function () {
       config: {
         server: true,
       },
+    };
+    processSync(context);
+    assert.equal(context.scope.errors.length, 0);
+  });
+
+  it('reuses precomputed scope.conditionals during validation instead of re-evaluating the custom conditional', function () {
+    // The live custom conditional evaluates to VISIBLE, so a re-evaluation would make the empty
+    // required field validate and error. A prior pass already recorded it as hidden in
+    // scope.conditionals; with reuseConditionals set, that verdict must win (field skipped, no error).
+    const form = {
+      components: [
+        {
+          input: true,
+          type: 'textfield',
+          key: 'field',
+          label: 'Field',
+          validate: { required: true },
+          customConditional: 'show = true',
+        },
+      ],
+    };
+    const submission = { data: {} };
+    const errors: any = [];
+    const context = {
+      form,
+      submission,
+      data: submission.data,
+      components: form.components,
+      processors: [postValidateProcessInfo],
+      scope: { errors, conditionals: [{ path: 'field', conditionallyHidden: true }] },
+      config: { server: true },
     };
     processSync(context);
     assert.equal(context.scope.errors.length, 0);
@@ -7455,7 +7493,7 @@ describe('Process Tests', function () {
       assert(!context.data.hasOwnProperty('lname'));
     });
 
-     it('Should not return the error for required component with logic where result var is used', async function () {
+    it('Should not return the error for required component with logic where result var is used', async function () {
       const form = {
         components: [
           {

@@ -6,5 +6,5 @@ export type ResourceToDomOptions = {
   formio: typeof Formio;
   onload?: (ready: Promise<any>) => void;
   rootElement?: HTMLElement;
-  onerror?: (err: Event) => void
+  onerror?: (err: Event) => void;
 };

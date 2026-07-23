@@ -10,11 +10,11 @@ import { set, has } from 'lodash';
 import { evaluate } from 'utils';
 import { getComponentKey, getModelType } from 'utils/formUtil';
 
-const shouldSkipDefaultValue = (component:Component, config: any) => {
-  // do not calculate default value for number components on the server side 
+const shouldSkipDefaultValue = (component: Component, config: any) => {
+  // do not calculate default value for number components on the server side
   // as we cannot determine with certainty if value is removed intentionally
   return config?.server && getModelType(component) === 'number';
-}
+};
 
 export const hasCustomDefaultValue = (context: DefaultValueContext): boolean => {
   const { component, config } = context;

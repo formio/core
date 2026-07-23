@@ -82,8 +82,16 @@ export function formatDate(value: ConfigType, format: string, timezone?: string)
   return date.format(dayjsFormat);
 }
 
-export function getFormattedDateSetting(date: ConfigType, component: DateTimeComponent, timezone?: string) {
-  return formatDate(date, (component as DateTimeComponent).widget?.format || 'yyyy-MM-dd hh:mm a', timezone || currentTimezone());
+export function getFormattedDateSetting(
+  date: ConfigType,
+  component: DateTimeComponent,
+  timezone?: string,
+) {
+  return formatDate(
+    date,
+    (component as DateTimeComponent).widget?.format || 'yyyy-MM-dd hh:mm a',
+    timezone || currentTimezone(),
+  );
 }
 export function getDayFormat(component: DayComponent) {
   let format = '';
