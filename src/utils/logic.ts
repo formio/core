@@ -15,8 +15,8 @@ import {
   LogicActionPropertyString,
   LogicActionValue,
 } from 'types/AdvancedLogic';
-import { get, set, clone, isEqual, assign, unset } from 'lodash';
-import { evaluate, interpolate } from 'utils/utils';
+import { escape, get, set, clone, isEqual, assign, unset } from 'lodash';
+import { evaluate, escapeInterpolationDataStrings, interpolate } from 'utils/utils';
 import { setComponentScope } from 'utils/formUtil';
 
 export const hasLogic = (context: LogicContext): boolean => {
@@ -107,15 +107,25 @@ export function setActionStringProperty(
   context: LogicContext,
   action: LogicActionPropertyString,
 ): boolean {
-  const { component } = context;
+  const { component, data, row, result } = context;
   const property = action.property.value;
   const textValue = action.property.component
     ? (action as any)[action.property.component]
     : action.text;
   const currentValue = get(component, property, '');
-  const newValue = interpolate(textValue, { ...context, value: '' }, (evalContext: any) => {
-    evalContext.value = currentValue;
-  });
+  const newValue = interpolate(
+    textValue,
+    {
+      ...context,
+      value: '',
+      data: escapeInterpolationDataStrings(data),
+      row: escapeInterpolationDataStrings(row),
+      result: typeof result === 'string' ? escape(result) : escapeInterpolationDataStrings(result),
+    },
+    (evalContext: any) => {
+      evalContext.value = currentValue;
+    },
+  );
   if (newValue !== currentValue) {
     set(component, property, newValue);
     return true;
@@ -158,16 +168,26 @@ export function setMergeComponentSchema(
   context: LogicContext,
   action: LogicActionMergeComponentSchema,
 ) {
-  const { component, data, path } = context;
+  const { component, data, path, row, result } = context;
   const oldValue = get(data, path);
+  const safeData = escapeInterpolationDataStrings(data);
+  const safeRow = escapeInterpolationDataStrings(row);
+  const safeResult =
+    typeof result === 'string' ? escape(result) : escapeInterpolationDataStrings(result);
   const schema = evaluate(
     action.schemaDefinition,
-    { ...context, value: {} },
+    {
+      ...context,
+      value: {},
+      data: safeData,
+      row: safeRow,
+      result: safeResult,
+    },
     'schema',
     false,
     (evalContext: any) => {
       evalContext.value = clone(oldValue);
-      evalContext.result = context.result;
+      evalContext.result = safeResult;
     },
   );
   const merged = assign({}, component, schema);
