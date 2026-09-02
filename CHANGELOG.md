@@ -1,5 +1,38 @@
 # @formio/core
 
+## 2.8.2
+
+### Patch Changes
+
+- 1c2bf19: FIO-11911: remove the `uuid` dependency from `@formio/js`
+- 2cb75c4: Be more discerning when invalidating a token from a 440 response code
+
+## 2.8.2-api99.1
+
+### Patch Changes
+
+- 2cb75c4: Be more discerning when invalidating a token from a 440 response code
+
+## 2.8.2-api99.0
+
+### Patch Changes
+
+- 1c2bf19: FIO-11911: remove the `uuid` dependency from `@formio/js`
+
+## 2.8.1
+
+### Patch Changes
+
+- 5fa2592: FIO-11314: upgrade dompurify to 3.4.12
+- dc60a11: FIO-11489 prevent HTML injection via logic
+
+## 2.8.1-api99.0
+
+### Patch Changes
+
+- 5fa2592: FIO-11314: upgrade dompurify to 3.4.12
+- dc60a11: FIO-11489 prevent HTML injection via logic
+
 ## 2.8.0
 
 ### Minor Changes

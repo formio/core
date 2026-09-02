@@ -1,4 +1,4 @@
-import { isBoolean, isEmpty, isObject, isPlainObject, isString } from 'lodash';
+import { escape, isBoolean, isEmpty, isObject, isPlainObject, isString, mapValues } from 'lodash';
 import { EvaluatorOptions, Evaluator } from './Evaluator';
 import { isComponentNestedDataType, normalizeContext } from './formUtil';
 import {
@@ -51,6 +51,26 @@ export function unescapeHTML(str: string) {
 
   const doc = new window.DOMParser().parseFromString(str, 'text/html');
   return doc.documentElement.textContent;
+}
+
+/**
+ * Recursively HTML-escape strings in submission-like objects so logic templates
+ * (e.g. dynamic labels) cannot treat user-entered values as HTML.
+ */
+export function escapeInterpolationDataStrings(obj: any): any {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+  if (typeof obj === 'string') {
+    return escape(obj);
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(escapeInterpolationDataStrings);
+  }
+  if (isPlainObject(obj)) {
+    return mapValues(obj, escapeInterpolationDataStrings);
+  }
+  return obj;
 }
 
 export function attachResourceToDom(options: ResourceToDomOptions) {

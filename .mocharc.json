@@ -1,6 +1,6 @@
 {
   "node-option": ["import=tsx"],
-  "require": ["mock-local-storage", "jsdom-global/register"],
+  "require": ["mock-local-storage", "./setupJSDOM.cjs"],
   "spec": "src/**/__tests__/**/*.test.ts",
   "timeout": 0,
   "bail": true,
