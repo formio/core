@@ -37,6 +37,17 @@ export enum FormioPathType {
 }
 
 /**
+ * Extracts the origin (scheme + host) from an absolute url, lowercased.
+ *
+ * @param {string} url - The absolute url to read the origin from.
+ * @return {string} The origin, or an empty string if the url has none.
+ */
+const originOf = (url: string): string => {
+  const match = /^[a-z][a-z0-9+.-]*:\/\/[^/?#]*/i.exec(url || '');
+  return match ? match[0].toLowerCase() : '';
+};
+
+/**
  * The Formio interface class. This is a minimalistic API library that allows you to work with the Form.io API's within JavaScript.
  *
  * ## Usage
@@ -1603,7 +1614,10 @@ export class Formio {
         response = Plugins.pluginAlter('requestResponse', response, Formio, data);
 
         if (!response.ok) {
-          if (response.status === 440) {
+          if (
+            response.status === 440 &&
+            Formio.isSessionExpiredFor(url, { ...opts, token: requestToken })
+          ) {
             Formio.setToken(null, opts);
             Formio.events.emit('formio.sessionExpired', response.body || response);
           } else if (response.status === 401) {
@@ -1845,6 +1859,38 @@ export class Formio {
       Formio.tokens[tokenName] = cookies.get(tokenName);
       return '';
     }
+  }
+
+  /**
+   * Determines whether a 440 response is authoritative about the token held in this namespace.
+   *
+   * @param {string} url - The url that responded with a 440.
+   * @param {object} options - Options as follows
+   * @param {string} options.namespace - The namespace of the token the response would clear.
+   * @param {string} options.token - The JWT the failing request carried.
+   * @return {boolean} True when the response ends this session, false when it concerns another.
+   */
+  static isSessionExpiredFor(url: string, opts: any = {}): boolean {
+    opts = typeof opts === 'string' ? { namespace: opts } : opts || {};
+    const storedToken = Formio.getToken({ namespace: opts.namespace });
+
+    if (opts.token && opts.token !== storedToken) {
+      return false;
+    }
+
+    const responder = originOf(url);
+    if (!responder) {
+      return true;
+    }
+
+    let issuer = '';
+    try {
+      issuer = originOf(jwtDecode(storedToken).iss);
+    } catch (ignoreErr: any) {
+      return true;
+    }
+
+    return !issuer || responder === issuer || responder === originOf(Formio.baseUrl);
   }
 
   /**

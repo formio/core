@@ -2284,4 +2284,115 @@ describe('Formio.js Tests', function () {
       Formio.request('http://localhost:8080/test');
     });
   });
+
+  describe('Formio 440 session authority', function () {
+    const issuedToken = (iss?: string) => {
+      const payload = Buffer.from(JSON.stringify(iss ? { iss } : {})).toString('base64url');
+      return `eyJhbGciOiJIUzI1NiJ9.${payload}.signature`;
+    };
+
+    const expect440 = async (url: string) => {
+      let sessionExpired = false;
+      const onSessionExpired = () => {
+        sessionExpired = true;
+      };
+      Formio.events.on('formio.sessionExpired', onSessionExpired);
+      fetchMock.mock(url, 440);
+      try {
+        await Formio.request(url);
+      } catch (ignoreErr: any) {
+        // The 440 rejects; this test is about what the SDK did to the stored token.
+      }
+      Formio.events.off('formio.sessionExpired', onSessionExpired);
+      fetchMock.restore();
+      return { sessionExpired, token: Formio.getToken() };
+    };
+
+    beforeEach(function () {
+      // A cached user keeps setToken from firing its own /current request.
+      Formio.setUser({ _id: '59bbe2ec8c246100079191ae' });
+    });
+
+    afterEach(function () {
+      Formio.setToken(null);
+    });
+
+    it('should keep the token when a 440 comes from a host that did not issue it', async function () {
+      const token = issuedToken(baseUrl);
+      await Formio.setToken(token);
+
+      const result = await expect440('https://remote.example.com/project/abc/form');
+
+      assert.equal(result.token, token, 'a foreign 440 must not clear the token');
+      assert.equal(result.sessionExpired, false, 'a foreign 440 must not end the session');
+    });
+
+    it('should clear the token when the 440 comes from the issuer named in the token', async function () {
+      const token = issuedToken('https://issuer.example.com');
+      await Formio.setToken(token);
+
+      const result = await expect440('https://issuer.example.com/project/abc/form');
+
+      assert.equal(result.token, '', 'the issuer answering 440 ends the session');
+      assert.equal(result.sessionExpired, true, 'formio.sessionExpired should fire');
+    });
+
+    it('should clear the token when the 440 comes from the configured base url', async function () {
+      const token = issuedToken('https://issuer.example.com');
+      await Formio.setToken(token);
+
+      const result = await expect440(`${baseUrl}/project/abc/form`);
+
+      assert.equal(result.token, '', 'our own API answering 440 ends the session');
+      assert.equal(result.sessionExpired, true, 'formio.sessionExpired should fire');
+    });
+
+    it('should clear the token when it carries no issuer', async function () {
+      const token = issuedToken();
+      await Formio.setToken(token);
+
+      const result = await expect440('https://remote.example.com/project/def/form');
+
+      assert.equal(result.token, '', 'without an iss claim there is no evidence to act on');
+      assert.equal(result.sessionExpired, true, 'formio.sessionExpired should fire');
+    });
+
+    it('should keep the token when the 440 was for a different token', async function () {
+      const token = issuedToken(baseUrl);
+      await Formio.setToken(token);
+
+      assert.equal(
+        Formio.isSessionExpiredFor(`${baseUrl}/project/abc/form`, {
+          token: issuedToken('https://issuer.example.com'),
+        }),
+        false,
+        'a 440 about another token says nothing about ours',
+      );
+      assert.equal(
+        Formio.isSessionExpiredFor(`${baseUrl}/project/abc/form`, { token }),
+        true,
+        'a 440 about our own token is authoritative',
+      );
+    });
+
+    it('should treat an unparseable url as authoritative', async function () {
+      await Formio.setToken(issuedToken(baseUrl));
+
+      assert.equal(
+        Formio.isSessionExpiredFor('/project/abc/form'),
+        true,
+        'no origin to compare means fall back to ending the session',
+      );
+    });
+
+    it('should treat a malformed token as authoritative', async function () {
+      await Formio.setToken('not-a-jwt');
+
+      assert.equal(
+        Formio.isSessionExpiredFor('https://remote.example.com/project/abc/form'),
+        true,
+        'an undecodable token has no issuer to trust',
+      );
+    });
+  });
 });
