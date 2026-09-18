@@ -1,5 +1,19 @@
 # @formio/core
 
+## 2.8.3
+
+### Patch Changes
+
+- edd6949: Bump dompurify to 3.4.13
+- 80591a9: FIO-12024: fixed required validation for phoneNumber with Allow Multiple Masks
+
+## 2.8.3-api910.0
+
+### Patch Changes
+
+- edd6949: Bump dompurify to 3.4.13
+- 80591a9: FIO-12024: fixed required validation for phoneNumber with Allow Multiple Masks
+
 ## 2.8.2
 
 ### Patch Changes

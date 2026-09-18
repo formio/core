@@ -3,6 +3,7 @@ import {
   DayComponent,
   HiddenComponent,
   NumberComponent,
+  PhoneNumberComponent,
   RadioComponent,
   SelectBoxesComponent,
   SelectComponentOptions,
@@ -329,4 +330,27 @@ export const requiredContainerComponent: any = {
       input: true,
     },
   ],
+};
+
+export const requiredPhoneNumberMultipleMasks: PhoneNumberComponent = {
+  label: 'Phone Number',
+  allowMultipleMasks: true,
+  tableView: true,
+  defaultValue: {
+    value: '',
+    maskName: 'india',
+  },
+  validate: {
+    required: true,
+  },
+  validateWhenHidden: false,
+  key: 'phoneNumber',
+  type: 'phoneNumber',
+  inputMasks: [
+    {
+      label: 'India',
+      mask: '991999',
+    },
+  ],
+  input: true,
 };

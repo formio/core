@@ -9,6 +9,7 @@ import {
   ContainerComponent,
   PassedComponentInstance,
   ResourceToDomOptions,
+  TextFieldComponent,
 } from 'types';
 
 /**
@@ -291,7 +292,24 @@ export function isComponentThatCannotHaveFalseValue(component: any): boolean {
   return component.type === 'checkbox' || component.type === 'selectboxes';
 }
 
+// Components with multiple masks enabled store their data as { value, maskName } objects
+function isMultipleMasksComponent(component: any): component is TextFieldComponent {
+  const isComponentWithMaskValue =
+    component.type === 'textfield' || component.type === 'phoneNumber';
+  return (
+    isComponentWithMaskValue && !!component.allowMultipleMasks && !!component.inputMasks?.length
+  );
+}
+
+function isMaskComponentDataObject(value: any): value is { value: any; maskName?: string } {
+  return value !== null && typeof value === 'object' && !Array.isArray(value) && 'value' in value;
+}
+
 export function componentHasValue(component: Component, value: any): boolean {
+  if (isMultipleMasksComponent(component) && isMaskComponentDataObject(value)) {
+    // The maskName alone does not constitute a value; only the entered value does
+    return valueIsPresent(value.value, true);
+  }
   if (isAddressComponent(component) && isAddressComponentDataObject(value)) {
     return isEmptyObject(value.address)
       ? false

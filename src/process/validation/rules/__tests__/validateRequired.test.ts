@@ -12,6 +12,7 @@ import {
   simpleCheckBoxField,
   requiredAddressManualMode,
   requiredContainerComponent,
+  requiredPhoneNumberMultipleMasks,
 } from './fixtures/components';
 import { processOne } from 'processes/processOne';
 import { generateProcessorContext } from './fixtures/util';
@@ -277,6 +278,42 @@ describe('validateRequired', function () {
     const context = generateProcessorContext(component, data);
     const result = await validateRequired(context);
     expect(result).to.equal(null);
+  });
+
+  it('Validating a required phone number with multiple masks and an empty value will return a field error', async function () {
+    const data = { phoneNumber: { value: '', maskName: 'India' } };
+    const context = generateProcessorContext(requiredPhoneNumberMultipleMasks, data);
+    const result = await validateRequired(context);
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result && result.errorKeyOrMessage).to.equal('required');
+  });
+
+  it('Validating a required phone number with multiple masks and a filled value will return null', async function () {
+    const data = { phoneNumber: { value: '99123', maskName: 'India' } };
+    const context = generateProcessorContext(requiredPhoneNumberMultipleMasks, data);
+    const result = await validateRequired(context);
+    expect(result).to.equal(null);
+  });
+
+  it('Validating a required phone number with multiple masks and a filled value without a mask name will return null', async function () {
+    const data = { phoneNumber: { value: '99123', maskName: '' } };
+    const context = generateProcessorContext(requiredPhoneNumberMultipleMasks, data);
+    const result = await validateRequired(context);
+    expect(result).to.equal(null);
+  });
+
+  it('Validating a required text field with multiple masks and an empty value will return a field error', async function () {
+    const component = {
+      ...requiredPhoneNumberMultipleMasks,
+      type: 'textfield',
+      key: 'textField',
+      label: 'Text Field',
+    };
+    const data = { textField: { value: '', maskName: 'India' } };
+    const context = generateProcessorContext(component, data);
+    const result = await validateRequired(context);
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result && result.errorKeyOrMessage).to.equal('required');
   });
 
   it('Validating a multiple select with a value when path is local but data is the root submission', async function () {
