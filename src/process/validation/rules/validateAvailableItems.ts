@@ -33,7 +33,7 @@ function isValidateableSelectBoxesComponent(component: any): component is Select
 
 function mapDynamicValues<T extends Record<string, any>>(component: SelectComponent, values: T[]) {
   return values.map((value) => {
-    if (component.valueProperty) {
+    if (component.valueProperty && isObject(value)) {
       return value[component.valueProperty];
     }
     return value;
@@ -112,7 +112,7 @@ async function getAvailableSelectValues(component: SelectComponent, context: Val
       if (isPromise(customItems)) {
         const resolvedCustomItems = await customItems;
         if (Array.isArray(resolvedCustomItems)) {
-          return resolvedCustomItems;
+          return mapDynamicValues(component, resolvedCustomItems);
         }
         throw new ProcessorError(
           `Failed to validate available values in JSON select component '${component.key}': the values are not an array`,
@@ -121,7 +121,7 @@ async function getAvailableSelectValues(component: SelectComponent, context: Val
         );
       }
       if (Array.isArray(customItems)) {
-        return customItems;
+        return mapDynamicValues(component, customItems);
       } else {
         throw new ProcessorError(
           `Failed to validate available values in JSON select component '${component.key}': the values are not an array`,
@@ -186,7 +186,7 @@ function getAvailableSelectValuesSync(component: SelectComponent, context: Valid
         'values',
       );
       if (Array.isArray(customItems)) {
-        return customItems;
+        return mapDynamicValues(component, customItems);
       } else {
         throw new ProcessorError(
           `Failed to validate available values in JSON select component '${component.key}': the values are not an array`,
