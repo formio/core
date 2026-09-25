@@ -593,6 +593,98 @@ export function getComponentKey(component: Component) {
   return component.key;
 }
 
+/**
+ * Returns the key that disambiguates one component among several resolving to the same path.
+ *
+ * Because `getComponentKey` maps a checkbox with `inputType: 'radio'` onto its `name`, a radio
+ * and the checkboxes named after it all resolve to one path, and a path-keyed instance map
+ * cannot hold them all. The rule every host and reader of such a map follows:
+ *
+ * - The first component to claim a path keeps the plain path as its key.
+ * - Every later component is registered under this shared-path key instead.
+ * - A lookup tries the shared-path key first, then falls back to the plain path.
+ *
+ * Exactly one component per contested path therefore has no shared-path key — the one holding
+ * the plain path — so the fallback resolves correctly whatever order the components appear in.
+ * Component keys cannot contain `:` (the builder validates them against `^(\w|\w[\w-.]*\w)$`),
+ * so the composed key can never collide with a real path. Use `registerInstanceAtPath` and
+ * `resolveInstanceAtPath` rather than applying the rule by hand.
+ * @param path - The path the components share.
+ * @param key - The schema key of the component to address; without one there is nothing to
+ * disambiguate by, so the plain path is returned.
+ * @returns The disambiguated registration key.
+ */
+export function getSharedPathKey(path: string, key?: string) {
+  return key ? `${path}:${key}` : path;
+}
+
+/**
+ * Registers an instance in a path-keyed instance map, per the rule on `getSharedPathKey`.
+ * @param instances - The path-keyed instance map to write to.
+ * @param path - The path this component resolves to.
+ * @param key - The component's schema key.
+ * @param instance - The instance to register.
+ * @returns The key it was registered under, or undefined when another component already holds
+ * the path and there is no key to disambiguate this one by.
+ */
+export function registerInstanceAtPath<TInstance>(
+  instances: Record<string, TInstance>,
+  path: string,
+  key: string | undefined,
+  instance: TInstance,
+): string | undefined {
+  const owner = instances[path];
+  if (!owner || owner === instance) {
+    instances[path] = instance;
+    return path;
+  }
+  const sharedPathKey = getSharedPathKey(path, key);
+  if (sharedPathKey === path) {
+    return undefined;
+  }
+  instances[sharedPathKey] = instance;
+  return sharedPathKey;
+}
+
+/**
+ * Returns the path a component's instance is registered under in a path-keyed instance map.
+ *
+ * `componentPath` leaves a 'none' or 'content' component's own key out of its data path, so
+ * those are keyed by their full path instead. Both the host writing the map and the code
+ * reading it must agree on this, or a lookup silently misses.
+ * @param component - The component to locate.
+ * @param path - The path traversal yielded for it.
+ * @param paths - The component's full set of paths.
+ * @returns The path its instance is registered under.
+ */
+export function getInstanceLookupPath(
+  component: Component,
+  path: string,
+  paths?: ComponentPaths,
+): string {
+  // Ask `getModelType` rather than reading the cached `modelType` property, which is empty
+  // until something computes it.
+  const modelType = getModelType(component);
+  const omitsKeyFromDataPath = modelType === 'none' || modelType === 'content';
+  return omitsKeyFromDataPath && paths?.fullPath ? paths.fullPath : path;
+}
+
+/**
+ * Resolves the instance registered for one component's schema, per the rule on
+ * `getSharedPathKey`.
+ * @param instances - The path-keyed instance map to read from.
+ * @param path - The path the component resolves to.
+ * @param key - The component's schema key.
+ * @returns The instance for this component, or undefined when the map holds none.
+ */
+export function resolveInstanceAtPath<TInstance>(
+  instances: Record<string, TInstance>,
+  path: string,
+  key?: string,
+): TInstance | undefined {
+  return instances[getSharedPathKey(path, key)] ?? instances[path];
+}
+
 export function getContextualRowData(
   component: Component,
   data: any,

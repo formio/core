@@ -1,5 +1,25 @@
 # @formio/core
 
+## 2.9.0
+
+### Minor Changes
+
+- 6d5f18f: FIO-12390: resolve a processor's component instance by its own schema when several components share a data path, so a required radio is still validated alongside radio-input checkboxes named after it
+
+### Patch Changes
+
+- c2b3cc2: FIO-12237: map custom-values select items through `valueProperty` when validating `onlyAvailableItems`
+
+## 2.9.0-api911.0
+
+### Minor Changes
+
+- 6d5f18f: FIO-12390: resolve a processor's component instance by its own schema when several components share a data path, so a required radio is still validated alongside radio-input checkboxes named after it
+
+### Patch Changes
+
+- c2b3cc2: FIO-12237: map custom-values select items through `valueProperty` when validating `onlyAvailableItems`
+
 ## 2.8.3
 
 ### Patch Changes
