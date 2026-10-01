@@ -1,3 +1,9 @@
+## 2.3.4
+
+### Changed
+
+- Official Release
+
 ## 2.3.4-rc.1
 
 ### Changed
