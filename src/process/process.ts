@@ -1,5 +1,20 @@
-import { FilterScope, ProcessContext, ProcessTarget, ProcessorInfo, ProcessorScope } from 'types';
-import { eachComponentData, eachComponentDataAsync } from 'utils/formUtil';
+import {
+  Component,
+  ComponentInstances,
+  ComponentPaths,
+  FilterScope,
+  PassedComponentInstance,
+  ProcessContext,
+  ProcessTarget,
+  ProcessorInfo,
+  ProcessorScope,
+} from 'types';
+import {
+  eachComponentData,
+  eachComponentDataAsync,
+  getInstanceLookupPath,
+  resolveInstanceAtPath,
+} from 'utils/formUtil';
 import { postProcessOne, postProcessOneSync, processOne, processOneSync } from './processOne';
 import {
   defaultValueProcessInfo,
@@ -26,6 +41,31 @@ import { dereferenceProcessInfo } from './dereference';
 import { clearHiddenProcessInfo } from './clearHidden';
 import { serverOverrideProcessInfo } from './serverOverride';
 
+/**
+ * Resolves the instance a processor receives for a component. Several components can resolve to
+ * one path, so address this component's own schema — see `getSharedPathKey` for the rule.
+ * @param instances - The host's path-keyed instance map, if it supplied one.
+ * @param component - The component being processed.
+ * @param path - The component's data path.
+ * @param paths - The component's full set of paths.
+ * @returns The instance for this component, or undefined when the host supplied no map.
+ */
+function resolveInstance(
+  instances: ComponentInstances | undefined,
+  component: Component,
+  path: string,
+  paths?: ComponentPaths,
+): PassedComponentInstance | undefined {
+  if (!instances) {
+    return undefined;
+  }
+  return resolveInstanceAtPath(
+    instances,
+    getInstanceLookupPath(component, path, paths),
+    component.key,
+  );
+}
+
 export async function process<ProcessScope>(
   context: ProcessContext<ProcessScope>,
 ): Promise<ProcessScope> {
@@ -43,13 +83,7 @@ export async function process<ProcessScope>(
         paths,
         row,
         index,
-        instance: instances
-          ? instances[
-              ['none', 'content'].includes(component.modelType || '') && paths?.fullPath
-                ? paths.fullPath
-                : path
-            ]
-          : undefined,
+        instance: resolveInstance(instances, component, path, paths),
         parent,
         localRoot,
       });
@@ -76,13 +110,7 @@ export async function process<ProcessScope>(
         paths,
         row,
         index,
-        instance: instances
-          ? instances[
-              ['none', 'content'].includes(component.modelType || '') && paths?.fullPath
-                ? paths.fullPath
-                : path
-            ]
-          : undefined,
+        instance: resolveInstance(instances, component, path, paths),
         parent,
         localRoot,
       });
@@ -109,13 +137,7 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
         paths,
         row,
         index,
-        instance: instances
-          ? instances[
-              ['none', 'content'].includes(component.modelType || '') && paths?.fullPath
-                ? paths.fullPath
-                : path
-            ]
-          : undefined,
+        instance: resolveInstance(instances, component, path, paths),
         parent,
         localRoot,
       });
@@ -142,13 +164,7 @@ export function processSync<ProcessScope>(context: ProcessContext<ProcessScope>)
         paths,
         row,
         index,
-        instance: instances
-          ? instances[
-              ['none', 'content'].includes(component.modelType || '') && paths?.fullPath
-                ? paths.fullPath
-                : path
-            ]
-          : undefined,
+        instance: resolveInstance(instances, component, path, paths),
         parent,
         localRoot,
       });

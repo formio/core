@@ -458,6 +458,43 @@ describe('validateAvailableItems', function () {
     expect(result).to.equal(null);
   });
 
+  it('Validating a custom values select component (with valueProperty) with the available items validation parameter will return null if the selected item is valid', async function () {
+    const component: SelectComponent = {
+      ...simpleSelectOptions,
+      dataSrc: 'custom',
+      data: {
+        custom: 'values = [{ id: "A1", value: "A1" }, { id: "B1", value: "B1" }]',
+      },
+      validate: { onlyAvailableItems: true },
+      valueProperty: 'value',
+    };
+    const data = {
+      component: 'A1',
+    };
+    const context = generateProcessorContext(component, data);
+    const result = await validateAvailableItems(context);
+    expect(result).to.equal(null);
+  });
+
+  it('Validating a custom values select component (with valueProperty) with the available items validation parameter will return a FieldError if the selected item is invalid', async function () {
+    const component: SelectComponent = {
+      ...simpleSelectOptions,
+      dataSrc: 'custom',
+      data: {
+        custom: 'values = [{ id: "A1", value: "A1" }, { id: "B1", value: "B1" }]',
+      },
+      validate: { onlyAvailableItems: true },
+      valueProperty: 'value',
+    };
+    const data = {
+      component: 'Z9',
+    };
+    const context = generateProcessorContext(component, data);
+    const result = await validateAvailableItems(context);
+    expect(result).to.be.instanceOf(FieldError);
+    expect(result?.errorKeyOrMessage).to.equal('invalidOption');
+  });
+
   it('Validating a simple radio component with url data source with the available items validation parameter will return null if the item is valid', async function () {
     const component: RadioComponent = {
       ...simpleRadioField,

@@ -7951,4 +7951,66 @@ describe('Process Tests', function () {
       });
     });
   });
+
+  it('Should hand each schema the instance registered for it when several components share a data path', function () {
+    // `getComponentKey()` maps a checkbox with `inputType: 'radio'` onto its `name`, so all
+    // three of these components resolve to the data path `isValid`.
+    const components: any[] = [
+      {
+        type: 'radio',
+        key: 'isValid',
+        input: true,
+        validate: { required: true },
+        values: [
+          { label: 'Yes', value: 'yes' },
+          { label: 'No', value: 'no' },
+        ],
+      },
+      {
+        type: 'checkbox',
+        key: 'yesThisIsValid',
+        inputType: 'radio',
+        name: 'isValid',
+        value: 'yes',
+        input: true,
+      },
+      {
+        type: 'checkbox',
+        key: 'noItIsNotValid',
+        inputType: 'radio',
+        name: 'isValid',
+        value: 'no',
+        input: true,
+      },
+    ];
+    // The first component to claim a path keeps it; the rest are registered under
+    // `<path>:<key>` so every instance stays reachable by its schema.
+    const instances: any = {
+      isValid: { component: components[0] },
+      'isValid:yesThisIsValid': { component: components[1] },
+      'isValid:noItIsNotValid': { component: components[2] },
+    };
+    const resolved: Array<[string, string | undefined]> = [];
+
+    processSync({
+      components,
+      data: { isValid: '' },
+      scope: {} as any,
+      instances,
+      processors: [
+        {
+          name: 'collectInstances',
+          processSync: ({ component, instance }: any) => {
+            resolved.push([component.key, instance?.component?.key]);
+          },
+        } as any,
+      ],
+    });
+
+    expect(resolved).to.deep.equal([
+      ['isValid', 'isValid'],
+      ['yesThisIsValid', 'yesThisIsValid'],
+      ['noItIsNotValid', 'noItIsNotValid'],
+    ]);
+  });
 });
