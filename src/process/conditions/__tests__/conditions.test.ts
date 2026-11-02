@@ -738,4 +738,109 @@ describe('Condition processor', function () {
       { path: 'number', conditionallyHidden: false },
     ]);
   });
+
+  it('Should execute simple conditional logic when the condition component key is saved as a number', async function () {
+    // The builder's "auto" data type select saves a numeric key such as "507" as the number 507.
+    const form = {
+      components: [
+        {
+          label: 'Select Boxes',
+          key: 'selectBoxes',
+          type: 'selectboxes',
+          values: [{ label: 'a', value: 'a' }],
+          input: true,
+        },
+        {
+          label: 'Checkbox',
+          key: '507',
+          type: 'checkbox',
+          input: true,
+        },
+        {
+          label: 'Text Field',
+          key: 'textField1',
+          conditional: {
+            show: true,
+            conjunction: 'all',
+            conditions: [
+              {
+                component: 507,
+                operator: 'isEqual',
+                value: true,
+              },
+            ],
+          },
+          type: 'textfield',
+          input: true,
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        selectBoxes: { a: false },
+        '507': true,
+      },
+    };
+
+    let context: ProcessContext<ConditionsScope> = processForm(form, submission);
+    assert.deepEqual(context.scope.conditionals, [
+      { path: 'textField1', conditionallyHidden: false },
+    ]);
+
+    submission.data['507'] = false;
+    context = processForm(form, submission);
+    assert.deepEqual(context.scope.conditionals, [
+      { path: 'textField1', conditionallyHidden: true },
+    ]);
+  });
+
+  it('Should execute legacy conditional logic when the "when" component key is saved as a number', async function () {
+    const form = {
+      components: [
+        {
+          label: 'Select Boxes',
+          key: 'selectBoxes',
+          type: 'selectboxes',
+          values: [{ label: 'a', value: 'a' }],
+          input: true,
+        },
+        {
+          label: 'Checkbox',
+          key: '507',
+          type: 'checkbox',
+          input: true,
+        },
+        {
+          label: 'Text Field',
+          key: 'textField1',
+          conditional: {
+            show: true,
+            when: 507,
+            eq: 'true',
+          },
+          type: 'textfield',
+          input: true,
+        },
+      ],
+    };
+
+    const submission = {
+      data: {
+        selectBoxes: { a: false },
+        '507': true,
+      },
+    };
+
+    let context: ProcessContext<ConditionsScope> = processForm(form, submission);
+    assert.deepEqual(context.scope.conditionals, [
+      { path: 'textField1', conditionallyHidden: false },
+    ]);
+
+    submission.data['507'] = false;
+    context = processForm(form, submission);
+    assert.deepEqual(context.scope.conditionals, [
+      { path: 'textField1', conditionallyHidden: true },
+    ]);
+  });
 });
