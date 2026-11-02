@@ -1,4 +1,4 @@
-import { has, isObject, map, every, some, find, filter, isString } from 'lodash';
+import { has, isObject, map, every, some, find, filter, isString, isNil } from 'lodash';
 import { getComponent, getComponentValue } from './formUtil';
 import ConditionOperators from './operators';
 import { evaluate } from './utils';
@@ -82,7 +82,13 @@ export function checkLegacyConditional(
   if (!conditional || !isLegacyConditional(conditional) || !conditional.when) {
     return null;
   }
-  const value: any = getComponentValue(form, data, conditional.when, paths?.dataIndex, local);
+  const value: any = getComponentValue(
+    form,
+    data,
+    String(conditional.when),
+    paths?.dataIndex,
+    local,
+  );
   const eq = String(conditional.eq);
   const show = String(conditional.show);
   if (isObject(value) && has(value, eq)) {
@@ -151,7 +157,9 @@ export function checkSimpleConditional(
 
   const conditionsResult = filter(
     map(conditions, (cond) => {
-      const { operator, value: comparedValue, component: conditionComponentPath } = cond;
+      const { operator, value: comparedValue } = cond;
+      // A numeric key such as "507" can be saved as a number by the builder, so use a string path.
+      const conditionComponentPath = isNil(cond.component) ? '' : String(cond.component);
       if (!conditionComponentPath) {
         // Ignore conditions if there is no component path.
         return null;
